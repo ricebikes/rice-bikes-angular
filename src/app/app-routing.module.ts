@@ -15,8 +15,14 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: TransactionsComponent
+        component: TransactionsComponent,
+        pathMatch: 'full'
       },
+
+      {
+        path: 'new',
+
+      }
 
       {
         path: ':id',

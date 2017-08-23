@@ -8,13 +8,15 @@ import { AppRoutingModule } from "./app-routing.module";
 import { HttpModule } from "@angular/http";
 import { ButtonBarComponent } from './components/button-bar/button-bar.component';
 import { TransactionDetailComponent } from './components/transaction-detail/transaction-detail.component';
+import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TransactionsComponent,
     ButtonBarComponent,
-    TransactionDetailComponent
+    TransactionDetailComponent,
+    NewTransactionComponent
   ],
   imports: [
     BrowserModule,
