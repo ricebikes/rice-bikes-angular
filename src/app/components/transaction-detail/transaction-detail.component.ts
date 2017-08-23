@@ -6,7 +6,8 @@ import { ActivatedRoute } from "@angular/router";
 @Component({
   selector: 'app-transaction-detail',
   templateUrl: 'transaction-detail.component.html',
-  styleUrls: ['transaction-detail.component.css']
+  styleUrls: ['transaction-detail.component.css'],
+  providers: [TransactionService]
 })
 export class TransactionDetailComponent implements OnInit {
 

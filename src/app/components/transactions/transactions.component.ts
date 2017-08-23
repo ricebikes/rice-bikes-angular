@@ -5,7 +5,8 @@ import { Transaction } from "../../models/transaction";
 @Component({
   selector: 'app-transactions',
   templateUrl: 'transactions.component.html',
-  styleUrls: ['transactions.component.css']
+  styleUrls: ['transactions.component.css'],
+  providers: [TransactionService]
 })
 export class TransactionsComponent implements OnInit {
   transactions: Transaction[];

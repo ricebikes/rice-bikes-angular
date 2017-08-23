@@ -9,6 +9,8 @@ import { HttpModule } from "@angular/http";
 import { ButtonBarComponent } from './components/button-bar/button-bar.component';
 import { TransactionDetailComponent } from './components/transaction-detail/transaction-detail.component';
 import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
+import {FormsModule} from "@angular/forms";
+import {SearchService} from "./services/search.service";
 
 @NgModule({
   declarations: [
@@ -22,9 +24,11 @@ import { NewTransactionComponent } from './components/new-transaction/new-transa
     BrowserModule,
     AppRoutingModule,
     HttpModule,
+    FormsModule,
   ],
   providers: [
     TransactionService,
+    SearchService
   ],
   bootstrap: [AppComponent]
 })
