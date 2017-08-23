@@ -12,8 +12,12 @@ const routes: Routes = [
 
   {
     path: 'transactions',
-    component: TransactionsComponent,
     children: [
+      {
+        path: '',
+        component: TransactionsComponent
+      },
+
       {
         path: ':id',
         component: TransactionDetailComponent

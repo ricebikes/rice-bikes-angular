@@ -20,7 +20,7 @@ export class ButtonBarComponent implements OnInit {
 
   createTransaction(type: string): void {
     this.transactionService.createTransaction(type)
-      .then(transaction => this.router.navigate(['app-transaction-detail', transaction.id]));
+      .then(transaction => this.router.navigate(['transactions', transaction.id]));
   }
 
 }

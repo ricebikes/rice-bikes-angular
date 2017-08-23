@@ -19,19 +19,18 @@ export class TransactionService {
   getTransactions(): Promise<Transaction[]> {
     return this.http.get(this.backendUrl, this.headers)
       .toPromise()
-      .then(res => res.json().objects)
+      .then(res => res.json().objects as Transaction[])
   }
 
   getTransaction(id: number): void {
     this.http.get(`${this.backendUrl}/${id}`, this.headers)
-      .toPromise()
-      .then(transaction => this.transaction.next(transaction));
+      .map(res => res.json() as Transaction)
+      .subscribe(transaction => this.transaction.next(transaction));
   }
 
   createTransaction(type: string): Promise<any> {
     return this.http.post(this.backendUrl, {transaction_type: type}, {headers: this.headers})
       .toPromise()
-      .then(transaction => this.transaction.next(transaction))
+      .then(res => res.json() as Transaction);
   }
-
 }

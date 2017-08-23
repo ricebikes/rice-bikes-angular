@@ -9,13 +9,15 @@ import { Transaction } from "../../models/transaction";
 })
 export class TransactionsComponent implements OnInit {
   transactions: Transaction[];
+  loading: boolean = true;
 
   constructor(private transactionService: TransactionService) { }
 
   ngOnInit(): void {
     this.transactionService.getTransactions()
       .then(transactions => {
-        this.transactions = transactions
+        this.transactions = transactions;
+        this.loading = false;
       })
   }
 }
