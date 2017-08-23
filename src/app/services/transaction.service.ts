@@ -28,4 +28,10 @@ export class TransactionService {
       .then(transaction => this.transaction.next(transaction));
   }
 
+  createTransaction(type: string): Promise<any> {
+    return this.http.post(this.backendUrl, {transaction_type: type}, {headers: this.headers})
+      .toPromise()
+      .then(transaction => this.transaction.next(transaction))
+  }
+
 }

@@ -1,0 +1,14 @@
+<div class="container-fluid" style="margin-top: 15px">
+  <div class="container">
+
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+      New transaction
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" (click)="createTransaction('inpatient')">Inpatient</a>
+      <a class="dropdown-item" (click)="createTransaction('outpatient')">Outpatient</a>
+      <a class="dropdown-item" (click)="createTransaction('merch')">Merchandise</a>
+    </div>
+
+  </div>
+</div>

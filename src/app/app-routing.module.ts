@@ -1,6 +1,7 @@
 import { RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { TransactionsComponent } from "./components/transactions/transactions.component";
+import {TransactionDetailComponent} from "./components/transaction-detail/transaction-detail.component";
 
 const routes: Routes = [
   {
@@ -11,7 +12,13 @@ const routes: Routes = [
 
   {
     path: 'transactions',
-    component: TransactionsComponent
+    component: TransactionsComponent,
+    children: [
+      {
+        path: ':id',
+        component: TransactionDetailComponent
+      }
+    ]
   }
 ];
 

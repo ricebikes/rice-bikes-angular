@@ -6,11 +6,15 @@ import { TransactionsComponent } from './components/transactions/transactions.co
 import { TransactionService } from "./services/transaction.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpModule } from "@angular/http";
+import { ButtonBarComponent } from './components/button-bar/button-bar.component';
+import { TransactionDetailComponent } from './components/transaction-detail/transaction-detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TransactionsComponent
+    TransactionsComponent,
+    ButtonBarComponent,
+    TransactionDetailComponent
   ],
   imports: [
     BrowserModule,
