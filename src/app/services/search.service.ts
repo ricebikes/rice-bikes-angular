@@ -11,7 +11,7 @@ export class SearchService {
 
   constructor(private http: Http) {}
 
-  customerSearch(field: string, term: string): Observable<Transaction[]> {
+  customerSearch(field: string, term: string): Observable<Customer[]> {
     let filters = {"filters": [{"name": field, "op": "like", "val": `%${term}%`}]};
     let params = new URLSearchParams();
     let requestOptions = new RequestOptions();

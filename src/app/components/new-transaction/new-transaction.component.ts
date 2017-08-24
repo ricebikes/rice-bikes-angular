@@ -4,6 +4,7 @@ import {TransactionService} from "../../services/transaction.service";
 import {Customer} from "../../models/customer";
 import {SearchService} from "../../services/search.service";
 import {Observable, Subject} from "rxjs";
+import {FormGroup, FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-new-transaction',
@@ -17,19 +18,31 @@ export class NewTransactionComponent implements OnInit {
   private searchTerms = new Subject<string>();
 
   customer: Customer = new Customer();
-
-  private email: string;
-  private firstName: string;
-  private lastName: string;
+  transactionForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private transactionService: TransactionService,
     private searchService: SearchService
-  ) { }
+  ) {}
 
   ngOnInit() {
+
+    this.transactionForm = new FormGroup({
+      email: new FormControl(this.customer.email, [
+        Validators.required,
+        Validators.email
+      ]),
+      'first_name': new FormControl(this.customer.first_name, [
+        Validators.required
+      ]),
+      'last_name': new FormControl(this.customer.last_name, [
+        Validators.required
+      ])
+
+    });
+
     this.customerResults = this.searchTerms
       .debounceTime(300)
       .distinctUntilChanged()
@@ -40,17 +53,32 @@ export class NewTransactionComponent implements OnInit {
         console.log(err);
         return Observable.of<Customer[]>([]);
       })
-
-
   }
 
   search(term: string): void {
     this.searchTerms.next(term);
   }
 
-  createTransaction(): void {
-    if (this.email && this.firstName && this.lastName) {
+  setCustomer(customer: Customer): void {
+    this.customer = customer;
+    this.transactionForm.setValue({email: this.customer.email, first_name: this.customer.first_name, last_name: this.customer.last_name})
+    this.searchTerms.next('');
+  }
 
-    }
+  submitTransaction(): void {
+    this.route.params.subscribe(params => {
+      if (this.customer.id) {
+        this.transactionService.createTransactionCustomerExists(params['t'], this.customer.id)
+          .then(trans => this.router.navigate(['/transactions', trans.id]));
+      } else {
+        let cust = new Customer();
+        cust.email = this.transactionForm.value['email'];
+        cust.first_name = this.transactionForm.value['first_name'];
+        cust.last_name = this.transactionForm.value['last_name'];
+        this.transactionService.createTransaction(params['t'], cust)
+          .then(trans => this.router.navigate(['/transactions', trans.id]));
+      }
+    })
+
   }
 }

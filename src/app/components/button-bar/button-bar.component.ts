@@ -17,10 +17,4 @@ export class ButtonBarComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  createTransaction(type: string): void {
-    this.transactionService.createTransaction(type)
-      .then(transaction => this.router.navigate(['transactions', transaction.id]));
-  }
-
 }

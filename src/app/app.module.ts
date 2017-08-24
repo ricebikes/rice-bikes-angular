@@ -9,7 +9,7 @@ import { HttpModule } from "@angular/http";
 import { ButtonBarComponent } from './components/button-bar/button-bar.component';
 import { TransactionDetailComponent } from './components/transaction-detail/transaction-detail.component';
 import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SearchService} from "./services/search.service";
 
 @NgModule({
@@ -25,6 +25,7 @@ import {SearchService} from "./services/search.service";
     AppRoutingModule,
     HttpModule,
     FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     TransactionService,

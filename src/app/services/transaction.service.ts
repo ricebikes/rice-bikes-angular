@@ -3,6 +3,7 @@ import { Transaction } from "../models/transaction";
 import { BehaviorSubject } from "rxjs";
 import 'rxjs/add/operator/toPromise';
 import { Headers, Http } from "@angular/http";
+import {Customer} from "../models/customer";
 
 @Injectable()
 export class TransactionService {
@@ -28,8 +29,22 @@ export class TransactionService {
       .subscribe(transaction => this.transaction.next(transaction));
   }
 
-  createTransaction(type: string): Promise<any> {
-    return this.http.post(this.backendUrl, {transaction_type: type}, {headers: this.headers})
+  createTransaction(type: string, customer: Customer): Promise<any> {
+    let data = {
+      transaction_type: type,
+      customer: {
+        email: customer.email,
+        first_name: customer.first_name,
+        last_name: customer.last_name
+      }
+    };
+    return this.http.post(this.backendUrl, data, {headers: this.headers})
+      .toPromise()
+      .then(res => res.json() as Transaction);
+  }
+
+  createTransactionCustomerExists(type: string, customer_id: number): Promise<any> {
+    return this.http.post(this.backendUrl, {transaction_type: type, customer_id: customer_id}, {headers: this.headers})
       .toPromise()
       .then(res => res.json() as Transaction);
   }
