@@ -40,7 +40,6 @@ export class NewTransactionComponent implements OnInit {
       'last_name': new FormControl(this.customer.last_name, [
         Validators.required
       ])
-
     });
 
     this.customerResults = this.searchTerms

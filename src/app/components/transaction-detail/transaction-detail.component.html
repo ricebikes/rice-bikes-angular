@@ -1,7 +1,20 @@
+<!--<div class="container" style="margin-top: 15px;">-->
+  <!--<div *ngIf="loading">Loading...</div>-->
+  <!--<div *ngIf="!loading">-->
+    <!--<h4>{{transaction?.id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h4>-->
+    <!--<h6>{{transaction?.transaction_type}}</h6>-->
+  <!--</div>-->
+<!--</div>-->
+
+<div class="container-fluid">
 <div class="container" style="margin-top: 15px;">
-  <div *ngIf="loading">Loading...</div>
-  <div *ngIf="!loading">
-    <h4>{{transaction?.id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h4>
-    <h6>{{transaction?.transaction_type}}</h6>
+
+</div>
+</div>
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h3 class="display-5">{{transaction?.id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h3>
+    <p class="lead">{{transaction?.transaction_type}}</p>
   </div>
 </div>
