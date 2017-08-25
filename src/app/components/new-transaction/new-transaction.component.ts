@@ -66,7 +66,7 @@ export class NewTransactionComponent implements OnInit {
   }
 
   submitTransaction(): void {
-    this.route.params.subscribe(params => {
+    this.route.queryParams.subscribe(params => {
       if (this.customer.id) {
         this.transactionService.createTransactionCustomerExists(params['t'], this.customer.id)
           .then(trans => this.router.navigate(['/transactions', trans.id]));

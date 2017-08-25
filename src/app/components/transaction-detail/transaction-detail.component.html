@@ -2,5 +2,6 @@
   <div *ngIf="loading">Loading...</div>
   <div *ngIf="!loading">
     <h4>{{transaction?.id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h4>
+    <h6>{{transaction?.transaction_type}}</h6>
   </div>
 </div>
