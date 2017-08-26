@@ -1,0 +1,8 @@
+<input [(ngModel)]="searchFieldValue" type="text" class="form-control" placeholder="Search items..." #searchBox (keyup)="search(searchBox.value)">
+<div class="list-group" style="position: absolute; z-index: 1;">
+  <a class="list-group-item list-group-item-action"
+     *ngFor="let item of itemResults | async"
+     (click)="addItem(item)">
+    {{item.name}}
+  </a>
+</div>

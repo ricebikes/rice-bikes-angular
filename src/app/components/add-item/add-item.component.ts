@@ -1,20 +1,20 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Subject, Observable} from "rxjs";
 import {SearchService} from "../../services/search.service";
-import {Repair} from "../../models/repair";
+import {Item} from "../../models/item";
 import {Transaction} from "../../models/transaction";
 import {TransactionService} from "../../services/transaction.service";
 
 @Component({
-  selector: 'app-add-repair',
-  templateUrl: 'add-repair.component.html',
-  styleUrls: ['add-repair.component.css']
+  selector: 'app-add-item',
+  templateUrl: 'add-item.component.html',
+  styleUrls: ['add-item.component.css']
 })
-export class AddRepairComponent implements OnInit {
+export class AddItemComponent implements OnInit {
   @Input() transaction: Transaction;
 
   searchFieldValue: string;
-  repairResults: Observable<Repair[]>;
+  itemResults: Observable<Item[]>;
   private searchTerms = new Subject<string>();
 
   constructor(
@@ -23,15 +23,15 @@ export class AddRepairComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.repairResults = this.searchTerms
+    this.itemResults = this.searchTerms
       .debounceTime(300)
       .distinctUntilChanged()
       .switchMap(term => term
-        ? this.searchService.repairSearch(term)
-        : Observable.of<Repair[]>([]))
+        ? this.searchService.itemSearch(term)
+        : Observable.of<Item[]>([]))
       .catch(err => {
         console.log(err);
-        return Observable.of<Repair[]>([]);
+        return Observable.of<Item[]>([]);
       })
   }
 
@@ -39,8 +39,8 @@ export class AddRepairComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  addItem(repair: Repair): void {
-    this.transactionService.addObjectToTransaction(this.transaction.id, 'repairs', repair.id)
+  addRepair(item: Item): void {
+    this.transactionService.addObjectToTransaction(this.transaction.id, 'items', item.id)
       .then(() => {
         this.searchTerms.next('');
         this.searchFieldValue = '';

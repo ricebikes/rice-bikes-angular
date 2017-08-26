@@ -12,6 +12,7 @@ import { NewTransactionComponent } from './components/new-transaction/new-transa
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SearchService} from "./services/search.service";
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
+import { AddItemComponent } from './components/add-item/add-item.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { AddRepairComponent } from './components/add-repair/add-repair.component
     ButtonBarComponent,
     TransactionDetailComponent,
     NewTransactionComponent,
-    AddRepairComponent
+    AddRepairComponent,
+    AddItemComponent
   ],
   imports: [
     BrowserModule,

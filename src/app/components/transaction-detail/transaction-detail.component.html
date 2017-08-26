@@ -18,3 +18,12 @@
     <p class="lead">{{transaction?.transaction_type}}</p>
   </div>
 </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <app-add-repair [transaction]="transaction"></app-add-repair>
+      <app-add-item [transaction]="transaction"></app-add-item>
+    </div>
+  </div>
+</div>
