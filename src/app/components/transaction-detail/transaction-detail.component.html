@@ -1,18 +1,4 @@
-<!--<div class="container" style="margin-top: 15px;">-->
-  <!--<div *ngIf="loading">Loading...</div>-->
-  <!--<div *ngIf="!loading">-->
-    <!--<h4>{{transaction?.id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h4>-->
-    <!--<h6>{{transaction?.transaction_type}}</h6>-->
-  <!--</div>-->
-<!--</div>-->
-
-<div class="container-fluid">
-<div class="container" style="margin-top: 15px;">
-
-</div>
-</div>
-
-<div class="jumbotron jumbotron-fluid">
+<div class="jumbotron jumbotron-fluid" style="margin-top: 15px;">
   <div class="container">
     <h3 class="display-5">{{transaction?.id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h3>
     <p class="lead">{{transaction?.transaction_type}}</p>
@@ -21,9 +7,31 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <app-add-repair [transaction]="transaction"></app-add-repair>
+      <div class="list-group" style="margin-top: 15px;">
+        <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
+          <strong>${{repair.price}}</strong> {{repair.name}}
+        </a>
+      </div>
+    </div>
+    <div class="col-md-4">
       <app-add-item [transaction]="transaction"></app-add-item>
+      <div class="list-group" style="margin-top: 15px;">
+        <a *ngFor="let item of transaction?.items" class="list-group-item">
+          <strong>${{item.price}}</strong> {{item.name}}
+        </a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">
+            Subtotal
+          </h4>
+          <button class="btn btn-primary">Checkout!</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

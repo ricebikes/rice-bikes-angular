@@ -39,7 +39,7 @@ export class AddRepairComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  addItem(repair: Repair): void {
+  addRepair(repair: Repair): void {
     this.transactionService.addObjectToTransaction(this.transaction.id, 'repairs', repair.id)
       .then(() => {
         this.searchTerms.next('');

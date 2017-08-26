@@ -50,7 +50,7 @@ export class TransactionService {
   }
 
   addObjectToTransaction(transaction_id: number, obj_name: string, obj_id: number): Promise<any> {
-    return this.http.put(`${this.backendUrl}/${transaction_id}`, `{${obj_name}: {"add": [{"id": ${obj_id}}]}}`, {headers: this.headers})
+    return this.http.put(`${this.backendUrl}/${transaction_id}`, `{\"${obj_name}\": {"add": [{"id": ${obj_id}}]}}`, {headers: this.headers})
       .toPromise()
       .then(res => {
         this.transaction.next(res.json());

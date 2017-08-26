@@ -2,7 +2,7 @@ import {Customer} from "./customer";
 
 export class Transaction {
   id: number;
-  date_created: Date;
+  date_created: string;
   description: string;
   transaction_type: string;
   customer: Customer;
