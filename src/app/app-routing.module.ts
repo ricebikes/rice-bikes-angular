@@ -26,7 +26,7 @@ const routes: Routes = [
       },
 
       {
-        path: ':id',
+        path: ':_id',
         component: TransactionDetailComponent
       }
     ]

@@ -26,6 +26,5 @@ export class TransactionsComponent implements OnInit {
     let created = Date.parse(transaction.date_created);
     let diff = Date.now() - created;
     return Math.floor(diff / 1000 / 60 / 60 / 24);
-
   }
 }

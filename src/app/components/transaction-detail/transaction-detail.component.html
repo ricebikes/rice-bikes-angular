@@ -1,6 +1,6 @@
 <div class="jumbotron jumbotron-fluid" style="margin-top: 15px;">
   <div class="container">
-    <h3 class="display-5">{{transaction?.id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h3>
+    <h3 class="display-5">{{transaction?._id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h3>
     <p class="lead">{{transaction?.transaction_type}}</p>
   </div>
 </div>

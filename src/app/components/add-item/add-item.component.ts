@@ -40,11 +40,11 @@ export class AddItemComponent implements OnInit {
   }
 
   addItem(item: Item): void {
-    this.transactionService.addObjectToTransaction(this.transaction.id, 'items', item.id)
+    this.transactionService.addItemToTransaction(this.transaction._id, item._id)
       .then(() => {
         this.searchTerms.next('');
         this.searchFieldValue = '';
-      })
+      });
   }
 
 }

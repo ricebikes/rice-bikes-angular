@@ -46,7 +46,7 @@ export class NewTransactionComponent implements OnInit {
       .debounceTime(300)
       .distinctUntilChanged()
       .switchMap(term => term
-        ? this.searchService.customerSearch('email', term)
+        ? this.searchService.customerSearch(term)
         : Observable.of<Customer[]>([]))
       .catch(err => {
         console.log(err);
@@ -60,24 +60,31 @@ export class NewTransactionComponent implements OnInit {
 
   setCustomer(customer: Customer): void {
     this.customer = customer;
-    this.transactionForm.setValue({email: this.customer.email, first_name: this.customer.first_name, last_name: this.customer.last_name})
+    this.transactionForm.setValue(
+      {
+        email: this.customer.email,
+        first_name: this.customer.first_name,
+        last_name: this.customer.last_name
+      }
+    );
     this.searchTerms.next('');
   }
 
   submitTransaction(): void {
     this.route.queryParams.subscribe(params => {
-      if (this.customer.id) {
-        this.transactionService.createTransactionCustomerExists(params['t'], this.customer.id)
-          .then(trans => this.router.navigate(['/transactions', trans.id]));
+      if (this.customer._id) {
+        this.transactionService.createTransactionCustomerExists(params['t'], this.customer._id)
+          .then(trans => this.router.navigate(['/transactions', trans._id]));
       } else {
         let cust = new Customer();
         cust.email = this.transactionForm.value['email'];
         cust.first_name = this.transactionForm.value['first_name'];
         cust.last_name = this.transactionForm.value['last_name'];
         this.transactionService.createTransaction(params['t'], cust)
-          .then(trans => this.router.navigate(['/transactions', trans.id]));
+          .then(trans => {
+            this.router.navigate(['/transactions', trans._id])
+          });
       }
     })
-
   }
 }

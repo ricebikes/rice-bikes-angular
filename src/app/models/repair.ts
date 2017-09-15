@@ -1,5 +1,5 @@
 export class Repair {
-  id: number;
+  _id: string;
   price: number;
   name: string;
   description: string;

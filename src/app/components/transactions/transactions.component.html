@@ -6,7 +6,7 @@
     <div *ngIf="loading">Loading...</div>
     <div *ngIf="!loading">
       <a *ngFor="let transaction of transactions"
-         [routerLink]="['/transactions', transaction.id]"
+         [routerLink]="['/transactions', transaction._id]"
          class="list-group-item list-group-item-action"
          [ngClass]="{
                       'list-group-item-warning': getTimeDifference(transaction) > 3 && getTimeDifference(transaction) < 6,
@@ -14,7 +14,7 @@
                     }">
         <div class="row">
           <div class="col-sm-3">
-            {{transaction.id}}
+            {{transaction._id}}
           </div>
           <div class="col-sm-3">
             {{transaction?.customer?.first_name}}

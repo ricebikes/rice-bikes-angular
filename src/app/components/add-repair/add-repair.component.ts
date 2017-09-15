@@ -40,11 +40,11 @@ export class AddRepairComponent implements OnInit {
   }
 
   addRepair(repair: Repair): void {
-    this.transactionService.addObjectToTransaction(this.transaction.id, 'repairs', repair.id)
+    this.transactionService.addRepairToTransaction(this.transaction._id, repair._id)
       .then(() => {
         this.searchTerms.next('');
         this.searchFieldValue = '';
-      })
+      });
   }
 
 }

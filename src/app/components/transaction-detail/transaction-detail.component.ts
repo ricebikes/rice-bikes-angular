@@ -20,7 +20,7 @@ export class TransactionDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => this.transactionService.getTransaction(params['id']));
+    this.route.params.subscribe(params => this.transactionService.getTransaction(params['_id']));
     this.transactionService.transaction.subscribe(transaction => {
       this.transaction = transaction;
       this.loading = false;
