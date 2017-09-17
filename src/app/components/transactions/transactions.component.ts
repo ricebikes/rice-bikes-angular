@@ -14,16 +14,43 @@ export class TransactionsComponent implements OnInit {
 
   constructor(public transactionService: TransactionService) { }
 
+  currentTab: string = 'active';
   ngOnInit(): void {
+    this.getActiveTransactions();
+  }
+
+  getTransactions(): void {
     this.transactionService.getTransactions()
       .then(transactions => {
         this.transactions = transactions;
         this.loading = false;
+        this.currentTab = 'all';
+      })
+  }
+
+  getActiveTransactions(): void {
+    this.transactionService.getActiveTransactions()
+      .then(transactions => {
+        this.transactions = transactions;
+        this.currentTab = 'active';
+      })
+  }
+
+  getPastTransactions(): void {
+    this.transactionService.getCompletedTransactions()
+      .then(transactions => {
+        this.transactions = transactions;
+        this.currentTab = 'completed';
       })
   }
 
   getTimeDifference(transaction: Transaction): number {
-    let created = Date.parse(transaction.date_created);
+    let created = Date.now();
+    if (this.currentTab === 'active') {
+      created = Date.parse(transaction.date_created);
+    } else if (this.currentTab === 'completed') {
+      created = Date.parse(transaction.date_completed)
+    }
     let diff = Date.now() - created;
     return Math.floor(diff / 1000 / 60 / 60 / 24);
   }

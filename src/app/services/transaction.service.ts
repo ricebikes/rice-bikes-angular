@@ -42,6 +42,12 @@ export class TransactionService {
       .subscribe(transaction => this.transaction.next(transaction));
   }
 
+  updateTransaction(transaction: Transaction): Promise<any> {
+    return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, this.headers)
+      .toPromise()
+      .then(res => this.transaction.next(res.json() as Transaction));
+  }
+
   createTransaction(type: string, customer: Customer): Promise<any> {
     let data = {
       transaction_type: type,

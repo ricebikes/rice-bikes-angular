@@ -1,30 +1,39 @@
-<div class="container" style="margin-top: 15px;">
 
-  <div class="list-group" style="margin-top: 15px;">
-    <div *ngIf="loading">Loading...</div>
-    <div *ngIf="!loading">
-      <a *ngFor="let transaction of transactions"
-         [routerLink]="['/transactions', transaction._id]"
-         class="list-group-item list-group-item-action">
-        <div class="row">
-          <div class="col-sm-3">
-            {{transaction._id}}
-            <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
-  'badge-primary': transaction?.transaction_type == 'outpatient',
-  'badge-secondary': transaction?.transaction_type == 'merch'
+<ul class="nav nav-tabs nav-fill justify-content-center" style="margin-top: 15px">
+  <li class="nav-item">
+    <a (click)="getActiveTransactions()" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
+  </li>
+  <li class="nav-item">
+    <a (click)="getPastTransactions()" [ngClass]="{'active': currentTab === 'completed'}" class="nav-link">Completed</a>
+  </li>
+  <li class="nav-item">
+    <a (click)="getTransactions()" [ngClass]="{'active': currentTab === 'all'}" class="nav-link">All</a>
+  </li>
+</ul>
+
+<div class="container" style="padding-top: 15px">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Bikes</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let transaction of transactions" [routerLink]="['/transactions', transaction._id]" [ngClass]="{'table-warning': getTimeDifference(transaction) >= 3 && getTimeDifference(transaction) < 6,
+'table-danger': getTimeDifference(transaction) >= 6}">
+      <th scope="row">{{transaction._id}}
+        <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
+'badge-primary': transaction?.transaction_type == 'outpatient',
+'badge-secondary': transaction?.transaction_type == 'merch'
 }">{{transaction?.transaction_type}}</span>
-          </div>
-          <div class="col-sm-3">
-            {{transaction?.customer?.first_name}}
-          </div>
-          <div class="col-sm-3">
-            {{transaction?.customer?.last_name}}
-          </div>
-          <div class="col-sm-3">
-            {{getBikeList(transaction)}}
-          </div>
-        </div>
-      </a>
-    </div>
-  </div>
+      </th>
+      <td>{{transaction.customer.first_name}}</td>
+      <td>{{transaction.customer.last_name}}</td>
+      <td>{{getBikeList(transaction)}}</td>
+    </tr>
+    </tbody>
+  </table>
 </div>

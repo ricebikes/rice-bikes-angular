@@ -39,10 +39,12 @@
 }">{{transaction?.transaction_type}}</span>
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
-      <button (click)="deleteTransaction()" class="btn btn-danger float-right">Delete</button>
+      <button (click)="deleteTransaction()" class="btn btn-outline-danger float-right">Delete</button>
     </p>
+    <button class="btn btn-secondary btn-sm">Edit description</button>
+    <p class="lead">{{transaction?.description}}</p>
     <hr class="my-4">
-
+    <p class="lead">Bikes</p>
     <div class="row">
       <div *ngFor="let bike of transaction.bikes" class="col-sm-4">
         <div class="card">
@@ -57,7 +59,7 @@
         </div>
       </div>
       <div class="col-sm-4">
-        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#bikeAddModal">
+        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#bikeAddModal">
           +
         </button>
       </div>
@@ -91,7 +93,7 @@
           </h4>
         </div>
         <div class="card-footer">
-          <button class="btn btn-primary">Checkout!</button>
+          <button class="btn btn-outline-success">Checkout!</button>
         </div>
       </div>
     </div>
@@ -99,5 +101,5 @@
 </div>
 
 <div class="container" style="padding-top: 15px">
-    <button class="btn btn-lg btn-block btn-secondary">Complete</button>
+    <button class="btn btn-lg btn-block btn-outline-secondary">Complete</button>
 </div>

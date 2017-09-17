@@ -7,6 +7,7 @@ export class Transaction {
   _id: string;
   date_created: string;
   date_completed: string;
+  completed: boolean;
   description: string;
   transaction_type: string;
   customer: Customer;

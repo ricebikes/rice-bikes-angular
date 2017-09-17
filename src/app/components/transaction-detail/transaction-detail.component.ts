@@ -48,7 +48,7 @@ export class TransactionDetailComponent implements OnInit {
     bike.make = this.bikeForm.value['bike-make'];
     bike.model = this.bikeForm.value['bike-model'];
     bike.description = this.bikeForm.value['bike-desc'];
-    this.transactionService.addNewBikeToTransaction(this.transaction._id, bike);
+    this.transactionService.addNewBikeToTransaction(this.transaction._id, bike) ;
   }
 
   deleteBike(bike: Bike): void {

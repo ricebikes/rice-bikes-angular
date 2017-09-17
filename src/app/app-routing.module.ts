@@ -9,7 +9,7 @@ import {CompletedTransactionsComponent} from "./components/completed-transaction
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/transactions/active',
+    redirectTo: '/transactions',
     pathMatch: 'full'
   },
 
@@ -25,16 +25,6 @@ const routes: Routes = [
       {
         path: 'new',
         component: NewTransactionComponent
-      },
-
-      {
-        path: 'active',
-        component: ActiveTransactionsComponent
-      },
-
-      {
-        path: 'complete',
-        component: CompletedTransactionsComponent
       },
 
       {

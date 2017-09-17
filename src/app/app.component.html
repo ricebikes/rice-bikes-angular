@@ -1,39 +1,37 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#">
-      <img src="/assets/img/rice-bikes_white.png" width="80" height="80" class="d-inline-block align-top" alt="">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+<div class="wrapper">
+  <div class="body">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img src="/assets/img/rice-bikes_white.png" width="80" height="80" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/transactions/active" routerLinkActive="active">Active</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/transactions/complete" routerLinkActive="complete">Completed</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/transactions" routerLinkActive="''">All</a>
-        </li>
-      </ul>
-      <app-search-transaction></app-search-transaction>
-    </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto"></ul>
+          <app-search-transaction></app-search-transaction>
+        </div>
+      </div>
+    </nav>
+
+    <app-button-bar></app-button-bar>
+
+    <router-outlet></router-outlet>
   </div>
-</nav>
-
-<app-button-bar></app-button-bar>
-
-<router-outlet></router-outlet>
-
-<div class="jumbotron jumbotron-fluid" style="margin-top: 60px; margin-bottom: 0px;">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-3">
-        <p style="font-size: 12px;">Built by Cade Ritter</p>
+  <div class="footer">
+    <div class="jumbotron jumbotron-fluid" style="margin-top: 60px; margin-bottom: 0px;">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3">
+            <p style="font-size: 12px;">Built by Cade Ritter</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+
+
