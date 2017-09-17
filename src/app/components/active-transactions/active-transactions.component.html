@@ -13,6 +13,10 @@
         <div class="row">
           <div class="col-sm-3">
             {{transaction._id}}
+            <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
+  'badge-primary': transaction?.transaction_type == 'outpatient',
+  'badge-secondary': transaction?.transaction_type == 'merch'
+}">{{transaction?.transaction_type}}</span>
           </div>
           <div class="col-sm-3">
             {{transaction?.customer?.first_name}}

@@ -12,7 +12,7 @@ export class TransactionsComponent implements OnInit {
   transactions: Transaction[];
   loading: boolean = true;
 
-  constructor(private transactionService: TransactionService) { }
+  constructor(public transactionService: TransactionService) { }
 
   ngOnInit(): void {
     this.transactionService.getTransactions()
@@ -20,6 +20,12 @@ export class TransactionsComponent implements OnInit {
         this.transactions = transactions;
         this.loading = false;
       })
+  }
+
+  getTimeDifference(transaction: Transaction): number {
+    let created = Date.parse(transaction.date_created);
+    let diff = Date.now() - created;
+    return Math.floor(diff / 1000 / 60 / 60 / 24);
   }
 
   getBikeList(transaction: Transaction): string[] {

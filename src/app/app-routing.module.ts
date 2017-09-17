@@ -4,6 +4,7 @@ import { TransactionsComponent } from "./components/transactions/transactions.co
 import {TransactionDetailComponent} from "./components/transaction-detail/transaction-detail.component";
 import {NewTransactionComponent} from "./components/new-transaction/new-transaction.component";
 import {ActiveTransactionsComponent} from "./components/active-transactions/active-transactions.component";
+import {CompletedTransactionsComponent} from "./components/completed-transactions/completed-transactions.component";
 
 const routes: Routes = [
   {
@@ -29,6 +30,11 @@ const routes: Routes = [
       {
         path: 'active',
         component: ActiveTransactionsComponent
+      },
+
+      {
+        path: 'complete',
+        component: CompletedTransactionsComponent
       },
 
       {

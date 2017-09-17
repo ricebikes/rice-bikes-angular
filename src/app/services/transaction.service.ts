@@ -30,6 +30,12 @@ export class TransactionService {
       .then(res => res.json() as Transaction[])
   }
 
+  getCompletedTransactions(): Promise<any>{
+    return this.http.get(`${this.backendUrl}/complete`, this.headers)
+      .toPromise()
+      .then(res => res.json() as Transaction[])
+  }
+
   getTransaction(id: string): void {
     this.http.get(`${this.backendUrl}/${id}`, this.headers)
       .map(res => res.json() as Transaction)
