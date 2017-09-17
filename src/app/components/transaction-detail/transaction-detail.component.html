@@ -31,8 +31,8 @@
 
 <div class="jumbotron jumbotron-fluid" style="margin-top: 15px;">
   <div class="container">
-    <h3 class="display-4">{{transaction?._id}}</h3>
-    <h3 class="display-5">{{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}
+    <h3 class="display-5">
+      <strong>{{transaction?._id}}:</strong> {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}
       <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
   'badge-primary': transaction?.transaction_type == 'outpatient',
   'badge-secondary': transaction?.transaction_type == 'merch'
@@ -57,7 +57,7 @@
         </div>
       </div>
       <div class="col-sm-4">
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#bikeAddModal">
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#bikeAddModal">
           +
         </button>
       </div>
@@ -65,7 +65,7 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container" style="min-height: 300px">
   <div class="row">
     <div class="col-md-4">
       <app-add-repair [transaction]="transaction"></app-add-repair>
@@ -84,14 +84,20 @@
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card">
+      <div class="card" style="height: 250px">
         <div class="card-body">
           <h4 class="card-title">
             Subtotal
           </h4>
+        </div>
+        <div class="card-footer">
           <button class="btn btn-primary">Checkout!</button>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<div class="container" style="padding-top: 15px">
+    <button class="btn btn-lg btn-block btn-secondary">Complete</button>
 </div>
