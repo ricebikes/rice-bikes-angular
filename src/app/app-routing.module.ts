@@ -3,11 +3,12 @@ import { NgModule } from "@angular/core";
 import { TransactionsComponent } from "./components/transactions/transactions.component";
 import {TransactionDetailComponent} from "./components/transaction-detail/transaction-detail.component";
 import {NewTransactionComponent} from "./components/new-transaction/new-transaction.component";
+import {ActiveTransactionsComponent} from "./components/active-transactions/active-transactions.component";
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/transactions',
+    redirectTo: '/transactions/active',
     pathMatch: 'full'
   },
 
@@ -26,9 +27,14 @@ const routes: Routes = [
       },
 
       {
+        path: 'active',
+        component: ActiveTransactionsComponent
+      },
+
+      {
         path: ':_id',
         component: TransactionDetailComponent
-      }
+      },
     ]
   }
 ];

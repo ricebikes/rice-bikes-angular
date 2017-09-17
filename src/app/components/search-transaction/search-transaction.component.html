@@ -1,11 +1,13 @@
-<div class="input-group">
-  <div class="input-group-btn">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {{currentChoice}}
-    </button>
-    <div class="dropdown-menu">
-      <a *ngFor="let choice of searchChoices" class="dropdown-item" (click)="setSearchChoice(choice)">{{choice}}</a>
+<form class="form-inline">
+  <div class="input-group">
+    <div class="input-group-btn">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{currentChoice}}
+      </button>
+      <div class="dropdown-menu">
+        <a *ngFor="let choice of searchChoices" class="dropdown-item" (click)="setSearchChoice(choice)">{{choice}}</a>
+      </div>
     </div>
+    <input type="text" placeholder="Search transactions..." class="form-control" aria-label="Text input with dropdown button">
   </div>
-  <input type="text" placeholder="Search transactions..." class="form-control" aria-label="Text input with dropdown button">
-</div>
+</form>

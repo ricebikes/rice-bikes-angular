@@ -1,7 +1,67 @@
+<div class="modal fade" id="bikeAddModal" tabindex="-1" role="dialog" aria-labelledby="bikeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bikeModalLabel">Add bike</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="bikeForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <input type="text" placeholder="Make..." class="form-control" formControlName="bike-make" id="bike-make">
+          </div>
+          <div class="form-group">
+            <input type="text" placeholder="Model..." class="form-control" formControlName="bike-model" id="bike-model">
+          </div>
+          <div class="form-group">
+            <input type="text" placeholder="Description..." class="form-control" formControlName="bike-desc" id="bike-desc">
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="addBike()" [disabled]="!bikeForm.valid">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="jumbotron jumbotron-fluid" style="margin-top: 15px;">
   <div class="container">
-    <h3 class="display-5">{{transaction?._id}}: {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}</h3>
-    <p class="lead">{{transaction?.transaction_type}}</p>
+    <h3 class="display-4">{{transaction?._id}}</h3>
+    <h3 class="display-5">{{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}
+      <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
+  'badge-primary': transaction?.transaction_type == 'outpatient',
+  'badge-secondary': transaction?.transaction_type == 'merch'
+}">{{transaction?.transaction_type}}</span>
+    </h3>
+    <p class="lead">{{transaction?.date_created | date:'medium'}}
+      <button (click)="deleteTransaction()" class="btn btn-danger float-right">Delete</button>
+    </p>
+    <hr class="my-4">
+
+    <div class="row">
+      <div *ngFor="let bike of transaction.bikes" class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{bike.make}} {{bike.model}}
+              <button (click)="deleteBike(bike)" type="button" class="close float-right" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </h5>
+            <p class="card-text">{{bike.description}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#bikeAddModal">
+          +
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

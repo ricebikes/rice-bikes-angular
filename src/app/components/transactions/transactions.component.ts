@@ -22,9 +22,9 @@ export class TransactionsComponent implements OnInit {
       })
   }
 
-  getTimeDifference(transaction: Transaction): number {
-    let created = Date.parse(transaction.date_created);
-    let diff = Date.now() - created;
-    return Math.floor(diff / 1000 / 60 / 60 / 24);
+  getBikeList(transaction: Transaction): string[] {
+    return transaction.bikes.map((b) => {
+      return `${b.make} ${b.model}`;
+    });
   }
 }

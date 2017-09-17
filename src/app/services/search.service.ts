@@ -34,7 +34,7 @@ export class SearchService {
   customerSearch(term: string): Observable<Customer[]> {
     let params = new URLSearchParams();
     let requestOptions = new RequestOptions();
-    params.set('q', term);
+    params.set('q', "\"" + term + "\"");
     requestOptions.params = params;
     return this.http.get(this.customerUrl, requestOptions)
       .map(res => res.json() as Customer[])

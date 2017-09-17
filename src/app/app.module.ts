@@ -14,6 +14,8 @@ import {SearchService} from "./services/search.service";
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
 import { AddItemComponent } from './components/add-item/add-item.component';
 import { SearchTransactionComponent } from './components/search-transaction/search-transaction.component';
+import { ActiveTransactionsComponent } from './components/active-transactions/active-transactions.component';
+import { CompletedTransactionsComponent } from './components/completed-transactions/completed-transactions.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { SearchTransactionComponent } from './components/search-transaction/sear
     NewTransactionComponent,
     AddRepairComponent,
     AddItemComponent,
-    SearchTransactionComponent
+    SearchTransactionComponent,
+    ActiveTransactionsComponent,
+    CompletedTransactionsComponent
   ],
   imports: [
     BrowserModule,
