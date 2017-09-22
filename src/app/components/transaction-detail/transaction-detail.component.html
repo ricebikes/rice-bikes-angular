@@ -32,11 +32,25 @@
 <div class="jumbotron jumbotron-fluid" style="margin-top: 15px;">
   <div class="container">
     <h3 class="display-5">
-      <strong>{{transaction?._id}}:</strong> {{transaction?.customer?.first_name}} {{transaction?.customer?.last_name}}
-      <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
+      <strong>{{transaction?._id}}: </strong>{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}
+      <span class="dropdown">
+        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
   'badge-primary': transaction?.transaction_type == 'outpatient',
   'badge-secondary': transaction?.transaction_type == 'merch'
-}">{{transaction?.transaction_type}}</span>
+}">
+          {{transaction?.transaction_type}}
+        </button>
+        <div class="dropdown-menu">
+          <h6 class="dropdown-header">Choose type</h6>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="changeType('inpatient')">Inpatient</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="changeType('outpatient')">Outpatient</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="changeType('merch')">Merch</a>
+        </div>
+      </span>
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
       <button (click)="deleteTransaction()" class="btn btn-outline-danger float-right">Delete</button>
@@ -49,7 +63,7 @@
       <div *ngFor="let bike of transaction.bikes" class="col-sm-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">{{bike.make}} {{bike.model}}
+            <h5 class="card-title">{{bike?.make}} {{bike?.model}}
               <button (click)="deleteBike(bike)" type="button" class="close float-right" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>

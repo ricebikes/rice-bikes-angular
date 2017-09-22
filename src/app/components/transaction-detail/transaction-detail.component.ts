@@ -43,6 +43,15 @@ export class TransactionDetailComponent implements OnInit {
     });
   }
 
+  changeType(type: string): void {
+    this.transaction.transaction_type = type;
+    this.updateTransaction();
+  }
+
+  updateTransaction(): void {
+    this.transactionService.updateTransaction(this.transaction);
+  }
+
   addBike(): void {
     let bike = new Bike();
     bike.make = this.bikeForm.value['bike-make'];

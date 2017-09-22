@@ -1,10 +1,9 @@
 import { RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { TransactionsComponent } from "./components/transactions/transactions.component";
-import {TransactionDetailComponent} from "./components/transaction-detail/transaction-detail.component";
-import {NewTransactionComponent} from "./components/new-transaction/new-transaction.component";
-import {ActiveTransactionsComponent} from "./components/active-transactions/active-transactions.component";
-import {CompletedTransactionsComponent} from "./components/completed-transactions/completed-transactions.component";
+import { TransactionDetailComponent } from "./components/transaction-detail/transaction-detail.component";
+import { NewTransactionComponent } from "./components/new-transaction/new-transaction.component";
+import { AuthGuard } from "./guards/auth.guard";
 
 const routes: Routes = [
   {
@@ -15,6 +14,7 @@ const routes: Routes = [
 
   {
     path: 'transactions',
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -32,7 +32,12 @@ const routes: Routes = [
         component: TransactionDetailComponent
       },
     ]
+  },
+
+  {
+    path: 'login'
   }
+
 ];
 
 @NgModule({

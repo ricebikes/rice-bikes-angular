@@ -7,10 +7,10 @@
              #searchBox
              id="search-box"
              (keyup)="search(searchBox.value)">
-      <div class="list-group" style="position: absolute; z-index: 1;">
+      <div *ngIf="customerResults" class="list-group search-dropdown" style="position: absolute; z-index: 1;">
         <a class="list-group-item list-group-item-action"
            *ngFor="let customer of customerResults | async"
-           (click)="setCustomer(customer)">
+           (click)="setCustomer(customer)"  >
           {{customer.email}} - {{customer.first_name}} {{customer.last_name}}
         </a>
       </div>
