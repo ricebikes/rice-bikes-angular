@@ -16,6 +16,7 @@ import { AddItemComponent } from './components/add-item/add-item.component';
 import { SearchTransactionComponent } from './components/search-transaction/search-transaction.component';
 import { ActiveTransactionsComponent } from './components/active-transactions/active-transactions.component';
 import { CompletedTransactionsComponent } from './components/completed-transactions/completed-transactions.component';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { CompletedTransactionsComponent } from './components/completed-transacti
     AddItemComponent,
     SearchTransactionComponent,
     ActiveTransactionsComponent,
-    CompletedTransactionsComponent
+    CompletedTransactionsComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

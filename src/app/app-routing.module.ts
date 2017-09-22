@@ -4,6 +4,7 @@ import { TransactionsComponent } from "./components/transactions/transactions.co
 import { TransactionDetailComponent } from "./components/transaction-detail/transaction-detail.component";
 import { NewTransactionComponent } from "./components/new-transaction/new-transaction.component";
 import { AuthGuard } from "./guards/auth.guard";
+import { LoginComponent } from "./components/login/login.component";
 
 const routes: Routes = [
   {
@@ -35,7 +36,8 @@ const routes: Routes = [
   },
 
   {
-    path: 'login'
+    path: 'login',
+    component: LoginComponent
   }
 
 ];
