@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpModule } from "@angular/http";
-import { ButtonBarComponent } from './components/button-bar/button-bar.component';
 import { TransactionDetailComponent } from './components/transaction-detail/transaction-detail.component';
 import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -25,7 +24,6 @@ import { NavbarComponent } from './components/navbar/navbar.component';
   declarations: [
     AppComponent,
     TransactionsComponent,
-    ButtonBarComponent,
     TransactionDetailComponent,
     NewTransactionComponent,
     AddRepairComponent,

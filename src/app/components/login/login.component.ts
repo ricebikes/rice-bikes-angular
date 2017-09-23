@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   user: any = {username: '', password: ''};
   loginForm: FormGroup;
   returnUrl: string;
+  error: boolean = false;
 
   constructor(private authService: AuthenticationService, private router: Router, private route: ActivatedRoute) { }
 
@@ -32,6 +33,7 @@ export class LoginComponent implements OnInit {
 
   private login(): void {
     this.authService.login(this.loginForm.value['username'], this.loginForm.value['password'])
+      .catch(err => this.error = true)
       .then(res => this.router.navigate([this.returnUrl]));
   }
 }

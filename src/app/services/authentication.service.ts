@@ -41,5 +41,7 @@ export class AuthenticationService implements OnInit {
       this.loggedIn.next(false);
       return resolve("Logged out");
     });
+
   }
+
 }

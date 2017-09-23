@@ -4,11 +4,11 @@
     <div class="col-md-4">
       <form [formGroup]="loginForm">
         <div class="input-group input-group-lg">
-          <input type="text" class="form-control" formControlName="username" placeholder="Username">
+          <input type="text" [ngClass]="{'is_invalid': error}" class="form-control" formControlName="username" placeholder="Username">
         </div>
         <br>
         <div class="input-group input-group-lg">
-          <input type="password" class="form-control" formControlName="password" placeholder="Password">
+          <input type="password" [ngClass]="{'is_invalid': error}" class="form-control" formControlName="password" placeholder="Password">
         </div>
         <br>
         <button [disabled]="!loginForm.valid" (click)="login()" class="btn btn-outline-primary btn-block btn-lg">Login</button>
