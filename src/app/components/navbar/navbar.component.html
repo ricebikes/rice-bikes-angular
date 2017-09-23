@@ -8,8 +8,10 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto"></ul>
       <app-search-transaction></app-search-transaction>
+      <ul class="navbar-nav mr-auto"></ul>
+      <button *ngIf="!(loggedIn | async)" [routerLink]="['/login']" class="btn btn-outline-secondary">Login</button>
+      <button *ngIf="loggedIn | async" (click)="logout()" class="btn btn-outline-secondary">Logout</button>
     </div>
   </div>
 </nav>

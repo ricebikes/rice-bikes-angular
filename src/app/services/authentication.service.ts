@@ -9,6 +9,8 @@ export class AuthenticationService implements OnInit {
 
   private loggedIn: Subject<boolean> = new Subject<boolean>();
 
+  constructor(private http: Http) {}
+
   ngOnInit() {
     if (localStorage.getItem('currentUser')) {
       this.loggedIn.next(true);
@@ -20,8 +22,6 @@ export class AuthenticationService implements OnInit {
   get isLoggedIn() {
     return this.loggedIn.asObservable();
   }
-
-  constructor(private http: Http) {}
 
   public login(username: string, password: string): Promise<any> {
     return this.http.post(this.authUrl, {username: username, password: password})
@@ -35,9 +35,11 @@ export class AuthenticationService implements OnInit {
       })
   }
 
-  public logout(): void {
-    localStorage.removeItem('currentUser');
-    this.loggedIn.next(false);
+  public logout(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      localStorage.removeItem('currentUser');
+      this.loggedIn.next(false);
+      return resolve("Logged out");
+    });
   }
-
 }
