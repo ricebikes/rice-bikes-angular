@@ -11,7 +11,7 @@
           <input type="password" class="form-control" formControlName="password" placeholder="Password">
         </div>
         <br>
-        <button [disabled]="!loginForm.valid" class="btn btn-outline-primary btn-block btn-lg">Login</button>
+        <button [disabled]="!loginForm.valid" (click)="login()" class="btn btn-outline-primary btn-block btn-lg">Login</button>
       </form>
     </div>
     <div class="col-md-4"></div>

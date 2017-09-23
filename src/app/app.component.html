@@ -1,25 +1,14 @@
 <div class="wrapper">
   <div class="body">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <img src="/assets/img/rice-bikes_white.png" width="80" height="80" class="d-inline-block align-top" alt="">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto"></ul>
-          <app-search-transaction></app-search-transaction>
-        </div>
-      </div>
-    </nav>
+    <app-navbar></app-navbar>
 
     <app-button-bar></app-button-bar>
 
     <router-outlet></router-outlet>
+
   </div>
+
   <div class="footer">
     <div class="jumbotron jumbotron-fluid" style="margin-top: 60px; margin-bottom: 0px;">
       <div class="container">

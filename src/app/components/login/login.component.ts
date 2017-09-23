@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Validators, FormControl, FormGroup} from "@angular/forms";
 import {AuthenticationService} from "../../services/authentication.service";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -10,12 +10,14 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent implements OnInit {
 
-  user: any = {};
+  user: any = {username: '', password: ''};
   loginForm: FormGroup;
+  returnUrl: string;
 
-  constructor(private authService: AuthenticationService, private router: Router) { }
+  constructor(private authService: AuthenticationService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.authService.logout();
     this.loginForm = new FormGroup({
       username: new FormControl(this.user.username, [
         Validators.required
@@ -24,13 +26,12 @@ export class LoginComponent implements OnInit {
         Validators.required
       ])
     });
+
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   private login(): void {
-    this.authService.login(this.user.username, this.user.password)
-      .then(res => this.router.navigate(['/transactions']));
+    this.authService.login(this.loginForm.value['username'], this.loginForm.value['password'])
+      .then(res => this.router.navigate([this.returnUrl]));
   }
-
-
-
 }

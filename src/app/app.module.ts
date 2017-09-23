@@ -17,6 +17,9 @@ import { SearchTransactionComponent } from './components/search-transaction/sear
 import { ActiveTransactionsComponent } from './components/active-transactions/active-transactions.component';
 import { CompletedTransactionsComponent } from './components/completed-transactions/completed-transactions.component';
 import { LoginComponent } from './components/login/login.component';
+import {AuthenticationService} from "./services/authentication.service";
+import {AuthGuard} from "./guards/auth.guard";
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,8 @@ import { LoginComponent } from './components/login/login.component';
     SearchTransactionComponent,
     ActiveTransactionsComponent,
     CompletedTransactionsComponent,
-    LoginComponent
+    LoginComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +45,9 @@ import { LoginComponent } from './components/login/login.component';
   ],
   providers: [
     TransactionService,
-    SearchService
+    SearchService,
+    AuthenticationService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
