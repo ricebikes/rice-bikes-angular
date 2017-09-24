@@ -69,4 +69,8 @@ export class TransactionDetailComponent implements OnInit {
       this.router.navigate(['transactions/']);
     });
   }
+
+  deleteRepair(repair_id: string): void {
+    this.transactionService.deleteRepairFromTransaction(this.transaction._id, repair_id);
+  }
 }

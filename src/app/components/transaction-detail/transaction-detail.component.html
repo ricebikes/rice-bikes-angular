@@ -81,14 +81,14 @@
   </div>
 </div>
 
-<div class="container" style="min-height: 300px">
+<div class="container" style="min-height: 500px">
   <div class="row">
     <div class="col-md-4">
       <app-add-repair [transaction]="transaction"></app-add-repair>
       <div class="list-group" style="margin-top: 15px;">
         <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
           <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-          <button class="float-right btn btn-outline-danger"><i class="fa fa-times"></i></button>
+          <button (click)="deleteRepair(repair.repair._id)" class="float-right btn btn-outline-danger"><i class="fa fa-times"></i></button>
           <button style="margin: auto 5px" class="float-right btn btn-outline-primary"><i class="fa fa-check"></i> Finish</button>
         </a>
       </div>
@@ -98,11 +98,12 @@
       <div class="list-group" style="margin-top: 15px;">
         <a *ngFor="let item of transaction?.items" class="list-group-item">
           <strong>${{item.price}}</strong> {{item.name}}
+          <button class="float-right btn btn-outline-danger"><i class="fa fa-times"></i></button>
         </a>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card" style="height: 250px">
+      <div class="card" style="min-height: 300px">
         <div class="card-body">
           <h4 class="card-title">
             Subtotal
@@ -116,6 +117,6 @@
   </div>
 </div>
 
-<div class="container" style="padding-top: 15px">
-    <button class="btn btn-lg btn-block btn-outline-secondary">Complete</button>
+<div *ngIf="transaction.transaction_type != 'merch'" class="container" style="padding-top: 15px">
+    <button class="btn btn-lg btn-block btn-outline-success">Complete</button>
 </div>
