@@ -1,6 +1,10 @@
 export class Repair {
-  _id: string;
-  price: number;
-  name: string;
-  description: string;
+  repair: {
+    _id: string;
+    price: number;
+    name: string;
+    description: string;
+  };
+  complete: boolean;
 }
+

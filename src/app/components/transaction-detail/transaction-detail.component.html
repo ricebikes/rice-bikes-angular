@@ -87,7 +87,9 @@
       <app-add-repair [transaction]="transaction"></app-add-repair>
       <div class="list-group" style="margin-top: 15px;">
         <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
-          <strong>${{repair.price}}</strong> {{repair.name}}
+          <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
+          <button class="float-right btn btn-outline-danger"><i class="fa fa-times"></i></button>
+          <button style="margin: auto 5px" class="float-right btn btn-outline-primary"><i class="fa fa-check"></i> Finish</button>
         </a>
       </div>
     </div>
