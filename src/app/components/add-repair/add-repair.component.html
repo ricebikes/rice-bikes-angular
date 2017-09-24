@@ -1,5 +1,5 @@
 <input [(ngModel)]="searchFieldValue" type="text" class="form-control" placeholder="Add repairs..." #searchBox (keyup)="search(searchBox.value)">
-<div class="list-group" style="position: absolute; z-index: 1;">
+<div *ngIf="repairResults" class="list-group search-dropdown" style="position: absolute; z-index: 1;">
   <a class="list-group-item list-group-item-action"
      *ngFor="let repair of repairResults | async"
      (click)="addRepair(repair)">

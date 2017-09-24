@@ -8,7 +8,7 @@ import {TransactionService} from "../../services/transaction.service";
 @Component({
   selector: 'app-add-repair',
   templateUrl: 'add-repair.component.html',
-  styleUrls: ['add-repair.component.css']
+  styleUrls: ['add-repair.component.css', '../../app.component.css']
 })
 export class AddRepairComponent implements OnInit {
   @Input() transaction: Transaction;
@@ -26,13 +26,13 @@ export class AddRepairComponent implements OnInit {
     this.repairResults = this.searchTerms
       .debounceTime(300)
       .distinctUntilChanged()
-      .switchMap(term => term
-        ? this.searchService.repairSearch(term)
-        : Observable.of<Repair[]>([]))
+      .switchMap(term => {
+        return term ? this.searchService.repairSearch(term) : Observable.of<Repair[]>([]);
+      })
       .catch(err => {
         console.log(err);
         return Observable.of<Repair[]>([]);
-      })
+      });
   }
 
   search(term: string): void {

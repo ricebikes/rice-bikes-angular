@@ -8,7 +8,7 @@ import {TransactionService} from "../../services/transaction.service";
 @Component({
   selector: 'app-add-item',
   templateUrl: 'add-item.component.html',
-  styleUrls: ['add-item.component.css']
+  styleUrls: ['add-item.component.css', '../../app.component.css']
 })
 export class AddItemComponent implements OnInit {
   @Input() transaction: Transaction;

@@ -60,7 +60,7 @@
     <hr class="my-4">
     <p class="lead">Bikes</p>
     <div class="row">
-      <div *ngFor="let bike of transaction.bikes" class="col-sm-4">
+      <div *ngFor="let bike of transaction?.bikes" class="col-sm-4">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{bike?.make}} {{bike?.model}}

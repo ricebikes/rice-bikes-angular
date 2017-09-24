@@ -9,8 +9,7 @@ import {FormGroup, FormControl, Validators} from "@angular/forms";
 @Component({
   selector: 'app-new-transaction',
   templateUrl: './new-transaction.component.html',
-  styleUrls: ['./new-transaction.component.css'],
-  providers: [SearchService]
+  styleUrls: ['./new-transaction.component.css', '../../app.component.css']
 })
 export class NewTransactionComponent implements OnInit {
 
