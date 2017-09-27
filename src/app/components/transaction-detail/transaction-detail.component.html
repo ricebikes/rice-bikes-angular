@@ -88,8 +88,15 @@
       <div class="list-group" style="margin-top: 15px;">
         <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
           <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-          <button (click)="deleteRepair(repair.repair._id)" class="float-right btn btn-outline-danger"><i class="fa fa-times"></i></button>
-          <button style="margin: auto 5px" class="float-right btn btn-outline-primary"><i class="fa fa-check"></i> Finish</button>
+          <button (click)="deleteRepair(repair.repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+          <button (click)="completeRepair(repair.repair._id)"
+                  style="margin: auto 5px"
+                  [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-outline-warning': repair.completed}"
+                  class="float-right btn btn-sm btn-outline-primary">
+            <i *ngIf="!repair.completed" class="fa fa-check"></i>
+            <i *ngIf="repair.completed" class="fa fa-times"></i>
+            {{repair.completed ? 'Reopen' : 'Complete!'}}
+          </button>
         </a>
       </div>
     </div>
@@ -98,7 +105,7 @@
       <div class="list-group" style="margin-top: 15px;">
         <a *ngFor="let item of transaction?.items" class="list-group-item">
           <strong>${{item.price}}</strong> {{item.name}}
-          <button class="float-right btn btn-outline-danger"><i class="fa fa-times"></i></button>
+          <button class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
         </a>
       </div>
     </div>
@@ -118,5 +125,5 @@
 </div>
 
 <div *ngIf="transaction.transaction_type != 'merch'" class="container" style="padding-top: 15px">
-    <button class="btn btn-lg btn-block btn-outline-success">Complete</button>
+    <button [disabled]="!allRepairsComplete" class="btn btn-lg btn-block btn-outline-success">Complete</button>
 </div>

@@ -5,6 +5,6 @@ export class Repair {
     name: string;
     description: string;
   };
-  complete: boolean;
+  completed: boolean;
 }
 

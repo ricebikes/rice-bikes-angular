@@ -4,6 +4,7 @@ import { Transaction } from "../../models/transaction";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {Bike} from "../../models/bike";
+import {Repair} from "../../models/repair";
 
 @Component({
   selector: 'app-transaction-detail',
@@ -14,8 +15,10 @@ import {Bike} from "../../models/bike";
 export class TransactionDetailComponent implements OnInit {
 
   transaction: Transaction;
-  loading: boolean = true;
   bikeForm: FormGroup;
+
+  loading: boolean = true;
+  completeButtonText: string = "Complete";
 
   constructor(
     private transactionService: TransactionService,
@@ -70,7 +73,31 @@ export class TransactionDetailComponent implements OnInit {
     });
   }
 
+  completeRepair(repair_id: string): void {
+    let repairIdx = this.transaction.repairs.findIndex(rep => rep.repair._id === repair_id);
+    this.transaction.repairs[repairIdx].completed = !this.transaction.repairs[repairIdx].completed;
+    this.updateTransaction();
+  }
+
   deleteRepair(repair_id: string): void {
     this.transactionService.deleteRepairFromTransaction(this.transaction._id, repair_id);
+  }
+
+  deleteItem(item_id: string): void {
+    this.transactionService.deleteItemFromTransaction(this.transaction._id, item_id);
+  }
+
+  get allRepairsComplete(): boolean {
+    for (let repair of this.transaction.repairs) {
+      if (!repair.completed) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  completeTransaction(): void {
+    this.transaction.completed = true;
+    this.updateTransaction();
   }
 }
