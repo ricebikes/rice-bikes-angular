@@ -16,8 +16,9 @@
 </nav>
 
 
-<div class="container" style="margin-top: 15px;">
-  <button *ngIf="loggedIn | async" class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+
+<div *ngIf="loggedIn | async" class="container mt-3 mb-3">
+  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
     New transaction
   </button>
   <div class="dropdown-menu">

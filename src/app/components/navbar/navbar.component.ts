@@ -12,11 +12,13 @@ export class NavbarComponent implements OnInit {
 
   loggedIn: Observable<boolean>;
 
-  constructor(private auth: AuthenticationService, private router: Router, private route: ActivatedRoute) {
-    this.loggedIn = this.auth.isLoggedIn;
+  constructor(private auth: AuthenticationService,
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.loggedIn = this.auth.isLoggedIn;
   }
 
   logout() {

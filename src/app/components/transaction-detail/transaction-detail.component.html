@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<div class="jumbotron jumbotron-fluid" style="margin-top: 15px;">
+<div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h3 class="display-5">
       <strong>{{transaction?._id}}: </strong>{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}
@@ -57,27 +57,23 @@
     </p>
     <button class="btn btn-secondary btn-sm">Edit description</button>
     <p class="lead">{{transaction?.description}}</p>
-    <hr class="my-4">
-    <p class="lead">Bikes</p>
-    <div class="row">
-      <div *ngFor="let bike of transaction?.bikes" class="col-sm-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{{bike?.make}} {{bike?.model}}
-              <button (click)="deleteBike(bike)" type="button" class="close float-right" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </h5>
-            <p class="card-text">{{bike.description}}</p>
-          </div>
-        </div>
+  </div>
+</div>
+
+<div class="container mb-4">
+  <button type="button" class="btn btn-outline-secondary mb-3"
+          data-toggle="modal" data-target="#bikeAddModal">Add bike
+  </button>
+
+
+  <div class="list-group">
+    <a *ngFor="let bike of transaction?.bikes" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{bike.make}} {{bike.model}}</h5>
+        <small class="text-muted">3 days ago</small>
       </div>
-      <div class="col-sm-4">
-        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#bikeAddModal">
-          +
-        </button>
-      </div>
-    </div>
+      <p class="mb-1">{{bike.description}}</p>
+    </a>
   </div>
 </div>
 
@@ -88,8 +84,8 @@
       <div class="list-group" style="margin-top: 15px;">
         <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
           <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-          <button (click)="deleteRepair(repair.repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-          <button (click)="completeRepair(repair.repair._id)"
+          <button (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+          <button (click)="completeRepair(repair._id)"
                   style="margin: auto 5px"
                   [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-outline-warning': repair.completed}"
                   class="float-right btn btn-sm btn-outline-primary">
@@ -124,6 +120,6 @@
   </div>
 </div>
 
-<div *ngIf="transaction.transaction_type != 'merch'" class="container" style="padding-top: 15px">
+<div *ngIf="transaction?.transaction_type != 'merch'" class="container" style="padding-top: 15px">
     <button [disabled]="!allRepairsComplete" class="btn btn-lg btn-block btn-outline-success">Complete</button>
 </div>

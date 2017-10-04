@@ -19,6 +19,8 @@ import { LoginComponent } from './components/login/login.component';
 import {AuthenticationService} from "./services/authentication.service";
 import {AuthGuard} from "./guards/auth.guard";
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { AlertComponent } from './components/alert/alert.component';
+import {AlertService} from "./services/alert.service";
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     ActiveTransactionsComponent,
     CompletedTransactionsComponent,
     LoginComponent,
-    NavbarComponent
+    NavbarComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +48,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     TransactionService,
     SearchService,
     AuthenticationService,
-    AuthGuard
+    AuthGuard,
+    AlertService
   ],
   bootstrap: [AppComponent]
 })

@@ -25,7 +25,7 @@ export class TransactionsComponent implements OnInit {
         this.transactions = transactions;
         this.loading = false;
         this.currentTab = 'all';
-      })
+      });
   }
 
   getActiveTransactions(): void {

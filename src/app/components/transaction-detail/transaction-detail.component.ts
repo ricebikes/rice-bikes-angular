@@ -74,7 +74,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   completeRepair(repair_id: string): void {
-    let repairIdx = this.transaction.repairs.findIndex(rep => rep.repair._id === repair_id);
+    let repairIdx = this.transaction.repairs.findIndex(rep => rep._id === repair_id);
     this.transaction.repairs[repairIdx].completed = !this.transaction.repairs[repairIdx].completed;
     this.updateTransaction();
   }

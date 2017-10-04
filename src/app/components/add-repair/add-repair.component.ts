@@ -24,7 +24,7 @@ export class AddRepairComponent implements OnInit {
 
   ngOnInit() {
     this.repairResults = this.searchTerms
-      .debounceTime(300)
+      .debounceTime(100)
       .distinctUntilChanged()
       .switchMap(term => {
         return term ? this.searchService.repairSearch(term) : Observable.of<Repair[]>([]);

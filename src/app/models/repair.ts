@@ -6,5 +6,6 @@ export class Repair {
     description: string;
   };
   completed: boolean;
+  _id: string;
 }
 
