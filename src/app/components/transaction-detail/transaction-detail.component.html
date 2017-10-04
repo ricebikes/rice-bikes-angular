@@ -67,7 +67,7 @@
 
 
   <div class="list-group">
-    <a *ngFor="let bike of transaction?.bikes" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+    <a *ngFor="let bike of transaction?.bikes" class="list-group-item list-group-item-action flex-column align-items-start">
       <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1">{{bike.make}} {{bike.model}}</h5>
         <small class="text-muted">3 days ago</small>
@@ -101,17 +101,22 @@
       <div class="list-group" style="margin-top: 15px;">
         <a *ngFor="let item of transaction?.items" class="list-group-item">
           <strong>${{item.price}}</strong> {{item.name}}
-          <button class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+          <button (click)="deleteItem(item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
         </a>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="card" style="min-height: 300px">
+      <div class="card" style="height: 500px">
         <div class="card-body">
           <h4 class="card-title">
             Subtotal
           </h4>
         </div>
+        <ul class="list-group list-group-flush">
+          <li *ngFor="let repair of transaction?.repairs" class="list-group-item">{{repair.repair.name}}</li>
+          <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.name}}</li>
+
+        </ul>
         <div class="card-footer">
           <button class="btn btn-outline-success">Checkout!</button>
         </div>
@@ -120,6 +125,14 @@
   </div>
 </div>
 
-<div *ngIf="transaction?.transaction_type != 'merch'" class="container" style="padding-top: 15px">
-    <button [disabled]="!allRepairsComplete" class="btn btn-lg btn-block btn-outline-success">Complete</button>
+<div *ngIf="transaction?.transaction_type != 'merch'" class="container pt-5">
+  <div class="btn-group">
+    <button [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+      Complete
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete and send email</a>
+      <a class="dropdown-item" href="#"><span class="fa fa-envelope-o"></span> Complete without sending</a>
+    </div>
+  </div>
 </div>
