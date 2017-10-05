@@ -22,9 +22,23 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" (click)="addBike()" [disabled]="!bikeForm.valid">Add</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addBike()" [disabled]="!bikeForm.valid">Add</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="incompleteModal" tabindex="-1">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        There transaction is incomplete! Are you sure you want to check out?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Go back</button>
+        <button type="button" class="btn btn-success">Checkout</button>
+      </div>
     </div>
   </div>
 </div>
@@ -54,6 +68,7 @@
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
       <button (click)="deleteTransaction()" class="btn btn-outline-danger float-right">Delete</button>
+      <button class="btn btn-outline-secondary float-right">Email customer</button>
     </p>
     <button class="btn btn-secondary btn-sm">Edit description</button>
     <p class="lead">{{transaction?.description}}</p>
@@ -61,78 +76,98 @@
 </div>
 
 <div class="container mb-4">
-  <button type="button" class="btn btn-outline-secondary mb-3"
-          data-toggle="modal" data-target="#bikeAddModal">Add bike
-  </button>
+  <div class="card">
+    <div class="card-body">
+      <button type="button" class="btn btn-outline-secondary mb-3"
+              data-toggle="modal" data-target="#bikeAddModal">Add bike
+      </button>
 
-
-  <div class="list-group">
-    <a *ngFor="let bike of transaction?.bikes" class="list-group-item list-group-item-action flex-column align-items-start">
-      <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">{{bike.make}} {{bike.model}}</h5>
-        <small class="text-muted">3 days ago</small>
+      <div class="list-group">
+        <a *ngFor="let bike of transaction?.bikes" class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{bike.make}} {{bike.model}}</h5>
+            <small class="text-muted">3 days ago</small>
+          </div>
+          <p class="mb-1">{{bike.description}}</p>
+        </a>
       </div>
-      <p class="mb-1">{{bike.description}}</p>
-    </a>
+    </div>
   </div>
 </div>
 
 <div class="container" style="min-height: 500px">
-  <div class="row">
-    <div class="col-md-4">
-      <app-add-repair [transaction]="transaction"></app-add-repair>
-      <div class="list-group" style="margin-top: 15px;">
-        <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
-          <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-          <button (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-          <button (click)="completeRepair(repair._id)"
-                  style="margin: auto 5px"
-                  [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-outline-warning': repair.completed}"
-                  class="float-right btn btn-sm btn-outline-primary">
-            <i *ngIf="!repair.completed" class="fa fa-check"></i>
-            <i *ngIf="repair.completed" class="fa fa-times"></i>
-            {{repair.completed ? 'Reopen' : 'Complete!'}}
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <app-add-repair [transaction]="transaction"></app-add-repair>
+          <div class="list-group my-2">
+            <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
+              <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
+              <button (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+              <button (click)="completeRepair(repair._id)"
+                      style="margin: auto 5px"
+                      [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-outline-warning': repair.completed}"
+                      class="float-right btn btn-sm btn-outline-primary">
+                <i *ngIf="!repair.completed" class="fa fa-check"></i>
+                <i *ngIf="repair.completed" class="fa fa-refresh"></i>
+                <!--{{repair.completed ? 'Reopen' : 'Complete!'}}-->
+              </button>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <app-add-item [transaction]="transaction"></app-add-item>
+          <div class="list-group" style="margin-top: 15px;">
+            <a *ngFor="let item of transaction?.items" class="list-group-item">
+              <strong>${{item.price}}</strong> {{item.name}}
+              <button (click)="deleteItem(item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+            </a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card" style="height: 500px">
+            <div class="card-body">
+              <h4 class="card-title">
+                Subtotal
+              </h4>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li *ngFor="let repair of transaction?.repairs" class="list-group-item">{{repair.repair.name}}
+                <span class="float-right">{{repair.repair.price}}</span>
+              </li>
+              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.name}}
+                <span class="float-right">{{item.price}}</span>
+              </li>
+            </ul>
+            <div class="card-footer">
+              <button class="btn btn-outline-success" data-toggle="modal" data-target="#incompleteModal">Checkout!</button>
+              <h4 class="float-right">{{getTotal()}}</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="transaction?.transaction_type != 'merch'" class="container">
+        <div class="btn-group">
+          <button [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+            Complete
           </button>
-        </a>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <app-add-item [transaction]="transaction"></app-add-item>
-      <div class="list-group" style="margin-top: 15px;">
-        <a *ngFor="let item of transaction?.items" class="list-group-item">
-          <strong>${{item.price}}</strong> {{item.name}}
-          <button (click)="deleteItem(item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-        </a>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card" style="height: 500px">
-        <div class="card-body">
-          <h4 class="card-title">
-            Subtotal
-          </h4>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li *ngFor="let repair of transaction?.repairs" class="list-group-item">{{repair.repair.name}}</li>
-          <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.name}}</li>
-
-        </ul>
-        <div class="card-footer">
-          <button class="btn btn-outline-success">Checkout!</button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete and send email</a>
+            <a class="dropdown-item" href="#"><span class="fa fa-envelope-o"></span> Complete without sending</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
 
-<div *ngIf="transaction?.transaction_type != 'merch'" class="container pt-5">
-  <div class="btn-group">
-    <button [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
-      Complete
-    </button>
-    <div class="dropdown-menu">
-      <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete and send email</a>
-      <a class="dropdown-item" href="#"><span class="fa fa-envelope-o"></span> Complete without sending</a>
-    </div>
-  </div>
-</div>
+
+
+

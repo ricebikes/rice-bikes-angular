@@ -100,4 +100,11 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.completed = true;
     this.updateTransaction();
   }
+
+  getTotal(): number {
+    var total = 0;
+    this.transaction.items.forEach(item => total += item.price);
+    this.transaction.repairs.forEach(rep => total += rep.repair.price);
+    return total;
+  }
 }
