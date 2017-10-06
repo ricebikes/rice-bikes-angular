@@ -33,7 +33,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        There transaction is incomplete! Are you sure you want to check out?
+        The transaction is incomplete! Are you sure you want to check out?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Go back</button>
@@ -68,10 +68,17 @@
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
       <button (click)="deleteTransaction()" class="btn btn-outline-danger float-right">Delete</button>
-      <button class="btn btn-outline-secondary float-right">Email customer</button>
     </p>
-    <button class="btn btn-secondary btn-sm">Edit description</button>
-    <p class="lead">{{transaction?.description}}</p>
+
+    <p *ngIf="!editingTransaction" class="lead">{{transaction?.description}}</p>
+    <button *ngIf="!editingTransaction" (click)="editingTransaction = true" class="btn btn-secondary btn-sm">
+      <span class="fa fa-pencil"></span>
+    </button>
+
+    <textarea class="form-control" [(ngModel)]="transaction.description" style="width: 100%; min-height: 100px;" *ngIf="editingTransaction"></textarea>
+    <button *ngIf="editingTransaction" class="btn btn-secondary btn-sm mt-3" (click)="editingTransaction = false">
+      <span class="fa fa-times"></span>
+    </button>
   </div>
 </div>
 
@@ -86,7 +93,6 @@
         <a *ngFor="let bike of transaction?.bikes" class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">{{bike.make}} {{bike.model}}</h5>
-            <small class="text-muted">3 days ago</small>
           </div>
           <p class="mb-1">{{bike.description}}</p>
         </a>
@@ -105,7 +111,7 @@
             <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
               <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
               <button (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-              <button (click)="completeRepair(repair._id)"
+              <button title="Complete or reopen a repair" (click)="completeRepair(repair._id)"
                       style="margin: auto 5px"
                       [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-outline-warning': repair.completed}"
                       class="float-right btn btn-sm btn-outline-primary">
@@ -152,20 +158,19 @@
 
   <div class="card">
     <div class="card-body">
-      <div *ngIf="transaction?.transaction_type != 'merch'" class="container">
-        <div class="btn-group">
-          <button [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
-            Complete
-          </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete and send email</a>
-            <a class="dropdown-item" href="#"><span class="fa fa-envelope-o"></span> Complete without sending</a>
-          </div>
-        </div>
+      <button *ngIf="transaction?.transaction_type != 'merch'" [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+        <span class="fa fa-check"></span>
+        Complete
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete and send email</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete with custom email</a>
+        <a class="dropdown-item" href="#"><span class="fa fa-envelope-o"></span> Complete without sending</a>
       </div>
+      <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
     </div>
   </div>
-
 </div>
 
 

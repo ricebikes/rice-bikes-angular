@@ -16,9 +16,9 @@ export class TransactionDetailComponent implements OnInit {
 
   transaction: Transaction;
   bikeForm: FormGroup;
+  editingTransaction: boolean = false;
 
   loading: boolean = true;
-  completeButtonText: string = "Complete";
 
   constructor(
     private transactionService: TransactionService,
@@ -106,5 +106,9 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.items.forEach(item => total += item.price);
     this.transaction.repairs.forEach(rep => total += rep.repair.price);
     return total;
+  }
+
+  emailCustomer(): void {
+    window.open(`mailto:${this.transaction.customer.email}?Subject=Your%20bike`, "Email customer");
   }
 }
