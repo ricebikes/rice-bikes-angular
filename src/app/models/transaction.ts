@@ -8,6 +8,8 @@ export class Transaction {
   date_created: string;
   date_completed: string;
   completed: boolean;
+  is_paid: boolean;
+  total_cost: number;
   description: string;
   transaction_type: string;
   customer: Customer;

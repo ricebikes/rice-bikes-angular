@@ -54,10 +54,11 @@ export class TransactionService {
       .catch(err => this.handleError(err));
   }
 
-  getTransaction(id: string): void {
-    this.http.get(`${this.backendUrl}/${id}`, this.jwt())
-      .map(res => res.json() as Transaction)
-      .subscribe(transaction => this.transaction.next(transaction), err => this.handleError(err));
+  getTransaction(id: string): Promise<any> {
+    return this.http.get(`${this.backendUrl}/${id}`, this.jwt())
+      .toPromise()
+      .then(res => this.transaction.next(res.json() as Transaction))
+      .catch(err => this.handleError(err));
   }
 
   updateTransaction(transaction: Transaction): Promise<any> {

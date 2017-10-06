@@ -12,13 +12,14 @@ import {Repair} from "../../models/repair";
   styleUrls: ['transaction-detail.component.css'],
   providers: [TransactionService]
 })
-export class TransactionDetailComponent implements OnInit {
+export class TransactionDetailComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   bikeForm: FormGroup;
   editingTransaction: boolean = false;
 
   loading: boolean = true;
+  displayDescription: string;
 
   constructor(
     private transactionService: TransactionService,
@@ -39,11 +40,18 @@ export class TransactionDetailComponent implements OnInit {
       ])
     });
 
-    this.route.params.subscribe(params => this.transactionService.getTransaction(params['_id']));
-    this.transactionService.transaction.subscribe(transaction => {
-      this.transaction = transaction;
-      this.loading = false;
+    this.route.params.subscribe(params => {
+      this.transactionService.getTransaction(params['_id'])
+        .then(() => {
+          this.transactionService.transaction.subscribe(trans => this.transaction = trans);
+          this.loading = false;
+          this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+        })
     });
+  }
+
+  ngOnDestroy() {
+    this.transactionService.transaction.unsubscribe();
   }
 
   changeType(type: string): void {
@@ -110,5 +118,11 @@ export class TransactionDetailComponent implements OnInit {
 
   emailCustomer(): void {
     window.open(`mailto:${this.transaction.customer.email}?Subject=Your%20bike`, "Email customer");
+  }
+
+  updateDescription(): void {
+    this.editingTransaction = false;
+    this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+    this.updateTransaction()
   }
 }

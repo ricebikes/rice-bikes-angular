@@ -70,12 +70,15 @@
       <button (click)="deleteTransaction()" class="btn btn-outline-danger float-right">Delete</button>
     </p>
 
-    <p *ngIf="!editingTransaction" class="lead">{{transaction?.description}}</p>
+    <p *ngIf="!editingTransaction" class="lead" [innerHTML]="displayDescription"></p>
     <button *ngIf="!editingTransaction" (click)="editingTransaction = true" class="btn btn-secondary btn-sm">
       <span class="fa fa-pencil"></span>
     </button>
 
     <textarea class="form-control" [(ngModel)]="transaction.description" style="width: 100%; min-height: 100px;" *ngIf="editingTransaction"></textarea>
+    <button *ngIf="editingTransaction" class="btn btn-secondary btn-sm mt-3" (click)="updateDescription()">
+      <span class="fa fa-check"></span>
+    </button>
     <button *ngIf="editingTransaction" class="btn btn-secondary btn-sm mt-3" (click)="editingTransaction = false">
       <span class="fa fa-times"></span>
     </button>
