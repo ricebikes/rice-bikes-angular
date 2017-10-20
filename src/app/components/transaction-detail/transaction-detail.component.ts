@@ -104,9 +104,12 @@ export class TransactionDetailComponent implements OnInit, OnDestroy {
     return true;
   }
 
+
+
   completeTransaction(): void {
     this.transaction.completed = true;
     this.updateTransaction();
+
   }
 
   getTotal(): number {
