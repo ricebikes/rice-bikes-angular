@@ -21,6 +21,7 @@ import {AuthGuard} from "./guards/auth.guard";
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertComponent } from './components/alert/alert.component';
 import {AlertService} from "./services/alert.service";
+import { AuthComponent } from './components/auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {AlertService} from "./services/alert.service";
     CompletedTransactionsComponent,
     LoginComponent,
     NavbarComponent,
-    AlertComponent
+    AlertComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,

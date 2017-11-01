@@ -5,14 +5,15 @@ import {Customer} from "../models/customer";
 import {Repair} from "../models/repair";
 import {Item} from "../models/item";
 import {Transaction} from "../models/transaction";
+import {CONFIG} from "../config";
 
 @Injectable()
 export class SearchService {
 
-  private transactionUrl: string = 'http://localhost:3000/transactions/search';
-  private customerUrl: string = 'http://localhost:3000/customers/search';
-  private repairUrl: string = 'http://localhost:3000/repairs/search';
-  private itemUrl: string = 'http://localhost:3000/items/search';
+  private transactionUrl: string = `${CONFIG.api_url}/transactions/search`;
+  private customerUrl: string = `${CONFIG.api_url}/customers/search`;
+  private repairUrl: string = `${CONFIG.api_url}/repairs/search`;
+  private itemUrl: string = `${CONFIG.api_url}/items/search`;
 
   constructor(private http: Http) {}
 

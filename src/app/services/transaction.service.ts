@@ -7,11 +7,12 @@ import { Customer } from "../models/customer";
 import { Bike } from "../models/bike";
 import {Router} from "@angular/router";
 import {AlertService} from "./alert.service";
+import {CONFIG} from "../config";
 
 @Injectable()
 export class TransactionService {
 
-  private backendUrl: string = 'http://localhost:3000/transactions';
+  private backendUrl: string = `${CONFIG.api_url}/transactions`;
 
   public transaction: BehaviorSubject<Transaction>;
 
@@ -21,8 +22,8 @@ export class TransactionService {
 
   private jwt() {
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.token) {
-      let headers = new Headers({ 'x-access-token': currentUser.token });
+    if (currentUser && currentUser.user.token) {
+      let headers = new Headers({ 'x-access-token': currentUser.user.token });
       return new RequestOptions({ headers: headers });
     }
   }

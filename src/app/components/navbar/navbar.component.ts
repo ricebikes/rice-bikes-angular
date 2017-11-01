@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthenticationService} from "../../services/authentication.service";
 import {Observable} from "rxjs";
 import {Router, ActivatedRoute} from "@angular/router";
+import {CONFIG} from "../../config";
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +11,8 @@ import {Router, ActivatedRoute} from "@angular/router";
 })
 export class NavbarComponent implements OnInit {
 
-  loggedIn: Observable<boolean>;
+  private loggedIn: Observable<boolean>;
+  private authUrl: string = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
 
   constructor(private auth: AuthenticationService,
               private router: Router,

@@ -2,11 +2,10 @@ import {Injectable, OnInit} from '@angular/core';
 import { Http } from "@angular/http";
 import {Subject, BehaviorSubject} from "rxjs";
 import {AlertService} from "./alert.service";
+import {CONFIG} from "../config";
 
 @Injectable()
 export class AuthenticationService implements OnInit {
-
-  private authUrl: string = 'http://localhost:3000/users/authenticate';
 
   public loggedIn: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -20,6 +19,27 @@ export class AuthenticationService implements OnInit {
     }
   }
 
+  public login(x, y): Promise<any> {
+    return null;
+  }
+
+  public authenticate(ticket: String): Promise<any> {
+    return this.http.get(`${CONFIG.api_url}/auth?ticket=${ticket}`)
+      .toPromise()
+      .then(res => {
+        let result = res.json();
+        if (result && result.success) {
+          localStorage.setItem('currentUser', JSON.stringify(result));
+
+          this.loggedIn.next(true);
+
+        } else {
+          console.log("Authentication failed")
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
   get isLoggedIn() {
     if (localStorage.getItem('currentUser')) {
       this.loggedIn.next(true);
@@ -27,19 +47,6 @@ export class AuthenticationService implements OnInit {
       this.loggedIn.next(false);
     }
     return this.loggedIn.asObservable();
-  }
-
-  public login(username: string, password: string): Promise<any> {
-    return this.http.post(this.authUrl, {username: username, password: password})
-      .toPromise()
-      .then(res => {
-        let user = res.json();
-        if (user && user.token) {
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.loggedIn.next(true);
-        }
-      })
-      .catch(err => this.alertService.error("Incorrect username and/or password", false))
   }
 
   public logout(): Promise<any> {

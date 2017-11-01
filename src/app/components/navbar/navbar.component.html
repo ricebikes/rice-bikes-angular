@@ -11,6 +11,7 @@
       <app-search-transaction *ngIf="loggedIn | async"></app-search-transaction>
       <ul class="navbar-nav mr-auto"></ul>
       <button *ngIf="loggedIn | async" (click)="logout()" class="btn btn-outline-secondary">Logout</button>
+      <a *ngIf="!(loggedIn | async)" [attr.href]="authUrl" class="btn btn-outline-secondary">Login</a>
     </div>
   </div>
 </nav>
