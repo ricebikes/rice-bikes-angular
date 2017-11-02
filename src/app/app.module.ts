@@ -22,6 +22,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertComponent } from './components/alert/alert.component';
 import {AlertService} from "./services/alert.service";
 import { AuthComponent } from './components/auth/auth.component';
+import {TimeAgoPipe} from "time-ago-pipe";
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { AuthComponent } from './components/auth/auth.component';
     LoginComponent,
     NavbarComponent,
     AlertComponent,
-    AuthComponent
+    AuthComponent,
+    TimeAgoPipe
   ],
   imports: [
     BrowserModule,

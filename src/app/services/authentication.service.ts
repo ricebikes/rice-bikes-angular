@@ -8,6 +8,7 @@ import {CONFIG} from "../config";
 export class AuthenticationService implements OnInit {
 
   public loggedIn: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public admin: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private http: Http, private alertService: AlertService) {}
 
@@ -32,6 +33,7 @@ export class AuthenticationService implements OnInit {
           localStorage.setItem('currentUser', JSON.stringify(result));
 
           this.loggedIn.next(true);
+          this.admin.next(result.user.admin);
 
         } else {
           console.log("Authentication failed")
@@ -49,11 +51,22 @@ export class AuthenticationService implements OnInit {
     return this.loggedIn.asObservable();
   }
 
+  get isAdmin() {
+    let userData = JSON.parse(localStorage.getItem('currentUser'));
+    if (userData && userData.user.admin) {
+      this.admin.next(true);
+    } else {
+      this.admin.next(false);
+    }
+    return this.admin.asObservable();
+  }
+
   public logout(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.alertService.success("Bye bye!");
       localStorage.removeItem('currentUser');
       this.loggedIn.next(false);
+      this.admin.next(false);
       return resolve("Logged out");
     });
 

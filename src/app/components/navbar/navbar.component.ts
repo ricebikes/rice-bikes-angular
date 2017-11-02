@@ -12,6 +12,7 @@ import {CONFIG} from "../../config";
 export class NavbarComponent implements OnInit {
 
   private loggedIn: Observable<boolean>;
+  private isAdmin: Observable<boolean>;
   private authUrl: string = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
 
   constructor(private auth: AuthenticationService,
@@ -21,10 +22,11 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     this.loggedIn = this.auth.isLoggedIn;
+    this.isAdmin = this.auth.isAdmin;
   }
 
   logout() {
-    this.auth.logout().then(ret => this.router.navigate(['/login']));
+    this.auth.logout().then(ret => window.location.href="https://idp.rice.edu/idp/profile/cas/logout");
   }
 
 }

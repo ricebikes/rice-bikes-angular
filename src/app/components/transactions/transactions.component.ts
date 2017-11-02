@@ -28,6 +28,18 @@ export class TransactionsComponent implements OnInit {
       });
   }
 
+  getWaitingOnPickup(): void {
+    this.currentTab = 'pickup';
+  }
+
+  getWaitingOnPart(): void {
+    this.currentTab = 'part';
+  }
+
+  getPaid(): void {
+    this.currentTab = 'paid';
+  }
+
   getActiveTransactions(): void {
     this.transactionService.getActiveTransactions()
       .then(transactions => {

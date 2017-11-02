@@ -9,6 +9,7 @@ export class Transaction {
   date_completed: string;
   completed: boolean;
   is_paid: boolean;
+  waiting_part: boolean;
   total_cost: number;
   description: string;
   transaction_type: string;

@@ -1,10 +1,16 @@
 <div class="container">
-  <ul class="nav nav-tabs nav-fill justify-content-center" style="margin-top: 15px;">
+  <ul class="nav nav-pills nav-fill justify-content-center" style="margin-top: 15px;">
     <li class="nav-item">
       <a (click)="getActiveTransactions()" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
     </li>
     <li class="nav-item">
-      <a (click)="getPastTransactions()" [ngClass]="{'active': currentTab === 'completed'}" class="nav-link">Completed</a>
+      <a (click)="getWaitingOnPickup()" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
+    </li>
+    <li class="nav-item">
+      <a (click)="getWaitingOnPart()" [ngClass]="{'active': currentTab === 'part'}" class="nav-link">Waiting on part</a>
+    </li>
+    <li class="nav-item">
+      <a (click)="getPaid()" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
     </li>
     <li class="nav-item">
       <a (click)="getTransactions()" [ngClass]="{'active': currentTab === 'all'}" class="nav-link">All</a>
@@ -17,9 +23,9 @@
     <thead>
     <tr>
       <th>#</th>
-      <th>First name</th>
-      <th>Last name</th>
+      <th>Customer</th>
       <th>Bikes</th>
+      <th>Submitted</th>
     </tr>
     </thead>
     <tbody>
@@ -31,9 +37,9 @@
 'badge-secondary': transaction?.transaction_type == 'merch'
 }">{{transaction?.transaction_type}}</span>
       </th>
-      <td>{{transaction.customer.first_name}}</td>
-      <td>{{transaction.customer.last_name}}</td>
+      <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
       <td>{{getBikeList(transaction)}}</td>
+      <td>{{transaction.date_created | timeAgo }}</td>
     </tr>
     </tbody>
   </table>
