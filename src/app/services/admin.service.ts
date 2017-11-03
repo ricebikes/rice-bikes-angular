@@ -29,4 +29,10 @@ export class AdminService {
       .catch(err => console.log(err));
   }
 
+  deleteUser(user_id: String) {
+    return this.http.delete(`${CONFIG.api_url}/users/${user_id}`, this.jwt())
+      .toPromise()
+      .catch(err => console.log(err));
+  }
+
 }
