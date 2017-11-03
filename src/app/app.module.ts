@@ -23,6 +23,8 @@ import { AlertComponent } from './components/alert/alert.component';
 import {AlertService} from "./services/alert.service";
 import { AuthComponent } from './components/auth/auth.component';
 import {TimeAgoPipe} from "time-ago-pipe";
+import { AdminUsersComponent } from './components/admin-users/admin-users.component';
+import {AdminService} from "./services/admin.service";
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import {TimeAgoPipe} from "time-ago-pipe";
     NavbarComponent,
     AlertComponent,
     AuthComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    AdminUsersComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,8 @@ import {TimeAgoPipe} from "time-ago-pipe";
     SearchService,
     AuthenticationService,
     AuthGuard,
-    AlertService
+    AlertService,
+    AdminService
   ],
   bootstrap: [AppComponent]
 })

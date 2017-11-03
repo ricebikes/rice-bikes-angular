@@ -20,10 +20,6 @@ export class AuthenticationService implements OnInit {
     }
   }
 
-  public login(x, y): Promise<any> {
-    return null;
-  }
-
   public authenticate(ticket: String): Promise<any> {
     return this.http.get(`${CONFIG.api_url}/auth?ticket=${ticket}`)
       .toPromise()
