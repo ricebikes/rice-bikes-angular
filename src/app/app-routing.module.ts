@@ -6,6 +6,7 @@ import { NewTransactionComponent } from "./components/new-transaction/new-transa
 import { AuthGuard } from "./guards/auth.guard";
 import { LoginComponent } from "./components/login/login.component";
 import {AuthComponent} from "./components/auth/auth.component";
+import {AdminUsersComponent} from "./components/admin-users/admin-users.component";
 
 const routes: Routes = [
   {
@@ -44,6 +45,17 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+
+  {
+    path: 'admin',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'users',
+        component: AdminUsersComponent
+      }
+    ]
   }
 
 ];
