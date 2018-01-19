@@ -1,10 +1,10 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import { TransactionService } from "../../services/transaction.service";
-import { Transaction } from "../../models/transaction";
+import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import { TransactionService } from "../../../services/transaction.service";
+import { Transaction } from "../../../models/transaction";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormGroup, Validators, FormControl} from "@angular/forms";
-import {Bike} from "../../models/bike";
-import {Repair} from "../../models/repair";
+import {Bike} from "../../../models/bike";
+import {Repair} from "../../../models/repair";
 
 @Component({
   selector: 'app-transaction-detail',
@@ -13,6 +13,8 @@ import {Repair} from "../../models/repair";
   providers: [TransactionService]
 })
 export class TransactionDetailComponent implements OnInit, OnDestroy {
+
+  @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
 
   transaction: Transaction;
   bikeForm: FormGroup;
@@ -77,6 +79,7 @@ export class TransactionDetailComponent implements OnInit, OnDestroy {
 
   deleteTransaction(): void {
     this.transactionService.deleteTransaction(this.transaction._id).then(() => {
+      this.deleteTransactionModal.nativeElement.click();
       this.router.navigate(['transactions/']);
     });
   }
@@ -104,12 +107,9 @@ export class TransactionDetailComponent implements OnInit, OnDestroy {
     return true;
   }
 
-
-
   completeTransaction(): void {
     this.transaction.completed = true;
     this.updateTransaction();
-
   }
 
   getTotal(): number {

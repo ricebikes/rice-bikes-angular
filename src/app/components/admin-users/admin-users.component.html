@@ -17,9 +17,11 @@
   <ul class="list-group">
     <li *ngFor="let user of users" class="list-group-item">{{user.username}}
       <i *ngIf="user.admin" class="fa fa-lock"></i>
-      <button (click)="deleteUser(user)" type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <button (click)="deleteUser(user)" type="button" class="close">
         <span>&times;</span>
       </button>
     </li>
   </ul>
 </div>
+
+

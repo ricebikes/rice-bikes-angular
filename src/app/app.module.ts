@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpModule } from "@angular/http";
-import { TransactionDetailComponent } from './components/transaction-detail/transaction-detail.component';
+import { TransactionDetailComponent } from './components/transactions/transaction-detail/transaction-detail.component';
 import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SearchService} from "./services/search.service";
@@ -25,6 +25,7 @@ import { AuthComponent } from './components/auth/auth.component';
 import {TimeAgoPipe} from "time-ago-pipe";
 import { AdminUsersComponent } from './components/admin-users/admin-users.component';
 import {AdminService} from "./services/admin.service";
+import { CheckoutComponent } from './components/transactions/transaction-detail/checkout/checkout.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {AdminService} from "./services/admin.service";
     AlertComponent,
     AuthComponent,
     TimeAgoPipe,
-    AdminUsersComponent
+    AdminUsersComponent,
+    CheckoutComponent
   ],
   imports: [
     BrowserModule,

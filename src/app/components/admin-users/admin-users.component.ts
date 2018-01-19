@@ -18,7 +18,7 @@ export class AdminUsersComponent implements OnInit {
   ngOnInit() {
     this.userForm = this.fb.group({
       username: ['', Validators.required],
-      admin: false
+      admin: [false]
     });
     this.adminService.getUsers()
       .then(users => this.users = users);
