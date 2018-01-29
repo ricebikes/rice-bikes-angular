@@ -1,10 +1,9 @@
-import {Component, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import { TransactionService } from "../../../services/transaction.service";
 import { Transaction } from "../../../models/transaction";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {Bike} from "../../../models/bike";
-import {Repair} from "../../../models/repair";
 
 @Component({
   selector: 'app-transaction-detail',
@@ -12,7 +11,7 @@ import {Repair} from "../../../models/repair";
   styleUrls: ['transaction-detail.component.css'],
   providers: [TransactionService]
 })
-export class TransactionDetailComponent implements OnInit, OnDestroy {
+export class TransactionDetailComponent implements OnInit {
 
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
 
@@ -50,10 +49,6 @@ export class TransactionDetailComponent implements OnInit, OnDestroy {
           this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
         })
     });
-  }
-
-  ngOnDestroy() {
-    this.transactionService.transaction.unsubscribe();
   }
 
   changeType(type: string): void {
@@ -128,4 +123,6 @@ export class TransactionDetailComponent implements OnInit, OnDestroy {
     this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
     this.updateTransaction()
   }
+
+
 }

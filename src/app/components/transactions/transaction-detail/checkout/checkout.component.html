@@ -1,3 +1,28 @@
-<p>
-  checkout works!
-</p>
+<div class="container mb-4">
+  <div class="card mb-2" style="width: 75%; margin: 0 auto;">
+    <div class="card-body text-center">
+      <h1 style="font-size: 100px">${{ transaction.total_cost }}</h1>
+    </div>
+  </div>
+
+  <div class="card mb-2" style="width: 75%; margin: 0 auto;">
+    <div class="card-body">
+      <button class="btn btn-primary">Cash</button>
+      <button class="btn btn-primary">Check</button>
+      <button class="btn btn-secondary disabled">Card</button>
+    </div>
+  </div>
+
+  <div class="card mb-2" style="width: 75%; margin: 0 auto;">
+    <div class="card-body">
+      <label for="cashAmount">Enter amount tendered:</label>
+      <input id="cashAmount" placeholder="$" class="form-control form-control-lg">
+    </div>
+  </div>
+
+  <div class="card mb-2" style="width: 75%; margin: 0 auto;">
+    <div class="card-body">
+      <button class="btn btn-primary">Finish</button>
+    </div>
+  </div>
+</div>

@@ -44,6 +44,7 @@ export class TransactionsComponent implements OnInit {
     this.transactionService.getActiveTransactions()
       .then(transactions => {
         this.transactions = transactions;
+        this.loading = false;
         this.currentTab = 'active';
       })
   }

@@ -1,5 +1,5 @@
 <div class="container">
-  <ul class="nav nav-pills nav-fill justify-content-center" style="margin-top: 15px;">
+  <ul class="nav nav-tabs nav-fill justify-content-center" style="margin-top: 15px;">
     <li class="nav-item">
       <a (click)="getActiveTransactions()" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
     </li>
@@ -7,7 +7,7 @@
       <a (click)="getWaitingOnPickup()" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
-      <a (click)="getWaitingOnPart()" [ngClass]="{'active': currentTab === 'part'}" class="nav-link">Waiting on part</a>
+      <a class="nav-link" (click)="getWaitingOnPart()" [ngClass]="{'active': currentTab === 'part'}">Waiting on part</a>
     </li>
     <li class="nav-item">
       <a (click)="getPaid()" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
@@ -19,7 +19,7 @@
 </div>
 
 <div class="container" style="padding-top: 15px">
-  <table class="table table-hover">
+  <table *ngIf="!loading" class="table table-hover">
     <thead>
     <tr>
       <th>#</th>
@@ -36,6 +36,7 @@
 'badge-primary': transaction?.transaction_type == 'outpatient',
 'badge-secondary': transaction?.transaction_type == 'merch'
 }">{{transaction?.transaction_type}}</span>
+        <span *ngIf="transaction?.waiting_part" class="badge badge-danger">waiting on part</span>
       </th>
       <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
       <td>{{getBikeList(transaction)}}</td>

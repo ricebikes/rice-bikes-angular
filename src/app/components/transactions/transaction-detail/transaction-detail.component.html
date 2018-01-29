@@ -52,7 +52,10 @@
 
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h3 class="display-5">
+    <h1 *ngIf="loading">
+      ...
+    </h1>
+    <h3 *ngIf="!loading" class="display-5">
       <strong>{{transaction?._id}}: </strong>{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}
       <span class="dropdown">
         <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -118,7 +121,7 @@
         <div class="col-md-4">
           <app-add-repair [transaction]="transaction"></app-add-repair>
           <div class="list-group my-2">
-            <a *ngFor="let repair of transaction?.repairs" class="list-group-item">
+            <a *ngFor="let repair of transaction?.repairs" class="list-group-item" [ngClass]="{'list-group-item-secondary': repair.completed}">
               <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
               <button (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
               <button title="Complete or reopen a repair" (click)="completeRepair(repair._id)"
@@ -127,7 +130,6 @@
                       class="float-right btn btn-sm btn-outline-primary">
                 <i *ngIf="!repair.completed" class="fa fa-check"></i>
                 <i *ngIf="repair.completed" class="fa fa-refresh"></i>
-                <!--{{repair.completed ? 'Reopen' : 'Complete!'}}-->
               </button>
             </a>
           </div>
@@ -171,6 +173,10 @@
       <button *ngIf="transaction?.transaction_type != 'merch'" [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
         <span class="fa fa-check"></span>
         Complete
+      </button>
+      <button *ngIf="transaction?.transaction_type != 'merch'" class="btn btn-outline-warning btn-lg">
+        <i class="fa fa-wrench"></i>
+        Wait on part
       </button>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete and send email</a>

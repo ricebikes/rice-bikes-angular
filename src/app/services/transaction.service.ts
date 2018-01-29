@@ -157,4 +157,11 @@ export class TransactionService {
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
   }
+
+  notifyCustomerEmail(transaction_id: string): Promise<any> {
+    return this.http.get(`${this.backendUrl}/${transaction_id}/email-notify`, this.jwt())
+      .toPromise()
+      .then(res => res.json())
+      .catch(err => this.handleError(err));
+  }
 }
