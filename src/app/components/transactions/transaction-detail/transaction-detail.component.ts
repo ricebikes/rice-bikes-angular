@@ -20,6 +20,7 @@ export class TransactionDetailComponent implements OnInit {
   editingTransaction: boolean = false;
 
   loading: boolean = true;
+  emailLoading: boolean = false;
   displayDescription: string;
 
   constructor(
@@ -103,15 +104,23 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   completeTransaction(): void {
-    this.transaction.completed = true;
+    this.emailLoading = true;
+    this.transactionService.notifyCustomerEmail(this.transaction._id)
+      .then(() => {
+        this.emailLoading = false;
+        this.transaction.complete = true;
+        this.updateTransaction();
+      });
+  }
+
+  completeWithoutEmail(): void {
+    this.transaction.complete = true;
     this.updateTransaction();
   }
 
-  getTotal(): number {
-    var total = 0;
-    this.transaction.items.forEach(item => total += item.price);
-    this.transaction.repairs.forEach(rep => total += rep.repair.price);
-    return total;
+  reopenTransaction(): void {
+    this.transaction.complete = false;
+    this.updateTransaction();
   }
 
   emailCustomer(): void {

@@ -7,7 +7,7 @@ export class Transaction {
   _id: string;
   date_created: string;
   date_completed: string;
-  completed: boolean;
+  complete: boolean;
   is_paid: boolean;
   waiting_part: boolean;
   total_cost: number;

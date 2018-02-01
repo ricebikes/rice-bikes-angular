@@ -82,7 +82,7 @@
 
     <p *ngIf="!editingTransaction" class="lead" [innerHTML]="displayDescription"></p>
     <button *ngIf="!editingTransaction" (click)="editingTransaction = true" class="btn btn-secondary btn-sm">
-      <span class="fa fa-pencil"></span>
+      Edit <span class="fa fa-pencil"></span>
     </button>
 
     <textarea class="form-control" [(ngModel)]="transaction.description" style="width: 100%; min-height: 100px;" *ngIf="editingTransaction"></textarea>
@@ -121,13 +121,13 @@
         <div class="col-md-4">
           <app-add-repair [transaction]="transaction"></app-add-repair>
           <div class="list-group my-2">
-            <a *ngFor="let repair of transaction?.repairs" class="list-group-item" [ngClass]="{'list-group-item-secondary': repair.completed}">
+            <a *ngFor="let repair of transaction?.repairs" class="list-group-item" [ngClass]="{'list-group-item-success': repair?.completed}">
               <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
               <button (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
               <button title="Complete or reopen a repair" (click)="completeRepair(repair._id)"
                       style="margin: auto 5px"
-                      [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-outline-warning': repair.completed}"
-                      class="float-right btn btn-sm btn-outline-primary">
+                      [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-success': repair.completed}"
+                      class="float-right btn btn-sm">
                 <i *ngIf="!repair.completed" class="fa fa-check"></i>
                 <i *ngIf="repair.completed" class="fa fa-refresh"></i>
               </button>
@@ -160,7 +160,7 @@
             </ul>
             <div class="card-footer">
               <button class="btn btn-outline-success" [routerLink]="['/transactions', transaction._id, 'checkout']">Checkout!</button>
-              <h4 class="float-right">${{transaction?.total_cost}}</h4>
+              <h4 class="float-right">$ {{transaction?.total_cost}}</h4>
             </div>
           </div>
         </div>
@@ -170,19 +170,22 @@
 
   <div class="card">
     <div class="card-body">
-      <button *ngIf="transaction?.transaction_type != 'merch'" [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
-        <span class="fa fa-check"></span>
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.complete" [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+        <span *ngIf="!emailLoading" class="fa fa-check"></span>
+        <span *ngIf="emailLoading" class="fa fa-cog loader"></span>
         Complete
+      </button>
+      <button *ngIf="transaction?.complete" (click)="reopenTransaction()" class="btn btn-outline-warning btn-lg">
+        Reopen
       </button>
       <button *ngIf="transaction?.transaction_type != 'merch'" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-wrench"></i>
         Wait on part
       </button>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete and send email</a>
+        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#"><span class="fa fa-envelope"></span> Complete with custom email</a>
-        <a class="dropdown-item" href="#"><span class="fa fa-envelope-o"></span> Complete without sending</a>
+        <a class="dropdown-item" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
       </div>
       <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
     </div>
