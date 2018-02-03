@@ -13,8 +13,6 @@ import {SearchService} from "./services/search.service";
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
 import { AddItemComponent } from './components/add-item/add-item.component';
 import { SearchTransactionComponent } from './components/search-transaction/search-transaction.component';
-import { ActiveTransactionsComponent } from './components/active-transactions/active-transactions.component';
-import { CompletedTransactionsComponent } from './components/completed-transactions/completed-transactions.component';
 import { LoginComponent } from './components/login/login.component';
 import {AuthenticationService} from "./services/authentication.service";
 import {AuthGuard} from "./guards/auth.guard";
@@ -36,8 +34,6 @@ import { CheckoutComponent } from './components/transactions/transaction-detail/
     AddRepairComponent,
     AddItemComponent,
     SearchTransactionComponent,
-    ActiveTransactionsComponent,
-    CompletedTransactionsComponent,
     LoginComponent,
     NavbarComponent,
     AlertComponent,

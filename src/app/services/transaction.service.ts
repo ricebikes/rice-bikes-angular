@@ -34,22 +34,14 @@ export class TransactionService {
     }
   }
 
-  getTransactions(): Promise<any> {
-    return this.http.get(this.backendUrl, this.jwt())
-      .toPromise()
-      .then(res => res.json() as Transaction[])
-      .catch(err => this.handleError(err));
-  }
-
-  getActiveTransactions(): Promise<any> {
-    return this.http.get(`${this.backendUrl}/active`, this.jwt())
-      .toPromise()
-      .then(res => res.json() as Transaction[])
-      .catch(err => this.handleError(err));
-  }
-
-  getCompletedTransactions(): Promise<any>{
-    return this.http.get(`${this.backendUrl}/complete`, this.jwt())
+  /**
+   * Requests transactions. Accepts an optional props object, which will append a query string with these values.
+   * @param props
+   * @returns {Promise<any>}
+   */
+  getTransactions(props?: any): Promise<any> {
+    let querystring = Object.keys(props).map(k => `?${k}=${encodeURIComponent(props[k])}`).join('&');
+    return this.http.get(this.backendUrl + querystring, this.jwt())
       .toPromise()
       .then(res => res.json() as Transaction[])
       .catch(err => this.handleError(err));

@@ -15,46 +15,24 @@ export class TransactionsComponent implements OnInit {
   constructor(public transactionService: TransactionService) { }
 
   currentTab: string = 'active';
+
   ngOnInit(): void {
-    this.getActiveTransactions();
+    this.getTransactions(this.currentTab, { complete: false });
   }
 
-  getTransactions(): void {
-    this.transactionService.getTransactions()
+  /**
+   * Sets the current tab to the given string. Accepts optional props to request the backend with.
+   * @param {string} tab
+   * @param {Object} props
+   */
+  getTransactions(tab: string, props?: Object): void {
+    this.loading = true;
+    this.transactionService.getTransactions(props)
       .then(transactions => {
         this.transactions = transactions;
         this.loading = false;
-        this.currentTab = 'all';
+        this.currentTab = tab;
       });
-  }
-
-  getWaitingOnPickup(): void {
-    this.currentTab = 'pickup';
-  }
-
-  getWaitingOnPart(): void {
-    this.currentTab = 'part';
-  }
-
-  getPaid(): void {
-    this.currentTab = 'paid';
-  }
-
-  getActiveTransactions(): void {
-    this.transactionService.getActiveTransactions()
-      .then(transactions => {
-        this.transactions = transactions;
-        this.loading = false;
-        this.currentTab = 'active';
-      })
-  }
-
-  getPastTransactions(): void {
-    this.transactionService.getCompletedTransactions()
-      .then(transactions => {
-        this.transactions = transactions;
-        this.currentTab = 'completed';
-      })
   }
 
   getTimeDifference(transaction: Transaction): number {
@@ -69,8 +47,6 @@ export class TransactionsComponent implements OnInit {
   }
 
   getBikeList(transaction: Transaction): string[] {
-    return transaction.bikes.map((b) => {
-      return `${b.make} ${b.model}`;
-    });
+    return transaction.bikes.map((b) => `${b.make} ${b.model}`);
   }
 }

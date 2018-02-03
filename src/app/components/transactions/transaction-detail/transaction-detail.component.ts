@@ -133,5 +133,10 @@ export class TransactionDetailComponent implements OnInit {
     this.updateTransaction()
   }
 
+  toggleWaitOnPart(): void {
+    this.transaction.waiting_part = !this.transaction.waiting_part;
+    this.updateTransaction();
+  }
+
 
 }

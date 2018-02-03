@@ -178,9 +178,12 @@
       <button *ngIf="transaction?.complete" (click)="reopenTransaction()" class="btn btn-outline-warning btn-lg">
         Reopen
       </button>
-      <button *ngIf="transaction?.transaction_type != 'merch'" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction.waiting_part" (click)="toggleWaitOnPart()" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-wrench"></i>
         Wait on part
+      </button>
+      <button *ngIf="transaction.waiting_part" (click)="toggleWaitOnPart()" class="btn btn-danger btn-lg">
+        Waiting on part
       </button>
       <div class="dropdown-menu">
         <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>

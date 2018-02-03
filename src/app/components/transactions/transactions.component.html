@@ -1,19 +1,19 @@
 <div class="container">
   <ul class="nav nav-tabs nav-fill justify-content-center" style="margin-top: 15px;">
     <li class="nav-item">
-      <a (click)="getActiveTransactions()" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
+      <a (click)="this.getTransactions('active', { complete: false })" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
     </li>
     <li class="nav-item">
-      <a (click)="getWaitingOnPickup()" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
+      <a (click)="this.getTransactions('pickup', { complete: true })" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" (click)="getWaitingOnPart()" [ngClass]="{'active': currentTab === 'part'}">Waiting on part</a>
+      <a class="nav-link" (click)="this.getTransactions('part', { waiting_part: true })" [ngClass]="{'active': currentTab === 'part'}">Waiting on part</a>
     </li>
     <li class="nav-item">
-      <a (click)="getPaid()" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
+      <a (click)="this.getTransactions('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
     </li>
     <li class="nav-item">
-      <a (click)="getTransactions()" [ngClass]="{'active': currentTab === 'all'}" class="nav-link">All</a>
+      <a (click)="this.getTransactions('all', {})" [ngClass]="{'active': currentTab === 'all'}" class="nav-link">All</a>
     </li>
   </ul>
 </div>
