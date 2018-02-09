@@ -136,7 +136,7 @@
         </div>
         <div class="col-md-4">
           <app-add-item [transaction]="transaction"></app-add-item>
-          <div class="list-group" style="margin-top: 15px;">
+          <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.name}}
               <button (click)="deleteItem(item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
@@ -170,7 +170,7 @@
 
   <div class="card">
     <div class="card-body">
-      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.complete" [disabled]="!allRepairsComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
         <span *ngIf="!emailLoading" class="fa fa-check"></span>
         <span *ngIf="emailLoading" class="fa fa-cog loader"></span>
         Complete

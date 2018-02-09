@@ -94,7 +94,8 @@ export class TransactionDetailComponent implements OnInit {
     this.transactionService.deleteItemFromTransaction(this.transaction._id, item_id);
   }
 
-  get allRepairsComplete(): boolean {
+  get canComplete(): boolean {
+    if (this.transaction.waiting_part) return false;
     for (let repair of this.transaction.repairs) {
       if (!repair.completed) {
         return false;
@@ -124,13 +125,13 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   emailCustomer(): void {
-    window.open(`mailto:${this.transaction.customer.email}?Subject=Your%20bike`, "Email customer");
+    window.open(`mailto:${this.transaction.customer.email}?Subject=Your bike is ready!`, "Email customer");
   }
 
   updateDescription(): void {
     this.editingTransaction = false;
     this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
-    this.updateTransaction()
+    this.updateTransaction();
   }
 
   toggleWaitOnPart(): void {
