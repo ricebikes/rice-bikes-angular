@@ -29,7 +29,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let transaction of transactions"
+    <tr *ngFor="let transaction of transactions" class="transaction-tr"
         [routerLink]="['/transactions', transaction._id]"
         [ngClass]="{'table-warning': getTimeDifference(transaction) >= 3 && getTimeDifference(transaction) < 6, 'table-danger': getTimeDifference(transaction) >= 6}">
       <th scope="row">{{transaction._id}}

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {TransactionService} from "../../../../services/transaction.service";
 import {Transaction} from "../../../../models/transaction";
 
@@ -14,7 +14,8 @@ export class CheckoutComponent implements OnInit {
   loading: boolean = true;
 
   constructor(private route: ActivatedRoute,
-              private transactionService: TransactionService) { }
+              private transactionService: TransactionService,
+              private router: Router) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -24,6 +25,13 @@ export class CheckoutComponent implements OnInit {
           this.loading = false;
         })
     })
+  }
+
+  finish() {
+    this.transaction.complete = true;
+    this.transaction.is_paid = true;
+    this.transactionService.updateTransaction(this.transaction)
+      .then(() => this.router.navigate(['/transactions']));8
   }
 
 }

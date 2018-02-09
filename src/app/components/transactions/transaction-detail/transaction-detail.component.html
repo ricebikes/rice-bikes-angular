@@ -98,7 +98,7 @@
 <div class="container mb-4">
   <div class="card">
     <div class="card-body">
-      <button type="button" class="btn btn-outline-secondary mb-3"
+      <button *ngIf="!transaction?.is_paid" type="button" class="btn btn-outline-secondary mb-3"
               data-toggle="modal" data-target="#bikeAddModal">Add bike
       </button>
 
@@ -119,12 +119,12 @@
     <div class="card-body">
       <div class="row">
         <div class="col-md-4">
-          <app-add-repair [transaction]="transaction"></app-add-repair>
+          <app-add-repair *ngIf="!transaction?.is_paid" [transaction]="transaction"></app-add-repair>
           <div class="list-group my-2">
             <a *ngFor="let repair of transaction?.repairs" class="list-group-item" [ngClass]="{'list-group-item-success': repair?.completed}">
               <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-              <button (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-              <button title="Complete or reopen a repair" (click)="completeRepair(repair._id)"
+              <button *ngIf="!transaction?.is_paid" (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+              <button *ngIf="!transaction?.is_paid" title="Complete or reopen a repair" (click)="completeRepair(repair._id)"
                       style="margin: auto 5px"
                       [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-success': repair.completed}"
                       class="float-right btn btn-sm">
@@ -135,11 +135,11 @@
           </div>
         </div>
         <div class="col-md-4">
-          <app-add-item [transaction]="transaction"></app-add-item>
+          <app-add-item *ngIf="!transaction?.is_paid" [transaction]="transaction"></app-add-item>
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.name}}
-              <button (click)="deleteItem(item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+              <button *ngIf="!transaction?.is_paid" (click)="deleteItem(item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
             </a>
           </div>
         </div>
@@ -159,7 +159,7 @@
               </li>
             </ul>
             <div class="card-footer">
-              <button class="btn btn-outline-success" [routerLink]="['/transactions', transaction._id, 'checkout']">Checkout!</button>
+              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success" [routerLink]="['/transactions', transaction._id, 'checkout']">Checkout!</button>
               <h4 class="float-right">$ {{transaction?.total_cost}}</h4>
             </div>
           </div>
@@ -175,14 +175,14 @@
         <span *ngIf="emailLoading" class="fa fa-cog loader"></span>
         Complete
       </button>
-      <button *ngIf="transaction?.complete" (click)="reopenTransaction()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="transaction?.complete && !transaction?.is_paid" (click)="reopenTransaction()" class="btn btn-outline-warning btn-lg">
         Reopen
       </button>
-      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction.waiting_part" (click)="toggleWaitOnPart()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-wrench"></i>
         Wait on part
       </button>
-      <button *ngIf="transaction.waiting_part" (click)="toggleWaitOnPart()" class="btn btn-danger btn-lg">
+      <button *ngIf="transaction.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-danger btn-lg">
         Waiting on part
       </button>
       <div class="dropdown-menu">
