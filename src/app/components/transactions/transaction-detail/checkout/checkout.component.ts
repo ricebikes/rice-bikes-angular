@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {TransactionService} from "../../../../services/transaction.service";
 import {Transaction} from "../../../../models/transaction";
@@ -9,6 +9,9 @@ import {Transaction} from "../../../../models/transaction";
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
+
+  @ViewChild('finishModal') finishModal: ElementRef;
+
 
   transaction: Transaction;
   loading: boolean = true;
@@ -31,7 +34,10 @@ export class CheckoutComponent implements OnInit {
     this.transaction.complete = true;
     this.transaction.is_paid = true;
     this.transactionService.updateTransaction(this.transaction)
-      .then(() => this.router.navigate(['/transactions']));8
+      .then(() => {
+        this.finishModal.nativeElement.click();
+        this.router.navigate(['/transactions']);
+      });
   }
 
 }
