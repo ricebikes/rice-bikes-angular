@@ -11,9 +11,9 @@ import {CONFIG} from "../../config";
 })
 export class NavbarComponent implements OnInit {
 
-  private loggedIn: Observable<boolean>;
-  private isAdmin: Observable<boolean>;
-  private authUrl: string = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
+  loggedIn: Observable<boolean>;
+  isAdmin: Observable<boolean>;
+  authUrl: string = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
 
   constructor(private auth: AuthenticationService,
               private router: Router,

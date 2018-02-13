@@ -22,6 +22,7 @@ export class TransactionDetailComponent implements OnInit {
   loading: boolean = true;
   emailLoading: boolean = false;
   displayDescription: string;
+  priceEdit: boolean = false;
 
   constructor(
     private transactionService: TransactionService,

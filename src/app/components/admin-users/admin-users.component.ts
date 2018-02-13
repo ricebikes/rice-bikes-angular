@@ -10,8 +10,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 })
 export class AdminUsersComponent implements OnInit {
 
-  private users: User[];
-  private userForm: FormGroup;
+  users: User[];
+  userForm: FormGroup;
 
   constructor(private adminService: AdminService, private fb: FormBuilder) { }
 
