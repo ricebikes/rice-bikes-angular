@@ -8,7 +8,10 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <app-search-transaction *ngIf="loggedIn | async"></app-search-transaction>
+
+      <!-- Search bar -->
+      <!--<app-search-transaction *ngIf="loggedIn | async"></app-search-transaction>-->
+
       <div class="navbar-nav ml-auto mr-2">
         <li *ngIf="isAdmin | async" class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -42,6 +45,6 @@
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'merch'}">Merchandise</a>
   </div>
-  <button class="btn btn-outline-secondary">New refurb</button>
+  <!--<button class="btn btn-outline-secondary">New refurb</button>-->
 </div>
 
