@@ -144,7 +144,7 @@
           </div>
         </div>
         <div class="col-md-4">
-          <div class="card" style="height: auto"> 
+          <div class="card" style="height: auto">
             <div class="card-body">
               <h4 class="card-title">
                 Subtotal
@@ -159,15 +159,7 @@
               </li>
             </ul>
             <div class="card-footer">
-              <div class="row">
-                <div class="col-6">
-                  <button (click)="priceEdit = !priceEdit" class="btn btn-outline-secondary"><span class="fa fa-pencil"></span></button>
-                </div>
-                <div class="col-6">
-                  <input *ngIf="priceEdit" [(ngModel)]="transaction.total_cost" class="form-control float-right" type=number style="width: 50%">
-                  <h4 *ngIf="!priceEdit" class="float-right">${{transaction?.total_cost}}</h4>
-                </div>
-              </div>
+              <h4 class="float-right">${{transaction?.total_cost}}</h4>
             </div>
             <div class="card-footer">
               <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [routerLink]="['/transactions', transaction._id, 'checkout']">Checkout!</button>
@@ -198,7 +190,7 @@
       <div class="dropdown-menu">
         <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
+        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
       </div>
       <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
     </div>

@@ -40,7 +40,7 @@ export class TransactionService {
    * @returns {Promise<any>}
    */
   getTransactions(props?: any): Promise<any> {
-    let querystring = Object.keys(props).map(k => `?${k}=${encodeURIComponent(props[k])}`).join('&');
+    let querystring = '?' + Object.keys(props).map(k => `${k}=${encodeURIComponent(props[k])}`).join('&');
     return this.http.get(this.backendUrl + querystring, this.jwt())
       .toPromise()
       .then(res => res.json() as Transaction[])

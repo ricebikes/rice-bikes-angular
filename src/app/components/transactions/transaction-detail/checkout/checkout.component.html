@@ -21,14 +21,18 @@
 
 <div class="container mb-4">
   <div class="card mb-2" style="width: 75%; margin: 0 auto;">
-    <div class="card-body text-center">
-      <h1 style="font-size: 100px">${{ transaction.total_cost }}</h1>
+    <div #price class="card-body text-center">
+      <h1 *ngIf="!isEdit" (click)="isEdit = true" style="font-size: 100px">${{ transaction.total_cost }}</h1>
+      <input *ngIf="isEdit"  (keydown.escape)="isEdit = false" (keydown.enter)="isEdit = false" [(ngModel)]="transaction.total_cost" class="form-control form-control-lg" type=number style="font-size: 100px;width: 200px; height: 300px">
     </div>
   </div>
 
   <div class="row" style="width: 75%; margin: 0 auto;">
-    <div class="col-6">
+    <div class="col-6 pl-0">
       <div class="card mb-2">
+        <div class="card-header">
+          <h4>Repairs</h4>
+        </div>
         <div class="card-body">
           <ul class="list-group">
             <li *ngFor="let repair of transaction.repairs" class="list-group-item">
@@ -39,8 +43,11 @@
       </div>
     </div>
 
-    <div class="col-6">
+    <div class="col-6 pr-0">
       <div class="card mb-2">
+        <div class="card-header">
+          <h4>Items</h4>
+        </div>
         <div class="card-body">
           <ul class="list-group">
             <li *ngFor="let item of transaction.items" class="list-group-item">
@@ -49,18 +56,6 @@
           </ul>
         </div>
       </div>
-    </div>
-  </div>
-
-
-
-
-
-  <div class="card mb-2" style="width: 75%; margin: 0 auto;">
-    <div class="card-body">
-      <button class="btn btn-primary">Cash</button>
-      <button class="btn btn-primary">Check</button>
-      <button class="btn btn-secondary disabled">Card</button>
     </div>
   </div>
 

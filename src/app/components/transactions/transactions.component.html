@@ -4,7 +4,7 @@
       <a (click)="getTransactions('active', { complete: false })" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
     </li>
     <li class="nav-item">
-      <a (click)="getTransactions('pickup', { complete: true })" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
+      <a (click)="getTransactions('pickup', { complete: true , is_paid: false})" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" (click)="getTransactions('part', { waiting_part: true })" [ngClass]="{'active': currentTab === 'part'}">Waiting on part</a>

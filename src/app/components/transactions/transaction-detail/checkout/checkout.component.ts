@@ -12,9 +12,9 @@ export class CheckoutComponent implements OnInit {
 
   @ViewChild('finishModal') finishModal: ElementRef;
 
-
   transaction: Transaction;
   loading: boolean = true;
+  isEdit: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private transactionService: TransactionService,
@@ -39,5 +39,4 @@ export class CheckoutComponent implements OnInit {
         this.router.navigate(['/transactions']);
       });
   }
-
 }

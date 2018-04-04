@@ -126,7 +126,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   emailCustomer(): void {
-    window.open(`mailto:${this.transaction.customer.email}?Subject=Your bike is ready!`, "Email customer");
+    window.open(`mailto:${this.transaction.customer.email}?Subject=Your bike`, "Email customer");
   }
 
   updateDescription(): void {
