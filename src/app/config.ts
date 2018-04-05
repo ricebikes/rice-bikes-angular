@@ -4,9 +4,9 @@ export let CONFIG;
 
 if (environment.production) {
   CONFIG = {
-    api_url: 'http://bikes.riceapps.org/api',
+    api_url: 'https://bikes.riceapps.org/api',
     cas_auth_url: 'https://idp.rice.edu/idp/profile/cas/login',
-    service_url: 'http://bikes.riceapps.org/auth'
+    service_url: 'https://bikes.riceapps.org/auth'
   }
 } else {
   CONFIG = {
