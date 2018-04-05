@@ -25,7 +25,8 @@
       <th>#</th>
       <th>Customer</th>
       <th>Bikes</th>
-      <th>Submitted</th>
+      <th *ngIf="currentTab === 'pickup'">Completed</th>
+      <th *ngIf="!(currentTab === 'pickup')">Submitted</th>
     </tr>
     </thead>
     <tbody>
@@ -41,7 +42,8 @@
       </th>
       <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
       <td>{{getBikeList(transaction)}}</td>
-      <td>{{transaction.date_created | timeAgo }}</td>
+      <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo }}</td>
+      <td *ngIf="!(currentTab === 'pickup')">{{transaction.date_created | timeAgo }}</td>
     </tr>
     </tbody>
   </table>
