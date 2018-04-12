@@ -187,6 +187,13 @@
       <button *ngIf="transaction.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-danger btn-lg">
         Waiting on part
       </button>
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-outline-warning btn-lg">
+        <i class="fa fa-envelope"></i>
+        Wait on email
+      </button>
+      <button *ngIf="transaction.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-danger btn-lg">
+        Waiting on email
+      </button>
       <div class="dropdown-menu">
         <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
         <div class="dropdown-divider"></div>

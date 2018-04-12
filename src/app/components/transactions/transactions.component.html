@@ -7,7 +7,14 @@
       <a (click)="getTransactions('pickup', { complete: true , is_paid: false})" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" (click)="getTransactions('part', { waiting_part: true })" [ngClass]="{'active': currentTab === 'part'}">Waiting on part</a>
+      <a class="nav-link" (click)="getTransactions('part', { waiting_part: true })" [ngClass]="{'active': currentTab === 'part'}">
+        <i class="fa fa-wrench"></i> Waiting on part
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" (click)="getTransactions('email', { waiting_email: true })" [ngClass]="{'active': currentTab === 'email'}">
+        <i class="fa fa-envelope"></i> Waiting on email
+      </a>
     </li>
     <li class="nav-item">
       <a (click)="getTransactions('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
@@ -38,7 +45,9 @@
                                         'badge-primary': transaction?.transaction_type == 'outpatient',
                                         'badge-secondary': transaction?.transaction_type == 'merch'}">
           {{transaction?.transaction_type}}</span>
-        <span *ngIf="transaction?.waiting_part" class="badge badge-danger">waiting on part</span>
+        <span *ngIf="transaction?.waiting_part" class="badge badge-danger"><i class="fa fa-wrench"></i></span>
+        <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
+
       </th>
       <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
       <td>{{getBikeList(transaction)}}</td>
