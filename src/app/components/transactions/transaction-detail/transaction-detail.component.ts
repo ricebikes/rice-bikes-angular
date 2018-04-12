@@ -109,8 +109,10 @@ export class TransactionDetailComponent implements OnInit {
     this.emailLoading = true;
     this.transactionService.notifyCustomerEmail(this.transaction._id)
       .then(() => {
+        let date = Date.now().toString();
         this.emailLoading = false;
         this.transaction.complete = true;
+        this.transaction.date_completed = date;
         this.updateTransaction();
       });
   }
