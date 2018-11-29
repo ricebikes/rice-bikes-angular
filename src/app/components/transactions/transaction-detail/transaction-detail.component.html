@@ -194,6 +194,13 @@
       <button *ngIf="transaction.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-danger btn-lg">
         Waiting on email
       </button>
+     <button *ngIf="transaction.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-danger btn-lg">
+       Unmark as Refurb
+      </button>
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-outline-warning btn-lg">
+        <i class="fa fa-bicycle"></i>
+        Mark as Refurb
+      </button>
       <div class="dropdown-menu">
         <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
         <div class="dropdown-divider"></div>

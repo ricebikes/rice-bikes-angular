@@ -1,10 +1,10 @@
 <div class="container">
   <ul class="nav nav-tabs nav-fill justify-content-center" style="margin-top: 15px;">
     <li class="nav-item">
-      <a (click)="getTransactions('active', { complete: false })" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
+      <a (click)="getTransactions('active', { complete: false , refurb: false })" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
     </li>
     <li class="nav-item">
-      <a (click)="getTransactions('pickup', { complete: true , is_paid: false})" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
+      <a (click)="getTransactions('pickup', { complete: true , is_paid: false, refurb: false})" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" (click)="getTransactions('part', { waiting_part: true })" [ngClass]="{'active': currentTab === 'part'}">
@@ -21,6 +21,9 @@
     </li>
     <li class="nav-item">
       <a (click)="getTransactions('all', {})" [ngClass]="{'active': currentTab === 'all'}" class="nav-link">All</a>
+    </li>
+    <li class="nav-item">
+      <a (click)="getTransactions('refurb',{ refurb: true})" [ngClass]="{'active': currentTab === 'refurb'}" class="nav-link">Refurbs</a>
     </li>
   </ul>
 </div>

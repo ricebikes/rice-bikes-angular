@@ -146,6 +146,10 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.waiting_email = !this.transaction.waiting_email;
     this.updateTransaction();
   }
+  toggleRefurb(): void {
+    this.transaction.refurb = !this.transaction.refurb;
+    this.updateTransaction();
+  }
 
 
 }

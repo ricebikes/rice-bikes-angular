@@ -18,6 +18,7 @@ export class Transaction {
   bikes: Bike[];
   items: Item[];
   repairs: Repair[];
+  refurb: boolean;
 
   constructor() {}
 }
