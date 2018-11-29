@@ -4,7 +4,7 @@ Rice Bikes frontend in Angular 4.
 
 # Requirements
 
-Rice Bikes backend: https://github.com/rice-apps/rice-bikes-expressjs
+Rice Bikes backend: https://github.com/ricebikes/rice-bikes-expressjs
 
 # Setup
 
