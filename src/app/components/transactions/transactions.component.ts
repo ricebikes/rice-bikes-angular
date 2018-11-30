@@ -17,7 +17,7 @@ export class TransactionsComponent implements OnInit {
   currentTab: string = 'active';
 
   ngOnInit(): void {
-    this.getTransactions(this.currentTab, { complete: false });
+    this.getTransactions(this.currentTab, { complete: false , refurb: false});
   }
 
   /**

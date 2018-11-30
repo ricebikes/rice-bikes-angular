@@ -16,14 +16,14 @@
         <i class="fa fa-envelope"></i> Waiting on email
       </a>
     </li>
+      <li class="nav-item">
+      <a (click)="getTransactions('refurb',{ refurb: true})" [ngClass]="{'active': currentTab === 'refurb'}" class="nav-link">Refurbs</a>
+    </li>
     <li class="nav-item">
       <a (click)="getTransactions('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
     </li>
     <li class="nav-item">
       <a (click)="getTransactions('all', {})" [ngClass]="{'active': currentTab === 'all'}" class="nav-link">All</a>
-    </li>
-    <li class="nav-item">
-      <a (click)="getTransactions('refurb',{ refurb: true})" [ngClass]="{'active': currentTab === 'refurb'}" class="nav-link">Refurbs</a>
     </li>
   </ul>
 </div>
