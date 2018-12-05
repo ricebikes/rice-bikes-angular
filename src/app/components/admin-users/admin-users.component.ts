@@ -18,14 +18,19 @@ export class AdminUsersComponent implements OnInit {
   ngOnInit() {
     this.userForm = this.fb.group({
       username: ['', Validators.required],
-      admin: [false]
+      admin: [false],
+      projects: [false]
     });
     this.adminService.getUsers()
       .then(users => this.users = users);
   }
 
   postUser() {
-    this.adminService.postUser(this.userForm.value['username'], this.userForm.value['admin'])
+    const user_roles = []
+    if (this.userForm.value['admin']) {user_roles.push('admin'); }
+    if (this.userForm.value['projects']) {user_roles.push('projects'); }
+
+    this.adminService.postUser(this.userForm.value['username'], user_roles)
       .then(user => {
         this.userForm.reset();
         this.users.push(user);

@@ -8,9 +8,9 @@ export class AdminService {
   constructor(private http: Http) {}
 
   private jwt() {
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.user.token) {
-      let headers = new Headers({ 'x-access-token': currentUser.user.token });
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser.token) {
+      const headers = new Headers({ 'x-access-token': currentUser.token });
       return new RequestOptions({ headers: headers });
     }
   }
@@ -22,8 +22,8 @@ export class AdminService {
       .catch(err => console.log(err));
   }
 
-  postUser(username: String, admin: boolean): Promise<any> {
-    return this.http.post(`${CONFIG.api_url}/users`, { username: username, admin: admin }, this.jwt())
+  postUser(username: String, roles: Array<string>): Promise<any> {
+    return this.http.post(`${CONFIG.api_url}/users`, { username: username, roles: roles }, this.jwt())
       .toPromise()
       .then(res => res.json())
       .catch(err => console.log(err));

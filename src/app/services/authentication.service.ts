@@ -3,6 +3,7 @@ import { Http } from "@angular/http";
 import {Subject, BehaviorSubject} from "rxjs";
 import {AlertService} from "./alert.service";
 import {CONFIG} from "../config";
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthenticationService implements OnInit {
@@ -65,12 +66,16 @@ export class AuthenticationService implements OnInit {
   @param role: user role to check for
    */
   private checkForRole(role: String): boolean {
-    const user_data = JSON.parse(localStorage.getItem('currentUser'));
-    if (user_data) {
-      const user_roles = user_data.roles;
-      return user_roles.includes(role);
-    }else {
-      return false;
+    let current_user = JSON.parse((localStorage.getItem('currentUser')));
+    if (current_user) {
+      const token = current_user.token;
+      const decoded = jwt.decode(token);
+      if (decoded) {
+        const user_roles = decoded.user.roles;
+        return user_roles.includes(role);
+      }else {
+        return false;
+      }
     }
   }
 
