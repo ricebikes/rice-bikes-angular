@@ -12,6 +12,9 @@ export class AuthComponent implements OnInit {
   constructor(private authService: AuthenticationService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+    /* when we navigate to the auth component, it will make a request
+     * to the authservice to authenticate us with rice idp
+     */
     this.route.queryParams.subscribe(params => {
       this.authService.authenticate(params['ticket'])
         .catch(err => console.log(err))

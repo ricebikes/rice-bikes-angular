@@ -28,5 +28,4 @@ export class NavbarComponent implements OnInit {
   logout() {
     this.auth.logout().then(ret => window.location.href="https://idp.rice.edu/idp/profile/cas/logout");
   }
-
 }

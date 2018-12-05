@@ -9,6 +9,7 @@ export class AuthenticationService implements OnInit {
 
   public loggedIn: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public admin: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public projects: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private http: Http, private alertService: AlertService) {}
 
@@ -31,12 +32,11 @@ export class AuthenticationService implements OnInit {
         let result = res.json();
         if (result && result.success) {
           localStorage.setItem('currentUser', JSON.stringify(result));
-
           this.loggedIn.next(true);
-          this.admin.next(result.user.admin);
-
+          this.admin.next((this.checkForRole('admin')));
+          this.projects.next((this.checkForRole('projects')));
         } else {
-          console.log("Authentication failed")
+          console.log('Authentication failed');
         }
       })
       .catch(err => console.log(err));
@@ -52,13 +52,26 @@ export class AuthenticationService implements OnInit {
   }
 
   get isAdmin() {
-    let userData = JSON.parse(localStorage.getItem('currentUser'));
-    if (userData && userData.user.admin) {
-      this.admin.next(true);
-    } else {
-      this.admin.next(false);
-    }
+    this.admin.next(this.checkForRole('admin'));
     return this.admin.asObservable();
+  }
+
+  get isProjects(){
+    this.projects.next(this.checkForRole('projects'));
+    return this.projects.asObservable();
+  }
+  /*
+  Checks for a role in the user token
+  @param role: user role to check for
+   */
+  private checkForRole(role: String): boolean {
+    const user_data = JSON.parse(localStorage.getItem('currentUser'));
+    if (user_data) {
+      const user_roles = user_data.roles;
+      return user_roles.includes(role);
+    }else {
+      return false;
+    }
   }
 
   public logout(): Promise<any> {
