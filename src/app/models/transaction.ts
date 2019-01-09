@@ -1,7 +1,7 @@
 import {Customer} from "./customer";
 import {Bike} from "./bike";
 import {Item} from "./item";
-import {Repair} from "./repair";
+import {RepairItem} from "./repairItem";
 
 export class Transaction {
   _id: string;
@@ -17,7 +17,7 @@ export class Transaction {
   customer: Customer;
   bikes: Bike[];
   items: Item[];
-  repairs: Repair[];
+  repairs: RepairItem[];
   refurb: boolean;
 
   constructor() {}

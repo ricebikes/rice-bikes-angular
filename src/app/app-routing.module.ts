@@ -8,6 +8,7 @@ import { LoginComponent } from "./components/login/login.component";
 import {AuthComponent} from "./components/auth/auth.component";
 import {AdminUsersComponent} from "./components/admin-users/admin-users.component";
 import {CheckoutComponent} from "./components/transactions/transaction-detail/checkout/checkout.component";
+import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.component';
 
 const routes: Routes = [
   {
@@ -66,6 +67,10 @@ const routes: Routes = [
       {
         path: 'users',
         component: AdminUsersComponent
+      },
+      {
+        path: 'repairs',
+        component: AdminRepairsComponent
       }
     ]
   }

@@ -1,0 +1,29 @@
+<div class="container repair-list" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+  <form #repairForm="ngForm">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Repair Name</span>
+      </div>
+      <input type="text" class="form-control" placeholder="" id="name" [(ngModel)]="editable_repair.name" name="name" required>
+      <div class="input-group-prepend">
+        <span class="input-group-text">Price</span>
+      </div>
+      <input type="number" class="form-control" placeholder="0.00" id="price" [(ngModel)]="editable_repair.price" name="price" required>
+      <button type="button" class="btn btn-primary" (click)="addrepair(); repairForm.reset()" [disabled]="repairForm.invalid">Add Repair</button>
+    </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Description</span>
+      </div>
+      <textarea class="form-control" [ngModel]="editable_repair.description" name="description"></textarea>
+    </div>
+  </form>
+    <ul class="list-group">
+        <li *ngFor="let repair of repairs; let in=index" class="list-group-item">
+          <form #inlineForm="ngForm">{{repair.name}}
+            <span style="float: right">Price:<input style="margin-left:20px" size="1" name="inlineprice-{{in}}" [(ngModel)]="repair.price">
+              <button class="btn btn-default" style="margin-left:15px" [disabled]="!inlineForm.dirty" (click)="updaterepair(repair)">Update</button></span></form>
+        </li>
+    </ul>
+</div>
+

@@ -24,6 +24,8 @@ import {TimeAgoPipe} from "time-ago-pipe";
 import { AdminUsersComponent } from './components/admin-users/admin-users.component';
 import {AdminService} from "./services/admin.service";
 import { CheckoutComponent } from './components/transactions/transaction-detail/checkout/checkout.component';
+import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.component';
+import {RepairService} from './services/repair.service';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { CheckoutComponent } from './components/transactions/transaction-detail/
     AuthComponent,
     TimeAgoPipe,
     AdminUsersComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    AdminRepairsComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +58,8 @@ import { CheckoutComponent } from './components/transactions/transaction-detail/
     AuthenticationService,
     AuthGuard,
     AlertService,
-    AdminService
+    AdminService,
+    RepairService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,7 +1,7 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Subject, Observable} from "rxjs";
 import {SearchService} from "../../services/search.service";
-import {Repair} from "../../models/repair";
+import {RepairItem} from "../../models/repairItem";
 import {Transaction} from "../../models/transaction";
 import {TransactionService} from "../../services/transaction.service";
 
@@ -14,7 +14,7 @@ export class AddRepairComponent implements OnInit {
   @Input() transaction: Transaction;
 
   searchFieldValue: string;
-  repairResults: Observable<Repair[]>;
+  repairResults: Observable<RepairItem[]>;
   private searchTerms = new Subject<string>();
 
   constructor(
@@ -27,11 +27,11 @@ export class AddRepairComponent implements OnInit {
       .debounceTime(100)
       .distinctUntilChanged()
       .switchMap(term => {
-        return term ? this.searchService.repairSearch(term) : Observable.of<Repair[]>([]);
+        return term ? this.searchService.repairSearch(term) : Observable.of<RepairItem[]>([]);
       })
       .catch(err => {
         console.log(err);
-        return Observable.of<Repair[]>([]);
+        return Observable.of<RepairItem[]>([]);
       });
   }
 

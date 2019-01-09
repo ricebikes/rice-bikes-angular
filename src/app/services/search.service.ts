@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Http, URLSearchParams, RequestOptions} from "@angular/http";
+import {Http, URLSearchParams, RequestOptions, Headers} from '@angular/http';
 import {Observable} from "rxjs";
 import {Customer} from "../models/customer";
-import {Repair} from "../models/repair";
+import {RepairItem} from "../models/repairItem";
 import {Item} from "../models/item";
 import {Transaction} from "../models/transaction";
 import {CONFIG} from "../config";
@@ -17,6 +17,14 @@ export class SearchService {
 
   constructor(private http: Http) {}
 
+
+  private jwt_headers() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser.token) {
+      const headers = new Headers({'x-access-token': currentUser.token});
+      return headers;
+    }
+  }
   /**
    * Searches for transactions, looking in the given field for the given term.
    * @param field - one of {bike, customer, description}
@@ -41,13 +49,14 @@ export class SearchService {
       .map(res => res.json() as Customer[])
   }
 
-  repairSearch(term: string): Observable<Repair[]> {
+  repairSearch(term: string): Observable<RepairItem[]> {
     let params = new URLSearchParams();
     let requestOptions = new RequestOptions();
     params.set('q', term);
     requestOptions.params = params;
+    requestOptions.headers = this.jwt_headers();
     return this.http.get(this.repairUrl, requestOptions)
-      .map(res => res.json() as Repair[])
+      .map(res => res.json() as RepairItem[])
   }
 
   itemSearch(term: string): Observable<Item[]> {
