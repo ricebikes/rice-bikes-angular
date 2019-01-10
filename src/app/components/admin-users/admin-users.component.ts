@@ -33,7 +33,7 @@ export class AdminUsersComponent implements OnInit {
     this.adminService.postUser(this.userForm.value['username'], user_roles)
       .then(user => {
         this.userForm.reset();
-        this.users.push(user);
+        this.users.unshift(user);
       });
   }
 
