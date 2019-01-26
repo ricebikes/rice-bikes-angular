@@ -19,7 +19,8 @@ export class AdminUsersComponent implements OnInit {
     this.userForm = this.fb.group({
       username: ['', Validators.required],
       admin: [false],
-      projects: [false]
+      projects: [false],
+      operations: [false]
     });
     this.adminService.getUsers()
       .then(users => this.users = users);
@@ -29,6 +30,7 @@ export class AdminUsersComponent implements OnInit {
     const user_roles = []
     if (this.userForm.value['admin']) {user_roles.push('admin'); }
     if (this.userForm.value['projects']) {user_roles.push('projects'); }
+    if (this.userForm.value['operations']) {user_roles.push('operations'); }
 
     this.adminService.postUser(this.userForm.value['username'], user_roles)
       .then(user => {

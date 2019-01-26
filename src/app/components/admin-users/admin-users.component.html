@@ -7,6 +7,7 @@
             <div class="input-group-text">
               Admin&nbsp;<input formControlName="admin" type="checkbox" style="margin-right:5px">
               Projects&nbsp;<input formControlName="projects" type="checkbox">
+              Operations<input formControlName="operations" type="checkbox">
             </div>
           </div>
           <input formControlName="username" type="text" class="form-control" placeholder="Username">
@@ -22,6 +23,8 @@
   <ul class="list-group">
     <li *ngFor="let user of users" class="list-group-item">{{user.username}}
       <i *ngIf="user.roles.includes('admin')" class="fa fa-lock"></i>
+      <i *ngIf="user.roles.includes('operations')" class="fa fa-dolly"></i>
+      <i *ngIf="user.roles.includes('projects')" class="fas fa-tools"></i>
       <button (click)="deleteUser(user)" type="button" class="close">
         <span>&times;</span>
       </button>
