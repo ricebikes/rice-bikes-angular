@@ -31,31 +31,13 @@
   <ul class="list-group">
         <li *ngFor="let item of items; let in=index" class="list-group-item">
           <form #inlineForm="ngForm">
-            <!--
-            <div style="float: left">
-              {{item.name}}
-            </div>
-            <div class="inline-forms">
-            <span>
-              Price:<input style="margin-left:20px" size="1" name="inlineprice-{{in}}" [(ngModel)]="item.price">
-              Shop Cost:<input style="margin-left:20px" size="1" name="inlinecost-{{in}}" [(ngModel)]="item.shop_cost">
-            </span>
-            <br/>
-            <span>
-              Low Stock Level:<input style="margin-left:10px; margin-right: 10px" size="1" name="inlineWarnLevel-{{in}}" [(ngModel)]="item.warning_quantity">
-              Stock:<input style="margin-left:20px" size="1" name="inlinestock-{{in}}" [(ngModel)]="item.quantity">
-            </span>
-            </div>
-          <button class="btn btn-default" style="margin-left:15px" [disabled]="!inlineForm.dirty" (click)="updateItem(item)">Update</button>
-          -->
-
             <label>{{item.name}}</label>
             <button class="btn btn-default" style="margin-left:15px;float: right" [disabled]="!inlineForm.dirty" (click)="updateItem(item)">Update</button>
             <div class="input-group">
-              Stock:<input size="1" style="margin-right: 10px;margin-left: 10px" name="inlineStock-{{in}}" [(ngModel)]="item.quantity">
-              Price: <input size="1" style="margin-right: 10px;margin-left: 10px" name="inlineprice-{{in}}" [(ngModel)]="item.price">
-              Shop Cost:<input size="1" style="margin-right: 10px;margin-left: 10px" name="inlinecost-{{in}}" [(ngModel)]="item.shop_cost">
-              Low Stock Threshold:<input size="1" style="margin-right: 10px;margin-left: 10px" name="inlineWarnStock-{{in}}" [(ngModel)]="item.warning_quantity">
+              Stock:<input size="3" style="margin-right: 10px;margin-left: 10px" name="inlineStock-{{in}}" [(ngModel)]="item.quantity">
+              Price: <input size="3" style="margin-right: 10px;margin-left: 10px" name="inlineprice-{{in}}" [(ngModel)]="item.price">
+              Shop Cost:<input size="3" style="margin-right: 10px;margin-left: 10px" name="inlinecost-{{in}}" [(ngModel)]="item.shop_cost">
+              Low Stock Threshold:<input size="3" style="margin-right: 10px;margin-left: 10px" name="inlineWarnStock-{{in}}" [(ngModel)]="item.warning_quantity">
             </div>
           </form>
         </li>

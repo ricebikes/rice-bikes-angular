@@ -21,7 +21,7 @@
     <ul class="list-group">
         <li *ngFor="let repair of repairs; let in=index" class="list-group-item">
           <form #inlineForm="ngForm">{{repair.name}}
-            <span style="float: right">Price:<input style="margin-left:20px" size="1" name="inlineprice-{{in}}" [(ngModel)]="repair.price">
+            <span style="float: right">Price:<input style="margin-left:20px" size="3" name="inlineprice-{{in}}" [(ngModel)]="repair.price">
               <button class="btn btn-default" style="margin-left:15px" [disabled]="!inlineForm.dirty" (click)="updaterepair(repair)">Update</button></span></form>
         </li>
     </ul>

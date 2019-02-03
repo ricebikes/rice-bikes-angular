@@ -118,7 +118,9 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   completeWithoutEmail(): void {
+    const date = Date.now().toString();
     this.transaction.complete = true;
+    this.transaction.date_completed = date;
     this.updateTransaction();
   }
 
