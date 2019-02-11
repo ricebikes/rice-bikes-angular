@@ -17,7 +17,7 @@
       </a>
     </li>
       <li class="nav-item">
-      <a (click)="getTransactions('refurb',{ refurb: true})" [ngClass]="{'active': currentTab === 'refurb'}" class="nav-link">Refurbs</a>
+      <a (click)="getTransactions('refurb',{complete:false, refurb: true})" [ngClass]="{'active': currentTab === 'refurb'}" class="nav-link">Refurbs</a>
     </li>
     <li class="nav-item">
       <a (click)="getTransactions('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
