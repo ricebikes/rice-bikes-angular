@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import {Http, URLSearchParams, RequestOptions, Headers} from '@angular/http';
-import {Observable} from "rxjs";
-import {Customer} from "../models/customer";
-import {RepairItem} from "../models/repairItem";
-import {Item} from "../models/item";
-import {Transaction} from "../models/transaction";
-import {CONFIG} from "../config";
+import {Observable} from 'rxjs';
+import {Customer} from '../models/customer';
+import {RepairItem} from '../models/repairItem';
+import {Item} from '../models/item';
+import {Transaction} from '../models/transaction';
+import {CONFIG} from '../config';
 
 @Injectable()
 export class SearchService {
 
-  private transactionUrl: string = `${CONFIG.api_url}/transactions/search`;
-  private customerUrl: string = `${CONFIG.api_url}/customers/search`;
-  private repairUrl: string = `${CONFIG.api_url}/repairs/search`;
-  private itemUrl: string = `${CONFIG.api_url}/items/search`;
+  private transactionUrl = `${CONFIG.api_url}/transactions/search`;
+  private customerUrl = `${CONFIG.api_url}/customers/search`;
+  private repairUrl = `${CONFIG.api_url}/repairs/search`;
+  private itemUrl = `${CONFIG.api_url}/items`;
 
   constructor(private http: Http) {}
 
@@ -32,8 +32,8 @@ export class SearchService {
    * @returns {Observable<R>}
    */
   transactionSearch(field: string, term: string): Observable<Transaction[]> {
-    let requestOptions = new RequestOptions();
-    let params = new URLSearchParams();
+    const requestOptions = new RequestOptions();
+    const params = new URLSearchParams();
     params.set(field, term);
     requestOptions.params = params;
     return this.http.get(this.transactionUrl, requestOptions)
@@ -41,31 +41,53 @@ export class SearchService {
   }
 
   customerSearch(term: string): Observable<Customer[]> {
-    let params = new URLSearchParams();
-    let requestOptions = new RequestOptions();
-    params.set('q', "\"" + term + "\"");
+    const params = new URLSearchParams();
+    const requestOptions = new RequestOptions();
+    params.set('q', '"' + term + '"');
     requestOptions.params = params;
     return this.http.get(this.customerUrl, requestOptions)
-      .map(res => res.json() as Customer[])
+      .map(res => res.json() as Customer[]);
   }
 
   repairSearch(term: string): Observable<RepairItem[]> {
-    let params = new URLSearchParams();
-    let requestOptions = new RequestOptions();
+    const params = new URLSearchParams();
+    const requestOptions = new RequestOptions();
     params.set('q', term);
     requestOptions.params = params;
     requestOptions.headers = this.jwt_headers();
     return this.http.get(this.repairUrl, requestOptions)
-      .map(res => res.json() as RepairItem[])
+      .map(res => res.json() as RepairItem[]);
   }
 
-  itemSearch(term: string): Observable<Item[]> {
-    let params = new URLSearchParams();
-    let requestOptions = new RequestOptions();
-    params.set('q', term);
+// Item search functionality: requires additional functions to populate category and sizes in the search pand
+// using optional parameters here so that we can search by just name for an item (if a value is null the backend discards it)
+  itemSearch(name: string, category?: string, size?: string): Observable<Item[]> {
+    const params = new URLSearchParams();
+    const requestOptions = new RequestOptions();
+    params.set('category', category);
+    params.set('size', size);
+    params.set('name', name);
     requestOptions.params = params;
-    return this.http.get(this.itemUrl, requestOptions)
-      .map(res => res.json() as Item[])
+    return this.http.get(`${this.itemUrl}/search`, requestOptions)
+      .map(res => res.json() as Item[]);
   }
 
+  itemCategories(): Promise<String[]> {
+    return this.http.get(`${this.itemUrl}/categories`)
+      .toPromise()
+      .then(res => res.json())
+      .catch(err => console.log(err));
+  }
+
+  itemSizes(category: string): Promise<String[]> {
+    const params = new URLSearchParams();
+    const requestOptions = new RequestOptions();
+    params.set('category', category);
+    requestOptions.params = params;
+    return this.http.get(`${this.itemUrl}/sizes`, requestOptions)
+      .toPromise()
+      .then(res => res.json())
+      .catch(err => console.log(err));
+  }
 }
+
