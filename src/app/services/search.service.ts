@@ -60,9 +60,8 @@ export class SearchService {
   }
 
 // Item search functionality: requires additional functions to populate category and sizes in the search pand
-// using optional parameters here so that we can search by just name for an item
+// using optional parameters here so that we can search by just name for an item (if a value is null the backend discards it)
   itemSearch(name: string, category?: string, size?: string): Observable<Item[]> {
-    // default values for the category and size allow search to still work with just a name
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
     params.set('category', category);

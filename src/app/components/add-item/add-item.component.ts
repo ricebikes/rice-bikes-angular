@@ -49,7 +49,7 @@ export class AddItemComponent implements OnInit {
       search_options: this.formBuilder.group({
         item_category: undefined,
         item_size: undefined,
-        item_name: undefined
+        item_name: undefined,
       }),
       selectedItem: [undefined, Validators.required]
     });

@@ -31,8 +31,8 @@
               <div class="col-8">
                 <!-- results area -->
                 <label>Results</label>
-                <select multiple class="form-control" formControlName="selectedItem" size="7">
-                  <option *ngFor="let item of search_results" [ngValue]="item">{{item.name}}</option>
+                <select multiple class="form-control" formControlName="selectedItem" size="10">
+                  <option *ngFor="let item of search_results" [ngValue]="item" [title]="item.description">{{item.name}}: ${{item.price}}</option>
                 </select>
               </div>
             </div>
