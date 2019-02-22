@@ -1,4 +1,60 @@
-<input [(ngModel)]="searchFieldValue" type="text" class="form-control" placeholder="Add items..." #searchBox (keyup)="search(searchBox.value)">
+<!--Modal for Adding an item -->
+<div class="modal fade bd-example-modal-lg" id="itemAddModal" #searchModal tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form [formGroup]="itemSearchForm" (ngSubmit)="addItemFromModal()">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+        <!-- Close button -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <!-- put any content for the modal here -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-4" formGroupName="search_options">
+                <!-- search menu (includes inline form group to change item search parameters-->
+                <label for="cat_select">Category</label>
+                <select formControlName="item_category" class="form-control" id="cat_select">
+                  <option *ngFor="let category of search_categories">{{category}}</option>
+                </select>
+                <label for="size_select">Size</label>
+                <select formControlName="item_size" class="form-control" id="size_select">
+                  <option *ngFor="let size of search_sizes">{{size}}</option>
+                </select>
+                <label for="name_input">Name</label>
+                <input formControlName="item_name" class="form-control"
+                       placeholder="Item name" type="text" id="name_input">
+              </div>
+              <div class="col-8">
+                <!-- results area -->
+                <label>Results</label>
+                <select multiple class="form-control" formControlName="selectedItem" size="7">
+                  <option *ngFor="let item of search_results" [ngValue]="item">{{item.name}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" type="submit" [disabled]="!itemSearchForm.valid">Add Item</button>
+        </div>
+      </form>
+      </div>
+  </div>
+</div>
+
+<div class="input-group">
+  <input [(ngModel)]="searchFieldValue" type="text" class="form-control" placeholder="Add items..." #searchBox (keyup)="search(searchBox.value)">
+  <div class="input-group-append">
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#itemAddModal">
+    <i class="fas fa-expand"></i>
+  </button>
+  </div>
+</div>
 <div *ngIf="itemResults" class="list-group search-dropdown" style="position: absolute; z-index: 1;">
   <a class="list-group-item list-group-item-action"
      *ngFor="let item of itemResults | async"
