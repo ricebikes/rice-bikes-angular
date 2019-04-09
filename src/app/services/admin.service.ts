@@ -4,7 +4,6 @@ import {CONFIG} from '../config';
 import {Observable} from 'rxjs/Observable';
 import {AlertService} from './alert.service';
 import {catchError, retry} from 'rxjs/operators';
-import {collectExternalReferences} from '@angular/compiler';
 
 @Injectable()
 export class AdminService {

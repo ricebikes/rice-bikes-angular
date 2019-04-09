@@ -5,7 +5,6 @@ import {Customer} from "../../models/customer";
 import {SearchService} from "../../services/search.service";
 import {Observable, Subject} from "rxjs";
 import {FormGroup, FormControl, Validators} from "@angular/forms";
-import * as $ from 'jquery';
 
 @Component({
   selector: 'app-new-transaction',

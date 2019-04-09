@@ -27,6 +27,7 @@ import {RepairService} from './services/repair.service';
 import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import {ItemService} from './services/item.service';
 import {HttpClientModule} from '@angular/common/http';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {HttpClientModule} from '@angular/common/http';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule,
   ],
   providers: [
     TransactionService,
