@@ -13,6 +13,7 @@ export class NavbarComponent implements OnInit {
 
   loggedIn: Observable<boolean>;
   isAdmin: Observable<boolean>;
+  isCollapsed: boolean;
   authUrl: string = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
 
   constructor(private auth: AuthenticationService,
@@ -23,6 +24,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.loggedIn = this.auth.isLoggedIn;
     this.isAdmin = this.auth.isAdmin;
+    this.isCollapsed = true;
   }
 
   logout() {

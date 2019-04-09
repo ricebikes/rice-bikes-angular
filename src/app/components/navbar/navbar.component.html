@@ -3,26 +3,24 @@
     <a class="navbar-brand" href="#">
       <img src="/assets/img/rice-bikes_white.png" width="80" height="80" class="d-inline-block align-top" alt="">
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse" [ngbCollapse]="isCollapsed">
 
       <!-- Search bar -->
       <!--<app-search-transaction *ngIf="loggedIn | async"></app-search-transaction>-->
 
       <div class="navbar-nav ml-auto mr-2">
-        <li *ngIf="isAdmin | async" class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Admin
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        <div *ngIf="isAdmin | async" ngbDropdown class="d-inline-block">
+          <a class="nav-link dropdown-toggle" id="admindropdown-toggle" ngbDropdownToggle>Admin</a>
+          <div ngbDropdownMenu aria-labelledby="dropdown-admin">
             <a class="dropdown-item" [routerLink]="['/admin/users']">Edit users</a>
             <a class="dropdown-item" [routerLink]="['admin/items']">Edit items</a>
             <a class="dropdown-item" [routerLink]="['admin/repairs']">Edit repairs</a>
           </div>
-        </li>
+        </div>
       </div>
       <button *ngIf="loggedIn | async" (click)="logout()" class="btn btn-outline-secondary">Logout</button>
       <a *ngIf="!(loggedIn | async)" [attr.href]="authUrl" class="btn btn-outline-secondary">Login</a>
@@ -33,18 +31,17 @@
 
 
 <div *ngIf="loggedIn | async" class="container mt-3 mb-3">
-  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-    New transaction
-  </button>
-  <div class="dropdown-menu">
-    <h6 class="dropdown-header">Choose type</h6>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'inpatient'}">Inpatient</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'outpatient'}">Outpatient</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'merch'}">Merchandise</a>
+  <div ngbDropdown class="d-inline-block">
+    <button class="btn btn-outline-primary" id="transaction-type-dropdown" ngbDropdownToggle>New Transaction</button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+      <h6 class="dropdown-header">Choose type</h6>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'inpatient'}">Inpatient</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'outpatient'}">Outpatient</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'merch'}">Merchandise</a>
+    </div>
   </div>
-  <!--<button class="btn btn-outline-secondary">New refurb</button>-->
 </div>
 
