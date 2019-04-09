@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionService } from "../../services/transaction.service";
 import { Transaction } from "../../models/transaction";
+import {AlertService} from '../../services/alert.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-transactions',
@@ -11,13 +13,15 @@ import { Transaction } from "../../models/transaction";
 export class TransactionsComponent implements OnInit {
   transactions: Transaction[];
   loading: boolean = true;
+  alerts: Observable<String[]>;
 
-  constructor(public transactionService: TransactionService) { }
+  constructor(public transactionService: TransactionService, private alertService: AlertService) { }
 
   currentTab: string = 'active';
 
   ngOnInit(): void {
     this.getTransactions(this.currentTab, { complete: false , refurb: false});
+    this.alerts = this.alertService.subscribeToAlerts();
   }
 
   /**
@@ -28,7 +32,7 @@ export class TransactionsComponent implements OnInit {
   getTransactions(tab: string, props?: Object): void {
     this.loading = true;
     this.transactionService.getTransactions(props)
-      .then(transactions => {
+      .subscribe(transactions => {
         transactions.sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
         this.transactions = transactions;
         this.loading = false;

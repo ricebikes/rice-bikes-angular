@@ -17,7 +17,7 @@ export class AdminItemsComponent implements OnInit {
 
   ngOnInit() {
     this.itemservice.getItems()
-      .then(items => this.items = items);
+      .subscribe(items => this.items = items);
   }
 
   addItem() {
@@ -28,7 +28,7 @@ export class AdminItemsComponent implements OnInit {
       this.item_entry.price,
       this.item_entry.shop_cost,
       this.item_entry.warning_quantity
-    ).then(item => {
+    ).subscribe(item => {
       this.items.unshift(item);
     });
   }
@@ -39,7 +39,7 @@ export class AdminItemsComponent implements OnInit {
       item.shop_cost,
       item.quantity,
       item.warning_quantity
-    ).then( new_item => {
+    ).subscribe( new_item => {
       const index = this.items.indexOf(item);
       if (index > -1) {
         this.items.splice(index, 1, new_item);

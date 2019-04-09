@@ -41,7 +41,7 @@ export class AddRepairComponent implements OnInit {
 
   addRepair(repair: any): void {
     this.transactionService.addRepairToTransaction(this.transaction._id, repair._id)
-      .then(() => {
+      .subscribe(() => {
         this.searchTerms.next('');
         this.searchFieldValue = '';
       });

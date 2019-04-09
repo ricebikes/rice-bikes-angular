@@ -55,7 +55,7 @@ export class AddItemComponent implements OnInit {
     });
     // populate the categories of the component
     this.searchService.itemCategories()
-      .then(categories => {
+      .subscribe(categories => {
         // put an undefined value first to allow searching for all items
         this.search_categories = categories;
         this.itemSearchForm.get('search_options').get('item_category').setValue(categories[0]);
@@ -72,7 +72,7 @@ export class AddItemComponent implements OnInit {
       newValue => {
         // update the sizes menu to reflect the sizes for this category
         this.searchService.itemSizes(newValue)
-          .then(newSizes => {
+          .subscribe(newSizes => {
             this.search_sizes = newSizes;
             this.itemSearchForm.get('search_options').get('item_size').setValue(newSizes[0]);
           });
@@ -100,7 +100,7 @@ export class AddItemComponent implements OnInit {
 
   addItem(item: Item): void {
     this.transactionService.addItemToTransaction(this.transaction._id, item._id)
-      .then(() => {
+      .subscribe(() => {
         this.searchTerms.next('');
         this.searchFieldValue = '';
       });
@@ -110,7 +110,7 @@ export class AddItemComponent implements OnInit {
     console.log('Trying to add item');
     const item = this.itemSearchForm.get('selectedItem').value[0];
     console.log(item);
-    this.transactionService.addItemToTransaction(this.transaction._id, item._id) .then(() => {
+    this.transactionService.addItemToTransaction(this.transaction._id, item._id) .subscribe( ()=> {
       this.itemSearchModal.nativeElement.click();
     });
   }

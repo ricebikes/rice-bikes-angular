@@ -4,6 +4,8 @@ import { Transaction } from "../../../models/transaction";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {Bike} from "../../../models/bike";
+import {AlertService} from '../../../services/alert.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -23,11 +25,13 @@ export class TransactionDetailComponent implements OnInit {
   emailLoading: boolean = false;
   displayDescription: string;
   priceEdit: boolean = false;
+  alerts: Observable<String[]>;
 
   constructor(
     private transactionService: TransactionService,
     private route: ActivatedRoute,
     private router: Router,
+    private alertService: AlertService,
   ) {}
 
   ngOnInit() {
@@ -45,12 +49,13 @@ export class TransactionDetailComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.transactionService.getTransaction(params['_id'])
-        .then(() => {
-          this.transactionService.transaction.subscribe(trans => this.transaction = trans);
+        .subscribe((transaction: Transaction) => {
+          this.transaction = transaction;
           this.loading = false;
           this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
-        })
+        });
     });
+    this.alerts = this.alertService.subscribeToAlerts();
   }
 
   changeType(type: string): void {
@@ -75,7 +80,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   deleteTransaction(): void {
-    this.transactionService.deleteTransaction(this.transaction._id).then(() => {
+    this.transactionService.deleteTransaction(this.transaction._id).subscribe( () => {
       this.deleteTransactionModal.nativeElement.click();
       this.router.navigate(['transactions/']);
     });
@@ -108,7 +113,7 @@ export class TransactionDetailComponent implements OnInit {
   completeTransaction(): void {
     this.emailLoading = true;
     this.transactionService.notifyCustomerEmail(this.transaction._id)
-      .then(() => {
+      .subscribe(() => {
         let date = Date.now().toString();
         this.emailLoading = false;
         this.transaction.complete = true;

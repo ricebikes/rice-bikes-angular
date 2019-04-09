@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import {Http, URLSearchParams, RequestOptions, Headers} from '@angular/http';
-import {Observable} from 'rxjs';
-import {Customer} from '../models/customer';
-import {RepairItem} from '../models/repairItem';
-import {Item} from '../models/item';
-import {Transaction} from '../models/transaction';
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
 import {CONFIG} from '../config';
+import {catchError, retry} from 'rxjs/operators';
+import {AlertService} from './alert.service';
 
 @Injectable()
 export class SearchService {
@@ -15,79 +13,122 @@ export class SearchService {
   private repairUrl = `${CONFIG.api_url}/repairs/search`;
   private itemUrl = `${CONFIG.api_url}/items`;
 
-  constructor(private http: Http) {}
+  constructor(private http: HttpClient, private  alertService: AlertService) {}
 
 
   private jwt_headers() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser.token) {
-      const headers = new Headers({'x-access-token': currentUser.token});
+      const headers = new HttpHeaders({'x-access-token': currentUser.token});
       return headers;
     }
   }
+
+ private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // client side or network error
+      this.alertService.queueAlert(`An error occurred: ${error.error.message}`);
+    } else {
+      // backed encountered an error
+      this.alertService.queueAlert(
+        `Backend returned error code ${error.status}. ` +
+        `Message was: ${error.message}`
+      );
+    }
+    return Observable.throw(error);
+  }
+
+
   /**
    * Searches for transactions, looking in the given field for the given term.
    * @param field - one of {bike, customer, description}
    * @param term - term to search for
    * @returns {Observable<R>}
    */
-  transactionSearch(field: string, term: string): Observable<Transaction[]> {
-    const requestOptions = new RequestOptions();
-    const params = new URLSearchParams();
-    params.set(field, term);
-    requestOptions.params = params;
+  transactionSearch(field: string, term: string): Observable<any> {
+    const requestOptions = {
+      params: new HttpParams().set(field, term)
+    };
     return this.http.get(this.transactionUrl, requestOptions)
-      .map(res => res.json() as Transaction[]);
+      .pipe(
+        retry(2),
+        catchError((err) => {
+        return this.handleError(err);
+      })
+      );
   }
 
-  customerSearch(term: string): Observable<Customer[]> {
-    const params = new URLSearchParams();
-    const requestOptions = new RequestOptions();
-    params.set('q', '"' + term + '"');
-    requestOptions.params = params;
+  customerSearch(term: string): Observable<any> {
+    const requestOptions = {
+      params: new HttpParams().set('q', '"' + term + '"')
+    };
     return this.http.get(this.customerUrl, requestOptions)
-      .map(res => res.json() as Customer[]);
+      .pipe(
+      retry(2),
+      catchError((err) => {
+        return this.handleError(err);
+      })
+    );
   }
 
-  repairSearch(term: string): Observable<RepairItem[]> {
-    const params = new URLSearchParams();
-    const requestOptions = new RequestOptions();
-    params.set('q', term);
-    requestOptions.params = params;
-    requestOptions.headers = this.jwt_headers();
+  repairSearch(term: string): Observable<any> {
+    const requestOptions = {
+      headers: this.jwt_headers(),
+      params: new HttpParams().set('q', term)
+    };
     return this.http.get(this.repairUrl, requestOptions)
-      .map(res => res.json() as RepairItem[]);
+      .pipe(
+        retry(2),
+        catchError((err) => {
+        return this.handleError(err);
+      })
+      );
   }
 
 // Item search functionality: requires additional functions to populate category and sizes in the search pand
 // using optional parameters here so that we can search by just name for an item (if a value is null the backend discards it)
-  itemSearch(name: string, category?: string, size?: string): Observable<Item[]> {
-    const params = new URLSearchParams();
-    const requestOptions = new RequestOptions();
+  itemSearch(name: string, category?: string, size?: string): Observable<any> {
+    const params = new HttpParams();
     params.set('category', category);
     params.set('size', size);
     params.set('name', name);
-    requestOptions.params = params;
+    const requestOptions = {
+      headers: this.jwt_headers(),
+      params: params
+  };
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
-      .map(res => res.json() as Item[]);
+      .pipe(
+        retry(2),
+        catchError((err) => {
+        return this.handleError(err);
+      })
+      );
   }
 
-  itemCategories(): Promise<String[]> {
+  itemCategories(): Observable<any> {
     return this.http.get(`${this.itemUrl}/categories`)
-      .toPromise()
-      .then(res => res.json())
-      .catch(err => console.log(err));
+      .pipe(
+        retry(2),
+        catchError((err) => {
+        return this.handleError(err);
+      })
+      );
   }
 
-  itemSizes(category: string): Promise<String[]> {
-    const params = new URLSearchParams();
-    const requestOptions = new RequestOptions();
+  itemSizes(category: string): Observable<any> {
+    const params = new HttpParams();
     params.set('category', category);
-    requestOptions.params = params;
+    const requestOptions = {
+      headers: this.jwt_headers(),
+      params: params
+  };
     return this.http.get(`${this.itemUrl}/sizes`, requestOptions)
-      .toPromise()
-      .then(res => res.json())
-      .catch(err => console.log(err));
+      .pipe(
+        retry(2),
+        catchError((err) => {
+        return this.handleError(err);
+      })
+      );
   }
 }
 

@@ -1,3 +1,6 @@
+<div *ngFor="let alert of alerts | async" class="alert alert-danger" role="alert">
+  Error : {{alert}}
+</div>
 <div class="container user-list">
   <form class="mb-3" [formGroup]="userForm">
     <div class="row">

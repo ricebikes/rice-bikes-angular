@@ -5,7 +5,6 @@ import { TransactionService } from "./services/transaction.service";
 import { AppComponent } from './app.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { AppRoutingModule } from "./app-routing.module";
-import { HttpModule } from "@angular/http";
 import { TransactionDetailComponent } from './components/transactions/transaction-detail/transaction-detail.component';
 import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -17,8 +16,7 @@ import { LoginComponent } from './components/login/login.component';
 import {AuthenticationService} from "./services/authentication.service";
 import {AuthGuard} from "./guards/auth.guard";
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { AlertComponent } from './components/alert/alert.component';
-import {AlertService} from "./services/alert.service";
+import {AlertService} from './services/alert.service';
 import { AuthComponent } from './components/auth/auth.component';
 import {TimeAgoPipe} from "time-ago-pipe";
 import { AdminUsersComponent } from './components/admin-users/admin-users.component';
@@ -28,6 +26,7 @@ import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.co
 import {RepairService} from './services/repair.service';
 import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import {ItemService} from './services/item.service';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -40,7 +39,6 @@ import {ItemService} from './services/item.service';
     SearchTransactionComponent,
     LoginComponent,
     NavbarComponent,
-    AlertComponent,
     AuthComponent,
     TimeAgoPipe,
     AdminUsersComponent,
@@ -51,7 +49,7 @@ import {ItemService} from './services/item.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule
   ],

@@ -18,12 +18,12 @@ export class AdminRepairsComponent implements OnInit {
   ngOnInit() {
     // get the repairs
     this.repairservice.getRepairs()
-      .then(repairs => this.repairs = repairs);
+      .subscribe(repairs => this.repairs = repairs);
   }
   addrepair() {
     // just need to use the ngForm values from editable_repair
     this.repairservice.postRepair(this.editable_repair.name, this.editable_repair.price, this.editable_repair.description)
-      .then(repair => {
+      .subscribe(repair => {
         this.repairs.unshift(repair);
       });
   }
@@ -31,7 +31,7 @@ export class AdminRepairsComponent implements OnInit {
     console.log(repair);
     // PUT the updated repair in
     this.repairservice.putRepair(repair._id, repair.name, repair.price, repair.description)
-      .then(new_repair => {
+      .subscribe(new_repair => {
         const index = this.repairs.indexOf(repair);
         if (index > -1) {
           this.repairs.splice(index, 1, new_repair);
@@ -40,11 +40,11 @@ export class AdminRepairsComponent implements OnInit {
   }
   deleterepair(repair: Repair) {
     this.repairservice.deleteRepair(repair._id)
-      .then( () => {
+      .subscribe( () => {
         const index = this.repairs.indexOf(repair);
         if (index > -1) {
           this.repairs.splice(index, 1);
         }
-    }).catch(err => console.log(err));
+    });
   }
 }

@@ -1,9 +1,10 @@
 import {Injectable, OnInit} from '@angular/core';
-import { Http } from "@angular/http";
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Subject, BehaviorSubject} from "rxjs";
 import {AlertService} from "./alert.service";
 import {CONFIG} from "../config";
 import * as jwt from 'jsonwebtoken';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class AuthenticationService implements OnInit {
@@ -12,7 +13,7 @@ export class AuthenticationService implements OnInit {
   public admin: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public projects: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: Http, private alertService: AlertService) {}
+  constructor(private http: HttpClient, private alertService: AlertService) {}
 
   ngOnInit() {
     if (localStorage.getItem('currentUser')) {
@@ -21,7 +22,19 @@ export class AuthenticationService implements OnInit {
       this.loggedIn.next(false);
     }
   }
-
+ private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // client side or network error
+      this.alertService.queueAlert(`An error occurred: ${error.error.message}`);
+    } else {
+      // backed encountered an error
+      this.alertService.queueAlert(
+        `Backend returned error code ${error.status}. ` +
+        `Message was: ${error.message}`
+      );
+    }
+    return Observable.throw(error);
+  }
   public login(x, y): Promise<any> {
     return null;
   }
@@ -29,9 +42,8 @@ export class AuthenticationService implements OnInit {
   public authenticate(ticket: String): Promise<any> {
     return this.http.get(`${CONFIG.api_url}/auth?ticket=${ticket}`)
       .toPromise()
-      .then(res => {
-        let result = res.json();
-        if (result && result.success) {
+      .then(result => {
+        if (result && result['success']) {
           localStorage.setItem('currentUser', JSON.stringify(result));
           this.loggedIn.next(true);
           this.admin.next((this.checkForRole('admin')));
@@ -66,7 +78,7 @@ export class AuthenticationService implements OnInit {
   @param role: user role to check for
    */
   private checkForRole(role: String): boolean {
-    let current_user = JSON.parse((localStorage.getItem('currentUser')));
+    const current_user = JSON.parse((localStorage.getItem('currentUser')));
     if (current_user) {
       const token = current_user.token;
       const decoded = jwt.decode(token);
@@ -81,7 +93,6 @@ export class AuthenticationService implements OnInit {
 
   public logout(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.alertService.success("Bye bye!");
       localStorage.removeItem('currentUser');
       this.loggedIn.next(false);
       this.admin.next(false);

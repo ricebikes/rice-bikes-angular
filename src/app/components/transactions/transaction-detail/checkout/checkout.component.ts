@@ -23,7 +23,7 @@ export class CheckoutComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.transactionService.getTransaction(params['_id'])
-        .then(() => {
+        .subscribe(() => {
           this.transactionService.transaction.subscribe(trans => this.transaction = trans);
           this.loading = false;
         })
@@ -34,7 +34,7 @@ export class CheckoutComponent implements OnInit {
     this.transaction.complete = true;
     this.transaction.is_paid = true;
     this.transactionService.updateTransaction(this.transaction)
-      .then(() => {
+      .subscribe(() => {
         this.finishModal.nativeElement.click();
         this.router.navigate(['/transactions']);
       });
