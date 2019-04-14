@@ -1,21 +1,13 @@
 <div class="container form-container" style="margin-top: 15px">
   <form [formGroup]="transactionForm">
-  <div class="form-group row">
-    <label for="search-box" class="col-2 col-form-label">email</label>
-    <div class="col-10">
-      <input class="form-control form-control-lg" type="text" formControlName="email"
-             #searchBox
-             id="search-box"
-             (keyup)="search(searchBox.value)">
-      <div *ngIf="customerResults" class="list-group search-dropdown" style="position: absolute; z-index: 1;">
-        <a class="list-group-item list-group-item-action"
-           *ngFor="let customer of customerResults | async"
-           (click)="setCustomer(customer)"  >
-          {{customer.email}} - {{customer.first_name}} {{customer.last_name}}
-        </a>
+    <div class="form-group row">
+      <label for="customer_search" class="col-2 col-form-label">email</label>
+      <div class="col-10">
+        <input id="customer_search" class="form-control form-control-lg" type="text" [ngbTypeahead]="customer_search"
+               [inputFormatter]="formatter" [resultFormatter]="result_formatter"
+               (selectItem)="customer_selected($event)"/>
       </div>
     </div>
-  </div>
 
   <div class="form-group row">
     <label for="first_name" class="col-2 col-form-label">first name</label>
@@ -29,8 +21,25 @@
       <input class="form-control form-control-lg" type="text" formControlName="last_name" id="last_name">
     </div>
   </div>
-
-  <button type="submit" class="btn btn-block btn-lg btn-success" (click)="submitTransaction()" [disabled]="!transactionForm.valid">Submit</button>
+    <ng-template #employeenamepopup>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <label for="name_enter" class="col-form-label">Your Name</label>
+          </div>
+          <div class="col">
+            <input type="text" id="name_enter" class="form-control" formControlName="employee_name">
+          </div>
+        </div>
+        <div class="row">
+            <div class="col">
+              <button (click)=submitTransaction() class="btn btn-success" [disabled]="!transactionForm.get('employee_name').dirty"> Submit </button>
+            </div>
+          </div>
+      </div>
+    </ng-template>
+    <button type="button" class="btn btn-block btn-lg btn-success" [ngbPopover]="employeenamepopup" popoverTitle="Enter your name" [disabled]="!transactionForm.valid">
+      Submit
+    </button>
   </form>
 </div>
-

@@ -5,6 +5,9 @@ import {Customer} from "../../models/customer";
 import {SearchService} from "../../services/search.service";
 import {Observable, Subject} from "rxjs";
 import {FormGroup, FormControl, Validators} from "@angular/forms";
+import {e} from '@angular/core/src/render3';
+import {AlertService} from '../../services/alert.service';
+import {NgbTypeaheadSelectItemEvent} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-new-transaction',
@@ -13,17 +16,17 @@ import {FormGroup, FormControl, Validators} from "@angular/forms";
 })
 export class NewTransactionComponent implements OnInit {
 
-  customerResults: Observable<Customer[]>;
-  private searchTerms = new Subject<string>();
 
   customer: Customer = new Customer();
   transactionForm: FormGroup;
+  employee_name: String;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private transactionService: TransactionService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
@@ -38,24 +41,31 @@ export class NewTransactionComponent implements OnInit {
       ]),
       'last_name': new FormControl(this.customer.last_name, [
         Validators.required
-      ])
+      ]),
+      'employee_name': new FormControl(this.employee_name)
     });
-
-    this.customerResults = this.searchTerms
-      .debounceTime(300)
-      .distinctUntilChanged()
-      .switchMap(term => term
-        ? this.searchService.customerSearch(term)
-        : Observable.of<Customer[]>([]))
-      .catch(err => {
-        console.log(err);
-        return Observable.of<Customer[]>([]);
-      });
   }
 
+  // function used to search for customer by input
+  customer_search = (text: Observable<string>) =>
+    text
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .switchMap(search => search
+        ? this.searchService.customerSearch(search)
+        : [])
+      .catch (error => {
+        this.alertService.queueAlert(error);
+        return Observable.of([]);
+      })
 
-  search(term: string): void {
-    this.searchTerms.next(term);
+  // formatter for customer results
+  formatter = (cust: Customer) => cust.email;
+  // formatter for customer results in list
+  result_formatter = (cust: Customer) => `${cust.email} - ${cust.first_name} ${cust.last_name}` ;
+
+  customer_selected(event: NgbTypeaheadSelectItemEvent): void {
+      this.setCustomer(event.item);
   }
 
   setCustomer(customer: Customer): void {
@@ -64,10 +74,10 @@ export class NewTransactionComponent implements OnInit {
       {
         email: this.customer.email,
         first_name: this.customer.first_name,
-        last_name: this.customer.last_name
+        last_name: this.customer.last_name,
+        employee_name: null,
       }
     );
-    this.searchTerms.next('');
   }
 
   submitTransaction(): void {
