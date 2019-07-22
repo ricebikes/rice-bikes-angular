@@ -152,6 +152,8 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.refurb = !this.transaction.refurb;
     this.updateTransaction();
   }
-
-
+  toggleUrgent() :void{
+    this.transaction.urgent = !this.transaction.urgent;
+    this.updateTransaction();
+  }
 }

@@ -10,6 +10,7 @@ export class Transaction {
   complete: boolean;
   is_paid: boolean;
   waiting_part: boolean;
+  urgent: boolean;
   waiting_email: boolean;
   total_cost: number;
   description: string;

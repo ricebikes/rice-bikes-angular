@@ -26,10 +26,23 @@ export class TransactionsComponent implements OnInit {
    * @param {Object} props
    */
   getTransactions(tab: string, props?: Object): void {
+    console.log("calling getTransactions()");
+    console.log(props)
     this.loading = true;
     this.transactionService.getTransactions(props)
       .then(transactions => {
-        transactions.sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
+        transactions.sort((a, b) => {
+            if (a.urgent && b.urgent || !(a.urgent || b.urgent)){
+                return (new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
+            }else{
+                if(b.urgent){
+                    return 1;
+                }else {
+                    return -1;
+                }
+            }
+            
+        });
         this.transactions = transactions;
         this.loading = false;
         this.currentTab = tab;
