@@ -157,5 +157,4 @@ export class TransactionDetailComponent implements OnInit {
     this.updateTransaction();
   }
 
-
 }

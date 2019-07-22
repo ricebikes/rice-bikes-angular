@@ -50,7 +50,6 @@
           {{transaction?.transaction_type}}</span>
         <span *ngIf="transaction?.waiting_part" class="badge badge-danger"><i class="fa fa-wrench"></i></span>
         <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
-        <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i> </span>
 
       </th>
       <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>

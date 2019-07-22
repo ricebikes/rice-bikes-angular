@@ -201,12 +201,13 @@
         <i class="fa fa-bicycle"></i>
         Mark as Refurb
       </button>
+
       <button *ngIf = "!transaction.urgent && !transaction.complete" (click)="toggleUrgent()" class="btn btn-outline-warning btn lng"><i class="fas fa-exclamation"></i></button>
       <button *ngIf = "transaction.urgent && !transaction.complete" (click)="toggleUrgent()" class="btn btn-danger btn lng"><i class="fas fa-exclamation"></i></button>
-        <div class="dropdown-menu">
-        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
+      <div class="dropdown-menu">
+      <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
       </div>
       <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
     </div>
