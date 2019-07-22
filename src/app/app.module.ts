@@ -29,6 +29,7 @@ import {RepairService} from './services/repair.service';
 import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import {ItemService} from './services/item.service';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +47,7 @@ import {ItemService} from './services/item.service';
     AdminUsersComponent,
     CheckoutComponent,
     AdminRepairsComponent,
-    AdminItemsComponent,
+    AdminItemsComponent
   ],
   imports: [
     BrowserModule,
