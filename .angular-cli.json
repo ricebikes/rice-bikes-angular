@@ -21,7 +21,7 @@
       "styles": [
         "styles.css"
       ],
-      "scripts": [],
+      "scripts": ["app/enable_popovers.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

@@ -4,6 +4,7 @@ import { Transaction } from "../../../models/transaction";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {Bike} from "../../../models/bike";
+import {enablePopovers} from '../../../enable_popovers';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -51,6 +52,7 @@ export class TransactionDetailComponent implements OnInit {
           this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
         })
     });
+    enablePopovers();
   }
 
   changeType(type: string): void {
