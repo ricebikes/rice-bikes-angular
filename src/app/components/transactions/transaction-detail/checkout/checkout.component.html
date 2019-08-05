@@ -19,11 +19,22 @@
   </div>
 </div>
 
+
+
 <div class="container mb-4">
   <div class="card mb-2" style="width: 75%; margin: 0 auto;">
     <div #price class="card-body text-center">
       <h1 *ngIf="!isEdit" (click)="isEdit = true" style="font-size: 100px">${{ transaction.total_cost }}</h1>
       <input *ngIf="isEdit"  (keydown.escape)="isEdit = false" (keydown.enter)="isEdit = false" [(ngModel)]="transaction.total_cost" class="form-control form-control-lg" type=number style="font-size: 100px;width: 200px; height: 300px">
+      <!-- <form id="paymentMethod" [formGroup]="userForm">
+        <label for="card">Pay by: </label> <input type="radio" id="card" value="card"> Card
+        <input type="radio" id="cash" value="cash"> <label for="cash">Cash </label>
+      </form>-->
+      <select id = "select" class="custom-select" style="width: 50%">
+        <option selected value="">Paid by...</option>
+        <option value="cash">Cash</option>
+        <option value="card">Card</option>
+      </select>
     </div>
   </div>
 
@@ -61,7 +72,8 @@
 
   <div class="card mb-2" style="width: 75%; margin: 0 auto;">
     <div class="card-body">
-      <button data-toggle="modal" data-target="#finishModal" class="btn btn-success btn-lg btn-block">Finish</button>
+      <!--Jquery: once selected, trigger this button to be enabled. then, int he finish function, accept card value & store to mongo -->
+      <button data-toggle="modal" data-target="#finishModal" class="btn btn-success btn-lg btn-block" disabled>Finish</button>
     </div>
   </div>
 </div>
