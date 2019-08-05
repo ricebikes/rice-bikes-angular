@@ -24,6 +24,8 @@ export class TransactionDetailComponent implements OnInit {
   displayDescription: string;
   priceEdit: boolean = false;
 
+
+
   constructor(
     private transactionService: TransactionService,
     private route: ActivatedRoute,
@@ -156,5 +158,7 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.urgent = !this.transaction.urgent;
     this.updateTransaction();
   }
+
+
 
 }

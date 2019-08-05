@@ -30,7 +30,7 @@
         <label for="card">Pay by: </label> <input type="radio" id="card" value="card"> Card
         <input type="radio" id="cash" value="cash"> <label for="cash">Cash </label>
       </form>-->
-      <select id = "select" class="custom-select" style="width: 50%">
+      <select id = "select" class="form-control" #t style="width: 50%" (change)="onSelectPayment(t.value)">
         <option selected value="">Paid by...</option>
         <option value="cash">Cash</option>
         <option value="card">Card</option>
@@ -73,7 +73,7 @@
   <div class="card mb-2" style="width: 75%; margin: 0 auto;">
     <div class="card-body">
       <!--Jquery: once selected, trigger this button to be enabled. then, int he finish function, accept card value & store to mongo -->
-      <button data-toggle="modal" data-target="#finishModal" class="btn btn-success btn-lg btn-block" disabled>Finish</button>
+      <button [disabled]="transaction.paymentType.length == 0" data-toggle="modal" data-target="#finishModal" class="btn btn-success btn-lg btn-block">Finish</button>
     </div>
   </div>
 </div>

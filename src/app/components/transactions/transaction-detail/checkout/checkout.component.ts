@@ -26,6 +26,7 @@ export class CheckoutComponent implements OnInit {
         .then(() => {
           this.transactionService.transaction.subscribe(trans => this.transaction = trans);
           this.loading = false;
+          this.transaction.paymentType = "";
         })
     })
   }
@@ -33,10 +34,16 @@ export class CheckoutComponent implements OnInit {
   finish() {
     this.transaction.complete = true;
     this.transaction.is_paid = true;
+    console.log(this.transaction.paymentType);
     this.transactionService.updateTransaction(this.transaction)
       .then(() => {
         this.finishModal.nativeElement.click();
         this.router.navigate(['/transactions']);
       });
+  }
+
+  onSelectPayment(pay_val:string): void{
+    this.transaction.paymentType = pay_val;
+    console.log("Changed to:" + this.transaction.paymentType);
   }
 }

@@ -11,7 +11,6 @@ import { Transaction } from "../../models/transaction";
 export class TransactionsComponent implements OnInit {
   transactions: Transaction[];
   loading: boolean = true;
-
   constructor(public transactionService: TransactionService) { }
 
   currentTab: string = 'active';
