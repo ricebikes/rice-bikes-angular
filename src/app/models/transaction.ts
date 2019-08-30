@@ -20,7 +20,6 @@ export class Transaction {
   items: Item[];
   repairs: RepairItem[];
   refurb: boolean;
-  urgent: boolean;
 
   constructor() {}
 }
