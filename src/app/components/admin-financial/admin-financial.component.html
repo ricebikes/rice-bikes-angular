@@ -1,3 +1,55 @@
-<p>
-  admin-financial works!
-</p>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Multi Slot Transclude</title>
+
+  <script src="../../../../node_modules/angular/angular.min.js"></script>
+  <script src="../../../../node_modules/chart.js/dist/Chart.min.js"></script>
+  <script src="../../../../node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
+</head>
+<body data-ng-app="myApp" data-ng-controller="myController as ctrl">
+<canvas id="outreach" class="chart chart-bar"
+        data-chart-labels="ctrl.socialChart.labels"
+        data-chart-data="ctrl.socialChart.data"
+        data-chart-series="ctrl.socialChart.series"
+        data-chart-colors="ctrl.socialChart.colors"
+        data-chart-options="ctrl.socialChart.options"></canvas>
+
+
+<script>
+  (function(angular) {
+    'use strict';
+    angular.module('myApp', ['chart.js'])
+      .controller('myController', [function() {
+        var ctrl = this;
+
+        ctrl.socialChart = {
+          options: {
+            scales: {
+              xAxes: [{
+                stacked: true,
+              }],
+              yAxes: [{
+                stacked: true
+              }]
+            }
+          },
+          type: 'bar',
+          labels: ["M", "T", "W", "R", "F", "S", "S"],
+          series: ['apples', 'oranges'],
+          colors: ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'],
+          data: [
+            [12, 19, 3, 17, 28, 24, 7],
+            [30, 29, 5, 5, 20, 3, 10]
+          ]
+        }
+      }]);
+  })(window.angular);
+</script>
+
+</body>
+
+</html>
+

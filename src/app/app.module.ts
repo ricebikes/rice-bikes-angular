@@ -31,6 +31,7 @@ import {ItemService} from './services/item.service';
 import { AdminFinancialComponent } from './components/admin-financial/admin-financial.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +50,7 @@ import { AdminFinancialComponent } from './components/admin-financial/admin-fina
     CheckoutComponent,
     AdminRepairsComponent,
     AdminItemsComponent,
-    AdminFinancialComponent
+    AdminFinancialComponent,
   ],
   imports: [
     BrowserModule,
