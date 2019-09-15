@@ -28,6 +28,7 @@ import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.co
 import {RepairService} from './services/repair.service';
 import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import {ItemService} from './services/item.service';
+import {ActiveUserService} from './services/activeuser.service';
 
 
 @NgModule({
@@ -57,6 +58,7 @@ import {ItemService} from './services/item.service';
     ReactiveFormsModule
   ],
   providers: [
+    ActiveUserService,
     TransactionService,
     SearchService,
     AuthenticationService,
