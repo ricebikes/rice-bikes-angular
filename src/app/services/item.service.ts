@@ -64,7 +64,7 @@ export class ItemService {
      shop_cost: shop_cost,
      quantity: quantity,
      warning_quantity: warn_level
-    },this.jwt())
+    }, this.jwt())
       .toPromise()
       .then(res => res.json())
       .catch( err => console.log(err));

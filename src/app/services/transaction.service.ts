@@ -61,8 +61,37 @@ export class TransactionService {
       .catch(err => this.handleError(err));
   }
 
+  updateDescription(id: string, description: string): Promise<any> {
+    return this.http.put(`${this.backendUrl}/${id}/description`, {'description': description}, this.jwt())
+      .toPromise()
+      .then(res => this.transaction.next(res.json() as Transaction))
+      .catch(err => this.handleError(err));
+  }
+
+  setComplete(id: string, complete: boolean): Promise<any> {
+    return this.http.put(`${this.backendUrl}/${id}/complete`, {'complete': complete}, this.jwt())
+      .toPromise()
+      .then(res => this.transaction.next(res.json() as Transaction))
+      .catch(err => this.handleError(err));
+  }
+
+  setPaid(id: string, paid: boolean): Promise<any> {
+      return this.http.put(`${this.backendUrl}/${id}/mark_paid`, {'is_paid': paid}, this.jwt())
+        .toPromise()
+        .then(res => this.transaction.next(res.json() as Transaction))
+        .catch(err => this.handleError(err));
+  }
+
+  updateRepair(transactionID: string, repairID: string, completed: boolean): Promise<any> {
+    return this.http.put(`${this.backendUrl}/${transactionID}/update_repair`,{_id: repairID, complete: completed}, this.jwt())
+      .toPromise()
+      .then(res => this.transaction.next(res.json() as Transaction))
+      .catch(err => this.handleError(err));
+  }
+
+
   createTransaction(type: string, customer: Customer): Promise<any> {
-    let data = {
+    const data = {
       transaction_type: type,
       customer: {
         email: customer.email,
