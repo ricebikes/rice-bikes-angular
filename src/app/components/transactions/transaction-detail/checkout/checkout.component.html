@@ -30,11 +30,20 @@
         <label for="card">Pay by: </label> <input type="radio" id="card" value="card"> Card
         <input type="radio" id="cash" value="cash"> <label for="cash">Cash </label>
       </form>-->
-      <select id = "select" class="form-control" #t style="width: 50%" (change)="onSelectPayment(t.value)">
-        <option selected value="">Paid by...</option>
-        <option value="cash">Cash</option>
-        <option value="card">Card</option>
-      </select>
+<!--      <select id = "select" class="form-control" #t style="width: 50%" (change)="onSelectPayment(t.value)">-->
+<!--        <option selected value="">Paid by...</option>-->
+<!--        <option value="cash">Cash</option>-->
+<!--        <option value="card">Card</option>-->
+<!--      </select>-->
+      <div class="pretty p-default p-curve">
+        <input type="checkbox" id="card" #t (change)="onSelectPayment(t.id, t.checked)"/><div class="state"><label>Card</label></div>
+      </div>
+      <div class="pretty p-default p-curve">
+       <input type="checkbox" id="cash" #u (change)="onSelectPayment(u.id, u.checked)"/><div class="state"><label>Cash</label></div>
+      </div>
+      <div class="pretty p-default p-curve">
+        <input type="checkbox" id="check" #v (change)="onSelectPayment(v.id, v.checked)"/><div class="state"><label>Check</label></div>
+      </div>
     </div>
   </div>
 

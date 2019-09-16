@@ -6,7 +6,7 @@ import {Transaction} from "../../../../models/transaction";
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css']
+  styleUrls: ['./checkout.component.css', '../../../../../../node_modules/pretty-checkbox/src/pretty-checkbox.scss']
 })
 export class CheckoutComponent implements OnInit {
 
@@ -26,7 +26,7 @@ export class CheckoutComponent implements OnInit {
         .then(() => {
           this.transactionService.transaction.subscribe(trans => this.transaction = trans);
           this.loading = false;
-          this.transaction.paymentType = "";
+          this.transaction.paymentType = [];
         })
     })
   }
@@ -42,8 +42,21 @@ export class CheckoutComponent implements OnInit {
       });
   }
 
-  onSelectPayment(pay_val:string): void{
-    this.transaction.paymentType = pay_val;
-    console.log("Changed to:" + this.transaction.paymentType);
+  onSelectPayment(pay_val:string, checked:boolean): void{
+    var indexPay = this.transaction.paymentType.indexOf(pay_val);
+    if(checked){
+      if(!(indexPay >= 0)){
+        this.transaction.paymentType.push(pay_val);
+      }
+    }
+    else{
+      if(indexPay >= 0){
+        this.transaction.paymentType.splice(indexPay, 1);
+      }
+    }
+    console.log("This is paymentArray "+this.transaction.paymentType + typeof this.transaction.paymentType);
+
+
+    //console.log("Changed to:" + this.transaction.paymentType);
   }
 }

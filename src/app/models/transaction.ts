@@ -20,7 +20,7 @@ export class Transaction {
   repairs: RepairItem[];
   refurb: boolean;
   urgent: boolean;
-  paymentType: string;
+  paymentType: string[];
 
   constructor() {}
 }
