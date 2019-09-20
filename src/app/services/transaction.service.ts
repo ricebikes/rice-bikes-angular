@@ -7,8 +7,8 @@ import { Customer } from '../models/customer';
 import { Bike } from '../models/bike';
 import {Router} from '@angular/router';
 import {AlertService} from './alert.service';
-import {ActiveUserService} from './activeuser.service';
 import {CONFIG} from '../config';
+import {AuthenticationService} from './authentication.service';
 
 @Injectable()
 export class TransactionService {
@@ -17,19 +17,14 @@ export class TransactionService {
 
   public transaction: BehaviorSubject<Transaction>;
 
-  constructor(private http: Http, private router: Router, private alertService: AlertService,private userService: ActiveUserService) {
+  constructor(private http: Http, private router: Router, private alertService: AlertService, private authService: AuthenticationService) {
     this.transaction = new BehaviorSubject<Transaction>(null);
   }
 
-  private jwt() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser.token) {
-      const headers = new Headers({ 'x-access-token': currentUser.token });
-      return new RequestOptions({ headers: headers });
-    }
-  }
 
   private handleError(err): void {
+    console.log("ERROR");
+    console.log(err);
     if (err.status === 401 ) {
       this.alertService.error('Looks like you aren\'t allowed to do that :(', false);
     }
@@ -42,21 +37,21 @@ export class TransactionService {
    */
   getTransactions(props?: any): Promise<any> {
     const querystring = '?' + Object.keys(props).map(k => `${k}=${encodeURIComponent(props[k])}`).join('&');
-    return this.http.get(this.backendUrl + querystring, this.jwt())
+    return this.http.get(this.backendUrl + querystring, this.authService.getCredentials())
       .toPromise()
       .then(res => res.json() as Transaction[])
       .catch(err => this.handleError(err));
   }
 
   getTransaction(id: string): Promise<any> {
-    return this.http.get(`${this.backendUrl}/${id}`, this.jwt())
+    return this.http.get(`${this.backendUrl}/${id}`, this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json() as Transaction))
       .catch(err => this.handleError(err));
   }
 
   updateTransaction(transaction: Transaction): Promise<any> {
-    return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, this.jwt())
+    return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json() as Transaction))
       .catch(err => this.handleError(err));
@@ -64,7 +59,7 @@ export class TransactionService {
 
   updateDescription(id: string, description: string): Promise<any> {
     return this.http.put(`${this.backendUrl}/${id}/description`, {'description': description},
-      this.jwt().merge(this.userService.userHeader()))
+      this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json() as Transaction))
       .catch(err => this.handleError(err));
@@ -72,7 +67,7 @@ export class TransactionService {
 
   setComplete(id: string, complete: boolean): Promise<any> {
     return this.http.put(`${this.backendUrl}/${id}/complete`, {'complete': complete},
-      this.jwt().merge(this.userService.userHeader()))
+      this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json() as Transaction))
       .catch(err => this.handleError(err));
@@ -80,15 +75,15 @@ export class TransactionService {
 
   setPaid(id: string, paid: boolean): Promise<any> {
       return this.http.put(`${this.backendUrl}/${id}/mark_paid`, {'is_paid': paid},
-        this.jwt().merge(this.userService.userHeader()))
+        this.authService.getCredentials())
         .toPromise()
         .then(res => this.transaction.next(res.json() as Transaction))
         .catch(err => this.handleError(err));
   }
 
   updateRepair(transactionID: string, repairID: string, completed: boolean): Promise<any> {
-    return this.http.put(`${this.backendUrl}/${transactionID}/update_repair`, {_id: repairID, complete: completed},
-      this.jwt().merge(this.userService.userHeader()))
+    return this.http.put(`${this.backendUrl}/${transactionID}/update_repair`, {_id: repairID, completed: completed},
+      this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json() as Transaction))
       .catch(err => this.handleError(err));
@@ -104,7 +99,7 @@ export class TransactionService {
         last_name: customer.last_name
       }
     };
-    return this.http.post(this.backendUrl, data, this.jwt())
+    return this.http.post(this.backendUrl, data, this.authService.getCredentials())
       .toPromise()
       .then(res => res.json() as Transaction)
       .catch(err => this.handleError(err));
@@ -117,14 +112,14 @@ export class TransactionService {
         _id: customer_id
       }
     };
-    return this.http.post(this.backendUrl, data, this.jwt())
+    return this.http.post(this.backendUrl, data, this.authService.getCredentials())
       .toPromise()
       .then(res => res.json() as Transaction)
       .catch(err => this.handleError(err));
   }
 
   deleteTransaction(transaction_id: string): Promise<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}`, this.jwt())
+    return this.http.delete(`${this.backendUrl}/${transaction_id}`, this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(null))
       .catch(err => this.handleError(err));
@@ -136,21 +131,21 @@ export class TransactionService {
       model: bike.model,
       description: bike.description
     };
-    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, data, this.jwt())
+    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, data, this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
   }
 
   addExistingBikeToTransaction(transaction_id: string, bike_id: string): Promise<any> {
-    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, {_id: bike_id}, this.jwt())
+    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, {_id: bike_id}, this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
   }
 
   deleteBikeFromTransaction(transaction_id: string, bike_id: string): Promise<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}/bikes/${bike_id}`, this.jwt())
+    return this.http.delete(`${this.backendUrl}/${transaction_id}/bikes/${bike_id}`, this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
@@ -158,7 +153,7 @@ export class TransactionService {
 
   addItemToTransaction(transaction_id: string, item_id: string): Promise<any> {
     return this.http.post(`${this.backendUrl}/${transaction_id}/items`, {_id: item_id},
-      this.jwt().merge(this.userService.userHeader()))
+      this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
@@ -166,7 +161,7 @@ export class TransactionService {
 
   deleteItemFromTransaction(transaction_id: string, item_id: string): Promise<any> {
     return this.http.delete(`${this.backendUrl}/${transaction_id}/items/${item_id}`,
-      this.jwt().merge(this.userService.userHeader()))
+      this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
@@ -174,7 +169,7 @@ export class TransactionService {
 
   addRepairToTransaction(transaction_id: string, repair_id: string): Promise<any> {
     return this.http.post(`${this.backendUrl}/${transaction_id}/repairs`, {_id: repair_id},
-      this.jwt().merge(this.userService.userHeader()))
+      this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
@@ -182,14 +177,14 @@ export class TransactionService {
 
   deleteRepairFromTransaction(transaction_id: string, repair_id: string): Promise<any> {
     return this.http.delete(`${this.backendUrl}/${transaction_id}/repairs/${repair_id}`,
-      this.jwt().merge(this.userService))
+      this.authService.getCredentials())
       .toPromise()
       .then(res => this.transaction.next(res.json()))
       .catch(err => this.handleError(err));
   }
 
   notifyCustomerEmail(transaction_id: string): Promise<any> {
-    return this.http.get(`${this.backendUrl}/${transaction_id}/email-notify`, this.jwt())
+    return this.http.get(`${this.backendUrl}/${transaction_id}/email-notify`, this.authService.getCredentials())
       .toPromise()
       .then(res => res.json())
       .catch(err => this.handleError(err));

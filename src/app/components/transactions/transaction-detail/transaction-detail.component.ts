@@ -81,10 +81,10 @@ export class TransactionDetailComponent implements OnInit {
     });
   }
 
-  completeRepair(repair_id: string): void {
-    let repairIdx = this.transaction.repairs.findIndex(rep => rep._id === repair_id);
+  toggleCompleteRepair(repair_id: string): void {
+    const repairIdx = this.transaction.repairs.findIndex(rep => rep._id === repair_id);
     this.transaction.repairs[repairIdx].completed = !this.transaction.repairs[repairIdx].completed;
-    this.updateTransaction();
+    this.transactionService.updateRepair(this.transaction._id, repair_id, this.transaction.repairs[repairIdx].completed);
   }
 
   deleteRepair(repair_id: string): void {
@@ -97,7 +97,7 @@ export class TransactionDetailComponent implements OnInit {
 
   get canComplete(): boolean {
     if (this.transaction.waiting_part) return false;
-    for (let repair of this.transaction.repairs) {
+    for (const repair of this.transaction.repairs) {
       if (!repair.completed) {
         return false;
       }
@@ -113,7 +113,7 @@ export class TransactionDetailComponent implements OnInit {
         this.emailLoading = false;
         this.transaction.complete = true;
         this.transaction.date_completed = date;
-        this.updateTransaction();
+        this.transactionService.setComplete(this.transaction._id, this.transaction.complete);
       });
   }
 
@@ -121,22 +121,22 @@ export class TransactionDetailComponent implements OnInit {
     const date = Date.now().toString();
     this.transaction.complete = true;
     this.transaction.date_completed = date;
-    this.updateTransaction();
+    this.transactionService.setComplete(this.transaction._id, this.transaction.complete);
   }
 
   reopenTransaction(): void {
     this.transaction.complete = false;
-    this.updateTransaction();
+    this.transactionService.setComplete(this.transaction._id, this.transaction.complete);
   }
 
   emailCustomer(): void {
-    window.open(`mailto:${this.transaction.customer.email}?Subject=Your bike`, "Email customer");
+    window.open(`mailto:${this.transaction.customer.email}?Subject=Your bike`, 'Email customer');
   }
 
   updateDescription(): void {
     this.editingTransaction = false;
     this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
-    this.updateTransaction();
+    this.transactionService.updateDescription(this.transaction._id, this.transaction.description);
   }
 
   toggleWaitOnPart(): void {

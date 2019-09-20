@@ -124,7 +124,7 @@
             <a *ngFor="let repair of transaction?.repairs" class="list-group-item" [ngClass]="{'list-group-item-success': repair?.completed}">
               <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
               <button *ngIf="!transaction?.is_paid" (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-              <button *ngIf="!transaction?.is_paid" title="Complete or reopen a repair" (click)="completeRepair(repair._id)"
+              <button *ngIf="!transaction?.is_paid" title="Complete or reopen a repair" (click)="toggleCompleteRepair(repair._id)"
                       style="margin: auto 5px"
                       [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-success': repair.completed}"
                       class="float-right btn btn-sm">
@@ -212,6 +212,8 @@
       <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
     </div>
   </div>
+  <p>This is the action list</p>
+  <p *ngFor="let action of transaction?.actions">{{action.employee.username}} : {{action.description}}</p>
 </div>
 
 

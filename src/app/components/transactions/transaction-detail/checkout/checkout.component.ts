@@ -33,7 +33,7 @@ export class CheckoutComponent implements OnInit {
   finish() {
     this.transaction.complete = true;
     this.transaction.is_paid = true;
-    this.transactionService.updateTransaction(this.transaction)
+    this.transactionService.setPaid(this.transaction._id, this.transaction.is_paid)
       .then(() => {
         this.finishModal.nativeElement.click();
         this.router.navigate(['/transactions']);

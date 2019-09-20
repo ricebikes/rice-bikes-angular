@@ -1,9 +1,11 @@
 import {Injectable, OnInit} from '@angular/core';
-import { Http } from "@angular/http";
-import {Subject, BehaviorSubject} from "rxjs";
-import {AlertService} from "./alert.service";
-import {CONFIG} from "../config";
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Subject, BehaviorSubject} from 'rxjs';
+import {AlertService} from './alert.service';
+import {CONFIG} from '../config';
 import * as jwt from 'jsonwebtoken';
+import {User} from '../models/user';
+import {AdminService} from './admin.service';
 
 @Injectable()
 export class AuthenticationService implements OnInit {
@@ -12,7 +14,10 @@ export class AuthenticationService implements OnInit {
   public admin: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public projects: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private http: Http, private alertService: AlertService) {}
+  private _currentUser: User;
+
+  constructor(private http: Http, private alertService: AlertService, private userManager: AdminService) {
+  }
 
   ngOnInit() {
     if (localStorage.getItem('currentUser')) {
@@ -30,7 +35,7 @@ export class AuthenticationService implements OnInit {
     return this.http.get(`${CONFIG.api_url}/auth?ticket=${ticket}`)
       .toPromise()
       .then(res => {
-        let result = res.json();
+        const result = res.json();
         if (result && result.success) {
           localStorage.setItem('currentUser', JSON.stringify(result));
           this.loggedIn.next(true);
@@ -66,7 +71,7 @@ export class AuthenticationService implements OnInit {
   @param role: user role to check for
    */
   private checkForRole(role: String): boolean {
-    let current_user = JSON.parse((localStorage.getItem('currentUser')));
+    const current_user = JSON.parse((localStorage.getItem('currentUser')));
     if (current_user) {
       const token = current_user.token;
       const decoded = jwt.decode(token);
@@ -81,13 +86,50 @@ export class AuthenticationService implements OnInit {
 
   public logout(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.alertService.success("Bye bye!");
+      this.alertService.success('Bye bye!');
       localStorage.removeItem('currentUser');
       this.loggedIn.next(false);
       this.admin.next(false);
-      return resolve("Logged out");
+      return resolve('Logged out');
     });
+  }
 
+  /**
+   * Sets new stored user
+   * @param updatedUser: new user to set
+   */
+  setUser(updatedUser: User) {
+    this._currentUser = updatedUser;
+  }
+
+  /**
+   * Gets the current stored user
+   */
+  getUser(): User {
+    return this._currentUser;
+  }
+
+  /**
+   * Gets list of current users registered with application
+   */
+  userList(): Promise<any> {
+    return this.userManager.getUsers();
+  }
+  /**
+   * Returns user credentials for backend, formed as headers to add to the HTTP request.
+   */
+  public getCredentials(): RequestOptions {
+    this.userList().then(res => this.setUser(res[0]));
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser.token) {
+        if (this._currentUser) {
+          const headers = new Headers({ 'x-access-token': currentUser.token,
+            'user-id' : this.getUser()._id});
+          return new RequestOptions({ headers: headers });
+        }
+        const headers = new Headers({ 'x-access-token': currentUser.token});
+        return new RequestOptions({ headers: headers });
+      }
   }
 
 }
