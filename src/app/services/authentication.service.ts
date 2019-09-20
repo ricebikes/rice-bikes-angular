@@ -6,6 +6,14 @@ import {CONFIG} from '../config';
 import * as jwt from 'jsonwebtoken';
 import {User} from '../models/user';
 import {AdminService} from './admin.service';
+import {Observable} from 'rxjs/Observable';
+
+// export second class to track user state
+export class UserState {
+  user: User;
+  state: String;
+}
+
 
 @Injectable()
 export class AuthenticationService implements OnInit {
@@ -14,10 +22,19 @@ export class AuthenticationService implements OnInit {
   public admin: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public projects: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  // subject that handles emitting new values for the user ID.
+  private userEmitter = new Subject<User>();
+
+  // subject that tracks communication with the user tracker
+  private userTrackerSource = new BehaviorSubject<UserState>({
+    user: null,
+    // tells subscribers that the user login has timed out, but no action is required.
+    state: 'timeout'
+  });
+
   private _currentUser: User;
 
-  constructor(private http: Http, private alertService: AlertService, private userManager: AdminService) {
-  }
+  constructor(private http: Http, private alertService: AlertService, private userManager: AdminService) {}
 
   ngOnInit() {
     if (localStorage.getItem('currentUser')) {
@@ -95,18 +112,26 @@ export class AuthenticationService implements OnInit {
   }
 
   /**
-   * Sets new stored user
+   * Sets new stored user. Should be called by provider of new users.
    * @param updatedUser: new user to set
    */
   setUser(updatedUser: User) {
-    this._currentUser = updatedUser;
+    // set the next user in the tracker source
+    console.log('Setting User');
+    this.userTrackerSource.next({
+      user: updatedUser,
+      // tells listeners the user tracker is set and no action is needed
+      state: 'set'
+    });
+    // this will tell any listeners waiting on a user to be selected that the user is ready.
+    this.userEmitter.next(updatedUser);
   }
 
   /**
-   * Gets the current stored user
+   * Gets the user tracker source as an observable. This is the only way outside components may view values.
    */
-  getUser(): User {
-    return this._currentUser;
+  getUser(): Observable<UserState> {
+    return this.userTrackerSource.asObservable();
   }
 
   /**
@@ -117,19 +142,48 @@ export class AuthenticationService implements OnInit {
   }
   /**
    * Returns user credentials for backend, formed as headers to add to the HTTP request.
+   * Does not include user ID. Use when action tracking is not required, only JWT
    */
-  public getCredentials(): RequestOptions {
-    this.userList().then(res => this.setUser(res[0]));
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+  public getCredentials(): Promise<RequestOptions> {
+    // return a promise. Promise will resolve if we have a logged in user
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    return new Promise<RequestOptions>((resolve, reject) => {
       if (currentUser.token) {
-        if (this._currentUser) {
-          const headers = new Headers({ 'x-access-token': currentUser.token,
-            'user-id' : this.getUser()._id});
-          return new RequestOptions({ headers: headers });
-        }
-        const headers = new Headers({ 'x-access-token': currentUser.token});
-        return new RequestOptions({ headers: headers });
+        const headers = new Headers({'x-access-token': currentUser.token});
+        resolve(new RequestOptions({headers: headers}));
       }
+      // failed to get token. Reject the request.
+      reject();
+    });
   }
 
+  /**
+   * Returns user credentials with the current user as the user-id header. Will prompt
+   * User to give their name if current user login has timed out.
+   */
+  public getUserCredentials(): Promise<RequestOptions> {
+    // resolve promise once we have a user to return. If none exists, emit an event so that we can ask for one.
+    return new Promise<RequestOptions>((resolve, reject) => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser.token) {
+        // async block. Will execute once a value is emitted for the current user
+        this.userEmitter.subscribe((nextUser) => {
+          console.log('Got a user');
+          const headers = new Headers({'x-access-token': currentUser.token,
+            'user-id': nextUser._id});
+          resolve(new RequestOptions({headers: headers}));
+        });
+        if (this.userTrackerSource.value.state === 'timeout') {
+          console.log('Waiting for user');
+          // emit a new state. This will trigger user tracker to get another user.
+          this.userTrackerSource.next({user: null, state: 'waiting'});
+        } else {
+          this.userEmitter.next(this.userTrackerSource.getValue().user);
+        }
+      } else {
+
+      }
+    });
+  }
 }

@@ -28,6 +28,7 @@ import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.co
 import {RepairService} from './services/repair.service';
 import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import {ItemService} from './services/item.service';
+import { UserTrackerComponent } from './components/user-tracker/user-tracker.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import {ItemService} from './services/item.service';
     AdminUsersComponent,
     CheckoutComponent,
     AdminRepairsComponent,
-    AdminItemsComponent
+    AdminItemsComponent,
+    UserTrackerComponent,
   ],
   imports: [
     BrowserModule,

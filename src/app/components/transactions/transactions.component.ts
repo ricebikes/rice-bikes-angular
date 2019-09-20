@@ -26,8 +26,6 @@ export class TransactionsComponent implements OnInit {
    * @param {Object} props
    */
   getTransactions(tab: string, props?: Object): void {
-    console.log("calling getTransactions()");
-    console.log(props);
     this.loading = true;
     this.transactionService.getTransactions(props)
       .then(transactions => {

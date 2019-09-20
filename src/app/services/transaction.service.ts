@@ -23,7 +23,7 @@ export class TransactionService {
 
 
   private handleError(err): void {
-    console.log("ERROR");
+    console.log('ERROR');
     console.log(err);
     if (err.status === 401 ) {
       this.alertService.error('Looks like you aren\'t allowed to do that :(', false);
@@ -37,56 +37,70 @@ export class TransactionService {
    */
   getTransactions(props?: any): Promise<any> {
     const querystring = '?' + Object.keys(props).map(k => `${k}=${encodeURIComponent(props[k])}`).join('&');
-    return this.http.get(this.backendUrl + querystring, this.authService.getCredentials())
-      .toPromise()
-      .then(res => res.json() as Transaction[])
-      .catch(err => this.handleError(err));
+    return this.authService.getCredentials().then((credentials) => {
+      return this.http.get(this.backendUrl + querystring, credentials)
+        .toPromise()
+        .then(res => res.json() as Transaction[])
+        .catch(err => this.handleError(err));
+    });
   }
 
   getTransaction(id: string): Promise<any> {
-    return this.http.get(`${this.backendUrl}/${id}`, this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json() as Transaction))
-      .catch(err => this.handleError(err));
-  }
-
-  updateTransaction(transaction: Transaction): Promise<any> {
-    return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json() as Transaction))
-      .catch(err => this.handleError(err));
-  }
-
-  updateDescription(id: string, description: string): Promise<any> {
-    return this.http.put(`${this.backendUrl}/${id}/description`, {'description': description},
-      this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json() as Transaction))
-      .catch(err => this.handleError(err));
-  }
-
-  setComplete(id: string, complete: boolean): Promise<any> {
-    return this.http.put(`${this.backendUrl}/${id}/complete`, {'complete': complete},
-      this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json() as Transaction))
-      .catch(err => this.handleError(err));
-  }
-
-  setPaid(id: string, paid: boolean): Promise<any> {
-      return this.http.put(`${this.backendUrl}/${id}/mark_paid`, {'is_paid': paid},
-        this.authService.getCredentials())
+    return this.authService.getCredentials().then((credentials) => {
+      return this.http.get(`${this.backendUrl}/${id}`, credentials)
         .toPromise()
         .then(res => this.transaction.next(res.json() as Transaction))
         .catch(err => this.handleError(err));
+    });
+  }
+
+  updateTransaction(transaction: Transaction): Promise<any> {
+    return this.authService.getCredentials().then((credentials) => {
+      return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json() as Transaction))
+        .catch(err => this.handleError(err));
+    });
+  }
+
+  updateDescription(id: string, description: string): Promise<any> {
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http.put(`${this.backendUrl}/${id}/description`, {'description': description},
+        credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json() as Transaction))
+        .catch(err => this.handleError(err));
+    });
+  }
+
+  setComplete(id: string, complete: boolean): Promise<any> {
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http.put(`${this.backendUrl}/${id}/complete`, {'complete': complete},
+        credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json() as Transaction))
+        .catch(err => this.handleError(err));
+    });
+  }
+
+  setPaid(id: string, paid: boolean): Promise<any> {
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http.put(`${this.backendUrl}/${id}/mark_paid`, {'is_paid': paid},
+        credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json() as Transaction))
+        .catch(err => this.handleError(err));
+    });
   }
 
   updateRepair(transactionID: string, repairID: string, completed: boolean): Promise<any> {
-    return this.http.put(`${this.backendUrl}/${transactionID}/update_repair`, {_id: repairID, completed: completed},
-      this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json() as Transaction))
-      .catch(err => this.handleError(err));
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http.put(`${this.backendUrl}/${transactionID}/update_repair`, {_id: repairID, completed: completed},
+        credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json() as Transaction))
+        .catch(err => this.handleError(err));
+    });
   }
 
 
@@ -99,10 +113,12 @@ export class TransactionService {
         last_name: customer.last_name
       }
     };
-    return this.http.post(this.backendUrl, data, this.authService.getCredentials())
-      .toPromise()
-      .then(res => res.json() as Transaction)
-      .catch(err => this.handleError(err));
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http.post(this.backendUrl, data, credentials)
+        .toPromise()
+        .then(res => res.json() as Transaction)
+        .catch(err => this.handleError(err));
+    });
   }
 
   createTransactionCustomerExists(type: string, customer_id: string): Promise<any> {
@@ -112,10 +128,12 @@ export class TransactionService {
         _id: customer_id
       }
     };
-    return this.http.post(this.backendUrl, data, this.authService.getCredentials())
-      .toPromise()
-      .then(res => res.json() as Transaction)
-      .catch(err => this.handleError(err));
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http.post(this.backendUrl, data, credentials)
+        .toPromise()
+        .then(res => res.json() as Transaction)
+        .catch(err => this.handleError(err));
+    });
   }
 
   deleteTransaction(transaction_id: string): Promise<any> {
@@ -131,10 +149,12 @@ export class TransactionService {
       model: bike.model,
       description: bike.description
     };
-    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, data, this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json()))
-      .catch(err => this.handleError(err));
+   return this.authService.getCredentials().then((credentials) => {
+     return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, data, credentials)
+       .toPromise()
+       .then(res => this.transaction.next(res.json()))
+       .catch(err => this.handleError(err));
+   });
   }
 
   addExistingBikeToTransaction(transaction_id: string, bike_id: string): Promise<any> {

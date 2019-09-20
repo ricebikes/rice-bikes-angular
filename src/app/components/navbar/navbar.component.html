@@ -11,8 +11,8 @@
 
       <!-- Search bar -->
       <!--<app-search-transaction *ngIf="loggedIn | async"></app-search-transaction>-->
-
       <div class="navbar-nav ml-auto mr-2">
+        <app-user-tracker></app-user-tracker>
         <li *ngIf="isAdmin | async" class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Admin
