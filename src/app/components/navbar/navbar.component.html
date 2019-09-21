@@ -12,7 +12,6 @@
       <!-- Search bar -->
       <!--<app-search-transaction *ngIf="loggedIn | async"></app-search-transaction>-->
       <div class="navbar-nav ml-auto mr-2">
-        <app-user-tracker></app-user-tracker>
         <li *ngIf="isAdmin | async" class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Admin
@@ -23,9 +22,9 @@
             <a class="dropdown-item" [routerLink]="['admin/repairs']">Edit repairs</a>
           </div>
         </li>
+        <button *ngIf="loggedIn | async" (click)="logout()" class="btn btn-outline-secondary">Logout</button>
+        <a *ngIf="!(loggedIn | async)" [attr.href]="authUrl" class="btn btn-outline-secondary">Login</a>
       </div>
-      <button *ngIf="loggedIn | async" (click)="logout()" class="btn btn-outline-secondary">Logout</button>
-      <a *ngIf="!(loggedIn | async)" [attr.href]="authUrl" class="btn btn-outline-secondary">Login</a>
     </div>
   </div>
 </nav>
@@ -33,17 +32,26 @@
 
 
 <div *ngIf="loggedIn | async" class="container mt-3 mb-3">
-  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-    New transaction
-  </button>
-  <div class="dropdown-menu">
-    <h6 class="dropdown-header">Choose type</h6>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'inpatient'}">Inpatient</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'outpatient'}">Outpatient</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'merch'}">Merchandise</a>
+  <div class="row justify-content-between">
+    <div class="col">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+        New transaction
+      </button>
+      <div class="dropdown-menu">
+        <h6 class="dropdown-header">Choose type</h6>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'inpatient'}">Inpatient</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'outpatient'}">Outpatient</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'merch'}">Merchandise</a>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="float-right">
+        <app-user-tracker></app-user-tracker>
+      </div>
+    </div>
   </div>
   <!--<button class="btn btn-outline-secondary">New refurb</button>-->
 </div>

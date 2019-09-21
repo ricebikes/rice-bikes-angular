@@ -170,7 +170,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card mb-2">
     <div class="card-body">
       <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
         <span *ngIf="!emailLoading" class="fa fa-check"></span>
@@ -212,8 +212,14 @@
       <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
     </div>
   </div>
-  <p>This is the action list</p>
-  <p *ngFor="let action of transaction?.actions">{{action.employee.username}} : {{action.description}}</p>
+  <div *ngIf="transaction.actions.length > 0" class="card">
+    <div class="card-body">
+      <h5 class="card-title">Past Actions</h5>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let action of transaction?.actions">{{action.employee.username}}: {{action.description}} <span class="float-right">{{action.time | timeAgo}}</span></li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 

@@ -137,10 +137,12 @@ export class TransactionService {
   }
 
   deleteTransaction(transaction_id: string): Promise<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}`, this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(null))
-      .catch(err => this.handleError(err));
+    return this.authService.getCredentials().then((credentials) => {
+      return this.http.delete(`${this.backendUrl}/${transaction_id}`, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(null))
+        .catch(err => this.handleError(err));
+    });
   }
 
   addNewBikeToTransaction(transaction_id: string, bike: Bike): Promise<any> {
@@ -158,55 +160,65 @@ export class TransactionService {
   }
 
   addExistingBikeToTransaction(transaction_id: string, bike_id: string): Promise<any> {
-    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, {_id: bike_id}, this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json()))
-      .catch(err => this.handleError(err));
+    return this.authService.getCredentials().then(credentials => {
+      return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, {_id: bike_id}, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json()))
+        .catch(err => this.handleError(err));
+    });
   }
 
   deleteBikeFromTransaction(transaction_id: string, bike_id: string): Promise<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}/bikes/${bike_id}`, this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json()))
-      .catch(err => this.handleError(err));
+    return this.authService.getCredentials().then(credentials => {
+      return this.http.delete(`${this.backendUrl}/${transaction_id}/bikes/${bike_id}`, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json()))
+        .catch(err => this.handleError(err));
+    });
   }
 
   addItemToTransaction(transaction_id: string, item_id: string): Promise<any> {
-    return this.http.post(`${this.backendUrl}/${transaction_id}/items`, {_id: item_id},
-      this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json()))
-      .catch(err => this.handleError(err));
+    return this.authService.getUserCredentials().then(credentials => {
+      return this.http.post(`${this.backendUrl}/${transaction_id}/items`, {_id: item_id}, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json()))
+        .catch(err => this.handleError(err));
+    });
   }
 
   deleteItemFromTransaction(transaction_id: string, item_id: string): Promise<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}/items/${item_id}`,
-      this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json()))
-      .catch(err => this.handleError(err));
+    return this.authService.getUserCredentials().then(credentials => {
+      return this.http.delete(`${this.backendUrl}/${transaction_id}/items/${item_id}`, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json()))
+        .catch(err => this.handleError(err));
+    });
   }
 
   addRepairToTransaction(transaction_id: string, repair_id: string): Promise<any> {
-    return this.http.post(`${this.backendUrl}/${transaction_id}/repairs`, {_id: repair_id},
-      this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json()))
-      .catch(err => this.handleError(err));
+    return this.authService.getUserCredentials().then(credentials => {
+      return this.http.post(`${this.backendUrl}/${transaction_id}/repairs`, {_id: repair_id}, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json()))
+        .catch(err => this.handleError(err));
+    });
   }
 
   deleteRepairFromTransaction(transaction_id: string, repair_id: string): Promise<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}/repairs/${repair_id}`,
-      this.authService.getCredentials())
-      .toPromise()
-      .then(res => this.transaction.next(res.json()))
-      .catch(err => this.handleError(err));
+    return this.authService.getUserCredentials().then(credentials => {
+      return this.http.delete(`${this.backendUrl}/${transaction_id}/repairs/${repair_id}`, credentials)
+        .toPromise()
+        .then(res => this.transaction.next(res.json()))
+        .catch(err => this.handleError(err));
+    });
   }
 
   notifyCustomerEmail(transaction_id: string): Promise<any> {
-    return this.http.get(`${this.backendUrl}/${transaction_id}/email-notify`, this.authService.getCredentials())
-      .toPromise()
-      .then(res => res.json())
-      .catch(err => this.handleError(err));
+    return this.authService.getCredentials().then(credentials => {
+      return this.http.get(`${this.backendUrl}/${transaction_id}/email-notify`, credentials)
+        .toPromise()
+        .then(res => res.json())
+        .catch(err => this.handleError(err));
+    });
   }
 }
