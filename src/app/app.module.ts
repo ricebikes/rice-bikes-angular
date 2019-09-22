@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import {CONFIG} from './config';
 import { TransactionService } from "./services/transaction.service";
+import {user_inactivity,user_timeout} from './config';
 import { AppComponent } from './app.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { AppRoutingModule } from "./app-routing.module";
@@ -59,7 +59,7 @@ import {UserIdleModule} from 'angular-user-idle/user-idle.module';
     HttpModule,
     FormsModule,
     // 110 seconds until idle timer, 10 seconds to stop timer. 2 minutes total.
-    UserIdleModule.forRoot({idle: CONFIG.user_inactivity, timeout: CONFIG.user_timeout, ping: 120}),
+    UserIdleModule.forRoot({idle: user_inactivity, timeout: user_timeout, ping: 120}),
     ReactiveFormsModule
   ],
   providers: [

@@ -2,7 +2,7 @@ import {Injectable, OnInit} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {Subject, BehaviorSubject} from 'rxjs';
 import {AlertService} from './alert.service';
-import {CONFIG} from '../config';
+import {CONFIG, user_timeout} from '../config';
 import * as jwt from 'jsonwebtoken';
 import {User} from '../models/user';
 import {AdminService} from './admin.service';
@@ -53,7 +53,7 @@ export class AuthenticationService implements OnInit {
     console.log('Starting watch');
     this.userIdle.startWatching();
     this.userIdle.onTimerStart().subscribe(count => {
-      if (count < CONFIG.user_timeout) {
+      if (count < user_timeout) {
         this.userTrackerSource.next({
           // set the count to a positive value so subscribers know timeout is imminent
           user: this.userTrackerSource.value.user,

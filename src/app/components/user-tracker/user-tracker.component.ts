@@ -1,9 +1,8 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {AuthenticationService, UserState} from '../../services/authentication.service';
 import {User} from '../../models/user';
-import {Subject} from 'rxjs/Subject';
 import {Observable} from 'rxjs/Observable';
-import {CONFIG} from '../../config';
+import {CONFIG, user_timeout} from '../../config';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
@@ -20,7 +19,7 @@ export class UserTrackerComponent implements OnInit {
   private currentUser: User;
   private userNameForm: FormGroup;
   private userState: Observable<UserState>;
-  private timeout = CONFIG.user_timeout;
+  private timeout = user_timeout;
 
   userResults: Observable<User[]>;
 
