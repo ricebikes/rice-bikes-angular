@@ -49,7 +49,7 @@ export class TransactionDetailComponent implements OnInit {
           this.transactionService.transaction.subscribe(trans => this.transaction = trans);
           this.loading = false;
           this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
-        })
+        });
     });
   }
 

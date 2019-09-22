@@ -7,11 +7,13 @@ import * as jwt from 'jsonwebtoken';
 import {User} from '../models/user';
 import {AdminService} from './admin.service';
 import {Observable} from 'rxjs/Observable';
+import {UserIdleService} from 'angular-user-idle/user-idle.service';
 
 // export second class to track user state
 export class UserState {
   user: User;
   state: String;
+  timeout: Number;
 }
 
 
@@ -29,12 +31,49 @@ export class AuthenticationService implements OnInit {
   private userTrackerSource = new BehaviorSubject<UserState>({
     user: null,
     // tells subscribers that the user login has timed out, but no action is required.
-    state: 'timeout'
+    state: 'timeout',
+    // -1 is timeouts "unset" state -- once timeout becomes a positive values we can assume inactivity timer has started
+    timeout: -1
   });
 
   private _currentUser: User;
 
-  constructor(private http: Http, private alertService: AlertService, private userManager: AdminService) {}
+  constructor(private http: Http, private alertService: AlertService,
+              private userManager: AdminService, private userIdle: UserIdleService) {
+    // if we have a set user, reload it from the local storage
+    if (localStorage.getItem('accountabilityUser')) {
+      const accountabilityUser = JSON.parse(localStorage.getItem('accountabilityUser'));
+      console.log('Found user in storage');
+      this.userTrackerSource.next({
+        user: accountabilityUser,
+        state: 'set',
+        timeout: -1
+      });
+    }
+    console.log('Starting watch');
+    this.userIdle.startWatching();
+    this.userIdle.onTimerStart().subscribe(count => {
+      if (count < CONFIG.user_timeout) {
+        this.userTrackerSource.next({
+          // set the count to a positive value so subscribers know timeout is imminent
+          user: this.userTrackerSource.value.user,
+          state: 'set',
+          timeout: count,
+        });
+        }
+      }
+      );
+    this.userIdle.onTimeout().subscribe(() => {
+      // timeout has been reached. Clear user from store
+      console.log('Timeout!');
+      this.userTrackerSource.next({
+        user: null,
+        state: 'timeout',
+        timeout: -1
+      });
+      localStorage.removeItem('accountabilityUser');
+    });
+  }
 
   ngOnInit() {
     if (localStorage.getItem('currentUser')) {
@@ -111,6 +150,15 @@ export class AuthenticationService implements OnInit {
     });
   }
 
+  public resetTimer() {
+    this.userIdle.resetTimer();
+    this.userTrackerSource.next({
+      user: this.userTrackerSource.value.user,
+      state: 'set',
+      timeout: -1
+    });
+  }
+
   /**
    * Sets new stored user. Should be called by provider of new users.
    * @param updatedUser: new user to set
@@ -118,11 +166,15 @@ export class AuthenticationService implements OnInit {
   setUser(updatedUser: User) {
     // set the next user in the tracker source
     console.log('Setting User');
+    this.userIdle.resetTimer();
     this.userTrackerSource.next({
       user: updatedUser,
       // tells listeners the user tracker is set and no action is needed
-      state: 'set'
+      state: 'set',
+      timeout: -1
     });
+    // set current user into local store as well
+    localStorage.setItem('accountabilityUser', JSON.stringify(updatedUser));
     // this will tell any listeners waiting on a user to be selected that the user is ready.
     this.userEmitter.next(updatedUser);
   }
@@ -137,7 +189,7 @@ export class AuthenticationService implements OnInit {
   /**
    * Gets list of current users registered with application
    */
-  userList(): Promise<any> {
+  userList(): Promise<User[]> {
     return this.userManager.getUsers();
   }
   /**
@@ -177,7 +229,7 @@ export class AuthenticationService implements OnInit {
         if (this.userTrackerSource.value.state === 'timeout') {
           console.log('Waiting for user');
           // emit a new state. This will trigger user tracker to get another user.
-          this.userTrackerSource.next({user: null, state: 'waiting'});
+          this.userTrackerSource.next({user: null, state: 'waiting', timeout: -1});
         } else {
           this.userEmitter.next(this.userTrackerSource.getValue().user);
         }

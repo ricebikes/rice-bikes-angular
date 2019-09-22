@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import {CONFIG} from './config';
 import { TransactionService } from "./services/transaction.service";
 import { AppComponent } from './app.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
@@ -29,6 +30,7 @@ import {RepairService} from './services/repair.service';
 import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import {ItemService} from './services/item.service';
 import { UserTrackerComponent } from './components/user-tracker/user-tracker.component';
+import {UserIdleModule} from 'angular-user-idle/user-idle.module';
 
 
 @NgModule({
@@ -56,6 +58,8 @@ import { UserTrackerComponent } from './components/user-tracker/user-tracker.com
     AppRoutingModule,
     HttpModule,
     FormsModule,
+    // 110 seconds until idle timer, 10 seconds to stop timer. 2 minutes total.
+    UserIdleModule.forRoot({idle: CONFIG.user_inactivity, timeout: CONFIG.user_timeout, ping: 120}),
     ReactiveFormsModule
   ],
   providers: [
