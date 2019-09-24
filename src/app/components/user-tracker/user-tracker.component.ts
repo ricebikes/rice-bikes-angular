@@ -20,8 +20,8 @@ export class UserTrackerComponent implements OnInit {
   private userNameForm: FormGroup;
   private userState: Observable<UserState>;
   private timeout = user_timeout;
+  private badNetID = false;
 
-  userResults: Observable<User[]>;
 
   constructor(private authService: AuthenticationService, private formBuilder: FormBuilder) {}
 
@@ -42,12 +42,6 @@ export class UserTrackerComponent implements OnInit {
       userName: undefined
     });
 
-    this.userNameForm.get('userName').valueChanges.debounceTime(300).subscribe(term => {
-      this.authService.userList().then(userList => {
-        this.userResults = Observable.of(userList.filter(
-          user => user.username.toLowerCase().includes(term.toLowerCase()) && term.length > 0));
-      });
-    });
   }
 
   stopTimer() {
@@ -62,12 +56,15 @@ export class UserTrackerComponent implements OnInit {
     const userName = this.userNameForm.get('userName').value;
 
     this.authService.userList().then(userList => {
+      let found = false;
       for (const user of userList) {
         if (user.username === userName) {
+          found = true;
           console.log('Valid user provided');
           this.setUser(user);
         }
       }
+      this.badNetID = !found;
     });
   }
 
@@ -75,7 +72,8 @@ export class UserTrackerComponent implements OnInit {
     this.authService.setUser(newUser);
     // clear the text box in the modal
     this.userNameForm.get('userName').setValue(undefined);
-    this.userResults = Observable.of([]);
+    console.log('Net ID fixed');
+    this.badNetID = false;
     // close the modal, since the user is set
     this.hiddenModalTrigger.nativeElement.click();
   }

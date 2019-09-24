@@ -26,20 +26,11 @@
              <input (keyup.enter)="attemptSetUser()" formControlName="userName" class="form-control"
                     placeholder="Your NetID" type="text" id="user_name_input">
            </form>
-           <!-- search results displayed here -->
-           <div *ngIf="userResults" class="list-group search-dropdown">
-             <a class="list-group-item list-group-item-action"
-                *ngFor="let user of userResults | async"
-                (click)="setUser(user)">
-               {{user.username}}
-             </a>
-           </div>
+           <p class="text-danger" *ngIf="badNetID">NetID not found</p>
          </div>
-         <!--
          <div class="modal-footer">
-           <button type="button" class="btn btn-primary">Go</button>
+           <button type="button" (click)="attemptSetUser()" class="btn btn-primary">Submit</button>
          </div>
-         -->
        </div>
      </div>
 </div>
