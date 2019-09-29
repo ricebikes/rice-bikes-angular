@@ -51,7 +51,7 @@
 </div>
 
 <!-- Past Actions Modal -->
-<div class="modal fade" id="pastActionsModal" tabindex="-1">
+<div class="modal fade" id="pastActionsModal" tabindex="-1" *ngIf="transaction.actions && transaction.actions.length > 0">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -62,8 +62,8 @@
       </div>
       <div class="modal-body">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item" *ngFor="let action of transaction?.actions">{{action.employee.username}}:
-            {{action.description}} <span class="float-right">{{action.time | timeAgo}}</span></li>
+          <li class="list-group-item" *ngFor="let action of transaction?.actions">{{action.employee.firstname}}
+            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time | timeAgo}}</span></li>
         </ul>
       </div>
     </div>

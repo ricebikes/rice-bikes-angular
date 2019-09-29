@@ -21,13 +21,15 @@
     </div>
   </form>
   <ul class="list-group">
-    <li *ngFor="let user of users" class="list-group-item">{{user.username}}
+    <li *ngFor="let user of users" class="list-group-item">{{user.username}} ({{user.firstname}} {{user.lastname}})
       <i *ngIf="user.roles.includes('admin')" class="fa fa-lock"></i>
       <i *ngIf="user.roles.includes('operations')" class="fa fa-dolly"></i>
       <i *ngIf="user.roles.includes('projects')" class="fas fa-tools"></i>
+      <!-- Disabling deleting user, since they are used for tracking
       <button (click)="deleteUser(user)" type="button" class="close">
         <span>&times;</span>
       </button>
+      -->
     </li>
   </ul>
 </div>

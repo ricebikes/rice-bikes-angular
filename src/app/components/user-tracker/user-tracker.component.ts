@@ -16,11 +16,11 @@ export class UserTrackerComponent implements OnInit {
   @ViewChild('modalButton') hiddenModalTrigger: ElementRef;
   @ViewChild('requestNetIDModal') requestNetIdModal: ElementRef;
 
-  private currentUser: User;
-  private userNameForm: FormGroup;
-  private userState: Observable<UserState>;
-  private timeout = user_timeout;
-  private badNetID = false;
+  currentUser: User;
+  userNameForm: FormGroup;
+  userState: Observable<UserState>;
+  timeout = user_timeout;
+  badNetID = false;
 
 
   constructor(private authService: AuthenticationService, private formBuilder: FormBuilder) {}
