@@ -40,6 +40,15 @@ export class AuthenticationService implements OnInit {
 
   constructor(private http: Http, private alertService: AlertService,
               private userManager: AdminService, private userIdle: UserIdleService) {
+    this.ngOnInit();
+  }
+
+  ngOnInit() {
+    if (localStorage.getItem('currentUser')) {
+      this.loggedIn.next(true);
+    } else {
+      this.loggedIn.next(false);
+    }
     // if we have a set user, reload it from the local storage
     if (localStorage.getItem('accountabilityUser')) {
       const accountabilityUser = JSON.parse(localStorage.getItem('accountabilityUser'));
@@ -53,16 +62,16 @@ export class AuthenticationService implements OnInit {
     console.log('Starting watch');
     this.userIdle.startWatching();
     this.userIdle.onTimerStart().subscribe(count => {
-      if (count < user_timeout) {
-        this.userTrackerSource.next({
-          // set the count to a positive value so subscribers know timeout is imminent
-          user: this.userTrackerSource.value.user,
-          state: 'set',
-          timeout: count,
-        });
+        if (count < user_timeout) {
+          this.userTrackerSource.next({
+            // set the count to a positive value so subscribers know timeout is imminent
+            user: this.userTrackerSource.value.user,
+            state: 'set',
+            timeout: count,
+          });
         }
       }
-      );
+    );
     this.userIdle.onTimeout().subscribe(() => {
       // timeout has been reached. Clear user from store
       console.log('Timeout!');
@@ -73,14 +82,6 @@ export class AuthenticationService implements OnInit {
       });
       localStorage.removeItem('accountabilityUser');
     });
-  }
-
-  ngOnInit() {
-    if (localStorage.getItem('currentUser')) {
-      this.loggedIn.next(true);
-    } else {
-      this.loggedIn.next(false);
-    }
   }
 
   public login(x, y): Promise<any> {
@@ -183,6 +184,15 @@ export class AuthenticationService implements OnInit {
    * Gets the user tracker source as an observable. This is the only way outside components may view values.
    */
   getUser(): Observable<UserState> {
+    if (localStorage.getItem('accountabilityUser')) {
+      const accountabilityUser = JSON.parse(localStorage.getItem('accountabilityUser'));
+      console.log('Found user in storage');
+      this.userTrackerSource.next({
+        user: accountabilityUser,
+        state: 'set',
+        timeout: -1
+      });
+    }
     return this.userTrackerSource.asObservable();
   }
 
