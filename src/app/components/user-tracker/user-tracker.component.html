@@ -1,17 +1,15 @@
 <!-- Show current user, and an option to change them if user is set -->
-<h6 *ngIf="(userState | async).timeout < 0 && currentUser">
-  <span class="mr-2">
-    Current User: {{currentUser.username}}
-  </span>
+<span *ngIf="(userState | async).timeout < 0 && currentUser">
+  <span class="mr-2"> Current User: {{currentUser.username}}</span>
 <!-- button to allow changing logged in user -->
-<button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#enterNamePrompt">Change User</button>
-</h6>
+<button type="button" class="btn btn-outline-primary" (click)="triggerModal()">Change User</button>
+</span>
 <!-- timeout, triggers if there are less than 10 seconds before the user is cleared-->
-<h6 class="mr-2" *ngIf="(userState | async).timeout > 0 && currentUser">
+<span class="mr-2" *ngIf="(userState | async).timeout > 0 && currentUser">
   <!-- timeout was set to 10 seconds in app.module.ts-->
   <span class="mr-2"> {{timeout - (userState | async).timeout}} Seconds Until Logout</span>
   <button type="button" class="btn btn-outline-warning" (click)="stopTimer()">Stop Timeout</button>
-</h6>
+</span>
 <button #modalButton hidden="true" type="button" class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal" data-target="#enterNamePrompt">FAKE BUTTON</button>
 <!-- Modal that prompts the user for their username-->
 <div class="modal fade" #requestNetIDModal id="enterNamePrompt" tabindex="-1" role="dialog" aria-labelledby="Enter your Name"
@@ -23,7 +21,7 @@
          </div>
          <div class="modal-body">
            <form [formGroup]="userNameForm">
-             <input (keyup.enter)="attemptSetUser()" formControlName="userName" class="form-control"
+             <input (keyup.enter)="attemptSetUser()" #netIDInput formControlName="userName" class="form-control"
                     placeholder="Your NetID" type="text" id="user_name_input">
            </form>
            <p class="text-danger" *ngIf="badNetID">NetID not found</p>

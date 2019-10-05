@@ -15,6 +15,7 @@ export class UserTrackerComponent implements OnInit {
   // access to net ID request modal through ViewChild
   @ViewChild('modalButton') hiddenModalTrigger: ElementRef;
   @ViewChild('requestNetIDModal') requestNetIdModal: ElementRef;
+  @ViewChild('netIDInput') netIDInput: ElementRef;
 
   currentUser: User;
   userNameForm: FormGroup;
@@ -33,7 +34,7 @@ export class UserTrackerComponent implements OnInit {
       this.currentUser = nextUserState.user;
       if (nextUserState.state === 'waiting') {
         // trigger modal for user. We expect user to enter their net ID here.
-        this.hiddenModalTrigger.nativeElement.click();
+        this.triggerModal();
       }
     });
 
@@ -42,6 +43,16 @@ export class UserTrackerComponent implements OnInit {
       userName: undefined
     });
 
+  }
+
+
+  triggerModal() {
+    this.hiddenModalTrigger.nativeElement.click();
+        // slight hack: bootstrap modal will grab focus, so we don't try grab focus on the input until 0.5 seconds
+        // after we trigger the modal
+        setTimeout(() => {
+          this.netIDInput.nativeElement.focus();
+        }, 500);
   }
 
   stopTimer() {

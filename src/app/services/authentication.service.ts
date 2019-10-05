@@ -58,9 +58,9 @@ export class AuthenticationService implements OnInit {
         state: 'set',
         timeout: -1
       });
+      console.log('Starting watch');
+      this.userIdle.startWatching();
     }
-    console.log('Starting watch');
-    this.userIdle.startWatching();
     this.userIdle.onTimerStart().subscribe(count => {
         if (count < user_timeout) {
           this.userTrackerSource.next({
@@ -176,6 +176,8 @@ export class AuthenticationService implements OnInit {
     });
     // set current user into local store as well
     localStorage.setItem('accountabilityUser', JSON.stringify(updatedUser));
+    console.log('Starting watch');
+    this.userIdle.startWatching();
     // this will tell any listeners waiting on a user to be selected that the user is ready.
     this.userEmitter.next(updatedUser);
   }
