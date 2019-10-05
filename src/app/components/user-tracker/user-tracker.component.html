@@ -1,6 +1,6 @@
 <!-- Show current user, and an option to change them if user is set -->
 <span *ngIf="(userState | async).timeout < 0 && currentUser">
-  <span class="mr-2"> Current User: {{currentUser.username}}</span>
+  <span class="mr-2"> Current User: {{currentUser.firstname}} {{currentUser.lastname}}</span>
 <!-- button to allow changing logged in user -->
 <button type="button" class="btn btn-outline-primary" (click)="triggerModal()">Change User</button>
 </span>
