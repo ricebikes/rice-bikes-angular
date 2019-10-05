@@ -1,9 +1,9 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
-import { TransactionService } from "../../../services/transaction.service";
-import { Transaction } from "../../../models/transaction";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormGroup, Validators, FormControl} from "@angular/forms";
-import {Bike} from "../../../models/bike";
+import { TransactionService } from '../../../services/transaction.service';
+import { Transaction } from '../../../models/transaction';
+import {ActivatedRoute, Router} from '@angular/router';
+import {FormGroup, Validators, FormControl} from '@angular/forms';
+import {Bike} from '../../../models/bike';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -17,12 +17,12 @@ export class TransactionDetailComponent implements OnInit {
 
   transaction: Transaction;
   bikeForm: FormGroup;
-  editingTransaction: boolean = false;
+  editingTransaction = false;
 
-  loading: boolean = true;
-  emailLoading: boolean = false;
+  loading = true;
+  emailLoading = false;
   displayDescription: string;
-  priceEdit: boolean = false;
+  priceEdit = false;
 
   constructor(
     private transactionService: TransactionService,
@@ -32,13 +32,13 @@ export class TransactionDetailComponent implements OnInit {
 
   ngOnInit() {
     this.bikeForm = new FormGroup({
-      'bike-make': new FormControl("", [
+      'bike-make': new FormControl('', [
         Validators.required
       ]),
-      'bike-model': new FormControl("", [
+      'bike-model': new FormControl('', [
         Validators.required
       ]),
-      'bike-desc': new FormControl("", [
+      'bike-desc': new FormControl('', [
         Validators.required
       ])
     });
@@ -50,10 +50,14 @@ export class TransactionDetailComponent implements OnInit {
             console.log('New Transaction');
             console.log(trans);
             this.transaction = trans;
-            this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+            if (this.transaction.description) {
+              this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+            }
           });
           this.loading = false;
-          this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+          if (this.transaction.description) {
+             this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+          }
         });
     });
   }
@@ -68,7 +72,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   addBike(): void {
-    let bike = new Bike();
+    const bike = new Bike();
     bike.make = this.bikeForm.value['bike-make'];
     bike.model = this.bikeForm.value['bike-model'];
     bike.description = this.bikeForm.value['bike-desc'];
@@ -114,7 +118,7 @@ export class TransactionDetailComponent implements OnInit {
     this.emailLoading = true;
     this.transactionService.notifyCustomerEmail(this.transaction._id)
       .then(() => {
-        let date = Date.now().toString();
+        const date = Date.now().toString();
         this.emailLoading = false;
         this.transaction.complete = true;
         this.transaction.date_completed = date;
