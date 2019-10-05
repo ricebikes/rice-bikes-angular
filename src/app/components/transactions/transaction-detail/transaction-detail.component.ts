@@ -46,7 +46,12 @@ export class TransactionDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.transactionService.getTransaction(params['_id'])
         .then(() => {
-          this.transactionService.transaction.subscribe(trans => this.transaction = trans);
+          this.transactionService.transaction.subscribe(trans => {
+            console.log('New Transaction');
+            console.log(trans);
+            this.transaction = trans;
+            this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+          });
           this.loading = false;
           this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
         });
