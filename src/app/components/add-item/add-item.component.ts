@@ -5,6 +5,7 @@ import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
 import {Transaction} from '../../models/transaction';
 import {TransactionService} from '../../services/transaction.service';
+import {User} from '../../models/user';
 
 
 
@@ -98,19 +99,17 @@ export class AddItemComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  addItem(item: Item): void {
-    this.transactionService.addItemToTransaction(this.transaction._id, item._id)
+  addItem(item: Item, user: User): void {
+    this.transactionService.addItemToTransaction(this.transaction._id, item._id, user)
       .subscribe(() => {
         this.searchTerms.next('');
         this.searchFieldValue = '';
       });
   }
 
-  addItemFromModal(): void {
-    console.log('Trying to add item');
+  addItemFromModal(user: User): void {
     const item = this.itemSearchForm.get('selectedItem').value[0];
-    console.log(item);
-    this.transactionService.addItemToTransaction(this.transaction._id, item._id) .subscribe( ()=> {
+    this.transactionService.addItemToTransaction(this.transaction._id, item._id, user) .subscribe( ()=> {
       this.itemSearchModal.nativeElement.click();
     });
   }

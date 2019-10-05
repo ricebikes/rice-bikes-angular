@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Transaction } from "../models/transaction";
 import {BehaviorSubject, Observable} from "rxjs";
 import 'rxjs/add/operator/toPromise';
-import {Headers, Http, RequestOptions} from "@angular/http";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Customer } from "../models/customer";
 import { Bike } from "../models/bike";
@@ -11,6 +10,7 @@ import {AlertService} from "./alert.service";
 import {CONFIG} from "../config";
 import {HttpErrorResponse} from '@angular/common/http';
 import {catchError, retry} from 'rxjs/operators';
+import {User} from '../models/user';
 
 @Injectable()
 export class TransactionService {
@@ -23,10 +23,12 @@ export class TransactionService {
     this.transaction = new BehaviorSubject<Transaction>(null);
   }
 
-  private jwt() {
+  private makeheaders(user?: User) {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser.token) {
-      const headers = new HttpHeaders({ 'x-access-token': currentUser.token });
+      let headers = new HttpHeaders();
+      headers = headers.set('x-access-token', currentUser.token);
+      if (user) {headers = headers.set('user-id', user._id.toString()); }
       return {headers: headers };
     }
   }
@@ -39,7 +41,7 @@ export class TransactionService {
       // backed encountered an error
       this.alertService.queueAlert(
         `Backend returned error code ${error.status}. ` +
-        `Message was: ${error.message}`
+        `Message was: ${error.message} (${error.error.error})`
       );
     }
     return Observable.throw(error);
@@ -54,7 +56,7 @@ export class TransactionService {
    */
   getTransactions(props?: any): Observable<any> {
     const querystring = '?' + Object.keys(props).map(k => `${k}=${encodeURIComponent(props[k])}`).join('&');
-    return this.http.get(this.backendUrl + querystring, this.jwt())
+    return this.http.get(this.backendUrl + querystring, this.makeheaders())
       .pipe(
         retry(2),
         catchError((err) => {
@@ -64,7 +66,7 @@ export class TransactionService {
   }
 
   getTransaction(id: string): Observable<any> {
-    return this.http.get(`${this.backendUrl}/${id}`, this.jwt())
+    return this.http.get(`${this.backendUrl}/${id}`, this.makeheaders())
       .pipe(
         retry(2),
         catchError((err) => {
@@ -74,7 +76,7 @@ export class TransactionService {
   }
 
   updateTransaction(transaction: Transaction): Observable<any> {
-    return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, this.jwt())
+    return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, this.makeheaders())
       .pipe(
         retry(2),
         catchError((err) => {
@@ -83,8 +85,43 @@ export class TransactionService {
       );
   }
 
-  createTransaction(type: string, customer: Customer): Observable<any> {
-    let data = {
+  // updates a transaction's description, logging who initiated the change
+  updateTransactionDescription(transaction: Transaction, user: User): Observable<any> {
+    return this.http.put(`${this.backendUrl}/${transaction._id}/description`,
+      {description: transaction.description},
+      this.makeheaders(user)).pipe(
+        retry(2),
+        catchError( (err) => {
+          return this.handleError(err);
+        })
+    );
+  }
+  // updates a transaction's complete status, logging who took the action
+ updateTransactionComplete(transaction: Transaction, user: User): Observable<any> {
+   return this.http.put(`${this.backendUrl}/${transaction._id}/complete`,
+     {complete: transaction.complete},
+     this.makeheaders(user)).pipe(
+     retry(2),
+     catchError( (err) => {
+       return this.handleError(err);
+     })
+   );
+ }
+ // marks a transaction as finished, logging the action
+ updateTransactionPaid(transaction: Transaction, user: User): Observable<any> {
+   return this.http.put(`${this.backendUrl}/${transaction._id}/mark_paid`,
+     {is_paid : transaction.is_paid },
+     this.makeheaders(user)).pipe(
+       retry(2),
+       catchError( (err) => {
+       return this.handleError(err);
+       }
+     )
+   );
+ }
+
+  createTransaction(type: string, customer: Customer, user: User): Observable<any> {
+    const data = {
       transaction_type: type,
       customer: {
         email: customer.email,
@@ -92,7 +129,7 @@ export class TransactionService {
         last_name: customer.last_name
       }
     };
-    return this.http.post(this.backendUrl, data, this.jwt())
+    return this.http.post(this.backendUrl, data, this.makeheaders(user))
       .pipe(
         retry(2),
         catchError((err) => {
@@ -101,14 +138,14 @@ export class TransactionService {
       );
   }
 
-  createTransactionCustomerExists(type: string, customer_id: string): Observable<any> {
+  createTransactionCustomerExists(type: string, customer_id: string, user: User): Observable<any> {
     const data = {
       transaction_type: type,
       customer: {
         _id: customer_id
       }
     };
-    return this.http.post(this.backendUrl, data, this.jwt())
+    return this.http.post(this.backendUrl, data, this.makeheaders(user))
       .pipe(
         retry(2),
         catchError((err) => {
@@ -119,7 +156,7 @@ export class TransactionService {
 
   deleteTransaction(transaction_id: string): Observable<any> {
     console.log(transaction_id);
-    return this.http.delete(`${this.backendUrl}/${transaction_id}`, this.jwt()).pipe(
+    return this.http.delete(`${this.backendUrl}/${transaction_id}`, this.makeheaders()).pipe(
       catchError((err) => {
         return this.handleError(err);
       })
@@ -132,7 +169,7 @@ export class TransactionService {
       model: bike.model,
       description: bike.description
     };
-    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, data, this.jwt())
+    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, data, this.makeheaders())
       .pipe(
         retry(2),
         catchError((err) => {
@@ -142,7 +179,7 @@ export class TransactionService {
   }
 
   addExistingBikeToTransaction(transaction_id: string, bike_id: string): Observable<any> {
-    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, {_id: bike_id}, this.jwt())
+    return this.http.post(`${this.backendUrl}/${transaction_id}/bikes`, {_id: bike_id}, this.makeheaders())
       .pipe(
         retry(2),
         catchError((err) => {
@@ -152,7 +189,7 @@ export class TransactionService {
   }
 
   deleteBikeFromTransaction(transaction_id: string, bike_id: string): Observable<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}/bikes/${bike_id}`, this.jwt())
+    return this.http.delete(`${this.backendUrl}/${transaction_id}/bikes/${bike_id}`, this.makeheaders())
       .pipe(
         retry(2),
         catchError((err) => {
@@ -161,8 +198,8 @@ export class TransactionService {
       );
   }
 
-  addItemToTransaction(transaction_id: string, item_id: string): Observable<any> {
-    return this.http.post(`${this.backendUrl}/${transaction_id}/items`, {_id: item_id}, this.jwt())
+  addItemToTransaction(transaction_id: string, item_id: string, user: User): Observable<any> {
+    return this.http.post(`${this.backendUrl}/${transaction_id}/items`, {_id: item_id }, this.makeheaders(user))
       .pipe(
         retry(2),
         catchError((err) => {
@@ -171,8 +208,8 @@ export class TransactionService {
       );
   }
 
-  deleteItemFromTransaction(transaction_id: string, item_id: string): Observable<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}/items/${item_id}`, this.jwt())
+  deleteItemFromTransaction(transaction_id: string, item_id: string, user: User): Observable<any> {
+    return this.http.delete(`${this.backendUrl}/${transaction_id}/items/${item_id}`, this.makeheaders(user))
       .pipe(
         retry(2),
         catchError((err) => {
@@ -181,8 +218,18 @@ export class TransactionService {
       );
   }
 
-  addRepairToTransaction(transaction_id: string, repair_id: string): Observable<any> {
-    return this.http.post(`${this.backendUrl}/${transaction_id}/repairs`, {_id: repair_id}, this.jwt())
+  updateRepairInTransaction(transaction_id: string, repair_id: string, user: User, completed: boolean) {
+    return this.http.put(`${this.backendUrl}/${transaction_id}/update_repair`, {_id: repair_id, completed: completed},
+      this.makeheaders(user)).pipe(
+        retry(2),
+        catchError( (err) => {
+          return this.handleError(err);
+        })
+    );
+  }
+
+  addRepairToTransaction(transaction_id: string, repair_id: string, user: User): Observable<any> {
+    return this.http.post(`${this.backendUrl}/${transaction_id}/repairs`, {_id: repair_id }, this.makeheaders(user))
       .pipe(
         retry(2),
         catchError((err) => {
@@ -191,8 +238,8 @@ export class TransactionService {
       );
   }
 
-  deleteRepairFromTransaction(transaction_id: string, repair_id: string): Observable<any> {
-    return this.http.delete(`${this.backendUrl}/${transaction_id}/repairs/${repair_id}`, this.jwt())
+  deleteRepairFromTransaction(transaction_id: string, repair_id: string, user: User): Observable<any> {
+    return this.http.delete(`${this.backendUrl}/${transaction_id}/repairs/${repair_id}`, this.makeheaders(user))
       .pipe(
         retry(2),
         catchError((err) => {
@@ -202,7 +249,7 @@ export class TransactionService {
   }
 
   notifyCustomerEmail(transaction_id: string): Observable<any> {
-    return this.http.get(`${this.backendUrl}/${transaction_id}/email-notify`, this.jwt())
+    return this.http.get(`${this.backendUrl}/${transaction_id}/email-notify`, this.makeheaders())
       .pipe(
         retry(2),
         catchError((err) => {

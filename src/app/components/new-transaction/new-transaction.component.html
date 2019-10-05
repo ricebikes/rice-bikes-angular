@@ -22,21 +22,7 @@
     </div>
   </div>
     <ng-template #employeenamepopup>
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <label for="name_enter" class="col-form-label">Your Name</label>
-          </div>
-          <div class="col">
-            <input type="text" id="name_enter" class="form-control" formControlName="employee_name">
-          </div>
-        </div>
-        <div class="row">
-            <div class="col">
-              <button (click)=submitTransaction() class="btn btn-success" [disabled]="!transactionForm.get('employee_name').dirty"> Submit </button>
-            </div>
-          </div>
-      </div>
+     <app-employee-popup></app-employee-popup>
     </ng-template>
     <button type="button" class="btn btn-block btn-lg btn-success" [ngbPopover]="employeenamepopup" popoverTitle="Enter your name" [disabled]="!transactionForm.valid">
       Submit

@@ -83,14 +83,14 @@ export class NewTransactionComponent implements OnInit {
   submitTransaction(): void {
     this.route.queryParams.subscribe(params => {
       if (this.customer._id) {
-        this.transactionService.createTransactionCustomerExists(params['t'], this.customer._id)
+        this.transactionService.createTransactionCustomerExists(params['t'], this.customer._id, null)
           .subscribe(trans => this.router.navigate(['/transactions', trans._id]));
       } else {
-        let cust = new Customer();
+        const cust = new Customer();
         cust.email = this.transactionForm.value['email'];
         cust.first_name = this.transactionForm.value['first_name'];
         cust.last_name = this.transactionForm.value['last_name'];
-        this.transactionService.createTransaction(params['t'], cust)
+        this.transactionService.createTransaction(params['t'], cust, null)
           .subscribe(trans => {
             this.router.navigate(['/transactions', trans._id])
           });

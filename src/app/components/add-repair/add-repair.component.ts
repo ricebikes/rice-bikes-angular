@@ -4,6 +4,7 @@ import {SearchService} from "../../services/search.service";
 import {RepairItem} from "../../models/repairItem";
 import {Transaction} from "../../models/transaction";
 import {TransactionService} from "../../services/transaction.service";
+import {User} from '../../models/user';
 
 @Component({
   selector: 'app-add-repair',
@@ -39,8 +40,8 @@ export class AddRepairComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
-  addRepair(repair: any): void {
-    this.transactionService.addRepairToTransaction(this.transaction._id, repair._id)
+  addRepair(repair: any, user: User): void {
+    this.transactionService.addRepairToTransaction(this.transaction._id, repair._id, user)
       .subscribe(() => {
         this.searchTerms.next('');
         this.searchFieldValue = '';

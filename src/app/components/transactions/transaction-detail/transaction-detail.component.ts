@@ -6,6 +6,7 @@ import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {Bike} from "../../../models/bike";
 import {AlertService} from '../../../services/alert.service';
 import {Observable} from 'rxjs/Observable';
+import {User} from '../../../models/user';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -68,7 +69,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   addBike(): void {
-    let bike = new Bike();
+    const bike = new Bike();
     bike.make = this.bikeForm.value['bike-make'];
     bike.model = this.bikeForm.value['bike-model'];
     bike.description = this.bikeForm.value['bike-desc'];
@@ -86,23 +87,24 @@ export class TransactionDetailComponent implements OnInit {
     });
   }
 
-  completeRepair(repair_id: string): void {
-    let repairIdx = this.transaction.repairs.findIndex(rep => rep._id === repair_id);
-    this.transaction.repairs[repairIdx].completed = !this.transaction.repairs[repairIdx].completed;
-    this.updateTransaction();
+  updateRepair(repair_id: string, user: User, completed: boolean): void {
+    this.transactionService.updateRepairInTransaction(this.transaction._id, repair_id, user, completed)
+      .subscribe((new_transaction) => this.transaction = new_transaction);
   }
 
-  deleteRepair(repair_id: string): void {
-    this.transactionService.deleteRepairFromTransaction(this.transaction._id, repair_id);
+  deleteRepair(repair_id: string, user: User): void {
+    this.transactionService.deleteRepairFromTransaction(this.transaction._id, repair_id, user)
+      .subscribe((new_transaction) => this.transaction = new_transaction);
   }
 
-  deleteItem(item_id: string): void {
-    this.transactionService.deleteItemFromTransaction(this.transaction._id, item_id);
+  deleteItem(item_id: string, user: User): void {
+    this.transactionService.deleteItemFromTransaction(this.transaction._id, item_id, user)
+      .subscribe((new_transaction) => this.transaction = new_transaction);
   }
 
   get canComplete(): boolean {
     if (this.transaction.waiting_part) return false;
-    for (let repair of this.transaction.repairs) {
+    for (const repair of this.transaction.repairs) {
       if (!repair.completed) {
         return false;
       }
@@ -110,38 +112,42 @@ export class TransactionDetailComponent implements OnInit {
     return true;
   }
 
-  completeTransaction(): void {
+  completeTransaction(user: User): void {
     this.emailLoading = true;
     this.transactionService.notifyCustomerEmail(this.transaction._id)
       .subscribe(() => {
-        let date = Date.now().toString();
+        const date = Date.now().toString();
         this.emailLoading = false;
         this.transaction.complete = true;
         this.transaction.date_completed = date;
-        this.updateTransaction();
+        this.transactionService.updateTransactionComplete(this.transaction, user)
+          .subscribe((new_transaction) => this.transaction = new_transaction);
       });
   }
 
-  completeWithoutEmail(): void {
+  completeWithoutEmail(user: User): void {
     const date = Date.now().toString();
     this.transaction.complete = true;
     this.transaction.date_completed = date;
-    this.updateTransaction();
+    this.transactionService.updateTransactionComplete(this.transaction, user)
+      .subscribe((new_transaction) => this.transaction = new_transaction);
   }
 
-  reopenTransaction(): void {
+  reopenTransaction(user: User): void {
     this.transaction.complete = false;
-    this.updateTransaction();
+    this.transactionService.updateTransactionComplete(this.transaction, user)
+      .subscribe((new_transaction) => this.transaction = new_transaction);
   }
 
   emailCustomer(): void {
     window.open(`mailto:${this.transaction.customer.email}?Subject=Your bike`, "Email customer");
   }
 
-  updateDescription(): void {
+  updateDescription(user: User): void {
     this.editingTransaction = false;
     this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
-    this.updateTransaction();
+    this.transactionService.updateTransactionDescription(this.transaction, user).
+      subscribe((new_transaction) => this.transaction = new_transaction);
   }
 
   toggleWaitOnPart(): void {

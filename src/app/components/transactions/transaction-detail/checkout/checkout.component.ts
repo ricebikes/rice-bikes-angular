@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {TransactionService} from "../../../../services/transaction.service";
 import {Transaction} from "../../../../models/transaction";
+import {User} from '../../../../models/user';
 
 @Component({
   selector: 'app-checkout',
@@ -30,10 +31,10 @@ export class CheckoutComponent implements OnInit {
     })
   }
 
-  finish() {
+  finish(user: User) {
     this.transaction.complete = true;
     this.transaction.is_paid = true;
-    this.transactionService.updateTransaction(this.transaction)
+    this.transactionService.updateTransactionPaid(this.transaction, user)
       .subscribe(() => {
         this.finishModal.nativeElement.click();
         this.router.navigate(['/transactions']);

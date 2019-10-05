@@ -12,6 +12,7 @@ export class SearchService {
   private customerUrl = `${CONFIG.api_url}/customers/search`;
   private repairUrl = `${CONFIG.api_url}/repairs/search`;
   private itemUrl = `${CONFIG.api_url}/items`;
+  private userUrl = `${CONFIG.api_url}/users`;
 
   constructor(private http: HttpClient, private  alertService: AlertService) {}
 
@@ -129,6 +130,22 @@ export class SearchService {
         return this.handleError(err);
       })
       );
+  }
+
+  userSearch(netID: string):Observable<any> {
+    const params = new HttpParams();
+    params.set('netid',netID);
+    const requestOptions = {
+      headers: this.jwt_headers(),
+      params: params
+    };
+    return this.http.get(`${this.userUrl}/search`, requestOptions)
+      .pipe(
+        retry(2),
+        catchError( (err) => {
+          return this.handleError(err);
+        })
+      )
   }
 }
 

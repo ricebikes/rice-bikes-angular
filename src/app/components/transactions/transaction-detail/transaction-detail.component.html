@@ -85,10 +85,12 @@
 
     <p *ngIf="!editingTransaction" class="lead" [innerHTML]="displayDescription"></p>
     <button *ngIf="!editingTransaction" (click)="editingTransaction = true" class="btn btn-secondary btn-sm">
-      Edit <span class="fa fa-pencil"></span>
+      Edit
     </button>
 
     <textarea class="form-control" [(ngModel)]="transaction.description" style="width: 100%; min-height: 100px;" *ngIf="editingTransaction"></textarea>
+    <ng-template #employeePopContent> <app-employee-popup></app-employee-popup> </ng-template>
+    <button *ngIf="editingTransaction" class="btn btn-secondary btm-sm mt-3" [ngbPopover]="employeePopContent" popoverTitle="Please Enter your name">Popover?</button>
     <button *ngIf="editingTransaction" class="btn btn-secondary btn-sm mt-3" (click)="updateDescription()">
       <span class="fa fa-check"></span>
     </button>
