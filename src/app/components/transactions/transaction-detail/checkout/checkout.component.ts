@@ -39,6 +39,10 @@ export class CheckoutComponent implements OnInit {
     let date = Date.now().toString();
     this.transaction.complete = true;
     this.transaction.date_completed = date;
+    var datesMap = {"startDate": "2019-10-15T20:21:10.233+00:00", "endDate": date};
+    this.transactionService.getTransactionsByDate(datesMap).then(transactions => {
+      console.log("these are the transactions" + transactions.toString());
+    });
 
     this.transactionService.updateTransaction(this.transaction)
       .then(() => {
