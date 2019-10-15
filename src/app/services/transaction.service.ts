@@ -54,6 +54,15 @@ export class TransactionService {
       .catch(err => this.handleError(err));
   }
 
+  ///searchByDate/:dates
+  getTransactionsByDate(dates: object): Promise<any> {
+    console.log("this is dates as url" + dates.toString());
+    return this.http.get(`${this.backendUrl}/searchByDate/${dates}`, this.jwt())
+      .toPromise()
+      .then(res => res.json() as Transaction[])
+      .catch(err => this.handleError(err));
+  }
+
   updateTransaction(transaction: Transaction): Promise<any> {
     return this.http.put(`${this.backendUrl}/${transaction._id}`, transaction, this.jwt())
       .toPromise()

@@ -31,16 +31,22 @@ export class CheckoutComponent implements OnInit {
     })
   }
 
+
   finish() {
     this.transaction.complete = true;
     this.transaction.is_paid = true;
     console.log(this.transaction.paymentType);
+    let date = Date.now().toString();
+    this.transaction.complete = true;
+    this.transaction.date_completed = date;
+
     this.transactionService.updateTransaction(this.transaction)
       .then(() => {
         this.finishModal.nativeElement.click();
         this.router.navigate(['/transactions']);
       });
   }
+
 
   onSelectPayment(pay_val:string, checked:boolean): void{
     var indexPay = this.transaction.paymentType.indexOf(pay_val);
