@@ -55,9 +55,10 @@ export class TransactionService {
   }
 
   ///searchByDate/:dates
-  getTransactionsByDate(dates: object): Promise<any> {
-    console.log("this is dates as url" + dates.toString());
-    return this.http.get(`${this.backendUrl}/searchByDate/${dates}`, this.jwt())
+  getTransactionsByDate(props?: any): Promise<any> {
+    let querystring = '?' + Object.keys(props).map(k => `${k}=${encodeURIComponent(props[k])}`).join('&');
+    console.log("this is dates as url" + `${this.backendUrl}/searchByDate` + querystring);
+    return this.http.get(this.backendUrl + "/searchByDate" + querystring, this.jwt())
       .toPromise()
       .then(res => res.json() as Transaction[])
       .catch(err => this.handleError(err));
