@@ -21,6 +21,7 @@ export class Transaction {
   refurb: boolean;
   urgent: boolean;
   paymentType: string[];
+  date_paid: string;
 
   constructor() {}
 }

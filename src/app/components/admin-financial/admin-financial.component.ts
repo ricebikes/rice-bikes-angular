@@ -26,6 +26,7 @@ export class AdminFinancialComponent implements OnInit {
     //     }
     //   }
     // });
+    this.sendReport(7);
   }
 
   sendReport(days: number){
@@ -37,6 +38,26 @@ export class AdminFinancialComponent implements OnInit {
     var datesMap = {"startDate": dateSevDays, "endDate": today};
     this.transactionService.getTransactionsByDate(datesMap).then(transactions => {
       console.log("these are the transactions" + transactions.toString());
+      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      //var weekMap = {"Monday": {}, "Tuesday": {}, "Wednesday": {}, "Thursday":{}, "Friday":{}, "Saturday":{}, "Sunday":{}};
+      var weekMap = {};
+      for(var day in days){
+        weekMap[days[day]] = {"date": "No transactions this day", "cash":0, "card": 0, "check": 0}
+      }
+
+      var total = 0;
+      for(var index in transactions){
+        var trans = transactions[index];
+        var theDate = new Date(trans.date_paid);
+        weekMap[days[theDate.getDay()]]["date"] = theDate.getMonth()+1 + "/" + theDate.getDate() + "/" + theDate.getFullYear();
+        for(var index in trans.paymentType){
+          weekMap[days[theDate.getDay()]][trans.paymentType[index]] += trans.total_cost;
+          total += trans.total_cost;
+        }
+      }
+      console.log(weekMap);
+      console.log(total);
+      this.transactionService.sendEmail({total_revenue: total, all_days: weekMap}).then(() => console.log("Sent email"));
     });
 
 

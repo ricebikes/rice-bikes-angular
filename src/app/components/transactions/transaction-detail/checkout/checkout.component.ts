@@ -33,10 +33,10 @@ export class CheckoutComponent implements OnInit {
 
 
   finish() {
-    this.transaction.complete = true;
+    this.transaction.date_paid = Date.now().toString();
     this.transaction.is_paid = true;
+    this.transaction.complete = true;
     console.log(this.transaction.paymentType);
-
 
     this.transactionService.updateTransaction(this.transaction)
       .then(() => {
