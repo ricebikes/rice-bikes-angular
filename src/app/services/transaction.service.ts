@@ -65,9 +65,10 @@ export class TransactionService {
   }
 
   sendEmail(props?: any): Promise<any> {
-    let querystring = '?' + Object.keys(props).map(k => `${k}=${encodeURIComponent(props[k])}`).join('&');
-    console.log("this is send email request as url" + `${this.backendUrl}/sendEmail` + querystring);
-    return this.http.put(this.backendUrl + "/sendEmail" + querystring, this.jwt())
+    console.log(props);
+    console.log("this is send email request as url" + this.backendUrl + "/sendEmail?total_cost=" + encodeURIComponent(props.total_revenue));
+    console.log(this.jwt());
+    return this.http.put(this.backendUrl + "/sendEmail?total_cost=" + encodeURIComponent(props.total_revenue), props.all_days, this.jwt())
       .toPromise()
       .then(() => console.log("Send email done!"))
       .catch(err => this.handleError(err));
