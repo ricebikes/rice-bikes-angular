@@ -32,7 +32,7 @@
                 <!-- results area -->
                 <label>Results</label>
                 <select multiple class="form-control" formControlName="selectedItem" size="10">
-                  <option *ngFor="let item of search_results" [ngValue]="item" [title]="item.description">{{item.name}}: ${{item.price}}</option>
+                  <option *ngFor="let item of search_results" [ngValue]="item" [title]="item.description">{{item.name}}: ${{item.standard_price}}</option>
                 </select>
               </div>
             </div>

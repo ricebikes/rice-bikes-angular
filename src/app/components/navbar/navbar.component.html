@@ -20,6 +20,7 @@
             <a class="dropdown-item" [routerLink]="['/admin/users']">Edit users</a>
             <a class="dropdown-item" [routerLink]="['admin/items']">Edit items</a>
             <a class="dropdown-item" [routerLink]="['admin/repairs']">Edit repairs</a>
+            <a class="dropdown-item" [routerLink]="['admin/orders']">Manage Orders</a>
           </div>
         </li>
         <button *ngIf="loggedIn | async" (click)="logout()" class="btn btn-outline-secondary">Logout</button>
