@@ -1,8 +1,8 @@
-import {Customer} from './customer';
-import {Bike} from './bike';
-import {RepairItem} from './repairItem';
+import {Customer} from "./customer";
+import {Bike} from "./bike";
+import {Item} from "./item";
+import {RepairItem} from "./repairItem";
 import {Action} from './action';
-import {TransactionItem} from './transactionItem';
 
 export class Transaction {
   _id: string;
@@ -13,13 +13,15 @@ export class Transaction {
   waiting_part: boolean;
   urgent: boolean;
   waiting_email: boolean;
+  total_cost: number;
   description: string;
   transaction_type: string;
   customer: Customer;
   bikes: Bike[];
-  items: TransactionItem[];
+  items: Item[];
   repairs: RepairItem[];
   actions: Action[];
+
   refurb: boolean;
 
   constructor() {}

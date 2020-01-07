@@ -1,16 +1,15 @@
-import { RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { TransactionsComponent } from './components/transactions/transactions.component';
-import { TransactionDetailComponent } from './components/transactions/transaction-detail/transaction-detail.component';
-import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
-import { AuthGuard } from './guards/auth.guard';
-import { LoginComponent } from './components/login/login.component';
-import {AuthComponent} from './components/auth/auth.component';
-import {AdminUsersComponent} from './components/admin-users/admin-users.component';
-import {CheckoutComponent} from './components/transactions/transaction-detail/checkout/checkout.component';
+import { RouterModule, Routes } from "@angular/router";
+import { NgModule } from "@angular/core";
+import { TransactionsComponent } from "./components/transactions/transactions.component";
+import { TransactionDetailComponent } from "./components/transactions/transaction-detail/transaction-detail.component";
+import { NewTransactionComponent } from "./components/new-transaction/new-transaction.component";
+import { AuthGuard } from "./guards/auth.guard";
+import { LoginComponent } from "./components/login/login.component";
+import {AuthComponent} from "./components/auth/auth.component";
+import {AdminUsersComponent} from "./components/admin-users/admin-users.component";
+import {CheckoutComponent} from "./components/transactions/transaction-detail/checkout/checkout.component";
 import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.component';
 import {AdminItemsComponent} from './components/admin-items/admin-items.component';
-import {OrdersComponent} from './components/orders/orders.component';
 
 const routes: Routes = [
   {
@@ -77,10 +76,6 @@ const routes: Routes = [
       {
         path: 'items',
         component: AdminItemsComponent
-      },
-      {
-        path: 'orders',
-        component: OrdersComponent
       }
     ]
   }

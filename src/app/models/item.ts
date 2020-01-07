@@ -1,14 +1,9 @@
 export class Item {
   _id: string;
+  price: number;
+  shop_cost: Number;
+  quantity: Number;
+  warning_quantity: Number;
   name: string;
-  upc: number;
-  category: string;
-  brand: string;
   description: string;
-  condition: string;
-  standard_price: string;
-  wholesale_cost: string;
-  hidden: boolean;
-  desired_stock: number;
-  stock: number;
 }

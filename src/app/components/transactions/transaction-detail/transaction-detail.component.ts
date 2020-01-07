@@ -23,7 +23,6 @@ export class TransactionDetailComponent implements OnInit {
   emailLoading = false;
   displayDescription: string;
   priceEdit = false;
-  calculatedPrice = 0;
 
   constructor(
     private transactionService: TransactionService,
@@ -50,8 +49,6 @@ export class TransactionDetailComponent implements OnInit {
           this.transactionService.transaction.subscribe(trans => {
             console.log('New Transaction');
             console.log(trans);
-            this.calculatedPrice = trans.items
-              .reduce((total, currentItem) => total + currentItem.price, 0);
             this.transaction = trans;
             if (this.transaction.description) {
               this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
@@ -108,9 +105,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   get canComplete(): boolean {
-    if (this.transaction.waiting_part) {
-      return false;
-    }
+    if (this.transaction.waiting_part) return false;
     for (const repair of this.transaction.repairs) {
       if (!repair.completed) {
         return false;
@@ -166,7 +161,7 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.refurb = !this.transaction.refurb;
     this.updateTransaction();
   }
-  toggleUrgent(): void {
+  toggleUrgent(): void{
     this.transaction.urgent = !this.transaction.urgent;
     this.updateTransaction();
   }

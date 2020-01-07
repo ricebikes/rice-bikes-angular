@@ -159,8 +159,8 @@
           <app-add-item *ngIf="!transaction?.is_paid" [transaction]="transaction"></app-add-item>
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
-              <strong>${{item.price}}</strong> {{item.item.name}}
-              <button *ngIf="!transaction?.is_paid" (click)="deleteItem(item.item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+              <strong>${{item.price}}</strong> {{item.name}}
+              <button *ngIf="!transaction?.is_paid" (click)="deleteItem(item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
             </a>
           </div>
         </div>
@@ -175,12 +175,12 @@
               <li *ngFor="let repair of transaction?.repairs" class="list-group-item">{{repair.repair.name}}
                 <span class="float-right">{{repair.repair.price}}</span>
               </li>
-              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.item.name}}
+              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.name}}
                 <span class="float-right">{{item.price}}</span>
               </li>
             </ul>
             <div class="card-footer">
-              <h4 class="float-right">${{calculatedPrice}}</h4>
+              <h4 class="float-right">${{transaction?.total_cost}}</h4>
             </div>
             <div class="card-footer">
               <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [routerLink]="['/transactions', transaction._id, 'checkout']">Checkout!</button>
