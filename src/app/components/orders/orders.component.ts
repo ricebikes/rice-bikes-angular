@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {OrderService} from '../../services/order.service';
 import {Order} from '../../models/order';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Item} from '../../models/item';
 
 @Component({
   selector: 'app-orders',
@@ -15,28 +13,20 @@ export class OrdersComponent implements OnInit {
   // set end to right now
   end = new Date();
 
-  orderForm = this.formBuilder.group({
-    // supplier, required, with every order
-    supplier: ['', Validators.required],
-  });
-  // tracks items in order before we submit
-  orderItems: Item[];
   orders = [];
 
-  constructor(private orderService: OrderService, private formBuilder: FormBuilder) { }
+  constructor(private orderService: OrderService) { }
 
   ngOnInit() {
-
   }
 
   /**
-   * Gets orders between the ranges of start and end date (set via instance variables)
+   * Gets orders between the ranges of start and end date
    */
   getOrders() {
     this.orderService.getOrders(this.start.getTime(), this.end.getTime())
       .then(orders => this.orders = orders)
       .catch(err => console.log(err));
   }
-
 
 }
