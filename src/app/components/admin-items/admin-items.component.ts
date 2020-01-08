@@ -32,6 +32,7 @@ export class AdminItemsComponent implements OnInit {
       this.items.unshift(item);
     });
   }
+  /*
   updateItem(item: Item) {
     this.itemservice.updateItem(
       item._id,
@@ -45,5 +46,5 @@ export class AdminItemsComponent implements OnInit {
         this.items.splice(index, 1, new_item);
       }
     });
-  }
+  }*/
 }
