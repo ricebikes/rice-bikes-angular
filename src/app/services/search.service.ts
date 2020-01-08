@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {Http, URLSearchParams, RequestOptions, Headers} from '@angular/http';
-import {Observable} from 'rxjs';
 import {Customer} from '../models/customer';
 import {RepairItem} from '../models/repairItem';
 import {Item} from '../models/item';
 import {Transaction} from '../models/transaction';
 import {CONFIG} from '../config';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class SearchService {
@@ -59,19 +59,34 @@ export class SearchService {
       .map(res => res.json() as RepairItem[]);
   }
 
-// Item search functionality: requires additional functions to populate category and sizes in the search pand
-// using optional parameters here so that we can search by just name for an item (if a value is null the backend discards it)
-  itemSearch(name: string, category?: string, size?: string): Observable<Item[]> {
+  /**
+   * Searches for item by given parameters, returns an observable of results
+   * @param name: name of item
+   * @param upc: item's universal product code
+   * @param category: item category
+   * @param brand: item brand
+   * @param condition: item condition (New or Used)
+   */
+  itemSearch(name?: string,
+             upc?: number,
+             category?: string,
+             brand?: string,
+             condition?: string): Observable<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
-    params.set('category', category);
-    params.set('size', size);
-    params.set('name', name);
+    if (name) {params.set('name', name); }
+    if (upc) {params.set('upc', String(upc)); }
+    if (category) {params.set('category', category); }
+    if (brand) {params.set('brand', brand); }
+    if (condition) {params.set('condition', condition); }
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .map(res => res.json() as Item[]);
   }
 
+  /**
+   * Gets distinct item categories
+   */
   itemCategories(): Promise<String[]> {
     return this.http.get(`${this.itemUrl}/categories`)
       .toPromise()
@@ -79,12 +94,11 @@ export class SearchService {
       .catch(err => console.log(err));
   }
 
-  itemSizes(category: string): Promise<String[]> {
-    const params = new URLSearchParams();
-    const requestOptions = new RequestOptions();
-    params.set('category', category);
-    requestOptions.params = params;
-    return this.http.get(`${this.itemUrl}/sizes`, requestOptions)
+  /**
+   * Gets distinct item brands known to database
+   */
+  itemBrands(): Promise<String[]> {
+    return this.http.get(`${this.itemUrl}/brands`)
       .toPromise()
       .then(res => res.json())
       .catch(err => console.log(err));

@@ -4,7 +4,6 @@ export class Item {
   upc: number;
   category: string;
   brand: string;
-  description: string;
   condition: string;
   standard_price: string;
   wholesale_cost: string;
