@@ -4,6 +4,7 @@ import { Transaction } from '../../../models/transaction';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {Bike} from '../../../models/bike';
+import {Item} from '../../../models/item';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -105,6 +106,10 @@ export class TransactionDetailComponent implements OnInit {
 
   deleteItem(item_id: string): void {
     this.transactionService.deleteItemFromTransaction(this.transaction._id, item_id);
+  }
+
+  addItem(item: Item) {
+    this.transactionService.addItemToTransaction(this.transaction._id, item._id);
   }
 
   get canComplete(): boolean {

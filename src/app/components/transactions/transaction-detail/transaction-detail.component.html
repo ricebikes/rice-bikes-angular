@@ -156,7 +156,7 @@
           </div>
         </div>
         <div class="col-md-4">
-          <app-add-item *ngIf="!transaction?.is_paid"></app-add-item>
+          <app-add-item *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)"></app-add-item>
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.item.name}}
