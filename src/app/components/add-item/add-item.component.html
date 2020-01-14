@@ -53,7 +53,14 @@
             <div class="col">
               <!-- Result list-->
               <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action" *ngFor="let item of itemResults | async">{{item.name}}</a>
+                <a class="list-group-item list-group-item-action flex-column"
+                   *ngFor="let item of itemResults | async">
+                  <!-- flexbox for alignment-->
+                  <div class="d-flex">
+                    <div class="mr-auto p-2">{{item.name}}</div>
+                    <div class="p-2">${{item.standard_price}}</div>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
