@@ -1,3 +1,73 @@
-<p>
-  Add Item works!
-</p>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#itemSearchModal">
+  <i class="fas fa-plus"></i>
+  Add Item
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="itemSearchModal" tabindex="-1" role="dialog" aria-labelledby="itemSearchModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="itemSearchModalTitle">Add Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <!-- Form column-->
+              <form [formGroup]="itemForm">
+                <div class="form-group row">
+                  <label for="nameInput" class="col-4 col-form-label">Name</label>
+                  <div class="col-8">
+                    <input type="text" class="form-control" id="nameInput" placeholder="Item Name" formControlName="name">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="upcInput" class="col-4 col-form-label">UPC</label>
+                  <div class="col-8">
+                    <input type="text" class="form-control" id="upcInput" placeholder="Universal Product Code" formControlName="upc">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="categorySelect" class="col-4 col-form-label">Category</label>
+                  <div class="col-8">
+                    <select class="form-control" id="categorySelect" formControlName="category">
+                      <option *ngFor="let category of categories | async">{{category}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="brandSelect" class="col-4 col-form-label">Brand</label>
+                  <div class="col-8">
+                    <select class="form-control" id="brandSelect" formControlName="brand">
+                      <option *ngFor="let brand of brands | async">{{brand}}</option>
+                    </select>
+                  </div>
+                </div>
+                 <div class="form-group row">
+                  <label for="conditionSelect" class="col-4 col-form-label">Condition</label>
+                  <div class="col-8">
+                    <select class="form-control" id="conditionSelect" formControlName="condition">
+                      <option>New</option>
+                      <option>Used</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col">
+              <!-- Result list-->
+              <div class="list-group">
+                <a class="list-group-item list-group-item-action" *ngFor="let item of itemResults | async">{{item.name}}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

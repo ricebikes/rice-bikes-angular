@@ -33,6 +33,7 @@ export class AdminItemsComponent implements OnInit {
     });
   }
   updateItem(item: Item) {
+    /*
     this.itemservice.updateItem(
       item._id,
       item.price,
@@ -45,5 +46,6 @@ export class AdminItemsComponent implements OnInit {
         this.items.splice(index, 1, new_item);
       }
     });
+    */
   }
 }

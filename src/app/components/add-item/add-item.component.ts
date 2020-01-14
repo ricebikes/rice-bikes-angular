@@ -24,6 +24,9 @@ export class AddItemComponent implements OnInit {
 
   itemResults: Observable<Item[]>;
 
+  categories = this.searchService.itemCategories();
+  brands = this.searchService.itemBrands();
+
   constructor(
     private searchService: SearchService,
     private transactionService: TransactionService,
