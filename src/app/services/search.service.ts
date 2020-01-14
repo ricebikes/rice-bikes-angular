@@ -62,23 +62,36 @@ export class SearchService {
   /**
    * Searches for item by given parameters, returns an observable of results
    * @param name: name of item
-   * @param upc: item's universal product code
    * @param category: item category
    * @param brand: item brand
    * @param condition: item condition (New or Used)
    */
   itemSearch(name?: string,
-             upc?: number,
              category?: string,
              brand?: string,
              condition?: string): Observable<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
+    requestOptions.headers = this.jwt_headers();
     if (name) {params.set('name', name); }
-    if (upc) {params.set('upc', String(upc)); }
     if (category) {params.set('category', category); }
     if (brand) {params.set('brand', brand); }
     if (condition) {params.set('condition', condition); }
+    if (!(name || category || brand || condition)) {return Observable.of([]); }
+    requestOptions.params = params;
+    return this.http.get(`${this.itemUrl}/search`, requestOptions)
+      .map(res => res.json() as Item[]);
+  }
+
+  /**
+   * Searches for an item by the UPC only. Its expected that there will only be one item returned here.
+   * @param upc
+   */
+  upcSearch(upc: string) {
+    const params = new URLSearchParams();
+    const requestOptions = new RequestOptions();
+    requestOptions.headers = this.jwt_headers();
+    params.set('upc', upc);
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .map(res => res.json() as Item[]);
@@ -88,7 +101,8 @@ export class SearchService {
    * Gets distinct item categories
    */
   itemCategories(): Promise<String[]> {
-    return this.http.get(`${this.itemUrl}/categories`)
+    return this.http.get(`${this.itemUrl}/categories`,
+      new RequestOptions({headers: this.jwt_headers()}))
       .toPromise()
       .then(res => res.json())
       .catch(err => console.log(err));
@@ -98,7 +112,8 @@ export class SearchService {
    * Gets distinct item brands known to database
    */
   itemBrands(): Promise<String[]> {
-    return this.http.get(`${this.itemUrl}/brands`)
+    return this.http.get(`${this.itemUrl}/brands`,
+      new RequestOptions({headers: this.jwt_headers()}))
       .toPromise()
       .then(res => res.json())
       .catch(err => console.log(err));

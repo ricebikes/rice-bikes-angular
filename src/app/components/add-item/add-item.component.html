@@ -1,8 +1,17 @@
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#itemSearchModal">
-  <i class="fas fa-plus"></i>
-  Add Item
-</button>
+<div class="btn-group" role="group" aria-label="Item Add Group">
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#itemSearchModal">
+    <i class="fas fa-plus"></i>
+    Add Item
+  </button>
+  <button type="button" class="btn btn-secondary" (click)="triggerScanModal()">
+    <i class="fas fa-search"></i>
+  </button>
+  <button #scanTrigger hidden="true" type="button"
+          class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
+          data-target="#scanModal">FAKE BUTTON</button>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="itemSearchModal" tabindex="-1" role="dialog" aria-labelledby="itemSearchModalLabel" aria-hidden="true">
@@ -10,7 +19,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="itemSearchModalTitle">Add Item</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button #itemSearchClose type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -54,7 +63,7 @@
               <!-- Result list-->
               <div class="list-group list-group-flush">
                 <a class="list-group-item list-group-item-action flex-column"
-                   *ngFor="let item of itemResults | async">
+                   *ngFor="let item of itemResults | async" (click)="selectItem(item)">
                   <!-- flexbox for alignment-->
                   <div class="d-flex">
                     <div class="mr-auto p-2">{{item.name}}</div>

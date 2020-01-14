@@ -13,10 +13,15 @@ import {Observable} from 'rxjs/Observable';
   styleUrls: ['add-item.component.css', '../../app.component.css']
 })
 export class AddItemComponent implements OnInit {
+  // Emit this to the listening component
   @Output() chosenItem = new EventEmitter<Item>();
+
+  // References to HTML elements
+  @ViewChild('itemSearchClose') itemSearchClose: ElementRef;
+
+
   itemForm = this.formBuilder.group({
     name: '',
-    upc: '',
     category: '',
     brand: '',
     condition: ''
@@ -43,7 +48,7 @@ export class AddItemComponent implements OnInit {
       // switchMap swaps the current observable for a new one (the result of the item search)
       .switchMap(formData =>
         formData ? this.searchService.
-        itemSearch(formData.name, formData.upc, formData.category, formData.brand, formData.condition)
+        itemSearch(formData.name, formData.category, formData.brand, formData.condition)
           : Observable.of<Item[]>([]))
       .catch(err => {
         console.log(err);
@@ -52,12 +57,18 @@ export class AddItemComponent implements OnInit {
       );
   }
 
+  triggerScanModal() {
+
+  }
+
   /**
    * Selects an item, returns it to parent component
    * @param item: Item to return
    */
   selectItem(item: Item) {
     this.chosenItem.emit(item);
+    this.itemSearchClose.nativeElement.click();
+    this.itemForm.reset();
   }
 }
 
