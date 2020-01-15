@@ -1,5 +1,5 @@
-import {Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {Component, OnInit, ViewChild, ElementRef, Output, EventEmitter} from '@angular/core';
+import {FormBuilder, FormControl} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
 import {TransactionService} from '../../services/transaction.service';
@@ -18,6 +18,10 @@ export class AddItemComponent implements OnInit {
 
   // References to HTML elements
   @ViewChild('itemSearchClose') itemSearchClose: ElementRef;
+  @ViewChild('searchTrigger') hiddenSearchTrigger: ElementRef;
+  @ViewChild('nameInput') nameInput: ElementRef;
+  @ViewChild('scanTrigger') scanTrigger: ElementRef;
+  @ViewChild('scanInput') scanInput: ElementRef;
 
 
   itemForm = this.formBuilder.group({
@@ -26,6 +30,8 @@ export class AddItemComponent implements OnInit {
     brand: '',
     condition: ''
   });
+
+  scanData = new FormControl('');
 
   itemResults: Observable<Item[]>;
 
@@ -57,8 +63,31 @@ export class AddItemComponent implements OnInit {
       );
   }
 
-  triggerScanModal() {
+  /**
+   * Triggered when the scan dialog gets a UPC, followed by the enter key
+   */
+  addByUPC() {
+    this.searchService.upcSearch(this.scanData.value).then(items => {
+      if (items.length > 0) {
+        this.chosenItem.emit(items[0]);
+      }
+    });
+    // dismiss scan modal
+    this.scanTrigger.nativeElement.click();
+  }
 
+  triggerItemSearch() {
+    // simply opens the item search, waits for the modal to grab focus, then shifts it to the item name input
+    this.hiddenSearchTrigger.nativeElement.click();
+    setTimeout(() => this.nameInput.nativeElement.focus(), 500);
+  }
+
+  triggerScanModal() {
+    // trigger the scan modal
+    this.scanTrigger.nativeElement.click();
+    // keeping timeout in case it needs to be raise but it appears to not be required if the modal does not fade
+    // timeout works as 0 ms, but keeping a small buffer just in case
+    setTimeout(() => this.scanInput.nativeElement.focus(), 50);
   }
 
   /**

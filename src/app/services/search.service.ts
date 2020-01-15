@@ -18,18 +18,17 @@ export class SearchService {
   constructor(private http: Http) {}
 
 
-  private jwt_headers() {
+  private static jwt_headers() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser.token) {
-      const headers = new Headers({'x-access-token': currentUser.token});
-      return headers;
+      return new Headers({'x-access-token': currentUser.token});
     }
   }
   /**
    * Searches for transactions, looking in the given field for the given term.
    * @param field - one of {bike, customer, description}
    * @param term - term to search for
-   * @returns {Observable<R>}
+   * @returns {Observable}
    */
   transactionSearch(field: string, term: string): Observable<Transaction[]> {
     const requestOptions = new RequestOptions();
@@ -54,7 +53,7 @@ export class SearchService {
     const requestOptions = new RequestOptions();
     params.set('q', term);
     requestOptions.params = params;
-    requestOptions.headers = this.jwt_headers();
+    requestOptions.headers = SearchService.jwt_headers();
     return this.http.get(this.repairUrl, requestOptions)
       .map(res => res.json() as RepairItem[]);
   }
@@ -69,32 +68,34 @@ export class SearchService {
   itemSearch(name?: string,
              category?: string,
              brand?: string,
-             condition?: string): Observable<Item[]> {
+             condition?: string): Promise<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
-    requestOptions.headers = this.jwt_headers();
+    requestOptions.headers = SearchService.jwt_headers();
     if (name) {params.set('name', name); }
     if (category) {params.set('category', category); }
     if (brand) {params.set('brand', brand); }
     if (condition) {params.set('condition', condition); }
-    if (!(name || category || brand || condition)) {return Observable.of([]); }
+    if (!(name || category || brand || condition)) {return Observable.of([]).toPromise(); }
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
-      .map(res => res.json() as Item[]);
+      .toPromise()
+      .then(res => res.json() as Item[]);
   }
 
   /**
    * Searches for an item by the UPC only. Its expected that there will only be one item returned here.
    * @param upc
    */
-  upcSearch(upc: string) {
+  upcSearch(upc: string): Promise<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
-    requestOptions.headers = this.jwt_headers();
+    requestOptions.headers = SearchService.jwt_headers();
     params.set('upc', upc);
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
-      .map(res => res.json() as Item[]);
+      .toPromise()
+      .then(res => res.json() as Item[]);
   }
 
   /**
@@ -102,7 +103,7 @@ export class SearchService {
    */
   itemCategories(): Promise<String[]> {
     return this.http.get(`${this.itemUrl}/categories`,
-      new RequestOptions({headers: this.jwt_headers()}))
+      new RequestOptions({headers: SearchService.jwt_headers()}))
       .toPromise()
       .then(res => res.json())
       .catch(err => console.log(err));
@@ -113,7 +114,7 @@ export class SearchService {
    */
   itemBrands(): Promise<String[]> {
     return this.http.get(`${this.itemUrl}/brands`,
-      new RequestOptions({headers: this.jwt_headers()}))
+      new RequestOptions({headers: SearchService.jwt_headers()}))
       .toPromise()
       .then(res => res.json())
       .catch(err => console.log(err));

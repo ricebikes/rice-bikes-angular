@@ -1,10 +1,14 @@
 <!-- Button trigger modal -->
 <div class="btn-group" role="group" aria-label="Item Add Group">
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#itemSearchModal">
+  <button type="button" class="btn btn-primary" (click)="triggerItemSearch()">
     <i class="fas fa-plus"></i>
     Add Item
   </button>
-  <button #scanTrigger hidden="true" type="button"
+  <!-- Hidden buttons, useful to trigger modal from typescript-->
+  <button #searchTrigger hidden type="button"
+          class="btn btn-outline-primary" data-toggle="modal"
+          data-target="#itemSearchModal">FAKE BUTTON</button>
+  <button #scanTrigger hidden type="button"
           class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
           data-target="#scanModal">FAKE BUTTON</button>
   <button type="button" class="btn btn-secondary" (click)="triggerScanModal()">
@@ -12,8 +16,22 @@
   </button>
 </div>
 
+<!-- Scan Modal -->
+<div class="modal" id="scanModal" tabindex="-1" role="dialog" aria-labelledby="scanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scanModalTitle">Scan Item</h5>
+      </div>
+      <div class="modal-body">
+        <label for="scanInput" hidden>Scan Input</label>
+        <input id="scanInput" #scanInput type="text" class="form-control" (keyup.enter)="addByUPC()">
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- Modal -->
+<!-- Search Modal-->
 <div class="modal fade" id="itemSearchModal" tabindex="-1" role="dialog" aria-labelledby="itemSearchModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -33,7 +51,7 @@
                 <div class="form-row">
                   <div class="form-group col-3">
                     <label for="nameInput">Name</label>
-                    <input type="text" class="form-control" id="nameInput" placeholder="Item Name" formControlName="name">
+                    <input #nameInput type="text" class="form-control" id="nameInput" placeholder="Item Name" formControlName="name">
                   </div>
                   <div class="form-group col-3">
                     <label for="categorySelect">Category</label>

@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {TransactionService} from "../../../../services/transaction.service";
-import {Transaction} from "../../../../models/transaction";
+import {ActivatedRoute, Router} from '@angular/router';
+import {TransactionService} from '../../../../services/transaction.service';
+import {Transaction} from '../../../../models/transaction';
 
 @Component({
   selector: 'app-checkout',
@@ -13,8 +13,8 @@ export class CheckoutComponent implements OnInit {
   @ViewChild('finishModal') finishModal: ElementRef;
 
   transaction: Transaction;
-  loading: boolean = true;
-  isEdit: boolean = false;
+  loading = true;
+  isEdit = false;
 
   constructor(private route: ActivatedRoute,
               private transactionService: TransactionService,
@@ -26,8 +26,8 @@ export class CheckoutComponent implements OnInit {
         .then(() => {
           this.transactionService.transaction.subscribe(trans => this.transaction = trans);
           this.loading = false;
-        })
-    })
+        });
+    });
   }
 
   finish() {

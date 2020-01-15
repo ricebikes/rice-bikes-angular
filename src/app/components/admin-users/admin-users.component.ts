@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {AdminService} from "../../services/admin.service";
-import {User} from "../../models/user";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AdminService} from '../../services/admin.service';
+import {User} from '../../models/user';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-admin-users',
@@ -27,7 +27,7 @@ export class AdminUsersComponent implements OnInit {
   }
 
   postUser() {
-    const user_roles = []
+    const user_roles = [];
     if (this.userForm.value['admin']) {user_roles.push('admin'); }
     if (this.userForm.value['projects']) {user_roles.push('projects'); }
     if (this.userForm.value['operations']) {user_roles.push('operations'); }
@@ -42,7 +42,7 @@ export class AdminUsersComponent implements OnInit {
   deleteUser(user: User) {
     this.adminService.deleteUser(user._id)
       .then(() => {
-        let index = this.users.indexOf(user);
+        const index = this.users.indexOf(user);
         if (index > -1) {
           this.users.splice(index, 1);
         }
