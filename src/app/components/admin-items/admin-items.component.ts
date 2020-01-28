@@ -34,6 +34,7 @@ export class AdminItemsComponent implements OnInit {
   }
   /*
   updateItem(item: Item) {
+    /*
     this.itemservice.updateItem(
       item._id,
       item.price,

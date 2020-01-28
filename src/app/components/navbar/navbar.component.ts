@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthenticationService} from "../../services/authentication.service";
-import {Observable} from "rxjs";
-import {Router, ActivatedRoute} from "@angular/router";
-import {CONFIG} from "../../config";
+import {AuthenticationService} from '../../services/authentication.service';
+import {Observable} from 'rxjs/Observable';
+import {CONFIG} from '../../config';
 
 @Component({
   selector: 'app-navbar',
@@ -13,11 +12,9 @@ export class NavbarComponent implements OnInit {
 
   loggedIn: Observable<boolean>;
   isAdmin: Observable<boolean>;
-  authUrl: string = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
+  authUrl = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
 
-  constructor(private auth: AuthenticationService,
-              private router: Router,
-              private route: ActivatedRoute) {
+  constructor(private auth: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -26,6 +23,6 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this.auth.logout().then(ret => window.location.href="https://idp.rice.edu/idp/profile/cas/logout");
+    this.auth.logout().then(() => window.location.href = 'https://idp.rice.edu/idp/profile/cas/logout');
   }
 }

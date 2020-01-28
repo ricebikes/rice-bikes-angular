@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TransactionService } from "../../services/transaction.service";
-import { Transaction } from "../../models/transaction";
+import { TransactionService } from '../../services/transaction.service';
+import { Transaction } from '../../models/transaction';
 
 @Component({
   selector: 'app-transactions',
@@ -10,11 +10,11 @@ import { Transaction } from "../../models/transaction";
 })
 export class TransactionsComponent implements OnInit {
   transactions: Transaction[];
-  loading: boolean = true;
+  loading = true;
 
   constructor(public transactionService: TransactionService) { }
 
-  currentTab: string = 'active';
+  currentTab = 'active';
 
   ngOnInit(): void {
     this.getTransactions(this.currentTab, { complete: false , refurb: false});
@@ -30,13 +30,11 @@ export class TransactionsComponent implements OnInit {
     this.transactionService.getTransactions(props)
       .then(transactions => {
         transactions.sort((a, b) => {
-          if((a.urgent && b.urgent) || (!a.urgent && !b.urgent)){
-            return new Date(b.date_created).getTime() - new Date(a.date_created).getTime()
-          }
-          else if (b.urgent){
+          if ((a.urgent && b.urgent) || (!a.urgent && !b.urgent)) {
+            return new Date(b.date_created).getTime() - new Date(a.date_created).getTime();
+          } else if (b.urgent) {
             return 1;
-          }
-          else if (a.urgent){
+          } else if (a.urgent) {
             return -1;
           }
 
@@ -52,9 +50,9 @@ export class TransactionsComponent implements OnInit {
     if (this.currentTab === 'active') {
       created = Date.parse(transaction.date_created);
     } else if (this.currentTab === 'completed') {
-      created = Date.parse(transaction.date_completed)
+      created = Date.parse(transaction.date_completed);
     }
-    let diff = Date.now() - created;
+    const diff = Date.now() - created;
     return Math.floor(diff / 1000 / 60 / 60 / 24);
   }
 

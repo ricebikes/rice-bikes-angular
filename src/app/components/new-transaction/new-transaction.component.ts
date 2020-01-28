@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {TransactionService} from "../../services/transaction.service";
-import {Customer} from "../../models/customer";
-import {SearchService} from "../../services/search.service";
-import {Observable, Subject} from "rxjs";
-import {FormGroup, FormControl, Validators} from "@angular/forms";
+import {ActivatedRoute, Router} from '@angular/router';
+import {TransactionService} from '../../services/transaction.service';
+import {Customer} from '../../models/customer';
+import {SearchService} from '../../services/search.service';
+import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-new-transaction',
@@ -50,7 +51,7 @@ export class NewTransactionComponent implements OnInit {
       .catch(err => {
         console.log(err);
         return Observable.of<Customer[]>([]);
-      })
+      });
   }
 
   search(term: string): void {
@@ -75,15 +76,15 @@ export class NewTransactionComponent implements OnInit {
         this.transactionService.createTransactionCustomerExists(params['t'], this.customer._id)
           .then(trans => this.router.navigate(['/transactions', trans._id]));
       } else {
-        let cust = new Customer();
+        const cust = new Customer();
         cust.email = this.transactionForm.value['email'];
         cust.first_name = this.transactionForm.value['first_name'];
         cust.last_name = this.transactionForm.value['last_name'];
         this.transactionService.createTransaction(params['t'], cust)
           .then(trans => {
-            this.router.navigate(['/transactions', trans._id])
+            this.router.navigate(['/transactions', trans._id]);
           });
       }
-    })
+    });
   }
 }

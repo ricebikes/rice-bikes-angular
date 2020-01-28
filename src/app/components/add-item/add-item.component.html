@@ -1,19 +1,98 @@
-<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+<!-- Button trigger modal -->
+<div class="btn-group" role="group" aria-label="Item Add Group">
+  <button type="button" class="btn btn-primary" (click)="triggerItemSearch()">
+    <i class="fas fa-plus"></i>
+    Add Item
+  </button>
+  <!-- Hidden buttons, useful to trigger modal from typescript-->
+  <button #searchTrigger hidden type="button"
+          class="btn btn-outline-primary" data-toggle="modal"
+          data-target="#itemSearchModal">FAKE BUTTON</button>
+  <button #scanTrigger hidden type="button"
+          class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
+          data-target="#scanModal">FAKE BUTTON</button>
+  <button type="button" class="btn btn-secondary" (click)="triggerScanModal()">
+    <i class="fas fa-search"></i>
+  </button>
+</div>
+
+<!-- Scan Modal -->
+<div class="modal" id="scanModal" tabindex="-1" role="dialog" aria-labelledby="scanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Item</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="scanModalTitle">Scan Item</h5>
       </div>
       <div class="modal-body">
-        <p>Text here</p>
+        <label for="scanInput" hidden>Scan Input</label>
+        <input id="scanInput" #scanInput type="text" class="form-control" (keyup.enter)="addByUPC()">
       </div>
     </div>
   </div>
 </div>
 
-<button type="buttom" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
-  Add Item
-</button>
+<!-- Search Modal-->
+<div class="modal fade" id="itemSearchModal" tabindex="-1" role="dialog" aria-labelledby="itemSearchModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="itemSearchModalTitle">Add Item</h5>
+        <button #itemSearchClose type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <!-- Form column-->
+              <form [formGroup]="itemForm">
+                <!-- first row of form elements-->
+                <div class="form-row">
+                  <div class="form-group col-3">
+                    <label for="nameInput">Name</label>
+                    <input #nameInput type="text" class="form-control" id="nameInput" placeholder="Item Name" formControlName="name">
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="categorySelect">Category</label>
+                    <select class="form-control" id="categorySelect" formControlName="category">
+                      <option *ngFor="let category of categories | async">{{category}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="brandSelect">Brand</label>
+                    <select class="form-control" id="brandSelect" formControlName="brand">
+                      <option *ngFor="let brand of brands | async">{{brand}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="conditionSelect">Condition</label>
+                    <select class="form-control" id="conditionSelect" formControlName="condition">
+                      <option>New</option>
+                      <option>Used</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <!-- Result list-->
+              <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action flex-column"
+                   *ngFor="let item of itemResults | async" (click)="selectItem(item)">
+                  <!-- flexbox for alignment-->
+                  <div class="d-flex">
+                    <div class="mr-auto p-2">{{item.name}}</div>
+                    <div class="p-2">${{item.standard_price}}</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
