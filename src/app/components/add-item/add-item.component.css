@@ -1,0 +1,9 @@
+/* Use flexbox to get full parent width button groups*/
+.btn-group.custom-block {
+  display: flex;
+}
+
+/* Use flexbox to get full parent width button groups*/
+.custom-block .btn {
+  flex: 1
+}

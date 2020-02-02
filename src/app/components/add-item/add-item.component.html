@@ -1,17 +1,17 @@
 <!-- Button trigger modal -->
-<div class="btn-group" role="group" aria-label="Item Add Group">
+<div class="btn-group custom-block" role="group" aria-label="Item Add Group">
   <button type="button" class="btn btn-primary" (click)="triggerItemSearch()">
     <i class="fas fa-plus"></i>
     Add Item
   </button>
-  <!-- Hidden buttons, useful to trigger modal from typescript-->
+  <!-- Hidden buttons, useful to trigger modal from typescript -->
   <button #searchTrigger hidden type="button"
           class="btn btn-outline-primary" data-toggle="modal"
           data-target="#itemSearchModal">FAKE BUTTON</button>
   <button #scanTrigger hidden type="button"
           class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
           data-target="#scanModal">FAKE BUTTON</button>
-  <button type="button" class="btn btn-secondary" (click)="triggerScanModal()">
+  <button type="button" class="btn btn-secondary" style="max-width: 50px" (click)="triggerScanModal()">
     <i class="fas fa-search"></i>
   </button>
 </div>
