@@ -6,6 +6,7 @@ import {Item} from '../models/item';
 import {Transaction} from '../models/transaction';
 import {CONFIG} from '../config';
 import {Observable} from 'rxjs/Observable';
+import {Repair} from '../models/repair';
 
 @Injectable()
 export class SearchService {
@@ -48,14 +49,14 @@ export class SearchService {
       .map(res => res.json() as Customer[]);
   }
 
-  repairSearch(term: string): Observable<RepairItem[]> {
+  repairSearch(term: string): Observable<Repair[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
     params.set('q', term);
     requestOptions.params = params;
     requestOptions.headers = SearchService.jwt_headers();
     return this.http.get(this.repairUrl, requestOptions)
-      .map(res => res.json() as RepairItem[]);
+      .map(res => res.json() as Repair[]);
   }
 
   /**

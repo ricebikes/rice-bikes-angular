@@ -33,16 +33,20 @@
 
 <!-- Search Modal-->
 <div class="modal fade" id="itemSearchModal" tabindex="-1" role="dialog" aria-labelledby="itemSearchModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="itemSearchModalTitle">Add Item</h5>
-        <button #itemSearchClose type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
         <div class="container">
+          <div class="row">
+            <div class="col">
+              <h5 class="modal-title" id="itemSearchModalTitle">Add Item</h5>
+            </div>
+            <div class="col">
+              <button #itemSearchClose type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
           <div class="row">
             <div class="col">
               <!-- Form column-->
@@ -82,22 +86,33 @@
               </form>
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <!-- Result list-->
-              <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action flex-column"
-                   *ngFor="let item of itemResults | async" (click)="selectItem(item)">
-                  <!-- flexbox for alignment-->
-                  <div class="d-flex">
-                    <div class="mr-auto p-2">{{item.name}}</div>
-                    <div class="p-2">${{item.standard_price}}</div>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
+      </div>
+      <div class="modal-body">
+          <!-- Result list-->
+          <table class="table table-hover" *ngIf="itemResults | async as items">
+            <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Brand</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Price</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="items.length > 0">
+            <tr *ngFor="let item of items" (click)="selectItem(item)">
+              <td>{{item.name}}</td>
+              <td>{{item.brand}}</td>
+              <td>{{item.stock}}</td>
+              <td>${{item.standard_price}}</td>
+            </tr>
+            </tbody>
+            <tbody *ngIf="items.length == 0">
+            <tr>
+              <th colspan="4">No Results Found</th>
+            </tr>
+            </tbody>
+          </table>
       </div>
     </div>
   </div>

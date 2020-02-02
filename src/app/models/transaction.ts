@@ -13,6 +13,8 @@ export class Transaction {
   waiting_part: boolean;
   urgent: boolean;
   waiting_email: boolean;
+  employee: boolean;
+  total_cost: number;
   description: string;
   transaction_type: string;
   customer: Customer;

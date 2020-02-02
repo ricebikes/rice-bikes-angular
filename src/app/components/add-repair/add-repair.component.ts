@@ -5,6 +5,7 @@ import {SearchService} from '../../services/search.service';
 import {RepairItem} from '../../models/repairItem';
 import {Transaction} from '../../models/transaction';
 import {TransactionService} from '../../services/transaction.service';
+import {Repair} from '../../models/repair';
 
 @Component({
   selector: 'app-add-repair',
@@ -15,7 +16,7 @@ export class AddRepairComponent implements OnInit {
   @Input() transaction: Transaction;
 
   searchFieldValue: string;
-  repairResults: Observable<RepairItem[]>;
+  repairResults: Observable<Repair[]>;
   private searchTerms = new Subject<string>();
 
   constructor(
@@ -28,11 +29,11 @@ export class AddRepairComponent implements OnInit {
       .debounceTime(100)
       .distinctUntilChanged()
       .switchMap(term => {
-        return term ? this.searchService.repairSearch(term) : Observable.of<RepairItem[]>([]);
+        return term ? this.searchService.repairSearch(term) : Observable.of<Repair[]>([]);
       })
       .catch(err => {
         console.log(err);
-        return Observable.of<RepairItem[]>([]);
+        return Observable.of<Repair[]>([]);
       });
   }
 

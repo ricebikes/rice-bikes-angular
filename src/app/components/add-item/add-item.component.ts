@@ -24,11 +24,11 @@ export class AddItemComponent implements OnInit {
 
 
   itemForm = this.formBuilder.group({
-    name: '',
-    category: '',
-    size: '',
-    brand: '',
-    condition: ''
+    name: null,
+    category: null,
+    size: null,
+    brand: null,
+    condition: null
   });
 
   scanData = new FormControl('');
@@ -49,13 +49,15 @@ export class AddItemComponent implements OnInit {
     // watch form for changes, and search when it does
     this.itemResults = this.itemForm
       .valueChanges
-      .debounceTime(200)
-      .distinctUntilChanged()
+      .debounceTime(200) // wait 200ms between changes
+      .distinctUntilChanged() // don't emit unless change is actually new data
       // switchMap swaps the current observable for a new one (the result of the item search)
-      .switchMap(formData =>
-        formData ? this.searchService.
+      .switchMap(formData => {
+        console.log(formData);
+        return formData ? this.searchService.
         itemSearch(formData.name, formData.category, formData.size,
-          formData.brand, formData.condition) : Observable.of<Item[]>([]))
+          formData.brand, formData.condition) : Observable.of<Item[]>([]);
+      })
       .catch(err => {
         console.log(err);
         return Observable.of<Item[]>([]);
@@ -64,10 +66,14 @@ export class AddItemComponent implements OnInit {
     // Setup availableSizes to watch for changes to the category, and update with possible sizes.
     this.availableSizes = this.itemForm.controls['category'] // listen for changes to the item category
       .valueChanges
-      .debounceTime(200) // wait 200 milliseconds between changes
-      .distinctUntilChanged() // don't trigger until there is a change
-      .switchMap(newCategory => // switch to promise from backend request with our category
-        this.searchService.itemSizes(newCategory))
+      .debounceTime(200) // wait 200ms between changes
+      .distinctUntilChanged() // don't emit unless change is actually new data
+      .switchMap(newCategory => {
+        console.log(newCategory);
+          // switch to promise from backend request with our category
+          this.itemForm.controls['size'].setValue('');
+          return this.searchService.itemSizes(newCategory);
+      })
       .catch(err => {
         console.log(err);
         return Observable.of([]);

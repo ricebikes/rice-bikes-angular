@@ -180,7 +180,7 @@
               </li>
             </ul>
             <div class="card-footer">
-              <h4 class="float-right">${{calculatedPrice}}</h4>
+              <h4 class="float-right">${{transaction?.total_cost}}</h4>
             </div>
             <div class="card-footer">
               <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
