@@ -80,9 +80,9 @@
       <span class="dropdown">
         <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                 [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
-  'badge-primary': transaction?.transaction_type == 'outpatient',
-  'badge-secondary': transaction?.transaction_type == 'merch'
-}">
+                            'badge-primary': transaction?.transaction_type == 'outpatient',
+                             'badge-secondary': transaction?.transaction_type == 'merch'
+                            }">
           {{transaction?.transaction_type}}
         </button>
         <div class="dropdown-menu">
@@ -95,6 +95,7 @@
           <a class="dropdown-item" (click)="changeType('merch')">Merch</a>
         </div>
       </span>
+      <span *ngIf="transaction.employee" class="badge badge-primary">Employee</span>
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
       <button data-toggle="modal" data-target="#deleteTransactionModal" class="btn btn-outline-danger float-right">Delete</button>
@@ -156,7 +157,7 @@
           </div>
         </div>
         <div class="col-md-4">
-          <app-add-item *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)"></app-add-item>
+          <app-add-item *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)" [employee]="transaction?.employee"></app-add-item>
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.item.name}}
@@ -215,8 +216,8 @@
       <button *ngIf="transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-danger btn-lg">
         Waiting on email
       </button>
-     <button *ngIf="transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-danger btn-lg">
-       Unmark as Refurb
+      <button *ngIf="transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-danger btn-lg">
+        Unmark as Refurb
       </button>
       <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-bicycle"></i>
@@ -226,9 +227,9 @@
       <button *ngIf = "!transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()" class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>
       <button *ngIf = "transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()" class="btn btn-danger btn-lg"><i class="fas fa-exclamation"></i></button>
       <div class="dropdown-menu">
-      <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
+        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
       </div>
       <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
     </div>

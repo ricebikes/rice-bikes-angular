@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ElementRef, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
@@ -12,6 +12,8 @@ import {Observable} from 'rxjs/Observable';
   styleUrls: ['add-item.component.css', '../../app.component.css']
 })
 export class AddItemComponent implements OnInit {
+  // Input: if user is an employee or not
+  @Input('employee') employee: boolean;
   // Emit this to the listening component
   @Output() chosenItem = new EventEmitter<Item>();
 

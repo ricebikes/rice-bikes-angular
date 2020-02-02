@@ -96,6 +96,7 @@
               <th scope="col">Name</th>
               <th scope="col">Brand</th>
               <th scope="col">Stock</th>
+              <th *ngIf="employee" scope="col">Wholesale</th>
               <th scope="col">Price</th>
             </tr>
             </thead>
@@ -104,6 +105,7 @@
               <td>{{item.name}}</td>
               <td>{{item.brand}}</td>
               <td>{{item.stock}}</td>
+              <td *ngIf="employee">${{item.wholesale_cost}}</td>
               <td>${{item.standard_price}}</td>
             </tr>
             </tbody>
