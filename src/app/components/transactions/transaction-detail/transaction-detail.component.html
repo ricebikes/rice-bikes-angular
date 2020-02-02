@@ -51,7 +51,7 @@
 </div>
 
 <!-- Past Actions Modal -->
-<div class="modal fade" id="pastActionsModal" tabindex="-1" *ngIf="transaction.actions && transaction.actions.length > 0">
+<div class="modal fade" id="pastActionsModal" tabindex="-1" *ngIf="transaction?.actions && transaction?.actions.length > 0">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -98,7 +98,7 @@
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
       <button data-toggle="modal" data-target="#deleteTransactionModal" class="btn btn-outline-danger float-right">Delete</button>
-      <button *ngIf="transaction.actions && transaction.actions.length > 0" data-toggle="modal" data-target="#pastActionsModal" class="btn btn-outline-secondary float-right mr-3">Past Actions</button>
+      <button *ngIf="transaction?.actions && transaction?.actions?.length > 0" data-toggle="modal" data-target="#pastActionsModal" class="btn btn-outline-secondary float-right mr-3">Past Actions</button>
     </p>
 
     <p *ngIf="!editingTransaction" class="lead" [innerHTML]="displayDescription"></p>
@@ -183,7 +183,7 @@
               <h4 class="float-right">${{calculatedPrice}}</h4>
             </div>
             <div class="card-footer">
-              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [routerLink]="['/transactions', transaction._id, 'checkout']">Checkout!</button>
+              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
             </div>
           </div>
         </div>
@@ -201,30 +201,30 @@
       <button *ngIf="transaction?.complete && !transaction?.is_paid" (click)="reopenTransaction()" class="btn btn-outline-warning btn-lg">
         Reopen
       </button>
-      <button *ngIf="!transaction.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="!transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-wrench"></i>
         Wait on part
       </button>
-      <button *ngIf="transaction.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-danger btn-lg">
+      <button *ngIf="transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-danger btn-lg">
         Waiting on part
       </button>
-      <button *ngIf="!transaction.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="!transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-envelope"></i>
         Wait on email
       </button>
-      <button *ngIf="transaction.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-danger btn-lg">
+      <button *ngIf="transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-danger btn-lg">
         Waiting on email
       </button>
-     <button *ngIf="transaction.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-danger btn-lg">
+     <button *ngIf="transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-danger btn-lg">
        Unmark as Refurb
       </button>
-      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-bicycle"></i>
         Mark as Refurb
       </button>
 
-      <button *ngIf = "!transaction.urgent && !transaction.complete" (click)="toggleUrgent()" class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>
-      <button *ngIf = "transaction.urgent && !transaction.complete" (click)="toggleUrgent()" class="btn btn-danger btn-lg"><i class="fas fa-exclamation"></i></button>
+      <button *ngIf = "!transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()" class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>
+      <button *ngIf = "transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()" class="btn btn-danger btn-lg"><i class="fas fa-exclamation"></i></button>
       <div class="dropdown-menu">
       <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
       <div class="dropdown-divider"></div>

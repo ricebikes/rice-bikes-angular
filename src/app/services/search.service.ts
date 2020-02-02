@@ -62,11 +62,13 @@ export class SearchService {
    * Searches for item by given parameters, returns an observable of results
    * @param name: name of item
    * @param category: item category
+   * @param size: item size
    * @param brand: item brand
    * @param condition: item condition (New or Used)
    */
   itemSearch(name?: string,
              category?: string,
+             size?: string,
              brand?: string,
              condition?: string): Promise<Item[]> {
     const params = new URLSearchParams();
@@ -74,9 +76,10 @@ export class SearchService {
     requestOptions.headers = SearchService.jwt_headers();
     if (name) {params.set('name', name); }
     if (category) {params.set('category', category); }
+    if (size) {params.set('size', size); }
     if (brand) {params.set('brand', brand); }
     if (condition) {params.set('condition', condition); }
-    if (!(name || category || brand || condition)) {return Observable.of([]).toPromise(); }
+    if (!(name || category || size || brand || condition)) {return Observable.of([]).toPromise(); }
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
@@ -105,7 +108,7 @@ export class SearchService {
     return this.http.get(`${this.itemUrl}/categories`,
       new RequestOptions({headers: SearchService.jwt_headers()}))
       .toPromise()
-      .then(res => res.json())
+      .then(res => res.json().sort())
       .catch(err => console.log(err));
   }
 
@@ -116,7 +119,23 @@ export class SearchService {
     return this.http.get(`${this.itemUrl}/brands`,
       new RequestOptions({headers: SearchService.jwt_headers()}))
       .toPromise()
-      .then(res => res.json())
+      .then(res => res.json().sort())
+      .catch(err => console.log(err));
+  }
+
+  /**
+   * Gets distinct item sizes given a specific category
+   * @param category: Item category to search with
+   */
+  itemSizes(category: string): Promise<String[]> {
+    const params = new URLSearchParams();
+    const requestOptions = new RequestOptions();
+    requestOptions.headers = SearchService.jwt_headers();
+    params.set('category', category);
+    requestOptions.params = params;
+    return this.http.get(`${this.itemUrl}/sizes`, requestOptions)
+      .toPromise()
+      .then(res => res.json().sort())
       .catch(err => console.log(err));
   }
 }

@@ -113,6 +113,9 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   get canComplete(): boolean {
+    if (!this.transaction) {
+      return false;
+    }
     if (this.transaction.waiting_part) {
       return false;
     }

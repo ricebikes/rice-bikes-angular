@@ -2,8 +2,6 @@ import {Component, OnInit, ViewChild, ElementRef, Output, EventEmitter} from '@a
 import {FormBuilder, FormControl} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
-import {TransactionService} from '../../services/transaction.service';
-import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
 import {Observable} from 'rxjs/Observable';
 
 
@@ -28,13 +26,15 @@ export class AddItemComponent implements OnInit {
   itemForm = this.formBuilder.group({
     name: '',
     category: '',
+    size: '',
     brand: '',
     condition: ''
   });
 
   scanData = new FormControl('');
 
-  itemResults: Observable<Item[]>;
+  itemResults: Observable<Item[]>; // item results returned from backend
+  availableSizes: Observable<String[]>; // filled when we select a category
 
   categories = this.searchService.itemCategories();
   brands = this.searchService.itemBrands();
@@ -54,13 +54,24 @@ export class AddItemComponent implements OnInit {
       // switchMap swaps the current observable for a new one (the result of the item search)
       .switchMap(formData =>
         formData ? this.searchService.
-        itemSearch(formData.name, formData.category, formData.brand, formData.condition)
-          : Observable.of<Item[]>([]))
+        itemSearch(formData.name, formData.category, formData.size,
+          formData.brand, formData.condition) : Observable.of<Item[]>([]))
       .catch(err => {
         console.log(err);
         return Observable.of<Item[]>([]);
         }
       );
+    // Setup availableSizes to watch for changes to the category, and update with possible sizes.
+    this.availableSizes = this.itemForm.controls['category'] // listen for changes to the item category
+      .valueChanges
+      .debounceTime(200) // wait 200 milliseconds between changes
+      .distinctUntilChanged() // don't trigger until there is a change
+      .switchMap(newCategory => // switch to promise from backend request with our category
+        this.searchService.itemSizes(newCategory))
+      .catch(err => {
+        console.log(err);
+        return Observable.of([]);
+      });
   }
 
   /**
