@@ -143,7 +143,7 @@ export class AuthenticationService implements OnInit {
 
   public logout(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.alertService.success('Bye bye!');
+      this.alertService.success('Logged Out', 'Successfully logged you out', 0);
       localStorage.removeItem('currentUser');
       this.loggedIn.next(false);
       this.admin.next(false);

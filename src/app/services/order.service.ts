@@ -21,9 +21,6 @@ export class OrderService {
 
   // generic error handler
   private handleError(err): void {
-    if (err.status === 401) {
-      this.alertService.error('Looks like you aren\'t allowed to do that :(', false);
-    }
     // for now just log the error to console
     console.log(err);
   }

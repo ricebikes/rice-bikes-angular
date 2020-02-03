@@ -7,6 +7,8 @@ import {Transaction} from '../models/transaction';
 import {CONFIG} from '../config';
 import {Observable} from 'rxjs/Observable';
 import {Repair} from '../models/repair';
+import {HttpErrorResponse} from '@angular/common/http';
+import {AlertService} from './alert.service';
 
 @Injectable()
 export class SearchService {
@@ -16,8 +18,7 @@ export class SearchService {
   private repairUrl = `${CONFIG.api_url}/repairs/search`;
   private itemUrl = `${CONFIG.api_url}/items`;
 
-  constructor(private http: Http) {}
-
+  constructor(private http: Http, private alertService: AlertService) {}
 
   private static jwt_headers() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -25,6 +26,15 @@ export class SearchService {
       return new Headers({'x-access-token': currentUser.token});
     }
   }
+
+  private handleError(err: HttpErrorResponse): void {
+    let message = err.message;
+    if (!message) {
+      message = JSON.stringify(err);
+    }
+    this.alertService.error(err.statusText, message, err.status);
+  }
+
   /**
    * Searches for transactions, looking in the given field for the given term.
    * @param field - one of {bike, customer, description}
@@ -110,7 +120,7 @@ export class SearchService {
       new RequestOptions({headers: SearchService.jwt_headers()}))
       .toPromise()
       .then(res => res.json().sort())
-      .catch(err => console.log(err));
+      .catch(err => this.handleError(err));
   }
 
   /**

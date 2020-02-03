@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Transaction } from '../models/transaction';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/toPromise';
-import {Headers, Http, RequestOptions} from '@angular/http';
 import { Customer } from '../models/customer';
 import { Bike } from '../models/bike';
 import {Router} from '@angular/router';
 import {AlertService} from './alert.service';
 import {CONFIG} from '../config';
 import {AuthenticationService} from './authentication.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Http} from '@angular/http';
 
 @Injectable()
 export class TransactionService {
@@ -22,12 +23,12 @@ export class TransactionService {
   }
 
 
-  private handleError(err): void {
-    console.log('ERROR');
-    console.log(err);
-    if (err.status === 401 ) {
-      this.alertService.error('Looks like you aren\'t allowed to do that :(', false);
+  private handleError(err: HttpErrorResponse): void {
+    let message = err.message;
+    if (!message) {
+      message = JSON.stringify(err);
     }
+    this.alertService.error(err.statusText, message, err.status);
   }
 
   /**

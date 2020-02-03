@@ -1,12 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import {Alert} from '../models/alert';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class AlertService {
-  private subject = new Subject<any>();
+  private alertSubject = new Subject<Alert>();
+  // if true, hold alert for one navigation change
   private keepAfterNavigationChange = false;
+
+  static debugLog(msg) {
+    if (!environment.production) {
+      console.log('DEBUG ' + new Date() + ' ' + msg);
+    }
+  }
 
   constructor(private router: Router) {
     // clear alert message on route change
@@ -17,24 +26,24 @@ export class AlertService {
           this.keepAfterNavigationChange = false;
         } else {
           // clear alert
-          this.subject.next();
+          this.alertSubject.next();
         }
       }
     });
-    this.subject.next({});
   }
 
-  success(message: string, keepAfterNavigationChange = false) {
+  success(title: string, message: string, code: number, keepAfterNavigationChange = false) {
     this.keepAfterNavigationChange = keepAfterNavigationChange;
-    this.subject.next({ type: 'success', text: message });
+    this.alertSubject.next({title: title, code: code, message: message, type: 'success'});
   }
 
-  error(message: string, keepAfterNavigationChange = false) {
+  error(title: string, message: string, code: number, keepAfterNavigationChange = false) {
     this.keepAfterNavigationChange = keepAfterNavigationChange;
-    this.subject.next({ type: 'error', text: message });
+    console.log('ERROR ' + new Date() + ' ' + message);
+    this.alertSubject.next({title: title, code: code, message: message, type: 'error'});
   }
 
-  getMessage(): Observable<any> {
-    return this.subject.asObservable();
+  getMessage(): Observable<Alert> {
+    return this.alertSubject.asObservable();
   }
 }

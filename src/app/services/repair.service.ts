@@ -21,9 +21,7 @@ export class RepairService {
   }
 
   private handleError(err): void {
-    if (err.status == 401) {
-      this.alertService.error('Looks like you aren\'t allowed to do that :(', false);
-    }
+      console.log(err);
   }
 
   /**
