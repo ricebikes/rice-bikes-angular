@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {CONFIG} from '../config';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {AlertService} from './alert.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class RepairService {
@@ -20,8 +21,12 @@ export class RepairService {
     }
   }
 
-  private handleError(err): void {
-      console.log(err);
+  private handleError(err: HttpErrorResponse): void {
+    let message = err.message;
+    if (!message) {
+      message = JSON.stringify(err);
+    }
+    this.alertService.error(err.statusText, message, err.status);
   }
 
   /**

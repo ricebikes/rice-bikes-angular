@@ -94,7 +94,8 @@ export class SearchService {
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
-      .then(res => res.json() as Item[]);
+      .then(res => res.json() as Item[])
+      .catch(err => this.handleError(err));
   }
 
   /**
@@ -109,7 +110,8 @@ export class SearchService {
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
-      .then(res => res.json() as Item[]);
+      .then(res => res.json() as Item[])
+      .catch(err => this.handleError(err));
   }
 
   /**
@@ -131,7 +133,7 @@ export class SearchService {
       new RequestOptions({headers: SearchService.jwt_headers()}))
       .toPromise()
       .then(res => res.json().sort())
-      .catch(err => console.log(err));
+      .catch(err => this.handleError(err));
   }
 
   /**
@@ -147,7 +149,7 @@ export class SearchService {
     return this.http.get(`${this.itemUrl}/sizes`, requestOptions)
       .toPromise()
       .then(res => res.json().sort())
-      .catch(err => console.log(err));
+      .catch(err => this.handleError(err));
   }
 }
 

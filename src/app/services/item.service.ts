@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {CONFIG} from '../config';
+import {HttpErrorResponse} from '@angular/common/http';
+import {AlertService} from './alert.service';
 
 
 @Injectable()
 export class ItemService {
 
-  constructor(private http: Http ) { }
+  constructor(private http: Http, private alertService: AlertService) { }
 
   private jwt() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -14,6 +16,14 @@ export class ItemService {
       const headers = new Headers({ 'x-access-token': currentUser.token });
       return new RequestOptions({ headers: headers });
     }
+  }
+
+  private handleError(err: HttpErrorResponse): void {
+    let message = err.message;
+    if (!message) {
+      message = JSON.stringify(err);
+    }
+    this.alertService.error(err.statusText, message, err.status);
   }
 
   /**
@@ -24,7 +34,7 @@ export class ItemService {
     return this.http.get(`${CONFIG.api_url}/items`, this.jwt())
       .toPromise()
       .then(res => res.json())
-      .catch(err => console.log(err));
+      .catch(err => this.handleError(err));
   }
 
   /**
@@ -46,7 +56,7 @@ export class ItemService {
     }, this.jwt())
       .toPromise()
       .then(res => res.json())
-      .catch(err => console.log(err));
+      .catch(err => this.handleError(err));
   }
 
   /**
@@ -67,6 +77,6 @@ export class ItemService {
     }, this.jwt())
       .toPromise()
       .then(res => res.json())
-      .catch( err => console.log(err));
+      .catch( err => this.handleError(err));
   }
 }

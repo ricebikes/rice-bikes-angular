@@ -3,6 +3,7 @@ import {CONFIG} from '../config';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {AlertService} from './alert.service';
 import {OrderItem} from '../models/orderItem';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Injectable()
 export class OrderService {
@@ -19,10 +20,12 @@ export class OrderService {
     }
   }
 
-  // generic error handler
-  private handleError(err): void {
-    // for now just log the error to console
-    console.log(err);
+  private handleError(err: HttpErrorResponse): void {
+    let message = err.message;
+    if (!message) {
+      message = JSON.stringify(err);
+    }
+    this.alertService.error(err.statusText, message, err.status);
   }
 
   /**
