@@ -30,6 +30,14 @@ export class OrdersComponent implements OnInit {
   }
 
   /**
+   * Creates a new order
+   * @param supplier: supplier for the order
+   */
+  newOrder(supplier: string) {
+    this.orderService.createOrder()
+  }
+
+  /**
    * Gets orders between the ranges of start and end date (set via instance variables)
    */
   getOrders() {

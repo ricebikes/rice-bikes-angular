@@ -32,6 +32,7 @@ import {ItemService} from './services/item.service';
 import { UserTrackerComponent } from './components/user-tracker/user-tracker.component';
 import {UserIdleModule} from 'angular-user-idle/user-idle.module';
 import { OrdersComponent } from './components/orders/orders.component';
+import { OrderDetailComponent } from './components/orders/order-detail/order-detail.component';
 
 
 @NgModule({
@@ -54,6 +55,7 @@ import { OrdersComponent } from './components/orders/orders.component';
     AdminItemsComponent,
     UserTrackerComponent,
     OrdersComponent,
+    OrderDetailComponent,
   ],
   imports: [
     BrowserModule,
