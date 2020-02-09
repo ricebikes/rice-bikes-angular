@@ -9,7 +9,7 @@ import {Item} from '../models/item';
 
 @Injectable()
 export class OrderService {
-  private backendURL = `${CONFIG.api_url}/admin/orders`;
+  private backendURL = `${CONFIG.api_url}/orders`;
 
   constructor(private http: Http, private alertService: AlertService) {
   }
@@ -36,7 +36,7 @@ export class OrderService {
    * @param end: newest date to get orders for
    */
   getOrders(start, end): Promise<any> {
-    const queryURL = this.backendURL + '/?start=' + start + '&end=' + end;
+    const queryURL = this.backendURL + '/daterange?start=' + start + '&end=' + end;
     return this.http.get(queryURL, OrderService.jwt())
       .toPromise()
       .then(res => res.json())

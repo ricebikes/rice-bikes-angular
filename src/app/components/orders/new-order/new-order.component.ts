@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {OrderService} from '../../../services/order.service';
 import {Router} from '@angular/router';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-new-order',
@@ -17,9 +17,19 @@ export class NewOrderComponent implements OnInit {
   orderForm: FormGroup;
 
   ngOnInit() {
-    this.orderForm = this
+    this.orderForm = this.formBuilder.group({
+      supplier: ['', Validators.required]
+    });
   }
 
+  submit() {
+     this.createOrder(this.orderForm.controls['supplier'].value);
+  }
+
+  /**
+   * Creates order and navigates to order page
+   * @param supplier
+   */
   createOrder(supplier: string) {
     this.orderService.createOrder(supplier)
       .then(order => this.router.navigate(['/orders', order._id]));
