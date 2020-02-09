@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {Bike} from '../../../models/bike';
 import {Item} from '../../../models/item';
+import {AlertService} from '../../../services/alert.service';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -48,8 +49,8 @@ export class TransactionDetailComponent implements OnInit {
       this.transactionService.getTransaction(params['_id'])
         .then(() => {
           this.transactionService.transaction.subscribe(trans => {
-            console.log('New Transaction');
-            console.log(trans);
+            AlertService.debugLog('New transaction');
+            AlertService.debugLog(trans);
             this.transaction = trans;
             if (this.transaction.description) {
               this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');

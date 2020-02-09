@@ -1,3 +1,55 @@
-<p>
-  order-detail works!
-</p>
+<div class="container" *ngIf="(order | async) as currentOrder">
+  <div class="jumbotron">
+    <h2 class="display-5" *ngIf="loading">...</h2>
+    <div class="row" *ngIf="!loading">
+      <div class="col-8">
+        <h2 class="display-5">Order from {{currentOrder.supplier}}</h2>
+        <p class="lead">Created on {{currentOrder.date_created | date: 'MMM d, y, h:mm:ss a'}}</p>
+        <p class="lead" *ngIf="currentOrder?.date_submitted"> currentOrdered on {{currentOrder?.date_submitted | date: 'MMM d, y, h:mm:ss a'}}</p>
+      </div>
+      <div class="col-4">
+        <button class="btn btn-md float-right" type="button" id="statusDropdownButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          [ngClass]="{'badge-primary': currentOrder.status == 'In Cart',
+                      'badge-success': currentOrder.status == 'Ordered',
+                      'badge-secondary': currentOrder.status == 'Completed'}">
+          {{currentOrder.status}}
+        </button>
+        <div class="dropdown-menu">
+          <h6 class="dropdown-header">Set Status</h6>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="setStatus('Completed')">Completed</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="setStatus('Ordered')">Ordered</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="setStatus('In Cart')">In Cart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="table table-striped" *ngIf="currentOrder">
+    <thead>
+      <th scope="col">Item</th>
+      <th scope="col">Our Cost</th>
+      <th scope="col">Sale Price</th>
+      <th scope="col">Stock</th>
+      <th scope="col">Transaction</th>
+      <th scope="col">Quantity</th>
+      <th scope="colgroup">Actions</th>
+    </thead>
+    <!-- Items in currentOrder-->
+    <tbody>
+      <tr *ngFor="let item of currentOrder.items">
+        <th scope="row">{{item.item.name}}</th>
+        <td>{{item.item.wholesale_cost}}</td>
+        <td>{{item.item.standard_price}}</td>
+        <td>{{item.item.stock}}</td>
+        <td *ngIf="item.transaction">{{item.transaction}}</td>
+        <td *ngIf="!item.transaction">None</td>
+        <td>{{item.quantity}}</td>
+        <td><button class="btn btn-primary btn-sm"><i class="fas fa-check"></i></button></td>
+        <td><button class="btn btn-primary btn-sm"><i class="fas fa-minus-circle"></i></button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

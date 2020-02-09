@@ -23,6 +23,5 @@ export class Transaction {
   repairs: RepairItem[];
   actions: Action[];
   refurb: boolean;
-
   constructor() {}
 }

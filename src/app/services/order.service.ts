@@ -48,7 +48,7 @@ export class OrderService {
    * @param id
    */
   getOrder(id: string): Promise<Order> {
-    return this.http.get(`this.backendURL/${id}`,
+    return this.http.get(`${this.backendURL}/${id}`,
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
@@ -147,7 +147,7 @@ export class OrderService {
    * @param status: status to set the order to
    */
   updateStatus(order: Order, status: string): Promise<Order> {
-    return this.http.put(`${this.backendURL}/${order._id}/tracking_number`,
+    return this.http.put(`${this.backendURL}/${order._id}/status`,
       {status: status},
       OrderService.jwt())
       .toPromise()

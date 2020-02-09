@@ -11,9 +11,18 @@ export class AlertService {
   // if true, hold alert for one navigation change
   private keepAfterNavigationChange = false;
 
-  static debugLog(msg) {
+  /**
+   * Debug log, only runs when the code isn't in production
+   * @param msg
+   */
+  static debugLog(msg: any) {
     if (!environment.production) {
-      console.log('DEBUG ' + new Date() + ' ' + msg);
+      if (typeof msg === 'string') {
+        console.log('DEBUG ' + new Date() + ': ' + msg);
+      } else {
+        console.log('DEBUG ' + new Date());
+        console.log(msg);
+      }
     }
   }
 
@@ -32,11 +41,25 @@ export class AlertService {
     });
   }
 
+  /**
+   * Send a success message to user
+   * @param title: title of message
+   * @param message: message content
+   * @param code: success code (usually 0)
+   * @param keepAfterNavigationChange: keep the message for one navigation change
+   */
   success(title: string, message: string, code: number, keepAfterNavigationChange = false) {
     this.keepAfterNavigationChange = keepAfterNavigationChange;
     this.alertSubject.next({title: title, code: code, message: message, type: 'success'});
   }
 
+  /**
+   * Send an error message to user
+   * @param title: title of message
+   * @param message: message content
+   * @param code: error code (usually HTTP error code)
+   * @param keepAfterNavigationChange: keep the message for one navigation change
+   */
   error(title: string, message: string, code: number, keepAfterNavigationChange = false) {
     this.keepAfterNavigationChange = keepAfterNavigationChange;
     console.log('ERROR ' + new Date() + ' ' + message);

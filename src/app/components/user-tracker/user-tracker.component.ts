@@ -4,6 +4,7 @@ import {User} from '../../models/user';
 import {Observable} from 'rxjs/Observable';
 import {CONFIG, user_timeout} from '../../config';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {AlertService} from '../../services/alert.service';
 
 @Component({
   selector: 'app-user-tracker',
@@ -29,8 +30,8 @@ export class UserTrackerComponent implements OnInit {
   ngOnInit() {
     this.userState = this.authService.getUser();
     this.userState.subscribe((nextUserState) => {
-      console.log('State update!');
-      console.log(nextUserState);
+      AlertService.debugLog('State Update');
+      AlertService.debugLog(nextUserState);
       this.currentUser = nextUserState.user;
       if (nextUserState.state === 'waiting') {
         // trigger modal for user. We expect user to enter their net ID here.
