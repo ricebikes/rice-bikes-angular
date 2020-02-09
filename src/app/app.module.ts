@@ -33,6 +33,7 @@ import { UserTrackerComponent } from './components/user-tracker/user-tracker.com
 import {UserIdleModule} from 'angular-user-idle/user-idle.module';
 import { OrdersComponent } from './components/orders/orders.component';
 import { OrderDetailComponent } from './components/orders/order-detail/order-detail.component';
+import { NewOrderComponent } from './components/orders/new-order/new-order.component';
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import { OrderDetailComponent } from './components/orders/order-detail/order-det
     UserTrackerComponent,
     OrdersComponent,
     OrderDetailComponent,
+    NewOrderComponent,
   ],
   imports: [
     BrowserModule,

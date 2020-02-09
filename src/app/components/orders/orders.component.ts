@@ -34,7 +34,7 @@ export class OrdersComponent implements OnInit {
    * @param supplier: supplier for the order
    */
   newOrder(supplier: string) {
-    this.orderService.createOrder()
+
   }
 
   /**
