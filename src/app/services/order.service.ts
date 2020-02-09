@@ -44,6 +44,18 @@ export class OrderService {
   }
 
   /**
+   * Gets a single order from the backend
+   * @param id
+   */
+  getOrder(id: string): Promise<Order> {
+    return this.http.get(`this.backendURL/${id}`,
+      OrderService.jwt())
+      .toPromise()
+      .then(res => res.json() as Order)
+      .catch(err => this.handleError(err));
+  }
+
+  /**
    * Creates a new order on the backend
    * @param supplier: order supplier
    * @param items: list of items in order and the quantity ordered
