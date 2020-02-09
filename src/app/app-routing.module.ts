@@ -11,6 +11,8 @@ import {CheckoutComponent} from './components/transactions/transaction-detail/ch
 import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.component';
 import {AdminItemsComponent} from './components/admin-items/admin-items.component';
 import {OrdersComponent} from './components/orders/orders.component';
+import {NewOrderComponent} from './components/orders/new-order/new-order.component';
+import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
 
 const routes: Routes = [
   {
@@ -78,9 +80,25 @@ const routes: Routes = [
         path: 'items',
         component: AdminItemsComponent
       },
+    ]
+  },
+
+  {
+    path: 'orders',
+    canActivate: [AuthGuard],
+    children: [
       {
-        path: 'orders',
-        component: OrdersComponent
+        path: '',
+        component: OrdersComponent,
+        pathMatch: 'full'
+      },
+      {
+        path: 'new',
+        component: NewOrderComponent
+      },
+      {
+        path: ':_id',
+        component: OrderDetailComponent
       }
     ]
   }

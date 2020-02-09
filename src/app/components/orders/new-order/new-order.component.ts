@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {OrderService} from '../../../services/order.service';
+import {Router} from '@angular/router';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-new-order',
@@ -7,9 +10,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewOrderComponent implements OnInit {
 
-  constructor() { }
+  constructor(private orderService: OrderService,
+              private router: Router,
+              private formBuilder: FormBuilder) { }
+
+  orderForm: FormGroup;
 
   ngOnInit() {
+    this.orderForm = this
   }
 
+  createOrder(supplier: string) {
+    this.orderService.createOrder(supplier)
+      .then(order => this.router.navigate(['/orders', order._id]));
+  }
 }
