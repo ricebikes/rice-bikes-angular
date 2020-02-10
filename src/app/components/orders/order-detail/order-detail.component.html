@@ -1,3 +1,5 @@
+<!-- Include app-add-item here to avoid conflict with jumbotron classes-->
+<app-add-item #addItemComponent [employee]="true" (chosenItem)="setItem($event)"></app-add-item>
 <div class="container" *ngIf="(order | async) as currentOrder">
   <div class="jumbotron">
     <h2 class="display-5" *ngIf="loading">...</h2>
@@ -27,9 +29,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
-        <h4 class="display-5">Add Item</h4>
-      </div>
+      <form [formGroup]="stagedOrderForm">
+        <!-- Display button or staged item name depending of if item is selected-->
+        <div class="form-row align-items-center">
+          <div class="col-3" *ngIf="!(stagedOrderItem | async)">
+            <button class="btn btn-primary" id="itemBtn" (click)="triggerItemSearch()">Select Item</button>
+          </div>
+          <div class="col-3" *ngIf="(stagedOrderItem | async) as item">
+            <input type="text" readonly class="form-control-plaintext" [value]="item.name">
+          </div>
+          <div class="col-3">
+            <input class="form-control" type="text" formControlName="transaction"
+                   placeholder="Transaction ID" id="transaction-id">
+          </div>
+          <div class="col-3">
+            <input class="form-control" type="number" placeholder="Quantity" formControlName="quantity" id="quantity">
+          </div>
+        </div>
+      </form>
     </div>
   </div>
   <table class="table table-striped" *ngIf="currentOrder">
