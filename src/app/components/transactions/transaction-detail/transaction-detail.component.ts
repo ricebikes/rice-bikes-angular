@@ -6,6 +6,7 @@ import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {Bike} from '../../../models/bike';
 import {Item} from '../../../models/item';
 import {AlertService} from '../../../services/alert.service';
+import {AddItemComponent} from '../../add-item/add-item.component';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -16,6 +17,7 @@ import {AlertService} from '../../../services/alert.service';
 export class TransactionDetailComponent implements OnInit {
 
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
+  @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
 
   transaction: Transaction;
   bikeForm: FormGroup;
@@ -71,6 +73,14 @@ export class TransactionDetailComponent implements OnInit {
 
   updateTransaction(): void {
     this.transactionService.updateTransaction(this.transaction);
+  }
+
+  triggerItemSearch() {
+    this.addItemComponent.triggerItemSearch();
+  }
+
+  triggerScanModal() {
+    this.addItemComponent.triggerScanModal();
   }
 
   addBike(): void {

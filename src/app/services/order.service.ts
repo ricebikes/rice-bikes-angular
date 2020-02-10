@@ -88,9 +88,9 @@ export class OrderService {
    * @param order: Order to add item to
    * @param item: OrderItem to add
    */
-  addItem(order: Order, item: OrderItem): Promise<Order> {
+  addItem(order: Order, orderItem: OrderItem): Promise<Order> {
     return this.http.post(`${this.backendURL}/${order._id}/item`,
-      {item: OrderItem},
+      {item: orderItem},
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)

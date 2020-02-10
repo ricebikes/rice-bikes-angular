@@ -26,9 +26,15 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col">
+        <h4 class="display-5">Add Item</h4>
+      </div>
+    </div>
   </div>
   <table class="table table-striped" *ngIf="currentOrder">
     <thead>
+    <tr>
       <th scope="col">Item</th>
       <th scope="col">Our Cost</th>
       <th scope="col">Sale Price</th>
@@ -36,6 +42,7 @@
       <th scope="col">Transaction</th>
       <th scope="col">Quantity</th>
       <th scope="colgroup">Actions</th>
+    </tr>
     </thead>
     <!-- Items in currentOrder-->
     <tbody>

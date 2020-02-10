@@ -158,7 +158,17 @@
           </div>
         </div>
         <div class="col-md-4">
-          <app-add-item *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)" [employee]="transaction?.employee"></app-add-item>
+          <app-add-item #addItemComponent *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)" [employee]="transaction?.employee"></app-add-item>
+          <!-- Item search trigger -->
+          <div class="btn-group custom-block" role="group" aria-label="Item Add Group">
+            <button type="button" class="btn btn-primary" (click)="triggerItemSearch()">
+              <i class="fas fa-plus"></i>
+              Add Item
+            </button>
+            <button type="button" class="btn btn-secondary" style="max-width: 50px" (click)="triggerScanModal()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.item.name}}

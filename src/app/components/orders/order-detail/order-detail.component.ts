@@ -3,6 +3,7 @@ import {OrderService} from '../../../services/order.service';
 import {Order} from '../../../models/order';
 import {ActivatedRoute} from '@angular/router';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Item} from '../../../models/item';
 
 @Component({
   selector: 'app-order-detail',
@@ -33,7 +34,15 @@ export class OrderDetailComponent implements OnInit {
    */
   setStatus(status: string) {
     this.orderService.updateStatus(this.order.getValue(), status)
-      .then(order => this.order.next(order));
+      .then(newOrder => this.order.next(newOrder));
   }
 
+  /**
+   * Adds item to order
+   * @param item: item to add
+   */
+  addItemToOrder(item: Item) {
+    this.orderService.addItem(this.order.getValue(), {item: item, transaction: undefined, quantity: 0})
+      .then(newOrder => this.order.next(newOrder));
+  }
 }
