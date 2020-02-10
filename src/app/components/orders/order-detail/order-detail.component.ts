@@ -43,6 +43,15 @@ export class OrderDetailComponent implements OnInit {
   }
 
   /**
+   * Simply gets formcontrol values and passes them to addItem function
+   */
+  submitStagedItem() {
+    this.addItemToOrder(this.stagedOrderItem.value,
+      this.stagedOrderForm.controls['quantity'].value,
+      this.stagedOrderForm.controls['transaction'].value);
+  }
+
+  /**
    * Sets the status of this order
    * @param status: new status
    */
