@@ -3,6 +3,7 @@ import {OrderService} from '../../services/order.service';
 import {Order} from '../../models/order';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Item} from '../../models/item';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'app-orders',
@@ -15,17 +16,12 @@ export class OrdersComponent implements OnInit {
   // set end to right now
   end = new Date();
 
-  orderForm = this.formBuilder.group({
-    // supplier, required, with every order
-    supplier: ['', Validators.required],
-  });
-  // tracks items in order before we submit
-  orderItems: Item[];
-  orders = [];
+  orders = new BehaviorSubject<Order[]>([]);
 
   constructor(private orderService: OrderService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.getOrders();
 
   }
 
@@ -42,8 +38,7 @@ export class OrdersComponent implements OnInit {
    */
   getOrders() {
     this.orderService.getOrders(this.start.getTime(), this.end.getTime())
-      .then(orders => this.orders = orders)
-      .catch(err => console.log(err));
+      .then(newOrders => this.orders.next(newOrders));
   }
 
 
