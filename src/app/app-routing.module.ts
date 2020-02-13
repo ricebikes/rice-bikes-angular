@@ -10,6 +10,7 @@ import {AdminUsersComponent} from "./components/admin-users/admin-users.componen
 import {CheckoutComponent} from "./components/transactions/transaction-detail/checkout/checkout.component";
 import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.component';
 import {AdminItemsComponent} from './components/admin-items/admin-items.component';
+import {AnalyticsComponent} from './components/analytics/analytics.component';
 
 const routes: Routes = [
   {
@@ -76,6 +77,10 @@ const routes: Routes = [
       {
         path: 'items',
         component: AdminItemsComponent
+      },
+      {
+        path: 'analytics',
+        component: AnalyticsComponent
       }
     ]
   }

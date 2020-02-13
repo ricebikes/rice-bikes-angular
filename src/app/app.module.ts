@@ -32,6 +32,8 @@ import { AdminItemsComponent } from './components/admin-items/admin-items.compon
 import {ItemService} from './services/item.service';
 import { UserTrackerComponent } from './components/user-tracker/user-tracker.component';
 import {UserIdleModule} from 'angular-user-idle/user-idle.module';
+import {AnalyticsComponent} from './components/analytics/analytics.component';
+
 
 
 @NgModule({
@@ -49,6 +51,7 @@ import {UserIdleModule} from 'angular-user-idle/user-idle.module';
     AuthComponent,
     TimeAgoPipe,
     AdminUsersComponent,
+    AnalyticsComponent,
     CheckoutComponent,
     AdminRepairsComponent,
     AdminItemsComponent,
