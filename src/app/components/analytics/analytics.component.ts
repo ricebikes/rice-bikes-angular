@@ -12,6 +12,8 @@ export class AnalyticsComponent implements OnInit {
   platformSupported = this.analyticsService.checkSupport();
   transactionDatesValid = true;
   employeeDatesValid = true;
+  transactionProcessing = false;
+  employeeProcessing = false;
 
   dateFormTransaction = this.formBuilder.group({
     startDate: ['', Validators.required],
@@ -72,12 +74,20 @@ export class AnalyticsComponent implements OnInit {
     const start = this.parseDate(this.dateFormEmployees.get('startDate').value);
     console.log(this.dateFormEmployees.get('startDate').value);
     const end = this.parseDate(this.dateFormEmployees.get('endDate').value);
-    this.analyticsService.getAllEmployeeMetrics(start, end).then(res => this.dateFormEmployees.reset());
+    this.employeeProcessing = true;
+    this.analyticsService.getAllEmployeeMetrics(start, end).then(res => {
+      this.dateFormEmployees.reset();
+      this.employeeProcessing = false;
+    });
   }
 
   transactionFormSubmit() {
     const start = this.parseDate(this.dateFormTransaction.get('startDate').value);
     const end = this.parseDate(this.dateFormTransaction.get('endDate').value);
-    this.analyticsService.getTransactionData(start, end).then(res => this.dateFormTransaction.reset());
+    this.transactionProcessing = true;
+    this.analyticsService.getTransactionData(start, end).then(res => {
+      this.dateFormTransaction.reset();
+      this.transactionProcessing = false;
+    });
   }
 }

@@ -12,13 +12,19 @@
         <input type="date" class="form-control" id="transactionEndDate" formControlName="endDate">
       </div>
       <button type="submit" [disabled]="!dateFormTransaction.valid" class="btn btn-primary"
-      (click)="transactionFormSubmit()">Submit</button>
+              (click)="transactionFormSubmit()">
+        <span *ngIf="!transactionProcessing"><i class="fas fa-download"></i> Download</span>
+        <span *ngIf="transactionProcessing">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Processing...
+        </span>
+      </button>
     </form>
   </div>
 
   <div class="jumbotron">
     <h3 class="display-4">Export Employee Metrics</h3>
-    <p class="lead">Download a tally of the repairs and transactions that an employee marked as complete over
+    <p class="lead">Download a tally of the repairs and transactions that all employees marked as complete over
     a time range</p>
     <form [formGroup]="dateFormEmployees">
       <div class="form-group">
@@ -29,7 +35,13 @@
         <input type="date" class="form-control" id="employeeEndDate" formControlName="endDate">
       </div>
       <button type="submit" [disabled]="!dateFormEmployees.valid" class="btn btn-primary"
-              (click)="employeeFormSubmit()">Submit</button>
+              (click)="employeeFormSubmit()">
+        <span *ngIf="!employeeProcessing"><i class="fas fa-download"></i> Download</span>
+        <span *ngIf="employeeProcessing">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Processing...
+        </span>
+      </button>
     </form>
   </div>
 </div>
