@@ -42,17 +42,17 @@ export class AnalyticsComponent implements OnInit {
       if (new Date(formData.startDate) > new Date(formData.endDate)) {
         this.employeeDatesValid = false;
         // this invalidates the form
-        this.dateFormEmployees.controls['start'].setErrors({'incorrect': true});
+        this.dateFormEmployees.controls['startDate'].setErrors({'incorrect': true});
       } else {
         this.employeeDatesValid = true;
         // restores form to normal validation
-        this.dateFormEmployees.controls['start'].setErrors(null);
+        this.dateFormEmployees.controls['startDate'].setErrors(null);
       }
     });
   }
 
   employeeFormSubmit() {
-    const start = new Date(this.dateFormEmployees.controls['startDate'].value);
+    const start = new Date(this.dateFormEmployees.get('startDate').value);
     const end = new Date(this.dateFormEmployees.get('endDate').value);
     this.analyticsService.getAllEmployeeMetrics(start, end).then(res => this.dateFormEmployees.reset());
   }
