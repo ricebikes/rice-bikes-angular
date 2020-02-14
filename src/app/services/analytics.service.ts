@@ -8,6 +8,7 @@ export class AnalyticsService {
 
   constructor(private http: Http) {}
 
+  backendURL = `${CONFIG.api_url}/metrics`;
   private static jwt() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser.token) {
@@ -44,13 +45,14 @@ export class AnalyticsService {
     return (matches[1] || 'untitled').trim();
   }
 
+
   /**
    * Gets transactions from the backend between start and end. A csv file is returned and downloaded.
    * @param start: start Date for transaction interval
    * @param end: end Date for transaction interval
    */
   getTransactionData(start: Date, end: Date) {
-    const url = `${CONFIG.api_url}/analytics/transactions/daterange/?start=${start.getTime()}&end=${end.getTime()}`;
+    const url = `${this.backendURL}/transactions/daterange?start=${start.getTime()}&end=${end.getTime()}`;
     return this.http.get(url, AnalyticsService.jwt())
       .toPromise()
       .then(res => {
@@ -65,7 +67,7 @@ export class AnalyticsService {
    * @param end: end Date for tallying
    */
   getAllEmployeeMetrics(start: Date, end: Date) {
-    const url = `${CONFIG.api_url}/analytics/employees/groupmetrics/?start=${start.getTime()}&end=${end.getTime()}`;
+    const url = `${this.backendURL}/employees/groupmetrics/?start=${start.getTime()}&end=${end.getTime()}`;
     return this.http.get(url, AnalyticsService.jwt())
       .toPromise()
       .then(res => {

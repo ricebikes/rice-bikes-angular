@@ -27,7 +27,11 @@ export class AnalyticsComponent implements OnInit {
   ngOnInit() {
     // subscribe to form changes, and invalidate the form if the start date is after the end date
     this.dateFormTransaction.valueChanges.subscribe(formData => {
-      if (new Date(formData.startDate) > new Date(formData.endDate)) {
+      if (!(formData.startDate && formData.endDate)) {
+        // don't do any validation
+        return;
+      }
+      if (this.parseDate(formData.startDate) > this.parseDate(formData.endDate)) {
           this.transactionDatesValid = false;
           // this invalidates the form
           this.dateFormTransaction.controls['startDate'].setErrors({'incorrect': true});
@@ -39,7 +43,7 @@ export class AnalyticsComponent implements OnInit {
     });
 
     this.dateFormEmployees.valueChanges.subscribe(formData => {
-      if (new Date(formData.startDate) > new Date(formData.endDate)) {
+      if (this.parseDate(formData.startDate) > this.parseDate(formData.endDate)) {
         this.employeeDatesValid = false;
         // this invalidates the form
         this.dateFormEmployees.controls['startDate'].setErrors({'incorrect': true});
@@ -51,15 +55,29 @@ export class AnalyticsComponent implements OnInit {
     });
   }
 
+  /**
+   * Expects a date in the format "YYYY-MM-DD" (2020-02-03)
+   * @param date: date string formatted as YYYY-MM-DD
+   */
+  private parseDate(date: string) {
+    const reg = new RegExp('(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)');
+    const matches = reg.exec(date);
+    if (!matches || matches.length !== 4) {
+      return new Date();
+    }
+    return new Date(parseInt(matches[1], 10), parseInt(matches[2], 10) - 1, parseInt(matches[3], 10));
+  }
+
   employeeFormSubmit() {
-    const start = new Date(this.dateFormEmployees.get('startDate').value);
-    const end = new Date(this.dateFormEmployees.get('endDate').value);
+    const start = this.parseDate(this.dateFormEmployees.get('startDate').value);
+    console.log(this.dateFormEmployees.get('startDate').value);
+    const end = this.parseDate(this.dateFormEmployees.get('endDate').value);
     this.analyticsService.getAllEmployeeMetrics(start, end).then(res => this.dateFormEmployees.reset());
   }
 
   transactionFormSubmit() {
-    const start = new Date(this.dateFormTransaction.get('startDate').value);
-    const end = new Date(this.dateFormTransaction.get('endDate').value);
+    const start = this.parseDate(this.dateFormTransaction.get('startDate').value);
+    const end = this.parseDate(this.dateFormTransaction.get('endDate').value);
     this.analyticsService.getTransactionData(start, end).then(res => this.dateFormTransaction.reset());
   }
 }
