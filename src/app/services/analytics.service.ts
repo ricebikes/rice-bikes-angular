@@ -16,18 +16,19 @@ export class AnalyticsService {
     }
   }
 
-  private handleError(err): void {
+  private static handleError(err): void {
     console.log('ERROR');
     console.log(err);
   }
 
   /**
    * Saves a file, given a Blob of content
-   * @param blobContent: Blob to save
+   * @param res: response with data to save
    * @param filename: filename to save as
+   * @param mimeType: type of file
    */
-  private saveFile(blobContent: Blob, filename: string) {
-    const blob = new Blob([blobContent], { type: 'application/octet-stream' });
+  private static saveFile(res, filename: string, mimeType: string) {
+    const blob = new Blob([res._body], { type: mimeType });
     saveAs(blob, filename);
   }
 
@@ -35,11 +36,12 @@ export class AnalyticsService {
    * Extracts filename from backend response. Expects Content-disposition header
    * @param res: angular response from backend
    */
-  private extractFilename(res: Response) {
+  private static extractFilename(res: Response) {
     const contentDisposition = res.headers.get('Content-disposition');
     // regex to extract filename
-    const matches = /filename=([^;]+)/ig.exec(contentDisposition);
-     return (matches[1] || 'untitled').trim();
+    const reg = new RegExp('filename=(.*)');
+    const matches = reg.exec(contentDisposition);
+    return (matches[1] || 'untitled').trim();
   }
 
   /**
@@ -52,9 +54,9 @@ export class AnalyticsService {
     return this.http.get(url, AnalyticsService.jwt())
       .toPromise()
       .then(res => {
-        const filename = this.extractFilename(res);
-        this.saveFile(res.blob(), filename);
-      }).catch(err => this.handleError(err));
+        const filename = AnalyticsService.extractFilename(res);
+        AnalyticsService.saveFile(res, filename, 'text/csv');
+      }).catch(err => AnalyticsService.handleError(err));
   }
 
   /**
@@ -67,9 +69,9 @@ export class AnalyticsService {
     return this.http.get(url, AnalyticsService.jwt())
       .toPromise()
       .then(res => {
-        const filename = this.extractFilename(res);
-        this.saveFile(res.blob(), filename);
-      }).catch(err => this.handleError(err));
+        const filename = AnalyticsService.extractFilename(res);
+        AnalyticsService.saveFile(res, filename, 'text/csv');
+      }).catch(err => AnalyticsService.handleError(err));
   }
 
   /**

@@ -1,9 +1,43 @@
-<div class="container">
+<div class="container" *ngIf="platformSupported">
   <div class="jumbotron">
     <h3 class="display-4">Export Transactions</h3>
     <p class="lead">Download a range of transactions as a csv file. Includes the date of creation, completion,
     and the total cost of the transaction</p>
-    <hr class="my-2">
-    <datetimepicker data-ng-model="data.date"></datetimepicker>
+    <form [formGroup]="dateFormTransaction">
+      <div class="form-group">
+        <label for="transactionStartDate">Start Date</label>
+        <input type="date" class="form-control" id="transactionStartDate" formControlName="startDate">
+        <p class="text-danger" *ngIf="!transactionDatesValid">Start date cannot be after end date</p>
+        <label for="transactionEndDate">End Date</label>
+        <input type="date" class="form-control" id="transactionEndDate" formControlName="endDate">
+      </div>
+      <button type="submit" [disabled]="!dateFormTransaction.valid" class="btn btn-primary"
+      (click)="transactionFormSubmit()">Submit</button>
+    </form>
+  </div>
+
+  <div class="jumbotron">
+    <h3 class="display-4">Export Employee Metrics</h3>
+    <p class="lead">Download a tally of the repairs and transactions that an employee marked as complete over
+    a time range</p>
+    <form [formGroup]="dateFormEmployees">
+      <div class="form-group">
+        <label for="employeeStartDate">Start Date</label>
+        <input type="date" class="form-control" id="employeeStartDate" formControlName="startDate">
+        <p class="text-danger" *ngIf="!employeeDatesValid">Start date cannot be after end date</p>
+        <label for="employeeEndDate">End Date</label>
+        <input type="date" class="form-control" id="employeeEndDate" formControlName="endDate">
+      </div>
+      <button type="submit" [disabled]="!dateFormEmployees.valid" class="btn btn-primary"
+              (click)="employeeFormSubmit()">Submit</button>
+    </form>
+  </div>
+</div>
+<!-- If the platform isn't supported, tell the user to come back on a PC-->
+<div class="container" *ngIf="!platformSupported">
+  <div class="jumbotron">
+    <h2 class="display-4">Unsupported Platform</h2>
+    <p class="lead">Unfortunately, your platform does not support viewing this page. This may be because you are
+    using a mobile device. Please try using this feature on a PC</p>
   </div>
 </div>
