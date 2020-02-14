@@ -37,6 +37,7 @@ export class AddItemComponent implements OnInit {
 
   itemResults: Observable<Item[]>; // item results returned from backend
   availableSizes: Observable<String[]>; // filled when we select a category
+  addDialog = false;
 
   categories = this.searchService.itemCategories();
   brands = this.searchService.itemBrands();
@@ -46,6 +47,7 @@ export class AddItemComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
   }
+
 
   ngOnInit() {
     // watch form for changes, and search when it does
@@ -80,6 +82,14 @@ export class AddItemComponent implements OnInit {
         console.log(err);
         return Observable.of([]);
       });
+  }
+
+  /**
+   * Selects between the add item and search item dialog
+   * @param choice: if true, choose add item dialog, if false chose search item dialog
+   */
+  setAddDialog(choice: boolean) {
+    this.addDialog = choice;
   }
 
   /**
