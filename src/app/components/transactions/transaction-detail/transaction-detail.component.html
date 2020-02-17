@@ -205,7 +205,7 @@
 
   <div class="card mb-2">
     <div class="card-body">
-      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+      <button *ngIf="!transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
         <span *ngIf="!emailLoading" class="fa fa-check"></span>
         <span *ngIf="emailLoading" class="fa fa-cog loader"></span>
         Complete

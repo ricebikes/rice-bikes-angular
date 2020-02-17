@@ -20,6 +20,7 @@ import {AuthGuard} from './guards/auth.guard';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertComponent } from './components/alert/alert.component';
 import {AlertService} from './services/alert.service';
+import {AnalyticsService} from './services/analytics.service';
 import { AuthComponent } from './components/auth/auth.component';
 import {TimeAgoPipe} from 'time-ago-pipe';
 import { AdminUsersComponent } from './components/admin-users/admin-users.component';
@@ -35,6 +36,8 @@ import { OrdersComponent } from './components/orders/orders.component';
 import { OrderDetailComponent } from './components/orders/order-detail/order-detail.component';
 import { NewOrderComponent } from './components/orders/new-order/new-order.component';
 import {OrderService} from './services/order.service';
+import {AnalyticsComponent} from './components/analytics/analytics.component';
+
 
 
 @NgModule({
@@ -52,6 +55,7 @@ import {OrderService} from './services/order.service';
     AuthComponent,
     TimeAgoPipe,
     AdminUsersComponent,
+    AnalyticsComponent,
     CheckoutComponent,
     AdminRepairsComponent,
     AdminItemsComponent,
@@ -72,6 +76,7 @@ import {OrderService} from './services/order.service';
   providers: [
     TransactionService,
     SearchService,
+    AnalyticsService,
     AuthenticationService,
     AuthGuard,
     AlertService,

@@ -13,6 +13,7 @@ import {AdminItemsComponent} from './components/admin-items/admin-items.componen
 import {OrdersComponent} from './components/orders/orders.component';
 import {NewOrderComponent} from './components/orders/new-order/new-order.component';
 import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
+import {AnalyticsComponent} from './components/analytics/analytics.component';
 
 const routes: Routes = [
   {
@@ -80,6 +81,10 @@ const routes: Routes = [
         path: 'items',
         component: AdminItemsComponent
       },
+      {
+        path: 'analytics',
+        component: AnalyticsComponent
+      }
     ]
   },
 
