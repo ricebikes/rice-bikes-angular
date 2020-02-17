@@ -6,10 +6,12 @@
     <form [formGroup]="dateFormTransaction">
       <div class="form-group">
         <label for="transactionStartDate">Start Date</label>
-        <input type="date" class="form-control" id="transactionStartDate" formControlName="startDate">
+        <input type="date" class="form-control" id="transactionStartDate" formControlName="startDate"
+               placeholder="YYYY-MM-DD">
         <p class="text-danger" *ngIf="!transactionDatesValid">Start date cannot be after end date</p>
         <label for="transactionEndDate">End Date</label>
-        <input type="date" class="form-control" id="transactionEndDate" formControlName="endDate">
+        <input type="date" class="form-control" id="transactionEndDate" formControlName="endDate"
+               placeholder="YYYY-MM-DD">
       </div>
       <button type="submit" [disabled]="!dateFormTransaction.valid" class="btn btn-primary"
               (click)="transactionFormSubmit()">
@@ -29,10 +31,12 @@
     <form [formGroup]="dateFormEmployees">
       <div class="form-group">
         <label for="employeeStartDate">Start Date</label>
-        <input type="date" class="form-control" id="employeeStartDate" formControlName="startDate">
+        <input type="date" class="form-control" id="employeeStartDate" formControlName="startDate"
+               placeholder="YYYY-MM-DD">
         <p class="text-danger" *ngIf="!employeeDatesValid">Start date cannot be after end date</p>
         <label for="employeeEndDate">End Date</label>
-        <input type="date" class="form-control" id="employeeEndDate" formControlName="endDate">
+        <input type="date" class="form-control" id="employeeEndDate" formControlName="endDate"
+               placeholder="YYYY-MM-DD">
       </div>
       <button type="submit" [disabled]="!dateFormEmployees.valid" class="btn btn-primary"
               (click)="employeeFormSubmit()">
