@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input} from '@angular/core';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
 import {Observable} from 'rxjs/Observable';
@@ -31,6 +31,18 @@ export class AddItemComponent implements OnInit {
     size: null,
     brand: null,
     condition: null
+  });
+
+  newItemForm = this.formBuilder.group({
+    name: [Validators.required],
+    category: [Validators.required],
+    size: [Validators.required],
+    brand: [Validators.required],
+    condition: [Validators.required],
+    desired_stock: [Validators.required],
+    upc: [Validators.required],
+    standard_price: [Validators.required],
+    wholesale_cost: [Validators.required]
   });
 
   scanData = new FormControl('');
