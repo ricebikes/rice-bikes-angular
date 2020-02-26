@@ -34,31 +34,33 @@ export class AddItemComponent implements OnInit {
   });
 
   newItemForm = this.formBuilder.group({
-    name: [Validators.required],
-    category: [Validators.required],
-    size: [Validators.required],
-    brand: [Validators.required],
-    condition: [Validators.required],
-    desired_stock: [Validators.required],
-    upc: [Validators.required],
-    standard_price: [Validators.required],
-    wholesale_cost: [Validators.required]
+    name: ['', Validators.required],
+    category: ['', Validators.required],
+    size: ['', Validators.required],
+    brand: ['', Validators.required],
+    condition: ['', Validators.required],
+    desired_stock: ['', Validators.required],
+    upc: ['', Validators.required],
+    standard_price: ['', Validators.required],
+    wholesale_cost: ['', Validators.required]
   });
 
   scanData = new FormControl('');
 
   itemResults: Observable<Item[]>; // item results returned from backend
   availableSizes: Observable<String[]>; // filled when we select a category
+
   addDialog = false;
 
   categories = this.searchService.itemCategories();
   brands = this.searchService.itemBrands();
 
+  brandDropDownVisible = true;
+
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder
-  ) {
-  }
+  ) { }
 
 
   ngOnInit() {
@@ -94,6 +96,17 @@ export class AddItemComponent implements OnInit {
         console.log(err);
         return Observable.of([]);
       });
+  }
+
+  /**
+   * Lets the item search copy any entered data into the create item component
+   */
+  copyIntoItemForm() {
+    for (const controlValue of ['name', 'category', 'size', 'brand']) {
+      if (this.itemForm[controlValue].value) {
+        this.newItemForm.controls[controlValue].setValue(this.itemForm[controlValue].value);
+      }
+    }
   }
 
   /**

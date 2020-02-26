@@ -24,7 +24,7 @@
 <!-- Search/Add Item Modal (only admins can add items)-->
 <div class="modal fade" id="itemSearchModal" tabindex="-1" role="dialog" aria-labelledby="itemSearchModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-xl">
-    <div class="modal-content" *ngIf="!addDialog">
+    <div class="modal-content" [hidden]="addDialog">
       <nav aria-label="Navigate Between Adding and Searching for Items">
         <ul class="pagination">
           <li class="page-item active"><a class="page-link">Search</a></li>
@@ -113,7 +113,7 @@
           </table>
       </div>
     </div>
-    <div class="modal-content" *ngIf="addDialog">
+    <div class="modal-content" [hidden]="!addDialog">
       <nav aria-label="Navigate Between Adding and Searching for Items">
         <ul class="pagination">
           <li class="page-item"><a class="page-link"(click)="setAddDialog(false)">Search</a></li>
@@ -130,10 +130,58 @@
         <form [formGroup]="newItemForm">
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" formControlName="name" placeholder="Item name">
+              <label for="itemName">Item Name</label>
+              <input type="text" class="form-control" formControlName="name" id="itemName">
             </div>
             <div class="col">
-              <input type="number" class="form-control" formControlName="standard_price" placeholder="0">
+              <label for="itemPrice">Item Price</label>
+              <input id="itemPrice" type="number" class="form-control" formControlName="standard_price">
+            </div>
+            <div class="col">
+              <label for="wholesalePrice">Wholesale Price</label>
+              <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
+            </div>
+            <div class="col">
+              <label for="newConditionSelect">Item Condition</label>
+              <select id="newConditionSelect" formControlName="condition" class="form-control">
+                <option>New</option>
+                <option>Used</option>
+              </select>
+            </div>
+            <div class="col">
+              <label for="newBrandSelect">Brand</label>
+              <div class="input-group">
+                <input id="newBrandSelect" type="text" formControlName="brand" class="form-control">
+                <div class="input-group-append">
+                  <button (click)="brandDropDownVisible = !brandDropDownVisible" class="btn btn-outline-secondary">
+                    <i class="fas fa-caret-down"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3">
+              <label for="newCategory">Category</label>
+              <div class="input-group">
+                <input type="text" id="newCategory" class="form-control" formControlName="category">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary"><i class="fas fa-caret-down"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+              <label for="newSize">Size</label>
+              <div class="input-group">
+                <input type="text" id="newSize" class="form-control" formControlName="size">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary"><i class="fas fa-caret-down"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <label for="newUPC">UPC</label>
+              <input type="text" id="newUPC" class="form-control" formControlName="upc">
             </div>
           </div>
         </form>
