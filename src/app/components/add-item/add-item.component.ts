@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
 import {Observable} from 'rxjs/Observable';
+import {ItemService} from '../../services/item.service';
 
 
 
@@ -55,11 +56,10 @@ export class AddItemComponent implements OnInit {
   categories = this.searchService.itemCategories();
   brands = this.searchService.itemBrands();
 
-  brandDropDownVisible = true;
-
   constructor(
     private searchService: SearchService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private itemService: ItemService
   ) { }
 
 
@@ -110,11 +110,22 @@ export class AddItemComponent implements OnInit {
   }
 
   /**
-   * Selects between the add item and search item dialog
-   * @param choice: if true, choose add item dialog, if false chose search item dialog
+   * Submits the item creation form, and creates the item
    */
-  setAddDialog(choice: boolean) {
-    this.addDialog = choice;
+  submitItemCreateForm() {
+    this.itemService.createItem({
+      _id: '',
+      name: this.newItemForm.controls['name'].value,
+      upc: this.newItemForm.controls['upc'].value,
+      category: this.newItemForm.controls['category'].value,
+      brand: this.newItemForm.controls['brand'].value,
+      condition: this.newItemForm.controls['condition'].value,
+      standard_price: this.newItemForm.controls['standard_price'].value,
+      wholesale_cost: this.newItemForm.controls['wholesale_cost'].value,
+      hidden: false,
+      desired_stock: this.newItemForm.controls['desired_stock'].value,
+      stock: 0
+    }).then(res => this.chosenItem.emit(res));
   }
 
   /**

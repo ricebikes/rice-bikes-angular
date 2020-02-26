@@ -3,6 +3,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {CONFIG} from '../config';
 import {HttpErrorResponse} from '@angular/common/http';
 import {AlertService} from './alert.service';
+import {Item} from '../models/item';
 
 
 @Injectable()
@@ -38,22 +39,12 @@ export class ItemService {
   }
 
   /**
-   * adds an item to database using POST
-   * @param name:name of item
-   * @param description: description of the item
-   * @param price: price we charge
-   * @param cost: price we pay for item
-   * @param warn_level: warning stock level of the item (will email at this level)
+   * Creates a new Item using POST
+   * @param newItem: new Item, in the form of the item class
    */
-
-  addItem(name: String, description: String, price: Number, cost: Number, warn_level: Number): Promise<any> {
-    return this.http.post(`${CONFIG.api_url}/items`, {
-      name: name,
-      description: description,
-      price: price,
-      shop_cost: cost,
-      warning_quantity: warn_level
-    }, this.jwt())
+  createItem(newItem: Item): Promise<Item> {
+    delete newItem._id; // to prevent errors on backend
+    return this.http.post(`${CONFIG.api_url}/items`, newItem, this.jwt())
       .toPromise()
       .then(res => res.json())
       .catch(err => this.handleError(err));
