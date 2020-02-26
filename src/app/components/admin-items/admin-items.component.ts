@@ -29,15 +29,30 @@ export class AdminItemsComponent implements OnInit {
     wholesale_cost: ['', Validators.required]
   });
 
+  editItemForm = this.formBuilder.group({
+    name: ['', Validators.required],
+    category: ['', Validators.required],
+    size: [''],
+    brand: [''],
+    condition: ['', Validators.required],
+    desired_stock: ['', Validators.required],
+    upc: [''],
+    standard_price: ['', Validators.required],
+    wholesale_cost: ['', Validators.required]
+  });
+
   items: Item[];
   existingCategories = this.searchService.itemCategories();
   existingBrands = this.searchService.itemBrands();
   existingSizes: Observable<string[]>;
+  existingUpdateSizes: Observable<string[]>;
 
   ngOnInit() {
     this.itemService.getItems()
       .then(items => this.items = items);
     this.existingSizes = this.newItemForm.controls['category'].valueChanges
+      .switchMap(newCategory => this.searchService.itemSizes(newCategory));
+    this.existingUpdateSizes = this.newItemForm.controls['updateCategory'].valueChanges
       .switchMap(newCategory => this.searchService.itemSizes(newCategory));
   }
 
@@ -61,6 +76,23 @@ export class AdminItemsComponent implements OnInit {
       this.items.unshift(res);
       this.newItemForm.reset();
     });
+  }
+
+  editItem(item) {
+    this.editItemForm.controls['name'].setValue(item.name);
+    this.editItemForm.controls['upc'].setValue(item.upc);
+    this.editItemForm.controls['category'].setValue(item.category);
+    this.editItemForm.controls['brand'].setValue(item.brand);
+
+    this.editItemForm.controls['condition'].setValue(item.condition);
+    this.editItemForm.controls['standard_price'].setValue(item.standard_price);
+    this.editItemForm.controls['wholesale_cost'].setValue(item.wholesale_cost);
+    this.editItemForm.controls['desired_stock'].setValue(item.desired_stock);
+
+  }
+
+  submitItemUpdateForm() {
+
   }
 
   /*
