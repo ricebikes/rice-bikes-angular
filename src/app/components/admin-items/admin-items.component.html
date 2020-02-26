@@ -1,61 +1,92 @@
-<div class="container item-list">
-  <form [formGroup]="newItemForm">
-    <div class="row">
-      <div class="col-4">
-        <label for="itemName">Item Name</label>
-        <input type="text" class="form-control" formControlName="name" id="itemName">
+<script src="../../models/item.ts"></script>
+<div class="container">
+  <div class="jumbotron">
+    <h4 class="display-4">Create Item</h4>
+    <hr class="my-4">
+    <form [formGroup]="newItemForm">
+      <div class="row">
+        <div class="col-4">
+          <label for="itemName">Item Name</label>
+          <input type="text" class="form-control" formControlName="name" id="itemName">
+        </div>
+        <div class="col-2">
+          <label for="itemPrice">Item Price</label>
+          <input id="itemPrice" type="number" class="form-control" formControlName="standard_price">
+        </div>
+        <div class="col-2">
+          <label for="wholesalePrice">Wholesale Price</label>
+          <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
+        </div>
+        <div class="col-2">
+          <label for="newConditionSelect">Item Condition</label>
+          <select id="newConditionSelect" formControlName="condition" class="form-control">
+            <option>New</option>
+            <option>Used</option>
+          </select>
+        </div>
+        <div class="col-2">
+          <label for="newBrandSelect">Brand</label>
+          <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands">
+          <datalist id="brands">
+            <option *ngFor="let brand of (existingBrands | async)">{{brand}}</option>
+          </datalist>
+        </div>
       </div>
-      <div class="col-2">
-        <label for="itemPrice">Item Price</label>
-        <input id="itemPrice" type="number" class="form-control" formControlName="standard_price">
+      <div class="row">
+        <div class="col-3">
+          <label for="newCategory">Category</label>
+          <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories">
+          <datalist id="categories">
+            <option *ngFor="let category of (existingCategories | async)">{{category}}</option>
+          </datalist>
+        </div>
+        <div class="col-3">
+          <label for="newSize">Size</label>
+          <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes">
+          <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
+          <datalist id="sizes">
+            <option *ngFor="let size of (existingSizes | async)">{{size}}</option>
+          </datalist>
+        </div>
+        <div class="col-2">
+          <label for="desiredStock">Desired Stock</label>
+          <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock">
+        </div>
+        <div class="col-4">
+          <label for="newUPC">UPC</label>
+          <input type="text" id="newUPC" class="form-control" formControlName="upc">
+        </div>
       </div>
-      <div class="col-2">
-        <label for="wholesalePrice">Wholesale Price</label>
-        <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
-      </div>
-      <div class="col-2">
-        <label for="newConditionSelect">Item Condition</label>
-        <select id="newConditionSelect" formControlName="condition" class="form-control">
-          <option>New</option>
-          <option>Used</option>
-        </select>
-      </div>
-      <div class="col-2">
-        <label for="newBrandSelect">Brand</label>
-        <input id="newBrandSelect" type="text" formControlName="brand" class="form-control">
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-        <label for="newCategory">Category</label>
-        <input type="text" id="newCategory" class="form-control" formControlName="category">
-      </div>
-      <div class="col-3">
-        <label for="newSize">Size</label>
-        <input type="text" id="newSize" class="form-control" formControlName="size">
-      </div>
-      <div class="col-2">
-        <label for="desiredStock">Desired Stock</label>
-        <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock">
-      </div>
-      <div class="col-4">
-        <label for="newUPC">UPC</label>
-        <input type="text" id="newUPC" class="form-control" formControlName="upc">
-      </div>
-    </div>
-  </form>
-  <ul class="list-group">
-        <li *ngFor="let item of items; let in=index" class="list-group-item">
-          <form #inlineForm="ngForm">
-            <label>{{item.name}}</label>
-            <button class="btn btn-default" style="margin-left:15px;float: right" [disabled]="!inlineForm.dirty" (click)="updateItem(item)">Update</button>
-            <div class="input-group">
-              Stock:<input size="3" style="margin-right: 10px;margin-left: 10px" name="inlineStock-{{in}}" [(ngModel)]="item.quantity">
-              Price: <input size="3" style="margin-right: 10px;margin-left: 10px" name="inlineprice-{{in}}" [(ngModel)]="item.price">
-              Shop Cost:<input size="3" style="margin-right: 10px;margin-left: 10px" name="inlinecost-{{in}}" [(ngModel)]="item.shop_cost">
-              Low Stock Threshold:<input size="3" style="margin-right: 10px;margin-left: 10px" name="inlineWarnStock-{{in}}" [(ngModel)]="item.warning_quantity">
-            </div>
-          </form>
-        </li>
-    </ul>
+      <button type="submit" (click)="submitItemCreateForm()" [disabled]="newItemForm.invalid"
+              class="btn btn-primary my-3">Create Item</button>
+    </form>
+  </div>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Category</th>
+      <th scope="col">Brand</th>
+      <th scope="col">Condition</th>
+      <th scope="col">Sale Price</th>
+      <th scope="col">Wholesale Cost</th>
+      <th scope="col">Desired Stock</th>
+      <th scope="col">Current Stock</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of items">
+      <td>{{item.name}}</td>
+      <td>{{item.category}}</td>
+      <td>{{item.brand}}</td>
+      <td>{{item.condition}}</td>
+      <td>{{item.standard_price}}</td>
+      <td>{{item.wholesale_cost}}</td>
+      <td>{{item.desired_stock}}</td>
+      <td>{{item.stock}}</td>
+      <td><button class="btn btn-secondary">Edit</button></td>
+    </tr>
+    </tbody>
+  </table>
 </div>

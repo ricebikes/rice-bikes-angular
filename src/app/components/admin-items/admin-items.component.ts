@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {ItemService} from '../../services/item.service';
 import {Item} from '../../models/item';
 import {FormBuilder, Validators} from '@angular/forms';
+import {SearchService} from '../../services/search.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-admin-items',
@@ -12,7 +14,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 export class AdminItemsComponent implements OnInit {
 
   constructor(private itemService: ItemService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private searchService: SearchService) { }
 
   newItemForm = this.formBuilder.group({
     name: ['', Validators.required],
@@ -27,10 +30,15 @@ export class AdminItemsComponent implements OnInit {
   });
 
   items: Item[];
+  existingCategories = this.searchService.itemCategories();
+  existingBrands = this.searchService.itemBrands();
+  existingSizes: Observable<string[]>;
 
   ngOnInit() {
     this.itemService.getItems()
       .then(items => this.items = items);
+    this.existingSizes = this.newItemForm.controls['category'].valueChanges
+      .switchMap(newCategory => this.searchService.itemSizes(newCategory));
   }
 
   /**
@@ -49,7 +57,10 @@ export class AdminItemsComponent implements OnInit {
       hidden: false,
       desired_stock: this.newItemForm.controls['desired_stock'].value,
       stock: 0
-    }).then(res => this.items.unshift(res));
+    }).then(res => {
+      this.items.unshift(res);
+      this.newItemForm.reset();
+    });
   }
 
   /*

@@ -125,7 +125,10 @@ export class AddItemComponent implements OnInit {
       hidden: false,
       desired_stock: this.newItemForm.controls['desired_stock'].value,
       stock: 0
-    }).then(res => this.chosenItem.emit(res));
+    }).then(res => {
+      this.newItemForm.reset();
+      this.chosenItem.emit(res);
+    });
   }
 
   /**
