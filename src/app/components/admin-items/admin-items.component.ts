@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ItemService} from '../../services/item.service';
 import {Item} from '../../models/item';
+import {FormBuilder, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-admin-items',
@@ -10,28 +11,47 @@ import {Item} from '../../models/item';
 
 export class AdminItemsComponent implements OnInit {
 
-  constructor(private itemservice: ItemService) { }
+  constructor(private itemService: ItemService,
+              private formBuilder: FormBuilder) { }
+
+  newItemForm = this.formBuilder.group({
+    name: ['', Validators.required],
+    category: ['', Validators.required],
+    size: ['', Validators.required],
+    brand: ['', Validators.required],
+    condition: ['', Validators.required],
+    desired_stock: ['', Validators.required],
+    upc: ['', Validators.required],
+    standard_price: ['', Validators.required],
+    wholesale_cost: ['', Validators.required]
+  });
 
   items: Item[];
-  item_entry = {name: '', price: null, shop_cost: null, warning_quantity: 0, description: ''};
 
   ngOnInit() {
-    this.itemservice.getItems()
+    this.itemService.getItems()
       .then(items => this.items = items);
   }
 
-  addItem() {
-    // use the service and provide form values
-    this.itemservice.addItem(
-      this.item_entry.name,
-      this.item_entry.description,
-      this.item_entry.price,
-      this.item_entry.shop_cost,
-      this.item_entry.warning_quantity
-    ).then(item => {
-      this.items.unshift(item);
-    });
+  /**
+   * Submits the item creation form, and creates the item
+   */
+  submitItemCreateForm() {
+    this.itemService.createItem({
+      _id: '',
+      name: this.newItemForm.controls['name'].value,
+      upc: this.newItemForm.controls['upc'].value,
+      category: this.newItemForm.controls['category'].value,
+      brand: this.newItemForm.controls['brand'].value,
+      condition: this.newItemForm.controls['condition'].value,
+      standard_price: this.newItemForm.controls['standard_price'].value,
+      wholesale_cost: this.newItemForm.controls['wholesale_cost'].value,
+      hidden: false,
+      desired_stock: this.newItemForm.controls['desired_stock'].value,
+      stock: 0
+    }).then(res => this.items.unshift(res));
   }
+
   /*
   updateItem(item: Item) {
     /*

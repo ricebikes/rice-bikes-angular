@@ -1,31 +1,47 @@
 <div class="container item-list">
-  <form #itemForm="ngForm">
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Item Name</span>
+  <form [formGroup]="newItemForm">
+    <div class="row">
+      <div class="col-4">
+        <label for="itemName">Item Name</label>
+        <input type="text" class="form-control" formControlName="name" id="itemName">
       </div>
-      <input type="text" class="form-control" placeholder="" id="name" [(ngModel)]="item_entry.name" name="name" required>
-      <button type="button" class="btn btn-primary" (click)="addItem(); itemForm.reset()" [disabled]="itemForm.invalid">Add Item</button>
+      <div class="col-2">
+        <label for="itemPrice">Item Price</label>
+        <input id="itemPrice" type="number" class="form-control" formControlName="standard_price">
+      </div>
+      <div class="col-2">
+        <label for="wholesalePrice">Wholesale Price</label>
+        <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
+      </div>
+      <div class="col-2">
+        <label for="newConditionSelect">Item Condition</label>
+        <select id="newConditionSelect" formControlName="condition" class="form-control">
+          <option>New</option>
+          <option>Used</option>
+        </select>
+      </div>
+      <div class="col-2">
+        <label for="newBrandSelect">Brand</label>
+        <input id="newBrandSelect" type="text" formControlName="brand" class="form-control">
+      </div>
     </div>
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Price</span>
+    <div class="row">
+      <div class="col-3">
+        <label for="newCategory">Category</label>
+        <input type="text" id="newCategory" class="form-control" formControlName="category">
       </div>
-      <input type="number" class="form-control" placeholder="0.00" id="price" [(ngModel)]="item_entry.price" name="price" required>
-      <div class="input-group-prepend">
-        <span class="input-group-text">Shop Cost</span>
+      <div class="col-3">
+        <label for="newSize">Size</label>
+        <input type="text" id="newSize" class="form-control" formControlName="size">
       </div>
-      <input type="number" class="form-control" placeholder="0.00" id="cost" [(ngModel)]="item_entry.shop_cost" name="cost" required>
-      <div class="input-group-prepend">
-        <span class="input-group-text">Low Stock Level</span>
+      <div class="col-2">
+        <label for="desiredStock">Desired Stock</label>
+        <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock">
       </div>
-      <input type="number" class="form-control" placeholder="0" id="stock_warn" [(ngModel)]="item_entry.warning_quantity" name="stock_warn" required>
-    </div>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Description</span>
+      <div class="col-4">
+        <label for="newUPC">UPC</label>
+        <input type="text" id="newUPC" class="form-control" formControlName="upc">
       </div>
-      <textarea class="form-control" [(ngModel)]="item_entry.description" name="description" id="description"></textarea>
     </div>
   </form>
   <ul class="list-group">
