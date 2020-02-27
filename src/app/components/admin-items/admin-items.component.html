@@ -1,3 +1,5 @@
+<!-- Hidden button controls for modals-->
+<button #editItemToggle hidden data-toggle="modal" data-target="#editItemModal">HIDDEN CONTROL</button>
 <div class="modal fade" id="editItemModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
@@ -12,36 +14,43 @@
           <div class="row">
             <div class="col-4">
               <label for="updateItemName">Item Name</label>
-              <input type="text" class="form-control" formControlName="name" id="updateItemName" (keyup.enter)="submitItemUpdateForm()">
+              <input type="text" class="form-control" formControlName="name" id="updateItemName"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateItemPrice">Item Price</label>
-              <input id="updateItemPrice" type="number" class="form-control" formControlName="standard_price" (keyup.enter)="submitItemUpdateForm()">
+              <input id="updateItemPrice" type="number" class="form-control" formControlName="standard_price"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateWholesalePrice">Wholesale Price</label>
-              <input id="updateWholesalePrice" type="number" class="form-control" formControlName="wholesale_cost" (keyup.enter)="submitItemUpdateForm()">
+              <input id="updateWholesalePrice" type="number" class="form-control" formControlName="wholesale_cost"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateConditionSelect">Item Condition</label>
-              <select id="updateConditionSelect" formControlName="condition" class="form-control" (keyup.enter)="submitItemUpdateForm()">
+              <select id="updateConditionSelect" formControlName="condition" class="form-control"
+                      (keyup.enter)="submitItemUpdateForm()">
                 <option>New</option>
                 <option>Used</option>
               </select>
             </div>
             <div class="col-2">
               <label for="updateBrandSelect">Brand</label>
-              <input id="updateBrandSelect" type="text" formControlName="brand" class="form-control" list="brands" (keyup.enter)="submitItemUpdateForm()">
+              <input id="updateBrandSelect" type="text" formControlName="brand" class="form-control" list="brands"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
           </div>
           <div class="row">
             <div class="col-2">
               <label for="updateCategory">Category</label>
-              <input type="text" id="updateCategory" class="form-control" formControlName="category" list="categories" (keyup.enter)="submitItemUpdateForm()">
+              <input type="text" id="updateCategory" class="form-control" formControlName="category" list="categories"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateSize">Size</label>
-              <input type="text" id="updateSize" class="form-control" formControlName="size" list="updateSizes" (keyup.enter)="submitItemUpdateForm()">
+              <input type="text" id="updateSize" class="form-control" formControlName="size" list="updateSizes"
+                     (keyup.enter)="submitItemUpdateForm()">
               <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
               <datalist id="updateSizes">
                 <option *ngFor="let size of (existingUpdateSizes | async)">{{size}}</option>
@@ -49,21 +58,24 @@
             </div>
             <div class="col-2">
               <label for="updateStock">Current Stock</label>
-              <input id="updateStock" type="number" class="form-control" formControlName="stock" (keyup.enter)="submitItemUpdateForm()">
+              <input id="updateStock" type="number" class="form-control" formControlName="stock"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateDesiredStock">Desired Stock</label>
-              <input id="updateDesiredStock" type="number" class="form-control" formControlName="desired_stock" (keyup.enter)="submitItemUpdateForm()">
+              <input id="updateDesiredStock" type="number" class="form-control" formControlName="desired_stock"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-4">
               <label for="updateUPC">UPC</label>
-              <input type="text" id="updateUPC" class="form-control" formControlName="upc" (keyup.enter)="submitItemUpdateForm()">
+              <input type="text" id="updateUPC" class="form-control" formControlName="upc"
+                     (keyup.enter)="submitItemUpdateForm()">
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button data-dismiss="modal" type="submit" (click)="submitItemUpdateForm()" class="btn btn-primary"
+        <button data-dimiss="modal" type="submit" (click)="submitItemUpdateForm()" class="btn btn-primary"
                 [disabled]="editItemForm.invalid">Update Item</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
@@ -78,26 +90,31 @@
       <div class="row">
         <div class="col-4">
           <label for="itemName">Item Name</label>
-          <input type="text" class="form-control" formControlName="name" id="itemName">
+          <input type="text" class="form-control" formControlName="name" id="itemName"
+                 (keyup.enter)="submitItemCreateForm()">
         </div>
         <div class="col-2">
           <label for="itemPrice">Item Price</label>
-          <input id="itemPrice" type="number" class="form-control" formControlName="standard_price">
+          <input id="itemPrice" type="number" class="form-control" formControlName="standard_price"
+                 (keyup.enter)="submitItemCreateForm()">
         </div>
         <div class="col-2">
           <label for="wholesalePrice">Wholesale Price</label>
-          <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
+          <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost"
+                 (keyup.enter)="submitItemCreateForm()">
         </div>
         <div class="col-2">
           <label for="newConditionSelect">Item Condition</label>
-          <select id="newConditionSelect" formControlName="condition" class="form-control">
+          <select id="newConditionSelect" formControlName="condition" class="form-control"
+                  (keyup.enter)="submitItemCreateForm()">
             <option>New</option>
             <option>Used</option>
           </select>
         </div>
         <div class="col-2">
           <label for="newBrandSelect">Brand</label>
-          <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands">
+          <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands"
+                 (keyup.enter)="submitItemCreateForm()">
           <datalist id="brands">
             <option *ngFor="let brand of (existingBrands | async)">{{brand}}</option>
           </datalist>
@@ -106,14 +123,16 @@
       <div class="row">
         <div class="col-3">
           <label for="newCategory">Category</label>
-          <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories">
+          <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories"
+                 (keyup.enter)="submitItemCreateForm()">
           <datalist id="categories">
             <option *ngFor="let category of (existingCategories | async)">{{category}}</option>
           </datalist>
         </div>
         <div class="col-3">
           <label for="newSize">Size</label>
-          <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes">
+          <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes"
+                 (keyup.enter)="submitItemCreateForm()">
           <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
           <datalist id="sizes">
             <option *ngFor="let size of (existingSizes | async)">{{size}}</option>
@@ -121,11 +140,13 @@
         </div>
         <div class="col-2">
           <label for="desiredStock">Desired Stock</label>
-          <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock">
+          <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock"
+                 (keyup.enter)="submitItemCreateForm()">
         </div>
         <div class="col-4">
           <label for="newUPC">UPC</label>
-          <input type="text" id="newUPC" class="form-control" formControlName="upc">
+          <input type="text" id="newUPC" class="form-control" formControlName="upc"
+                 (keyup.enter)="submitItemCreateForm()">
         </div>
       </div>
       <button type="submit" (click)="submitItemCreateForm()" [disabled]="newItemForm.invalid"
@@ -144,6 +165,7 @@
       <th scope="col">Desired Stock</th>
       <th scope="col">Current Stock</th>
       <th></th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
@@ -156,8 +178,11 @@
       <td>{{item.wholesale_cost}}</td>
       <td>{{item.desired_stock}}</td>
       <td>{{item.stock}}</td>
-      <td><button class="btn btn-secondary" (click)="editItem(item)"
-                  data-toggle="modal" data-target="#editItemModal">Edit</button></td>
+      <td><button class="btn btn-outline-secondary" (click)="editItem(item)">Edit</button></td>
+      <td>
+        <button class="btn btn-outline-danger" *ngIf="!item.disabled" (click)="toggleDisabled(item)">Disable</button>
+        <button class="btn btn-outline-primary" *ngIf="item.disabled" (click)="toggleDisabled(item)">Enable</button>
+      </td>
     </tr>
     </tbody>
   </table>

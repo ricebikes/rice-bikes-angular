@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ItemService} from '../../services/item.service';
 import {Item} from '../../models/item';
 import {FormBuilder, Validators} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
 import {Observable} from 'rxjs/Observable';
+import {AlertService} from '../../services/alert.service';
 
 @Component({
   selector: 'app-admin-items',
@@ -17,6 +18,8 @@ export class AdminItemsComponent implements OnInit {
               private formBuilder: FormBuilder,
               private searchService: SearchService) { }
 
+  @ViewChild('editItemToggle') editItemToggle: ElementRef;
+
   newItemForm = this.formBuilder.group({
     name: ['', Validators.required],
     category: ['', Validators.required],
@@ -24,7 +27,7 @@ export class AdminItemsComponent implements OnInit {
     brand: ['', Validators.required],
     condition: ['', Validators.required],
     desired_stock: ['', Validators.required],
-    upc: ['', Validators.required],
+    upc: [''],
     standard_price: ['', Validators.required],
     wholesale_cost: ['', Validators.required]
   });
@@ -51,11 +54,27 @@ export class AdminItemsComponent implements OnInit {
   existingUpdateSizes: Observable<string[]>;
 
   ngOnInit() {
-    this.itemService.getItems().then(res => this.items = res.reverse());
+    this.itemService.getItems().then(res => this.items = this.sortItems(res));
     this.existingSizes = this.newItemForm.controls['category'].valueChanges
       .switchMap(newCategory => this.searchService.itemSizes(newCategory));
-    this.existingUpdateSizes = this.newItemForm.controls['updateCategory'].valueChanges
+    this.existingUpdateSizes = this.editItemForm.controls['category'].valueChanges
       .switchMap(newCategory => this.searchService.itemSizes(newCategory));
+  }
+
+  /**
+   * Sorts the item list, such that it is in reverse order, and disabled items go at the bottom.
+   * @param items: item list to sort
+   */
+  sortItems(items: Item[]) {
+    return items.reverse().sort((a, b) => {
+      if (a.disabled === b.disabled) {
+        // both items have the same rank
+        return 0;
+      } else {
+        // choose where to sort a based on if it is disabled
+        return a.disabled ? 1 : -1;
+      }
+    });
   }
 
   /**
@@ -89,13 +108,27 @@ export class AdminItemsComponent implements OnInit {
     this.editItemForm.controls['name'].setValue(item.name);
     this.editItemForm.controls['upc'].setValue(item.upc);
     this.editItemForm.controls['category'].setValue(item.category);
+    this.editItemForm.controls['size'].setValue(item.size);
     this.editItemForm.controls['brand'].setValue(item.brand);
     this.editItemForm.controls['condition'].setValue(item.condition);
     this.editItemForm.controls['standard_price'].setValue(item.standard_price);
     this.editItemForm.controls['wholesale_cost'].setValue(item.wholesale_cost);
     this.editItemForm.controls['desired_stock'].setValue(item.desired_stock);
     this.editItemForm.controls['stock'].setValue(item.stock);
-    this.editItemForm.controls['hidden'].setValue(item.hidden);
+    this.editItemForm.controls['disabled'].setValue(item.disabled);
+    this.editItemToggle.nativeElement.click();
+  }
+
+  /**
+   * Toggles the disabled state of an item
+   * @param item: item to toggle state of
+   */
+  toggleDisabled(item: Item) {
+    item.disabled = !item.disabled;
+    AlertService.debugLog(item);
+    this.itemService.updateItem(item._id, item).then(res => {
+      this.itemService.getItems().then(response => this.items = this.sortItems(response));
+    });
   }
 
   submitItemUpdateForm() {
@@ -116,7 +149,8 @@ export class AdminItemsComponent implements OnInit {
       managed: false
     }).then(res => {
       // update item list
-      this.itemService.getItems().then(response => this.items = response.reverse());
+      this.itemService.getItems().then(response => this.items = this.sortItems(response));
+      this.editItemToggle.nativeElement.click();
       this.editItemForm.reset();
     });
   }
