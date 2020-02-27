@@ -118,11 +118,13 @@ export class AddItemComponent implements OnInit {
       name: this.newItemForm.controls['name'].value,
       upc: this.newItemForm.controls['upc'].value,
       category: this.newItemForm.controls['category'].value,
+      size: this.newItemForm.controls['size'].value,
       brand: this.newItemForm.controls['brand'].value,
       condition: this.newItemForm.controls['condition'].value,
       standard_price: this.newItemForm.controls['standard_price'].value,
       wholesale_cost: this.newItemForm.controls['wholesale_cost'].value,
-      hidden: false,
+      disabled: false,
+      managed: false,
       desired_stock: this.newItemForm.controls['desired_stock'].value,
       stock: 0
     }).then(res => {

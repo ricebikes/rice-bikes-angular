@@ -28,10 +28,10 @@ export class ItemService {
   }
 
   /**
-   * Gets an array of items from the backend
+   * Gets an array of items from the backend. Do not use this to search for items, because it will also get the hidden items
+   * from the backend that should not be added to tranasactions
    */
-
-  getItems(): Promise<any> {
+  getItems(): Promise<Item[]> {
     return this.http.get(`${CONFIG.api_url}/items`, this.jwt())
       .toPromise()
       .then(res => res.json())
@@ -51,21 +51,14 @@ export class ItemService {
   }
 
   /**
-   * updates an item in the database, note that many fields cannot be updated since
-   * the frontend does not expose them currently
+   * Updates an item by overwriting the existing item's value
    * @param id:  id of document to update
-   * @param price: new price of item
-   * @param shop_cost: cost to shop
-   * @param quantity: quantity of item (note this can only be set here)
-   * @param warn_level: level to warn operations of low stock
+   * @param item: Item to overwrite this document with
    */
-  updateItem(id: String, price: Number, shop_cost: Number, quantity: Number, warn_level: Number): Promise<any> {
-    return this.http.put(`${CONFIG.api_url}/items/${id}`, {
-     price: price,
-     shop_cost: shop_cost,
-     quantity: quantity,
-     warning_quantity: warn_level
-    }, this.jwt())
+  updateItem(id: String, item: Item): Promise<any> {
+    delete item._id; // to prevent errors on backend
+    return this.http.put(`${CONFIG.api_url}/items/${id}`,
+      item, this.jwt())
       .toPromise()
       .then(res => res.json())
       .catch( err => this.handleError(err));

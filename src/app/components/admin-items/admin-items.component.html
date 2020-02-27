@@ -12,54 +12,58 @@
           <div class="row">
             <div class="col-4">
               <label for="updateItemName">Item Name</label>
-              <input type="text" class="form-control" formControlName="name" id="updateItemName">
+              <input type="text" class="form-control" formControlName="name" id="updateItemName" (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateItemPrice">Item Price</label>
-              <input id="updateItemPrice" type="number" class="form-control" formControlName="standard_price">
+              <input id="updateItemPrice" type="number" class="form-control" formControlName="standard_price" (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateWholesalePrice">Wholesale Price</label>
-              <input id="updateWholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
+              <input id="updateWholesalePrice" type="number" class="form-control" formControlName="wholesale_cost" (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateConditionSelect">Item Condition</label>
-              <select id="updateConditionSelect" formControlName="condition" class="form-control">
+              <select id="updateConditionSelect" formControlName="condition" class="form-control" (keyup.enter)="submitItemUpdateForm()">
                 <option>New</option>
                 <option>Used</option>
               </select>
             </div>
             <div class="col-2">
               <label for="updateBrandSelect">Brand</label>
-              <input id="updateBrandSelect" type="text" formControlName="brand" class="form-control" list="brands">
+              <input id="updateBrandSelect" type="text" formControlName="brand" class="form-control" list="brands" (keyup.enter)="submitItemUpdateForm()">
             </div>
           </div>
           <div class="row">
-            <div class="col-3">
+            <div class="col-2">
               <label for="updateCategory">Category</label>
-              <input type="text" id="updateCategory" class="form-control" formControlName="category" list="categories">
+              <input type="text" id="updateCategory" class="form-control" formControlName="category" list="categories" (keyup.enter)="submitItemUpdateForm()">
             </div>
-            <div class="col-3">
+            <div class="col-2">
               <label for="updateSize">Size</label>
-              <input type="text" id="updateSize" class="form-control" formControlName="size" list="updateSizes">
+              <input type="text" id="updateSize" class="form-control" formControlName="size" list="updateSizes" (keyup.enter)="submitItemUpdateForm()">
               <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
               <datalist id="updateSizes">
                 <option *ngFor="let size of (existingUpdateSizes | async)">{{size}}</option>
               </datalist>
             </div>
             <div class="col-2">
+              <label for="updateStock">Current Stock</label>
+              <input id="updateStock" type="number" class="form-control" formControlName="stock" (keyup.enter)="submitItemUpdateForm()">
+            </div>
+            <div class="col-2">
               <label for="updateDesiredStock">Desired Stock</label>
-              <input id="updateDesiredStock" type="number" class="form-control" formControlName="desired_stock">
+              <input id="updateDesiredStock" type="number" class="form-control" formControlName="desired_stock" (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-4">
               <label for="updateUPC">UPC</label>
-              <input type="text" id="updateUPC" class="form-control" formControlName="upc">
+              <input type="text" id="updateUPC" class="form-control" formControlName="upc" (keyup.enter)="submitItemUpdateForm()">
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="submit" (click)="submitItemUpdateForm()" class="btn btn-primary"
+        <button data-dismiss="modal" type="submit" (click)="submitItemUpdateForm()" class="btn btn-primary"
                 [disabled]="editItemForm.invalid">Update Item</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>

@@ -30,6 +30,7 @@ export class AdminItemsComponent implements OnInit {
   });
 
   editItemForm = this.formBuilder.group({
+    itemID: ['', Validators.required], // Not displayed in form control but used for tracking what item we are editing.
     name: ['', Validators.required],
     category: ['', Validators.required],
     size: [''],
@@ -38,7 +39,9 @@ export class AdminItemsComponent implements OnInit {
     desired_stock: ['', Validators.required],
     upc: [''],
     standard_price: ['', Validators.required],
-    wholesale_cost: ['', Validators.required]
+    wholesale_cost: ['', Validators.required],
+    stock: [''],
+    disabled: ['']
   });
 
   items: Item[];
@@ -48,8 +51,7 @@ export class AdminItemsComponent implements OnInit {
   existingUpdateSizes: Observable<string[]>;
 
   ngOnInit() {
-    this.itemService.getItems()
-      .then(items => this.items = items);
+    this.itemService.getItems().then(res => this.items = res.reverse());
     this.existingSizes = this.newItemForm.controls['category'].valueChanges
       .switchMap(newCategory => this.searchService.itemSizes(newCategory));
     this.existingUpdateSizes = this.newItemForm.controls['updateCategory'].valueChanges
@@ -60,55 +62,62 @@ export class AdminItemsComponent implements OnInit {
    * Submits the item creation form, and creates the item
    */
   submitItemCreateForm() {
+    if (this.newItemForm.invalid) {return; }
     this.itemService.createItem({
       _id: '',
       name: this.newItemForm.controls['name'].value,
       upc: this.newItemForm.controls['upc'].value,
       category: this.newItemForm.controls['category'].value,
+      size: this.newItemForm.controls['size'].value,
       brand: this.newItemForm.controls['brand'].value,
       condition: this.newItemForm.controls['condition'].value,
       standard_price: this.newItemForm.controls['standard_price'].value,
       wholesale_cost: this.newItemForm.controls['wholesale_cost'].value,
-      hidden: false,
+      disabled: false,
+      managed: false,
       desired_stock: this.newItemForm.controls['desired_stock'].value,
       stock: 0
     }).then(res => {
+      // reload the item list
       this.items.unshift(res);
       this.newItemForm.reset();
     });
   }
 
   editItem(item) {
+    this.editItemForm.controls['itemID'].setValue(item._id);
     this.editItemForm.controls['name'].setValue(item.name);
     this.editItemForm.controls['upc'].setValue(item.upc);
     this.editItemForm.controls['category'].setValue(item.category);
     this.editItemForm.controls['brand'].setValue(item.brand);
-
     this.editItemForm.controls['condition'].setValue(item.condition);
     this.editItemForm.controls['standard_price'].setValue(item.standard_price);
     this.editItemForm.controls['wholesale_cost'].setValue(item.wholesale_cost);
     this.editItemForm.controls['desired_stock'].setValue(item.desired_stock);
-
+    this.editItemForm.controls['stock'].setValue(item.stock);
+    this.editItemForm.controls['hidden'].setValue(item.hidden);
   }
 
   submitItemUpdateForm() {
-
-  }
-
-  /*
-  updateItem(item: Item) {
-    /*
-    this.itemservice.updateItem(
-      item._id,
-      item.price,
-      item.shop_cost,
-      item.quantity,
-      item.warning_quantity
-    ).then( new_item => {
-      const index = this.items.indexOf(item);
-      if (index > -1) {
-        this.items.splice(index, 1, new_item);
-      }
+    if (this.editItemForm.invalid) {return; }
+    this.itemService.updateItem(this.editItemForm.controls['itemID'].value, {
+      _id: '',
+      name: this.editItemForm.controls['name'].value,
+      category: this.editItemForm.controls['category'].value,
+      size: this.editItemForm.controls['size'].value,
+      brand: this.editItemForm.controls['brand'].value,
+      condition: this.editItemForm.controls['condition'].value,
+      desired_stock: this.editItemForm.controls['desired_stock'].value,
+      upc: this.editItemForm.controls['upc'].value,
+      standard_price: this.editItemForm.controls['standard_price'].value,
+      wholesale_cost: this.editItemForm.controls['wholesale_cost'].value,
+      stock: this.editItemForm.controls['stock'].value,
+      disabled: this.editItemForm.controls['disabled'].value || false,
+      managed: false
+    }).then(res => {
+      // update item list
+      this.itemService.getItems().then(response => this.items = response.reverse());
+      this.editItemForm.reset();
     });
-  }*/
+  }
 }
