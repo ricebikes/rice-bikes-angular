@@ -4,6 +4,7 @@ import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
 import {Observable} from 'rxjs/Observable';
 import {ItemService} from '../../services/item.service';
+import {AuthenticationService} from '../../services/authentication.service';
 
 
 
@@ -41,7 +42,7 @@ export class AddItemComponent implements OnInit {
     brand: ['', Validators.required],
     condition: ['', Validators.required],
     desired_stock: ['', Validators.required],
-    upc: ['', Validators.required],
+    upc: [''],
     standard_price: ['', Validators.required],
     wholesale_cost: ['', Validators.required]
   });
@@ -53,13 +54,17 @@ export class AddItemComponent implements OnInit {
 
   addDialog = false;
 
+  isAdmin = this.authenticationService.isAdmin;
+
+  existingSizes: Observable<String[]>; // for use in add item dialog
   categories = this.searchService.itemCategories();
   brands = this.searchService.itemBrands();
 
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private authenticationService: AuthenticationService
   ) { }
 
 
@@ -87,7 +92,6 @@ export class AddItemComponent implements OnInit {
       .debounceTime(200) // wait 200ms between changes
       .distinctUntilChanged() // don't emit unless change is actually new data
       .switchMap(newCategory => {
-        console.log(newCategory);
           // switch to promise from backend request with our category
           this.itemForm.controls['size'].setValue('');
           return this.searchService.itemSizes(newCategory);
@@ -96,6 +100,11 @@ export class AddItemComponent implements OnInit {
         console.log(err);
         return Observable.of([]);
       });
+    this.existingSizes = this.newItemForm.controls['category']
+      .valueChanges
+      .debounceTime(200)
+      .distinctUntilChanged()
+      .switchMap(newCategory => this.searchService.itemSizes(newCategory));
   }
 
   /**

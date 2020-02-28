@@ -33,17 +33,18 @@
   <form [formGroup]="stagedOrderForm">
     <div class="input-group mb-3">
       <div class="input-group-prepend">
-        <button *ngIf="!(stagedOrderItem | async)" class="btn btn-outline-secondary" type="button"
-                (click)="triggerItemSearch()">Select Item</button>
-        <div *ngIf="(stagedOrderItem | async) as item" class="input-group-text">{{item.name}}</div>
+        <button class="btn btn-outline-secondary" type="button" (click)="triggerItemSearch()">
+          <span *ngIf="!(stagedOrderItem | async)">Select Item</span>
+          <span *ngIf="(stagedOrderItem | async) as item">{{item.name}}</span>
+        </button>
       </div>
       <input class="form-control" type="text" formControlName="transaction"
              placeholder="Transaction ID">
       <input class="form-control" type="number" placeholder="Quantity" formControlName="quantity">
       <div class="input-group-append">
-        <button class="btn btn-outline-primary" type="submit"
+        <button class="btn btn-success" type="submit"
                 [disabled]="!(stagedOrderForm.valid && (stagedOrderItem | async) != null)"
-                (click)="submitStagedItem()"><i class="fas fa-check"></i></button>
+                (click)="submitStagedItem()">Add</button>
       </div>
     </div>
   </form>
@@ -56,7 +57,7 @@
       <th scope="col">Stock</th>
       <th scope="col">Transaction</th>
       <th scope="col">Quantity</th>
-      <th scope="colgroup">Actions</th>
+      <th colspan="2">Actions</th>
     </tr>
     </thead>
     <!-- Items in currentOrder-->
@@ -68,9 +69,8 @@
         <td>{{item.item.stock}}</td>
         <td *ngIf="item.transaction">{{item.transaction}}</td>
         <td *ngIf="!item.transaction">None</td>
-        <td>{{item.quantity}}</td>
-        <td><button class="btn btn-primary btn-sm"><i class="fas fa-check"></i></button></td>
-        <td><button class="btn btn-primary btn-sm"><i class="fas fa-minus-circle"></i></button></td>
+        <td></td>
+        <td><button class="btn btn-outline-danger" (click)="removeItemFromOrder(item.item)">Remove</button></td>
       </tr>
     </tbody>
   </table>

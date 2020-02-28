@@ -24,8 +24,8 @@
 <!-- Search/Add Item Modal (only admins can add items)-->
 <div class="modal fade" id="itemSearchModal" tabindex="-1" role="dialog" aria-labelledby="itemSearchModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-xl">
-    <div class="modal-content" [hidden]="addDialog">
-      <nav aria-label="Navigate Between Adding and Searching for Items">
+    <div class="modal-content" [hidden]="addDialog" id="itemSearchDialog">
+      <nav *ngIf="isAdmin | async" aria-label="Navigate Between Adding and Searching for Items">
         <ul class="pagination">
           <li class="page-item active"><a class="page-link">Search</a></li>
           <li class="page-item"><a class="page-link" (click)="addDialog = true">Add</a></li>
@@ -113,7 +113,7 @@
           </table>
       </div>
     </div>
-    <div class="modal-content" [hidden]="!addDialog">
+    <div *ngIf="isAdmin | async" class="modal-content" [hidden]="!addDialog" id="itemAddDialog">
       <nav aria-label="Navigate Between Adding and Searching for Items">
         <ul class="pagination">
           <li class="page-item"><a class="page-link"(click)="addDialog = false">Search</a></li>
@@ -150,17 +150,27 @@
             </div>
             <div class="col-2">
               <label for="newBrandSelect">Brand</label>
-              <input id="newBrandSelect" type="text" formControlName="brand" class="form-control">
+              <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands">
+              <!-- Datalist provides a simple list of existing options (like a combobox). supported on most browsers.-->
+              <datalist id="brands">
+                <option *ngFor="let brand of (brands | async)">{{brand}}</option>
+              </datalist>
             </div>
           </div>
           <div class="row">
             <div class="col-3">
               <label for="newCategory">Category</label>
-              <input type="text" id="newCategory" class="form-control" formControlName="category">
+              <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories">
+              <datalist id="categories">
+                <option *ngFor="let category of (categories | async)">{{category}}</option>
+              </datalist>
             </div>
             <div class="col-3">
               <label for="newSize">Size</label>
-              <input type="text" id="newSize" class="form-control" formControlName="size">
+              <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes">
+              <datalist id="sizes">
+                <option *ngFor="let size of (existingSizes | async)">{{size}}</option>
+              </datalist>
             </div>
             <div class="col-2">
               <label for="desiredStock">Desired Stock</label>

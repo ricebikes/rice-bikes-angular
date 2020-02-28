@@ -90,31 +90,26 @@
       <div class="row">
         <div class="col-4">
           <label for="itemName">Item Name</label>
-          <input type="text" class="form-control" formControlName="name" id="itemName"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input type="text" class="form-control" formControlName="name" id="itemName">
         </div>
         <div class="col-2">
           <label for="itemPrice">Item Price</label>
-          <input id="itemPrice" type="number" class="form-control" formControlName="standard_price"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input id="itemPrice" type="number" class="form-control" formControlName="standard_price">
         </div>
         <div class="col-2">
           <label for="wholesalePrice">Wholesale Price</label>
-          <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
         </div>
         <div class="col-2">
           <label for="newConditionSelect">Item Condition</label>
-          <select id="newConditionSelect" formControlName="condition" class="form-control"
-                  (keyup.enter)="submitItemCreateForm()">
+          <select id="newConditionSelect" formControlName="condition" class="form-control">
             <option>New</option>
             <option>Used</option>
           </select>
         </div>
         <div class="col-2">
           <label for="newBrandSelect">Brand</label>
-          <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands">
           <datalist id="brands">
             <option *ngFor="let brand of (existingBrands | async)">{{brand}}</option>
           </datalist>
@@ -123,16 +118,14 @@
       <div class="row">
         <div class="col-3">
           <label for="newCategory">Category</label>
-          <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories">
           <datalist id="categories">
             <option *ngFor="let category of (existingCategories | async)">{{category}}</option>
           </datalist>
         </div>
         <div class="col-3">
           <label for="newSize">Size</label>
-          <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes">
           <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
           <datalist id="sizes">
             <option *ngFor="let size of (existingSizes | async)">{{size}}</option>
@@ -140,13 +133,11 @@
         </div>
         <div class="col-2">
           <label for="desiredStock">Desired Stock</label>
-          <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock">
         </div>
         <div class="col-4">
           <label for="newUPC">UPC</label>
-          <input type="text" id="newUPC" class="form-control" formControlName="upc"
-                 (keyup.enter)="submitItemCreateForm()">
+          <input type="text" id="newUPC" class="form-control" formControlName="upc">
         </div>
       </div>
       <button type="submit" (click)="submitItemCreateForm()" [disabled]="newItemForm.invalid"

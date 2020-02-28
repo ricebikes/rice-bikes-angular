@@ -7,6 +7,7 @@ import {Item} from '../../../models/item';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Transaction} from '../../../models/transaction';
 import {AddItemComponent} from '../../add-item/add-item.component';
+import {debug} from 'util';
 
 @Component({
   selector: 'app-order-detail',
@@ -49,6 +50,9 @@ export class OrderDetailComponent implements OnInit {
     this.addItemToOrder(this.stagedOrderItem.value,
       this.stagedOrderForm.controls['quantity'].value,
       this.stagedOrderForm.controls['transaction'].value);
+    // Reset the staging form
+    this.stagedOrderForm.reset();
+    this.stagedOrderItem.next(null);
   }
 
   /**
@@ -75,6 +79,14 @@ export class OrderDetailComponent implements OnInit {
     this.addItemComponent.triggerItemSearch();
   }
 
+  /**
+   * Deletes an item from this order
+   * @param item: item to remove
+   */
+  removeItemFromOrder(item: Item) {
+    this.orderService.deleteItem(this.order.value, item)
+      .then(newOrder => this.order.next(newOrder));
+  }
   /**
    * Adds item to order
    * @param item: item to add
