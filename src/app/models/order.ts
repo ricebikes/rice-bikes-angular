@@ -5,6 +5,7 @@ export class Order {
   supplier: string;
   date_created: Date;
   date_submitted: Date;
+  date_completed: Date;
   tracking_number: string;
   status: string;
   items: OrderItem[];

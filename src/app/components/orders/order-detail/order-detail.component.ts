@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {OrderService} from '../../../services/order.service';
 import {Order} from '../../../models/order';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Item} from '../../../models/item';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -25,6 +25,7 @@ export class OrderDetailComponent implements OnInit {
 
   constructor(private orderService: OrderService,
               private route: ActivatedRoute,
+              private router: Router,
               private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -44,7 +45,7 @@ export class OrderDetailComponent implements OnInit {
   }
 
   /**
-   * Simply gets formcontrol values and passes them to addItem function
+   * Simply gets form control values and passes them to addItem function
    */
   submitStagedItem() {
     this.addItemToOrder(this.stagedOrderItem.value,
@@ -53,6 +54,14 @@ export class OrderDetailComponent implements OnInit {
     // Reset the staging form
     this.stagedOrderForm.reset();
     this.stagedOrderItem.next(null);
+  }
+
+  /**
+   * Deletes this order
+   */
+  deleteOrder() {
+    this.orderService.deleteOrder(this.order.value)
+      .then(() => this.router.navigate(['orders/']));
   }
 
   /**
