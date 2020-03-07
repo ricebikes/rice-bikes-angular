@@ -70,6 +70,18 @@ export class SearchService {
   }
 
   /**
+   * Gets all distinct transaction IDs. Useful for quick searching.
+   */
+  getTransactionIDs(): Promise<string[]> {
+    const requestOptions = new RequestOptions();
+    requestOptions.headers = SearchService.jwt_headers();
+    return this.http.get(`${this.transactionUrl}/ids`, requestOptions)
+      .toPromise()
+      .then(res => res.json() as string[])
+      .catch(err => this.handleError(err));
+  }
+
+  /**
    * Searches for item by given parameters, returns an observable of results
    * @param name: name of item
    * @param category: item category

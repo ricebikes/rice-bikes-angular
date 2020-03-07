@@ -61,7 +61,10 @@
         </button>
       </div>
       <input class="form-control" type="text" formControlName="transaction"
-             placeholder="Transaction ID">
+             placeholder="Transaction ID" list="transactions">
+      <datalist id="transactions">
+        <option *ngFor="let transaction_id of (transactionIDs | async)">{{transaction_id}}</option>
+      </datalist>
       <input class="form-control" type="number" placeholder="Quantity" formControlName="quantity">
       <div class="input-group-append">
         <button class="btn btn-success" type="submit"

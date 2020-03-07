@@ -9,6 +9,7 @@ import {Transaction} from '../../../models/transaction';
 import {AddItemComponent} from '../../add-item/add-item.component';
 import {debug} from 'util';
 import {OrderItem} from '../../../models/orderItem';
+import {SearchService} from '../../../services/search.service';
 
 @Component({
   selector: 'app-order-detail',
@@ -21,11 +22,13 @@ export class OrderDetailComponent implements OnInit {
 
   loading = true;
   order: BehaviorSubject<Order> = new BehaviorSubject(null);
+  transactionIDs = this.searchService.getTransactionIDs();
   stagedOrderForm: FormGroup;
   allOrderItems: FormGroup; // holding OrderItems in FormGroup allows for inline updates
   stagedOrderItem: BehaviorSubject<Item> = new BehaviorSubject(null);
 
   constructor(private orderService: OrderService,
+              private searchService: SearchService,
               private route: ActivatedRoute,
               private router: Router,
               private fb: FormBuilder) { }
