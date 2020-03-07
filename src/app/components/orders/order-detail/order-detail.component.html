@@ -25,7 +25,7 @@
     <h2 class="display-5" *ngIf="loading">...</h2>
     <div class="row" *ngIf="!loading">
       <div class="col-8">
-        <h2 class="display-5">Order from {{currentOrder.supplier}}</h2>
+        <h2 class="display-5">Order from {{currentOrder.supplier}}: ${{currentOrder.total_price.toFixed(2)}}</h2>
         <p class="lead">Created on {{currentOrder.date_created | date: 'MMM d, y, h:mm a'}}</p>
         <p class="lead" *ngIf="currentOrder?.date_submitted"> Ordered on {{currentOrder?.date_submitted | date: 'MMM d, y, h:mm a'}}</p>
         <p class="lead" *ngIf="currentOrder?.date_completed"> Completed on {{currentOrder?.date_completed | date: 'MMM d, y, h:mm a'}}</p>

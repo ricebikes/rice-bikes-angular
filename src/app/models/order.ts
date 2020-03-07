@@ -7,6 +7,7 @@ export class Order {
   date_submitted: Date;
   date_completed: Date;
   tracking_number: string;
+  total_price: number;
   status: string;
   items: OrderItem[];
 }
