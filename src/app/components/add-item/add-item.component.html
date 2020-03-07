@@ -28,7 +28,7 @@
       <nav *ngIf="isAdmin | async" aria-label="Navigate Between Adding and Searching for Items">
         <ul class="pagination">
           <li class="page-item active"><a class="page-link">Search</a></li>
-          <li class="page-item"><a class="page-link" (click)="addDialog = true">Add</a></li>
+          <li class="page-item"><a class="page-link" (click)="addDialog = true">Create</a></li>
         </ul>
       </nav>
       <div class="modal-header">
@@ -117,7 +117,7 @@
       <nav aria-label="Navigate Between Adding and Searching for Items">
         <ul class="pagination">
           <li class="page-item"><a class="page-link"(click)="addDialog = false">Search</a></li>
-          <li class="page-item active"><a class="page-link" >Add</a></li>
+          <li class="page-item active"><a class="page-link" >Create</a></li>
         </ul>
       </nav>
       <div class="modal-header">

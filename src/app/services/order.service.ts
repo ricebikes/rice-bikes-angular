@@ -100,11 +100,11 @@ export class OrderService {
   /**
    * Updates the stock of an OrderItem in an order
    * @param order: Order to update
-   * @param item: Item to update stock of (backing Item, not OrderItem)
+   * @param item_id: ObjectId of Item to update stock of (backing Item, not OrderItem)
    * @param stock: new stock to set
    */
-  updateStock(order: Order, item: Item, stock: number): Promise<Order> {
-    return this.http.put(`${this.backendURL}/${order._id}/item/${item._id}/stock`,
+  updateStock(order: Order, item_id: string, stock: number): Promise<Order> {
+    return this.http.put(`${this.backendURL}/${order._id}/item/${item_id}/stock`,
       {stock: stock},
       OrderService.jwt())
       .toPromise()
@@ -115,11 +115,11 @@ export class OrderService {
   /**
    * Updates the transaction associated with an order
    * @param order: Order holding relevant item
-   * @param item: Item to update transaction of (not OrderItem)
+   * @param item_id: id of item (not orderItem) to update transaction of
    * @param transaction_id: ID of transaction to set
    */
-  updateTransaction(order: Order, item: Item, transaction_id: string): Promise<Order> {
-    return this.http.put(`${this.backendURL}/${order._id}/item/${item._id}/transaction`,
+  updateTransaction(order: Order, item_id: string, transaction_id: string): Promise<Order> {
+    return this.http.put(`${this.backendURL}/${order._id}/item/${item_id}/transaction`,
       {transaction_id: transaction_id},
       OrderService.jwt())
       .toPromise()
@@ -169,10 +169,10 @@ export class OrderService {
   /**
    * Deletes an OrderItem from the order
    * @param order: Order to remove item from
-   * @param item: item within the OrderItem to remove
+   * @param item_id: item id of item within orderItem to remove
    */
-  deleteItem(order: Order, item: Item): Promise<Order> {
-    return this.http.delete(`${this.backendURL}/${order._id}/item/${item._id}`,
+  deleteItem(order: Order, item_id: string): Promise<Order> {
+    return this.http.delete(`${this.backendURL}/${order._id}/item/${item_id}`,
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)

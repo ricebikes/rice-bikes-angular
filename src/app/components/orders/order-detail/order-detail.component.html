@@ -84,15 +84,21 @@
     </thead>
     <!-- Items in currentOrder-->
     <tbody>
-      <tr *ngFor="let item of currentOrder.items">
-        <th scope="row">{{item.item.name}}</th>
-        <td>{{item.item.wholesale_cost}}</td>
-        <td>{{item.item.standard_price}}</td>
-        <td>{{item.item.stock}}</td>
-        <td *ngIf="item.transaction">{{item.transaction}}</td>
-        <td *ngIf="!item.transaction">None</td>
-        <td></td>
-        <td><button class="btn btn-outline-danger" (click)="removeItemFromOrder(item.item)">Remove</button></td>
+    <!-- Each row in the table is a form element for the specific item-->
+      <tr *ngFor="let control of getItemControls()" [formGroup]="control">
+          <!-- If desired, any of these fields could be changed to inputs, and backend controls could be added
+              so that more attributes of an orderItem can be updated inline-->
+          <th scope="row">{{control.get('name').value}}</th>
+          <td>{{control.get('wholesale_cost').value}}</td>
+          <td>{{control.get("standard_price").value}}</td>
+          <td>{{control.get("stock").value}}</td>
+          <td *ngIf="control.get('transaction').value">{{control.get("transaction").value}}</td>
+          <td *ngIf="!control.get('transaction').value">None</td>
+          <td><input type="number" class="form-control" formControlName="quantity"></td>
+          <td><button class="btn btn-primary"
+                      [disabled]="!control.dirty"
+                      (click)="updateItemQuantity(control.get('_id').value, control.get('quantity').value)">Update</button></td>
+          <td><button class="btn btn-danger" (click)="removeItemFromOrder(control.get('_id').value)">Remove</button></td>
       </tr>
     </tbody>
   </table>

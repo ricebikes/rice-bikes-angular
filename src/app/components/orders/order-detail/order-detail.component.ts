@@ -4,10 +4,11 @@ import {Order} from '../../../models/order';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Item} from '../../../models/item';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Transaction} from '../../../models/transaction';
 import {AddItemComponent} from '../../add-item/add-item.component';
 import {debug} from 'util';
+import {OrderItem} from '../../../models/orderItem';
 
 @Component({
   selector: 'app-order-detail',
@@ -21,6 +22,7 @@ export class OrderDetailComponent implements OnInit {
   loading = true;
   order: BehaviorSubject<Order> = new BehaviorSubject(null);
   stagedOrderForm: FormGroup;
+  allOrderItems: FormGroup; // holding OrderItems in FormGroup allows for inline updates
   stagedOrderItem: BehaviorSubject<Item> = new BehaviorSubject(null);
 
   constructor(private orderService: OrderService,
@@ -29,6 +31,16 @@ export class OrderDetailComponent implements OnInit {
               private fb: FormBuilder) { }
 
   ngOnInit() {
+    // Subscribe to order updates, so we can fill the FormArray with order data
+    this.order.subscribe(newOrder => {
+      if (newOrder) {
+        this.allOrderItems = this.fb.group({items: this.fb.array([])});
+        const itemsControl = <FormArray>this.allOrderItems.get('items');
+        for (const item of newOrder.items) {
+          itemsControl.push(this.orderItemToForm(item));
+        }
+      }
+    });
     // Get param for the order we should display
     this.route.params.subscribe(params => {
       this.orderService.getOrder(params['_id'])
@@ -37,10 +49,25 @@ export class OrderDetailComponent implements OnInit {
           this.order.next(newOrder);
         });
     });
-
     this.stagedOrderForm = this.fb.group({
       transaction: [''],
       quantity: ['', Validators.required]
+    });
+  }
+
+  /**
+   * Returns a filled FormControl for an orderItem
+   * @param item: orderItem to fill control using
+   */
+  orderItemToForm(item: OrderItem): FormGroup {
+    return this.fb.group({
+      _id: [item.item._id], // not displayed but helps keep track of the item in form
+      name: [item.item.name],
+      wholesale_cost: [item.item.wholesale_cost],
+      standard_price: [item.item.standard_price],
+      stock: [item.item.stock],
+      transaction: [item.transaction],
+      quantity: [item.quantity, Validators.required] // make this required, as it is the only component we will allow to be edited
     });
   }
 
@@ -54,6 +81,16 @@ export class OrderDetailComponent implements OnInit {
     // Reset the staging form
     this.stagedOrderForm.reset();
     this.stagedOrderItem.next(null);
+  }
+
+  /**
+   * Updates the quantity of an item in the order
+   * @param item_id: ObjectId of item to update
+   * @param quantity: quantity to set the orderItem to
+   */
+  updateItemQuantity(item_id: string, quantity: number) {
+    this.orderService.updateStock(this.order.value, item_id, quantity)
+      .then(newOrder => this.order.next(newOrder));
   }
 
   /**
@@ -90,10 +127,10 @@ export class OrderDetailComponent implements OnInit {
 
   /**
    * Deletes an item from this order
-   * @param item: item to remove
+   * @param item_id: the objectID of item to remove
    */
-  removeItemFromOrder(item: Item) {
-    this.orderService.deleteItem(this.order.value, item)
+  removeItemFromOrder(item_id: string) {
+    this.orderService.deleteItem(this.order.value, item_id)
       .then(newOrder => this.order.next(newOrder));
   }
   /**
@@ -112,5 +149,13 @@ export class OrderDetailComponent implements OnInit {
         {item: item, transaction: null, quantity: quantity})
         .then(newOrder => this.order.next(newOrder));
     }
+  }
+
+  /**
+   * Convenience function to get all order controls
+   */
+  getItemControls() {
+    const controlArray = <FormArray> this.allOrderItems.get('items');
+    return controlArray.controls;
   }
 }
