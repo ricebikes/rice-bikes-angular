@@ -1,4 +1,4 @@
-import {OrderItem} from './orderItem';
+import {OrderRequest} from './orderRequest';
 
 export class Order {
   _id: string;
@@ -9,5 +9,5 @@ export class Order {
   tracking_number: string;
   total_price: number;
   status: string;
-  items: OrderItem[];
+  items: OrderRequest[];
 }

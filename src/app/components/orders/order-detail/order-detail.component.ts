@@ -8,7 +8,7 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Transaction} from '../../../models/transaction';
 import {AddItemComponent} from '../../add-item/add-item.component';
 import {debug} from 'util';
-import {OrderItem} from '../../../models/orderItem';
+import {OrderRequest} from '../../../models/orderRequest';
 import {SearchService} from '../../../services/search.service';
 
 @Component({
@@ -62,7 +62,7 @@ export class OrderDetailComponent implements OnInit {
    * Returns a filled FormControl for an orderItem
    * @param item: orderItem to fill control using
    */
-  orderItemToForm(item: OrderItem): FormGroup {
+  orderItemToForm(item: OrderRequest): FormGroup {
     return this.fb.group({
       _id: [item.item._id], // not displayed but helps keep track of the item in form
       name: [item.item.name],

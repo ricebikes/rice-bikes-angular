@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {CONFIG} from '../config';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {AlertService} from './alert.service';
-import {OrderItem} from '../models/orderItem';
+import {OrderRequest} from '../models/orderRequest';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Order} from '../models/order';
 import {Item} from '../models/item';
@@ -84,13 +84,13 @@ export class OrderService {
   }
 
   /**
-   * Adds an item to the order
+   * Adds an OrderRequest to the order
    * @param order: Order to add item to
-   * @param item: OrderItem to add
+   * @param orderItem: OrderRequest to add
    */
-  addItem(order: Order, orderItem: OrderItem): Promise<Order> {
-    return this.http.post(`${this.backendURL}/${order._id}/item`,
-      {item: orderItem},
+  addItem(order: Order, orderItem: OrderRequest): Promise<Order> {
+    return this.http.post(`${this.backendURL}/${order._id}/order-request`,
+      {order_request_id: orderItem._id},
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
@@ -98,13 +98,13 @@ export class OrderService {
   }
 
   /**
-   * Updates the stock of an OrderItem in an order
+   * Updates the stock of an OrderRequest in an order
    * @param order: Order to update
-   * @param item_id: ObjectId of Item to update stock of (backing Item, not OrderItem)
+   * @param orderReq: OrderRequest to update stock of
    * @param stock: new stock to set
    */
-  updateStock(order: Order, item_id: string, stock: number): Promise<Order> {
-    return this.http.put(`${this.backendURL}/${order._id}/item/${item_id}/stock`,
+  updateStock(order: Order, orderReq: OrderRequest, stock: number): Promise<Order> {
+    return this.http.put(`${this.backendURL}/${order._id}/order-request/${orderReq._id}/stock`,
       {stock: stock},
       OrderService.jwt())
       .toPromise()
@@ -115,11 +115,11 @@ export class OrderService {
   /**
    * Updates the transaction associated with an order
    * @param order: Order holding relevant item
-   * @param item_id: id of item (not orderItem) to update transaction of
+   * @param OrderReq: OrderRequest to set transaction for
    * @param transaction_id: ID of transaction to set
    */
-  updateTransaction(order: Order, item_id: string, transaction_id: string): Promise<Order> {
-    return this.http.put(`${this.backendURL}/${order._id}/item/${item_id}/transaction`,
+  updateTransaction(order: Order, orderReq: OrderRequest, transaction_id: string): Promise<Order> {
+    return this.http.put(`${this.backendURL}/${order._id}/item/${orderReq._id}/transaction`,
       {transaction_id: transaction_id},
       OrderService.jwt())
       .toPromise()
@@ -167,12 +167,12 @@ export class OrderService {
   }
 
   /**
-   * Deletes an OrderItem from the order
+   * Deletes an OrderRequest from the order
    * @param order: Order to remove item from
-   * @param item_id: item id of item within orderItem to remove
+   * @param orderReq: OrderRequest to remove from order
    */
-  deleteItem(order: Order, item_id: string): Promise<Order> {
-    return this.http.delete(`${this.backendURL}/${order._id}/item/${item_id}`,
+  deleteItem(order: Order, orderReq: OrderRequest): Promise<Order> {
+    return this.http.delete(`${this.backendURL}/${order._id}/order-request/${orderReq._id}`,
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
