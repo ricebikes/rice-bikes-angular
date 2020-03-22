@@ -37,6 +37,7 @@ import { OrderDetailComponent } from './components/orders/order-detail/order-det
 import { NewOrderComponent } from './components/orders/new-order/new-order.component';
 import {OrderService} from './services/order.service';
 import {AnalyticsComponent} from './components/analytics/analytics.component';
+import {OrderRequestService} from './services/order-request.service';
 
 
 
@@ -83,6 +84,7 @@ import {AnalyticsComponent} from './components/analytics/analytics.component';
     AdminService,
     OrderService,
     RepairService,
+    OrderRequestService,
     ItemService
   ],
   bootstrap: [AppComponent]

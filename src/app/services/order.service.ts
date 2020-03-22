@@ -5,14 +5,14 @@ import {AlertService} from './alert.service';
 import {OrderRequest} from '../models/orderRequest';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Order} from '../models/order';
-import {Item} from '../models/item';
+import {AuthenticationService} from './authentication.service';
 
 @Injectable()
 export class OrderService {
   private backendURL = `${CONFIG.api_url}/orders`;
 
-  constructor(private http: Http, private alertService: AlertService) {
-  }
+  constructor(private http: Http,
+              private alertService: AlertService) {}
   // gets JWT for any request to backend
   private static jwt() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
