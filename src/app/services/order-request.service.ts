@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {CONFIG} from '../config';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {Http} from '@angular/http';
 import {AlertService} from './alert.service';
 import {OrderRequest} from '../models/orderRequest';
 import {AuthenticationService} from './authentication.service';

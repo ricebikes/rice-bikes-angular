@@ -23,7 +23,6 @@ export class OrderDetailComponent implements OnInit {
   loading = true;
   order: BehaviorSubject<Order> = new BehaviorSubject(null);
   transactionIDs = this.searchService.getTransactionIDs();
-  stagedOrderForm: FormGroup;
   allOrderItems: FormGroup; // holding OrderItems in FormGroup allows for inline updates
   stagedOrderItem: BehaviorSubject<Item> = new BehaviorSubject(null);
 
@@ -52,10 +51,6 @@ export class OrderDetailComponent implements OnInit {
           this.order.next(newOrder);
         });
     });
-    this.stagedOrderForm = this.fb.group({
-      transaction: [''],
-      quantity: ['', Validators.required]
-    });
   }
 
   /**
@@ -72,28 +67,6 @@ export class OrderDetailComponent implements OnInit {
       transaction: [item.transaction],
       quantity: [item.quantity, Validators.required] // make this required, as it is the only component we will allow to be edited
     });
-  }
-
-  /**
-   * Simply gets form control values and passes them to addItem function
-   */
-  submitStagedItem() {
-    this.addItemToOrder(this.stagedOrderItem.value,
-      this.stagedOrderForm.controls['quantity'].value,
-      this.stagedOrderForm.controls['transaction'].value);
-    // Reset the staging form
-    this.stagedOrderForm.reset();
-    this.stagedOrderItem.next(null);
-  }
-
-  /**
-   * Updates the quantity of an item in the order
-   * @param item_id: ObjectId of item to update
-   * @param quantity: quantity to set the orderItem to
-   */
-  updateItemQuantity(item_id: string, quantity: number) {
-    this.orderService.updateStock(this.order.value, item_id, quantity)
-      .then(newOrder => this.order.next(newOrder));
   }
 
   /**
@@ -114,44 +87,12 @@ export class OrderDetailComponent implements OnInit {
   }
 
   /**
-   * Sets staged item in the jumbotron
-   * @param item
-   */
-  setItem(item: Item) {
-    this.stagedOrderItem.next(item);
-  }
-
-  /**
-   * Triggers the item search modal
-   */
-  triggerItemSearch() {
-    this.addItemComponent.triggerItemSearch();
-  }
-
-  /**
    * Deletes an item from this order
-   * @param item_id: the objectID of item to remove
+   * @param item: the OrderRequest to remove
    */
-  removeItemFromOrder(item_id: string) {
-    this.orderService.deleteItem(this.order.value, item_id)
+  removeItemFromOrder(item: OrderRequest) {
+    this.orderService.deleteItem(this.order.value, item)
       .then(newOrder => this.order.next(newOrder));
-  }
-  /**
-   * Adds item to order
-   * @param item: item to add
-   * @param quantity: stock to associate with this item
-   * @param transaction: transaction ID to associate
-   */
-  addItemToOrder(item: Item, quantity: number, transaction?: string) {
-    if (transaction) {
-      this.orderService.addItem(this.order.getValue(),
-        {item: item, transaction: transaction, quantity: quantity})
-        .then(newOrder => this.order.next(newOrder));
-    } else {
-      this.orderService.addItem(this.order.getValue(),
-        {item: item, transaction: null, quantity: quantity})
-        .then(newOrder => this.order.next(newOrder));
-    }
   }
 
   /**
