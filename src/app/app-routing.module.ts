@@ -14,6 +14,7 @@ import {OrdersComponent} from './components/orders/orders.component';
 import {NewOrderComponent} from './components/orders/new-order/new-order.component';
 import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
 import {AnalyticsComponent} from './components/analytics/analytics.component';
+import {WhiteboardComponent} from './components/whiteboard/whiteboard.component';
 
 const routes: Routes = [
   {
@@ -102,12 +103,15 @@ const routes: Routes = [
         component: NewOrderComponent
       },
       {
+        path: 'whiteboard',
+        component: WhiteboardComponent
+      },
+      {
         path: ':_id',
         component: OrderDetailComponent
       }
     ]
   }
-
 ];
 
 @NgModule({

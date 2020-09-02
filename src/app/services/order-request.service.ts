@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import {CONFIG} from '../config';
-import {Http} from '@angular/http';
-import {AlertService} from './alert.service';
-import {OrderRequest} from '../models/orderRequest';
-import {AuthenticationService} from './authentication.service';
-import {HttpErrorResponse} from '@angular/common/http';
-import {Item} from '../models/item';
-import {Transaction} from '../models/transaction';
+import { CONFIG } from '../config';
+import { Http } from '@angular/http';
+import { AlertService } from './alert.service';
+import { OrderRequest } from '../models/orderRequest';
+import { AuthenticationService } from './authentication.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Item } from '../models/item';
+import { Transaction } from '../models/transaction';
 
 @Injectable()
 export class OrderRequestService {
-  private backendURL = `${CONFIG.api_url}/orders`;
+  private backendURL = `${CONFIG.api_url}/order-requests`;
 
   constructor(private http: Http,
-              private alertService: AlertService,
-              private  authService: AuthenticationService) { }
+    private alertService: AlertService,
+    private authService: AuthenticationService) { }
 
   private handleError(err: HttpErrorResponse): void {
     let message = err.message;
@@ -33,7 +33,7 @@ export class OrderRequestService {
       return this.http.get(`${this.backendURL}/latest/${n}`, cred)
         .toPromise()
         .then(res => res.json() as OrderRequest[])
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 
@@ -49,13 +49,13 @@ export class OrderRequestService {
       quantity: quantity,
       request: request
     };
-    if (transaction) {body['transaction'] = transaction; }
-    if (item) {body['item'] = item; }
+    if (transaction) { body['transaction'] = transaction; }
+    if (item) { body['item'] = item; }
     return this.authService.getUserCredentials().then(cred => {
       return this.http.post(this.backendURL, body, cred)
         .toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 
@@ -67,11 +67,11 @@ export class OrderRequestService {
   setRequestString(orderReq: OrderRequest, request: string): Promise<OrderRequest> {
     return this.authService.getUserCredentials().then(cred => {
       return this.http.put(`${this.backendURL}/${orderReq._id}/request`,
-        {request: request},
+        { request: request },
         cred)
         .toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 
@@ -83,11 +83,11 @@ export class OrderRequestService {
   setQuantity(orderReq: OrderRequest, quantity: number): Promise<OrderRequest> {
     return this.authService.getUserCredentials().then(cred => {
       return this.http.put(`${this.backendURL}/${orderReq._id}/quantity`,
-        {quantity: quantity},
-               cred)
+        { quantity: quantity },
+        cred)
         .toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 
@@ -99,11 +99,11 @@ export class OrderRequestService {
   setStatus(orderReq: OrderRequest, status: string): Promise<OrderRequest> {
     return this.authService.getUserCredentials().then(cred => {
       return this.http.put(`${this.backendURL}/${orderReq._id}/status`,
-        {status: status},
+        { status: status },
         cred)
         .toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 
@@ -115,11 +115,11 @@ export class OrderRequestService {
   setTransaction(orderReq: OrderRequest, transaction: Transaction): Promise<OrderRequest> {
     return this.authService.getUserCredentials().then(cred => {
       return this.http.put(`${this.backendURL}/${orderReq._id}/transaction`,
-        {transaction_id: transaction._id},
+        { transaction_id: transaction._id },
         cred)
         .toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 
@@ -131,11 +131,11 @@ export class OrderRequestService {
   setItem(orderReq: OrderRequest, item: Item): Promise<OrderRequest> {
     return this.authService.getUserCredentials().then(cred => {
       return this.http.put(`${this.backendURL}/${orderReq._id}/item`,
-        {item_id: item._id},
+        { item_id: item._id },
         cred)
         .toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 
@@ -147,7 +147,7 @@ export class OrderRequestService {
     return this.authService.getCredentials().then(cred => {
       return this.http.delete(`${this.backendURL}/${orderReq._id}`, cred)
         .toPromise()
-        .catch(err => this.handleError(err));
+        .catch(err => { this.handleError(err); return null; });
     });
   }
 }

@@ -1,0 +1,34 @@
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Description</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Status</th>
+        <th scope="col">Supplier</th>
+        <th scope="col">Transaction</th>
+        <th scope="col">Order</th>
+        <th scope="col">History</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let request of orderRequests | async">
+        <td>{{request._id}}</td>
+        <td>{{request.request}}</td>
+        <td>{{request.quantity}}</td>
+        <td>{{request.status}}</td>
+        <td>{{request.supplier}}</td>
+        <td><button *ngIf="request.transaction" [routerLink]="['/transactions', request.transaction]"
+            class="btn btn-primary">{{request.transaction}}</button>
+          <p *ngIf="!request.transaction">None</p>
+        </td>
+        <td><button *ngIf="request.orderRef" [routerLink]="['/orders', request.orderRef]"
+            class="btn btn-primary">View</button>
+          <p *ngIf="!request.orderRef">None</p>
+        </td>
+        <td><button class="btn btn-secondary" *ngIf="request.actions">Actions</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

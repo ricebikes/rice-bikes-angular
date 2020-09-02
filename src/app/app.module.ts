@@ -38,6 +38,7 @@ import { NewOrderComponent } from './components/orders/new-order/new-order.compo
 import {OrderService} from './services/order.service';
 import {AnalyticsComponent} from './components/analytics/analytics.component';
 import {OrderRequestService} from './services/order-request.service';
+import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
 
 
 
@@ -64,6 +65,7 @@ import {OrderRequestService} from './services/order-request.service';
     OrdersComponent,
     OrderDetailComponent,
     NewOrderComponent,
+    WhiteboardComponent,
   ],
   imports: [
     BrowserModule,
