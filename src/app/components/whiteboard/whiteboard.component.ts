@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { OrderRequestService } from '../../services/order-request.service';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Item } from '../../models/item';
 import { OrderRequest } from '../../models/orderRequest';
-import { Action } from '../../models/action';
+import { AuthenticationService } from '../../services/authentication.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -15,19 +14,37 @@ import { Observable } from 'rxjs';
 export class WhiteboardComponent implements OnInit {
 
   constructor(private orderRequestService: OrderRequestService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder, private authService: AuthenticationService) { }
 
   numberRequested: number;
-  allOrderRequests = new FormArray([]); // storing OrderRequests in FormArray allows for inline form updates
   orderRequests: BehaviorSubject<OrderRequest[]> = new BehaviorSubject<OrderRequest[]>(null);
-  // components of the form to create a new order request
-  stagedItem: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
+  isAdmin = this.authService.isAdmin;
+
+  // Reference to the hidden button we click to toggle the request edit modal.
+  @ViewChild('editRequestToggle') editRequestToggle: ElementRef;
+
+  /*
+   * Stages a new order request.
+   */
   stagedOrderItemForm = this.fb.group({
     request: ['', Validators.required],
     quantity: [0, Validators.required],
     transactionID: ['']
-  }
-  );
+  });
+
+  /*
+   * Exposes the elements of an order request we expect a user to edit within
+   * The popup modal.
+   */
+  editOrderRequestForm = this.fb.group({
+    entryID: ['', Validators.required], // Not displayed but used to track entry to update.
+    request: ['', Validators.required],
+    status: ['', Validators.required],
+    supplier: ['', Validators.required],
+    quantity: ['', Validators.required],
+    transactionID: ['']
+  });
+
   ngOnInit() {
     // Get latest 35 requests by default.
     this.numberRequested = 35;
@@ -36,66 +53,35 @@ export class WhiteboardComponent implements OnInit {
   }
 
   /**
-   * Converts an order request to a filled out FormGroup
-   * @param req: Order Request to convert
+   * Gets available status options for item. Implemented as observable
+   * so this can be moved to backend if desired.
    */
-  orderReqToForm(req: OrderRequest): FormGroup {
-    return this.fb.group({
-      id: [req._id],
-      request: [req.request, Validators.required],
-      quantity: [req.quantity, Validators.required],
-      item_ref: [req.item], // not displayed or editable
-      transaction: [req.transaction],
-      associatedOrder: [req.orderRef],
-      status: [req.status, Validators.required],
-      supplier: [req.supplier],
-      actions: [req.actions]
-    });
+  get statusOptions() {
+    return Observable.of(["Not Ordered", "In Cart", "Ordered", "Completed", "Confirming", "Out of Stock"]);
   }
 
   /**
-   * Converts a FormGroup into an OrderRequest
-   * @param form: FormGroup to convert
+   * Edits an order request, by activating the modal that allows for 
+   * editing and filling in all fields of the request form.
+   * @param request Request to edit
    */
-  formToOrderReq(form: AbstractControl): OrderRequest {
-    return {
-      _id: <number>form.get('id').value,
-      request: <string>form.get('request').value,
-      item: <Item>form.get('item_ref').value,
-      quantity: <number>form.get('quantity').value,
-      transaction: <number>form.get('transaction').value,
-      orderRef: <string>form.get('associatedOrder').value,
-      status: <string>form.get('status').value,
-      supplier: <string>form.get('supplier').value,
-      actions: <Action[]>form.get('actions').value
-    };
+  editOrderRequest(request: OrderRequest) {
+    // Fill the modal form with this request's values.
+    this.editOrderRequestForm.controls['entryID'].setValue(request._id);
+    this.editOrderRequestForm.controls['request'].setValue(request.request);
+    this.editOrderRequestForm.controls['status'].setValue(request.status);
+    this.editOrderRequestForm.controls['supplier'].setValue(request.supplier);
+    this.editOrderRequestForm.controls['quantity'].setValue(request.quantity);
+    this.editOrderRequestForm.controls['transactionID'].setValue(request.transaction);
+    // Trigger the modal.
+    this.editRequestToggle.nativeElement.click();
   }
 
   /**
-   * Update the quantity of an order request.
-   * @param i: Index of the target order request in the allOrderRequests FormArray
-   * @param quantity: quantity to set the target request to
+   * Submits Whiteboard Entry update form. Dismisses Modal, updates entry on
+   * backend, and updates frontend list to reflect change.
    */
-  updateQuantity(i: number, quantity: number) {
-    const allReqs = <FormArray>this.allOrderRequests.get('reqs');
-    const targetReq = allReqs.at(i);
-    this.orderRequestService.setQuantity(this.formToOrderReq(targetReq), quantity)
-      .then(res => {
-        // update the individual control in the FormArray
-        allReqs.setControl(i, this.orderReqToForm(res));
-      });
-  }
-
-  /**
-   * Update the request description of an order request
-   * @param i: Index of the target order request in the allOrderRequests FormArray
-   * @param newReq: new request string
-   */
-  updateRequestString(i: number, newReq: string) {
-    const allReqs = <FormArray>this.allOrderRequests.get('reqs');
-    const targetReq = allReqs.at(i);
-    this.orderRequestService.setRequestString(this.formToOrderReq(targetReq), newReq)
-      .then(res => allReqs.setControl(i, this.orderReqToForm(res)));
+  submitRequestUpdateForm() {
+    if (this.editOrderRequestForm.invalid) {return; }
   }
 }
-
