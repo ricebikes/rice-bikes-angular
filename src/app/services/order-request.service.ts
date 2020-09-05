@@ -76,6 +76,21 @@ export class OrderRequestService {
   }
 
   /**
+   * Sets the supplier for an order request.
+   * @param orderReq: Order Request 
+   * @param supplier: Supplier name to set
+   */
+  setSupplier(orderReq: OrderRequest, supplier: string): Promise<OrderRequest> {
+    return this.authService.getUserCredentials()
+      .then(cred => this.http.put(`${this.backendURL}/${orderReq._id}/supplier`,
+        { supplier: supplier },
+        cred)
+        .toPromise()
+        .then(res => res.json() as OrderRequest)
+        .catch(err => { this.handleError(err); return null }));
+  }
+
+  /**
    * Sets the quantity of an order request requested
    * @param orderReq: Order Request
    * @param quantity: quantity to set

@@ -82,6 +82,6 @@ export class WhiteboardComponent implements OnInit {
    * backend, and updates frontend list to reflect change.
    */
   submitRequestUpdateForm() {
-    if (this.editOrderRequestForm.invalid) {return; }
+    if (this.editOrderRequestForm.invalid) {return;}
   }
 }
