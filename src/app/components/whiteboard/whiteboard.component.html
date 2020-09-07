@@ -1,94 +1,98 @@
-<!--Hidden button, used in Javascript to toggle the Modal -->
-<button #editRequestToggle hidden data-toggle="modal" data-target="#editRequestModal">HIDDEN MODAL TOGGLE</button>
-<div class="modal fade" id="editRequestModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Entry</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="editOrderRequestForm">
-          <div class="row">
-            <div class="col-9">
-              <label for="requestDescEdit">Description</label>
-              <input type="text" class="form-control" formControlName="request" id="requestDescEdit"
-                (keyup.enter)="submitRequestUpdateForm()">
-            </div>
-            <div class="col-3" *ngIf="isAdmin | async">
-              <label for="statusSel">Status</label>
-              <select class="form-control" formControlName="status" id="statusSel">
-                <option *ngFor="let opt of statusOptions | async">{{opt}}</option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <label for="supplierEdit">Supplier</label>
-              <input type="text" class="form-control" formControlName="supplier" id="supplierEdit"
-                (keyup.enter)="submitRequestUpdateForm()">
-            </div>
-            <div class="col">
-              <label for="quantityEdit">Quantity</label>
-              <input type="number" class="form-control" formControlName="quantity" id="quantityEdit"
-                (keyup.enter)="submitRequestUpdateForm()">
-            </div>
-            <div class="col">
-              <label for="transactionEdit">Transaction</label>
-              <input type="number" class="form-control" formControlName="transactionID" id="transactionEdit"
-                (keyup.enter)="submitRequestUpdateForm()">
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button data-dismiss="modal" type="submit" (click)="submitRequestUpdateForm()" class="btn btn-primary"
-          [disabled]="editOrderRequestForm.invalid">Update Entry</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<h1>
+  Working on Setting up buttons in order requests, few bugs with form sync as
+  well.
+</h1>
+<div class="container">
+  <!-- Top row, just has the sync indicator.-->
+  <div class="form-row">
+    <div class="col">
+      <div class="float-right">
+        <i *ngIf="formSynced | async" class="fas fa-check-circle"></i>
+        <div
+          *ngIf="!(formSynced | async)"
+          class="spinner-border spinner-border-sm"
+          role="status"
+        >
+          <span class="sr-only">Loading...</span>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<h1>Need to add Admin-Items style modal to this to edit order requests</h1>
-<div class="container">
-  <table class="table table-hover">
-    <thead class="thead-light">
-      <tr>
-        <th scope="col">
-          <!-- Empty Spacer for Edit button in table -->
-        </th>
-        <th scope="col">#</th>
-        <th scope="col">Description</th>
-        <th scope="col">Quantity</th>
-        <th scope="col">Status</th>
-        <th scope="col">Supplier</th>
-        <th scope="col">Transaction</th>
-        <th scope="col">Order</th>
-        <th scope="col">History</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let request of orderRequests | async" (click)="editOrderRequest(request)">
-        <td><button class="btn btn-success btn-sm" (click)="editOrderRequest(request)">
-            <p class="sr-only">Edit Order Entry Button</p><i class="fas fa-edit"></i>
-          </button></td>
-        <td>{{request._id}}</td>
-        <td>{{request.request}}</td>
-        <td>{{request.quantity}}</td>
-        <td>{{request.status}}</td>
-        <td>{{request.supplier}}</td>
-        <td><button *ngIf="request.transaction" [routerLink]="['/transactions', request.transaction]"
-            class="btn btn-primary btn-sm">{{request.transaction}}</button>
-          <p *ngIf="!request.transaction">None</p>
-        </td>
-        <td><button *ngIf="request.orderRef" [routerLink]="['/orders', request.orderRef]"
-            class="btn btn-primary btn-sm">View</button>
-          <p *ngIf="!request.orderRef">None</p>
-        </td>
-        <td><button class="btn btn-secondary btn-sm" *ngIf="request.actions">Actions</button></td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Header Row, to label each column -->
+  <div class="form-row">
+    <div class="col"><b>#</b></div>
+    <div class="col-4"><b>Description</b></div>
+    <div class="col"><b>Quantity</b></div>
+    <div class="col"><b>Transaction</b></div>
+    <div class="col-1"><b>Order</b></div>
+    <div class="col-2"><b>Status</b></div>
+    <div class="col"><b>Supplier</b></div>
+    <div class="col"><b>History</b></div>
+  </div>
+  <hr />
+  <div *ngFor="let obj of orderRequestsWithForms | async">
+    <!-- obj is an object, with the keys "form" and "request"
+      "form" is the editable form for the orderRequest, and "request"
+      is the actual request object.-->
+    <form [formGroup]="obj.form">
+      <div class="form-row my-2">
+        <div class="col">
+          <b class="form-control-plaintext">{{ obj.request._id }}</b>
+        </div>
+        <div class="col-4">
+          <input type="text" class="form-control" formControlName="request" />
+        </div>
+        <div class="col">
+          <input
+            type="number"
+            class="form-control"
+            formControlName="quantity"
+          />
+        </div>
+        <div class="col">
+          <!-- ngClass block gives visual feedback for bad transaction numbers -->
+          <input
+            type="text"
+            [ngClass]="{
+              'form-control is-valid':
+                obj.form.controls['transaction'].errors == null &&
+                obj.form.controls['transaction'].dirty,
+              'form-control is-invalid':
+                obj.form.controls['transaction'].errors != null,
+              'form-control': true
+            }"
+            class="form-control"
+            formControlName="transaction"
+          />
+        </div>
+        <div class="col-1">
+          <button class="btn btn-primary btn-block">View</button>
+        </div>
+        <div class="col-2" *ngIf="isAdmin | async">
+          <select class="form-control" formControlName="status">
+            <option>Not Ordered</option>
+            <option>In Cart</option>
+            <option>Ordered</option>
+            <option>Completed</option>
+            <option>Confirming</option>
+            <option>Out of Stock</option>
+          </select>
+        </div>
+        <div class="col-2" *ngIf="!(isAdmin | async)">
+          <input
+            type="text"
+            readonly
+            class="form-control"
+            formControlName="status"
+          />
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" formControlName="supplier" />
+        </div>
+        <div class="col">
+          <button class="btn btn-primary">Actions</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
