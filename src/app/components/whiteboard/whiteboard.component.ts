@@ -1,8 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { OrderRequestService } from "../../services/order-request.service";
 import {
-  AbstractControl,
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -12,7 +10,17 @@ import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { Item } from "../../models/item";
 import { OrderRequest } from "../../models/orderRequest";
 import { AuthenticationService } from "../../services/authentication.service";
-import { TransactionService } from "../../services/transaction.service";
+import { AddItemComponent } from "../add-item/add-item.component";
+
+
+/**
+ * Simple internal Class, used to store Order Request objects with their form
+ */
+class OrderRequestContainer {
+  form: FormGroup;
+  request: OrderRequest;
+  transaction_str: String;
+}
 
 @Component({
   selector: "app-whiteboard",
@@ -20,20 +28,26 @@ import { TransactionService } from "../../services/transaction.service";
   styleUrls: ["./whiteboard.component.css"],
 })
 export class WhiteboardComponent implements OnInit {
+  @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   constructor(
     private orderRequestService: OrderRequestService,
     private fb: FormBuilder,
     private authService: AuthenticationService,
-    private transactionService: TransactionService
-  ) {}
+  ) { }
 
   isAdmin = this.authService.isAdmin;
 
+  // Current order request that addItem modal will add item to
+  private currentSelectedRequestIdx: number;
+
+  // Selected item for detailed view in modal
+  selectedDetailItem: Item;
+  // Number of orders requested to view
   numberRequested: number;
   // Tracks if the form's changes are synced with the backend.
   formSynced = new BehaviorSubject<boolean>(true);
   // Array that holds copies of each OrderRequest and its FormGroup
-  orderRequestsWithForms = new BehaviorSubject(null);
+  orderRequestsWithForms: OrderRequestContainer[] = [];
   // storing OrderRequests in FormArray allows for inline form updates
   orderRequests: BehaviorSubject<OrderRequest[]> = new BehaviorSubject<
     OrderRequest[]
@@ -59,27 +73,41 @@ export class WhiteboardComponent implements OnInit {
       .then((res) => this.orderRequests.next(res));
   }
 
+
+  /**
+   * Convert Order Request to order request container
+   * @param request request to convert
+   */
+  orderRequestToContainer(request: OrderRequest) {
+    const group = this.orderReqToForm(request);
+    // Now, subscribe to item state changes for the values that are editable.
+    this.setSubscriptions(group, request);
+    // Make a human readable transaction string for the object we push
+    let transaction_str = "";
+    for (let transaction of request.transactions) {
+      transaction_str += (transaction + ", ");
+    }
+    if (transaction_str == "") {
+      transaction_str = "None";
+    } else {
+      transaction_str = transaction_str.slice(0, -2); // Remove last comma
+    }
+    // Push an object to hold both the request and its form.
+    return {form: group, request: request, transaction_str: transaction_str};
+  }
+
   /**
    * (Re)populate the "orderRequestsWithForms" Array
    * @param newRequests: Array of new requests to populate FormArray with
    */
   populateFormArray(newRequests: OrderRequest[]) {
-    const newForms = [];
+    const newForms: OrderRequestContainer[] = [];
     for (const request of newRequests) {
-      const group = this.orderReqToForm(request);
-      // Now, subscribe to item state changes for the values that are editable.
-      this.setSubscriptions(group, request);
-      // Make a human readable transaction string for the object we push
-      let transaction_str = "";
-      for (let transaction of request.transactions) {
-        transaction_str += (transaction + ", ");
-      }
-      transaction_str = transaction_str.slice(0,-2); // Remove last comma
       // Push an object to hold both the request and its form.
-      newForms.push({ form: group, request: request, transaction_str: transaction_str});
+      newForms.push(this.orderRequestToContainer(request));
     }
     // Push new array to BehaviorSubject
-    this.orderRequestsWithForms.next(newForms);
+    this.orderRequestsWithForms = newForms;
   }
 
   /**
@@ -133,13 +161,13 @@ export class WhiteboardComponent implements OnInit {
       .debounceTime(300)
       .subscribe((partNum) => {
         this.orderRequestService.setPartNum(request, partNum)
-        .then((newReq) => this.formSynced.next(true));
+          .then((newReq) => this.formSynced.next(true));
       });
     group.controls["notes"].valueChanges
       .debounceTime(300)
       .subscribe((notes) => {
         this.orderRequestService.setNotes(request, notes)
-        .then((newReq) => this.formSynced.next(true));
+          .then((newReq) => this.formSynced.next(true));
       });
   }
 
@@ -147,9 +175,9 @@ export class WhiteboardComponent implements OnInit {
    * Validator to be sure a number is greater than zero
    * @param Control: control to validate
    */
-  static nonZero(control:FormControl):{ [key: string]: any; } {
+  static nonZero(control: FormControl): { [key: string]: any; } {
     if (Number(control.value) <= 0) {
-      return {nonZero: true};
+      return { nonZero: true };
     } else {
       return null;
     }
@@ -169,4 +197,37 @@ export class WhiteboardComponent implements OnInit {
     });
   }
 
+  /**
+   * Adds the item emitted from the add item dialog to the order request at "currentSelectedRequestIdx"
+   * @param item Item to add to order request
+   */
+  addSelectedItem(item: Item) {
+    // Save the current requested index, in case it changes before the promise returns.
+    console.log("Setting Item");
+    const currentRequestIdx = this.currentSelectedRequestIdx;
+    this.orderRequestService.setItem(this.orderRequestsWithForms[currentRequestIdx].request, item)
+    .then(newReq => {
+      console.log("New request")
+      this.orderRequestsWithForms[currentRequestIdx] = this.orderRequestToContainer(newReq);
+    })
+  }
+
+  /**
+   * Triggers item selection modal
+   * @param request_idx: Index of order request that item should be added to.
+   */
+  triggerItemSelectModal(request_idx: number) {
+    this.currentSelectedRequestIdx = request_idx;
+    // Now, trigger the item dialog. This is the only place we should trigger the dialog.
+    this.addItemComponent.triggerItemSearch();
+  }
+  
+  /**
+   * Sets the item for the detailed item view modal
+   * @param orderReqIdx Index of orderRequest to set item to for detailed view
+   */
+  setItemForDetailedView(orderReqIdx: number) {
+    // Just set the item here. The button calling this function should trigger the modal.
+    this.selectedDetailItem = this.orderRequestsWithForms[orderReqIdx].request.itemRef;
+  }
 }

@@ -246,7 +246,7 @@ export class AuthenticationService implements OnInit {
           this.userEmitter.next(this.userTrackerSource.getValue().user);
         }
       } else {
-
+        reject();
       }
     });
   }
