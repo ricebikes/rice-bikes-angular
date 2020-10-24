@@ -44,6 +44,8 @@ export class WhiteboardComponent implements OnInit {
   selectedDetailItem: Item;
   // Number of orders requested to view
   numberRequested: number;
+  // Selected order request for actions view
+  actionsViewOrderReq: OrderRequest;
   // Tracks if the form's changes are synced with the backend.
   formSynced = new BehaviorSubject<boolean>(true);
   // Array that holds copies of each OrderRequest and its FormGroup
@@ -229,5 +231,13 @@ export class WhiteboardComponent implements OnInit {
   setItemForDetailedView(orderReqIdx: number) {
     // Just set the item here. The button calling this function should trigger the modal.
     this.selectedDetailItem = this.orderRequestsWithForms[orderReqIdx].request.itemRef;
+  }
+
+  /**
+   * Sets the order request that will be used to populate the past actions modal. Modal will be triggered by button calling this function.
+   * @param orderRequest order request to set
+   */
+  setOrderReqForActionsView(orderRequest: OrderRequest) {
+    this.actionsViewOrderReq = orderRequest;
   }
 }

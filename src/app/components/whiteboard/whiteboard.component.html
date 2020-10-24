@@ -1,3 +1,112 @@
+<!-- Add Item Component -->
+<app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" [employee]="true"></app-add-item>
+
+<!-- Make this wider than default veiwport with custom class -->
+<div class="container-fluid padded-container">
+  <!-- Top row, just has the sync indicator.-->
+  <div class="form-row">
+    <div class="col">
+      <div class="float-right">
+        <i *ngIf="formSynced | async" class="fas fa-check-circle"></i>
+        <div *ngIf="!(formSynced | async)" class="spinner-border spinner-border-sm" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Header Row, to label each column -->
+  <div class="form-row">
+    <div class="col-2">
+      <!--16.7% of width of viewport-->
+      <!-- Awful nesting hack to get the "#" column to be smaller-->
+      <div class="row">
+        <div class="col-2"><b>#</b></div> <!-- 2.7% of width-->
+        <div class="col-10"><b>Description</b></div> <!-- 13.8% of width -->
+      </div>
+    </div>
+    <div class="col-1"><b>Item #</b></div> <!-- 16.7% -->
+    <div class="col-1"><b>Quantity</b></div> <!-- 8.3% -->
+    <div class="col-1"><b>Transactions</b></div>
+    <div class="col-2"><b>Item</b></div>
+    <div class="col-1"><b>Order</b></div>
+    <div class="col-1"><b>Status</b></div>
+    <div class="col-2"><b>Notes</b></div>
+    <div class="col-1"><b>History</b></div>
+  </div>
+  <hr />
+  <div *ngFor="let obj of orderRequestsWithForms; let idx=index">
+    <!-- obj is an object, with the keys "form" and "request"
+      "form" is the editable form for the orderRequest, and "request"
+      is the actual request object.-->
+    <form [formGroup]="obj.form">
+      <div class="form-row my-2">
+        <div class="col-2">
+          <!-- Awful hack to get the "#" column to be smaller-->
+          <div class="row">
+            <div class="col-2">
+              <!--Request ID -->
+              <b class="form-control-plaintext">{{ obj.request._id }}</b>
+            </div>
+            <div class="col-10">
+              <!--Request Description -->
+              <input class="form-control" formControlName="request" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-1">
+          <!-- Part Number -->
+          <input class="form-control" formControlName="partNumber" />
+        </div>
+        <div class="col-1">
+          <!-- Quantity -->
+          <!--Only trigger restock string at "magic" -1 quantity, a value the user cannot set-->
+          <p *ngIf="obj.request.quantity == -1" class="form-control-plaintext">restock</p>
+          <input *ngIf="obj.request.quantity != -1"
+            [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number" min="1"
+            formControlName="quantity" />
+        </div>
+        <div class="col-1">
+          <!-- Transactions -->
+          <p class="form-control-plaintext">{{obj.transaction_str}}</p>
+        </div>
+        <div class="col-2">
+          <!-- Item -->
+          <button *ngIf="!obj.request.itemRef" class="btn btn-outline-secondary"
+            (click)="triggerItemSelectModal(idx)">Select Item</button>
+          <div class="input-group" *ngIf="obj.request.itemRef">
+            <input type="text" readonly class="form-control" [value]="obj.request.itemRef.name" />
+            <div class="input-group-append">
+              <button class="btn btn-secondary" (click)="setItemForDetailedView(idx)" data-toggle="modal"
+                data-target="#detailedItemViewModal"><i class="fas fa-eye"></i></button>
+              <button class="btn btn-secondary" (click)="triggerItemSelectModal(idx)"><i
+                  class="fas fa-edit"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="col-1">
+          <!-- Order -->
+          <button *ngIf="!obj.request.orderRef" class="btn btn-outline-secondary">Choose</button>
+          <button *ngIf="obj.request.orderRef" class="btn btn-outline-success">View</button>
+        </div>
+        <div class="col-1">
+          <!-- Status -->
+          <p class="form-control-plaintext">{{obj.request.status}}</p>
+        </div>
+        <div class="col-2">
+          <!-- Notes -->
+          Port Me to Angular 5
+          <!-- <textarea autosize class="form-control" formControlName="notes"></textarea> -->
+        </div>
+        <div class="col-1">
+          <!-- History -->
+          <button class="btn btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal" (click)="setOrderReqForActionsView(obj.request)">Actions</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!--Page specific Modals-->
 <!--"Set Item Quantity" Modal guard- activated before order select modal is, if quantity needs to be set-->
 <div class="modal fade" id="itemQuantityGuardModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -120,111 +229,22 @@
   </div>
 </div>
 
-<!-- Add Item Component -->
-<app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" [employee]="true"></app-add-item>
-
-<!-- Make this wider than default veiwport with custom class -->
-<div class="container-fluid padded-container">
-  <!-- Top row, just has the sync indicator.-->
-  <div class="form-row">
-    <div class="col">
-      <div class="float-right">
-        <i *ngIf="formSynced | async" class="fas fa-check-circle"></i>
-        <div *ngIf="!(formSynced | async)" class="spinner-border spinner-border-sm" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
+<!-- Past Actions Modal -->
+<div class="modal fade" id="pastActionsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pastActionsModalLabel">Past Actions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="actionsViewOrderReq?.actions && actionsViewOrderReq?.actions.length > 0">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let action of actionsViewOrderReq?.actions">{{action.employee.firstname}}
+            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time | timeAgo}}</span></li>
+        </ul>
       </div>
     </div>
-  </div>
-  <!-- Header Row, to label each column -->
-  <div class="form-row">
-    <div class="col-2">
-      <!--16.7% of width of viewport-->
-      <!-- Awful nesting hack to get the "#" column to be smaller-->
-      <div class="row">
-        <div class="col-2"><b>#</b></div> <!-- 2.7% of width-->
-        <div class="col-10"><b>Description</b></div> <!-- 13.8% of width -->
-      </div>
-    </div>
-    <div class="col-1"><b>Item #</b></div> <!-- 16.7% -->
-    <div class="col-1"><b>Quantity</b></div> <!-- 8.3% -->
-    <div class="col-1"><b>Transactions</b></div>
-    <div class="col-2"><b>Item</b></div>
-    <div class="col-1"><b>Order</b></div>
-    <div class="col-1"><b>Status</b></div>
-    <div class="col-2"><b>Notes</b></div>
-    <div class="col-1"><b>History</b></div>
-  </div>
-  <hr />
-  <div *ngFor="let obj of orderRequestsWithForms; let idx=index">
-    <!-- obj is an object, with the keys "form" and "request"
-      "form" is the editable form for the orderRequest, and "request"
-      is the actual request object.-->
-    <form [formGroup]="obj.form">
-      <div class="form-row my-2">
-        <div class="col-2">
-          <!-- Awful hack to get the "#" column to be smaller-->
-          <div class="row">
-            <div class="col-2">
-              <!--Request ID -->
-              <b class="form-control-plaintext">{{ obj.request._id }}</b>
-            </div>
-            <div class="col-10">
-              <!--Request Description -->
-              <input class="form-control" formControlName="request" />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-1">
-          <!-- Part Number -->
-          <input class="form-control" formControlName="partNumber" />
-        </div>
-        <div class="col-1">
-          <!-- Quantity -->
-          <!--Only trigger restock string at "magic" -1 quantity, a value the user cannot set-->
-          <p *ngIf="obj.request.quantity == -1" class="form-control-plaintext">restock</p>
-          <input *ngIf="obj.request.quantity != -1"
-            [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number" min="1"
-            formControlName="quantity" />
-        </div>
-        <div class="col-1">
-          <!-- Transactions -->
-          <p class="form-control-plaintext">{{obj.transaction_str}}</p>
-        </div>
-        <div class="col-2 text-right">
-          <!-- Item -->
-          <button *ngIf="!obj.request.itemRef" class="btn btn-outline-secondary"
-            (click)="triggerItemSelectModal(idx)">Select Item</button>
-          <div class="input-group" *ngIf="obj.request.itemRef">
-            <input type="text" readonly class="form-control" [value]="obj.request.itemRef.name" />
-            <div class="input-group-append">
-              <button class="btn btn-secondary" (click)="setItemForDetailedView(idx)" data-toggle="modal"
-                data-target="#detailedItemViewModal"><i class="fas fa-eye"></i></button>
-              <button class="btn btn-secondary" (click)="triggerItemSelectModal(idx)"><i
-                  class="fas fa-edit"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="col-1 text-right">
-          <!-- Order -->
-          <button *ngIf="!obj.request.orderRef" class="btn btn-outline-secondary">Set</button>
-          <button *ngIf="obj.request.orderRef" class="btn btn-outline-success">View</button>
-        </div>
-        <div class="col-1">
-          <!-- Status -->
-          <p class="form-control-plaintext">{{obj.request.status}}</p>
-        </div>
-        <div class="col-2">
-          <!-- Notes -->
-          Port Me to Angular 5
-          <!-- <textarea autosize class="form-control" formControlName="notes"></textarea> -->
-        </div>
-        <div class="col-1">
-          <!-- History -->
-          <button class="btn btn-outline-primary">Actions</button>
-        </div>
-      </div>
-    </form>
   </div>
 </div>
