@@ -1,18 +1,11 @@
-<h1>
-  Working on Setting up buttons in order requests, few bugs with form sync as
-  well.
-</h1>
-<div class="container">
+<!-- Make this wider than default veiwport with custom class -->
+<div class="container-fluid padded-container">
   <!-- Top row, just has the sync indicator.-->
   <div class="form-row">
     <div class="col">
       <div class="float-right">
         <i *ngIf="formSynced | async" class="fas fa-check-circle"></i>
-        <div
-          *ngIf="!(formSynced | async)"
-          class="spinner-border spinner-border-sm"
-          role="status"
-        >
+        <div *ngIf="!(formSynced | async)" class="spinner-border spinner-border-sm" role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
@@ -20,14 +13,22 @@
   </div>
   <!-- Header Row, to label each column -->
   <div class="form-row">
-    <div class="col"><b>#</b></div>
-    <div class="col-4"><b>Description</b></div>
-    <div class="col"><b>Quantity</b></div>
-    <div class="col"><b>Transaction</b></div>
+    <div class="col-2">
+      <!--16.7% of width of viewport-->
+      <!-- Awful nesting hack to get the "#" column to be smaller-->
+      <div class="row">
+        <div class="col-2"><b>#</b></div> <!-- 2.7% of width-->
+        <div class="col-10"><b>Description</b></div> <!-- 13.8% of width -->
+      </div>
+    </div>
+    <div class="col-1"><b>Item #</b></div> <!-- 16.7% -->
+    <div class="col-1"><b>Quantity</b></div> <!-- 8.3% -->
+    <div class="col-1"><b>Transactions</b></div>
+    <div class="col-1"><b>Item</b></div>
     <div class="col-1"><b>Order</b></div>
     <div class="col-2"><b>Status</b></div>
-    <div class="col"><b>Supplier</b></div>
-    <div class="col"><b>History</b></div>
+    <div class="col-2"><b>Notes</b></div>
+    <div class="col-1"><b>History</b></div>
   </div>
   <hr />
   <div *ngFor="let obj of orderRequestsWithForms | async">
@@ -36,61 +37,59 @@
       is the actual request object.-->
     <form [formGroup]="obj.form">
       <div class="form-row my-2">
-        <div class="col">
-          <b class="form-control-plaintext">{{ obj.request._id }}</b>
+        <div class="col-2">
+          <!-- Awful hack to get the "#" column to be smaller-->
+          <div class="row">
+            <div class="col-2">
+              <!--Request ID -->
+              <b class="form-control-plaintext">{{ obj.request._id }}</b>
+            </div>
+            <div class="col-10">
+              <!--Request Description -->
+              <input class="form-control" formControlName="request" />
+            </div>
+          </div>
         </div>
-        <div class="col-4">
-          <input type="text" class="form-control" formControlName="request" />
-        </div>
-        <div class="col">
-          <input
-            type="number"
-            class="form-control"
-            formControlName="quantity"
-          />
-        </div>
-        <div class="col">
-          <!-- ngClass block gives visual feedback for bad transaction numbers -->
-          <input
-            type="text"
-            [ngClass]="{
-              'form-control is-valid':
-                obj.form.controls['transaction'].errors == null &&
-                obj.form.controls['transaction'].dirty,
-              'form-control is-invalid':
-                obj.form.controls['transaction'].errors != null,
-              'form-control': true
-            }"
-            class="form-control"
-            formControlName="transaction"
-          />
+
+        <div class="col-1">
+          <!-- Part Number -->
+          <input class="form-control" formControlName="partNumber" />
         </div>
         <div class="col-1">
-          <button class="btn btn-primary btn-block">View</button>
+          <!-- Quantity -->
+          <!--Only trigger restock string at "magic" -1 quantity, a value the user cannot set-->
+          <p *ngIf="obj.request.quantity == -1" class="form-control-plaintext">restock</p>
+          <input *ngIf="obj.request.quantity != -1" [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number" min="1" formControlName="quantity" />
         </div>
-        <div class="col-2" *ngIf="isAdmin | async">
-          <select class="form-control" formControlName="status">
-            <option>Not Ordered</option>
-            <option>In Cart</option>
-            <option>Ordered</option>
-            <option>Completed</option>
-            <option>Confirming</option>
-            <option>Out of Stock</option>
-          </select>
+        <div class="col-1">
+          <!-- Transactions -->
+          <p class="form-control-plaintext">{{obj.transaction_str}}</p>
         </div>
-        <div class="col-2" *ngIf="!(isAdmin | async)">
-          <input
-            type="text"
-            readonly
-            class="form-control"
-            formControlName="status"
-          />
+        <div class="col-1">
+          <!-- Item -->
+          <button *ngIf="!obj.request.itemRef" class="btn btn-outline-secondary">Select</button>
+          <div *ngIf="obj.request.itemRef">
+            <p class="form-control-plaintext">{{obj.request.itemRef.name}}</p>
+            <button class="btn btn-secondary"><i class="fas fa-edit"></i></button>
+          </div>
         </div>
-        <div class="col">
-          <input type="text" class="form-control" formControlName="supplier" />
+        <div class="col-1">
+          <!-- Order -->
+          <button *ngIf="!obj.request.orderRef" class="btn btn-outline-secondary">Set</button>
+          <button *ngIf="obj.request.orderRef" class="btn btn-outline-success">View</button>
         </div>
-        <div class="col">
-          <button class="btn btn-primary">Actions</button>
+        <div class="col-2">
+          <!-- Status -->
+          <p class="form-control-plaintext">{{obj.request.status}}</p>
+        </div>
+        <div class="col-2">
+          <!-- Notes -->
+          Port Me to Angular 5
+          <!-- <textarea autosize class="form-control" formControlName="notes"></textarea> -->
+        </div>
+        <div class="col-1">
+          <!-- History -->
+          <button class="btn btn-outline-primary">Actions</button>
         </div>
       </div>
     </form>

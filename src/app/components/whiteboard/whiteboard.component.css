@@ -5,3 +5,7 @@ hr.thick {
     padding: 0px 0px 0px 0px;
     margin: 10px 0px 10px 0px;
 }
+
+.padded-container {
+    padding: 0% 10% 0% 10%
+}

@@ -59,12 +59,12 @@ export class OrderDetailComponent implements OnInit {
    */
   orderItemToForm(item: OrderRequest): FormGroup {
     return this.fb.group({
-      _id: [item.item._id], // not displayed but helps keep track of the item in form
-      name: [item.item.name],
-      wholesale_cost: [item.item.wholesale_cost],
-      standard_price: [item.item.standard_price],
-      stock: [item.item.stock],
-      transaction: [item.transaction],
+      _id: [item.itemRef._id], // not displayed but helps keep track of the item in form
+      name: [item.itemRef.name],
+      wholesale_cost: [item.itemRef.wholesale_cost],
+      standard_price: [item.itemRef.standard_price],
+      stock: [item.itemRef.stock],
+      transaction: [item.transactions],
       quantity: [item.quantity, Validators.required] // make this required, as it is the only component we will allow to be edited
     });
   }

@@ -4,17 +4,15 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   Validators,
 } from "@angular/forms";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { Item } from "../../models/item";
 import { OrderRequest } from "../../models/orderRequest";
-import { Action } from "../../models/action";
 import { AuthenticationService } from "../../services/authentication.service";
-import { Observable } from "rxjs/Observable";
 import { TransactionService } from "../../services/transaction.service";
-import { Transaction } from "../../models/transaction";
 
 @Component({
   selector: "app-whiteboard",
@@ -71,8 +69,14 @@ export class WhiteboardComponent implements OnInit {
       const group = this.orderReqToForm(request);
       // Now, subscribe to item state changes for the values that are editable.
       this.setSubscriptions(group, request);
+      // Make a human readable transaction string for the object we push
+      let transaction_str = "";
+      for (let transaction of request.transactions) {
+        transaction_str += (transaction + ", ");
+      }
+      transaction_str = transaction_str.slice(0,-2); // Remove last comma
       // Push an object to hold both the request and its form.
-      newForms.push({ form: group, request: request });
+      newForms.push({ form: group, request: request, transaction_str: transaction_str});
     }
     // Push new array to BehaviorSubject
     this.orderRequestsWithForms.next(newForms);
@@ -91,10 +95,9 @@ export class WhiteboardComponent implements OnInit {
      */
     for (let control of [
       "request",
-      "supplier",
       "quantity",
-      "status",
-      "transaction",
+      "partNumber",
+      "notes"
     ]) {
       group.controls[control].valueChanges.subscribe(() =>
         this.formSynced.next(false)
@@ -117,110 +120,53 @@ export class WhiteboardComponent implements OnInit {
           .setRequestString(request, req)
           .then((newReq) => this.formSynced.next(true));
       });
-    group.controls["supplier"].valueChanges
-      .debounceTime(700)
-      .subscribe((supplier) => {
-        this.orderRequestService
-          .setSupplier(request, supplier)
-          .then((newReq) => this.formSynced.next(true));
-      });
     group.controls["quantity"].valueChanges
       .debounceTime(300)
       .subscribe((quantity) => {
-        this.orderRequestService
-          .setQuantity(request, quantity)
-          .then((newReq) => this.formSynced.next(true));
+        if (group.controls["quantity"].valid) {
+          this.orderRequestService
+            .setQuantity(request, quantity)
+            .then((newReq) => this.formSynced.next(true));
+        }
       });
-    group.controls["status"].valueChanges
-      .debounceTime(700)
-      .subscribe((status) => {
-        this.orderRequestService
-          .setStatus(request, status)
-          .then((newReq) => this.formSynced.next(true));
-      });
-    group.controls["transaction"].valueChanges
+    group.controls["partNumber"].valueChanges
       .debounceTime(300)
-      .subscribe((transaction) => {
-        const transactionNum = parseInt(transaction);
-        /**
-         * Some notes about this code block:
-         * - Validation is a two step process. First we check to make sure
-         *   user gave a number, then we confirm the transaction actually exists.
-         * - If a form is touched by user, and no errors are set, our ngClass
-         *   declaration shows it with 'valid' class decorators
-         * - We explicitly unset the touched property after a timeout so that
-         *   the valid class does not linger once user finishes their edits.
-         * - The untouched, valid form has no css decorators (hence the reset)
-         */
-        // Validate that user entered a number
-        if (isNaN(transactionNum)) {
-          // Don't mark the form as valid, reset it to pristine state.
-          // Use timeout so this can happen after user stops touching form.
-          setTimeout(
-            () => group.controls["transaction"].markAsPristine(),
-            500
-          );
-          // Do not PUT to backend.
-          return;
-        } 
-        // Make sure the transaction exists.
-        this.transactionService.getTransactionIDs().then((res) => {
-          if (!res.includes(transactionNum)) {
-            // Not a valid transaction number, don't continue.
-            // Mark form as invalid so we get 'invalid' css.
-            group.controls["transaction"].setErrors({ incorrect: true });
-            return;
-          }
-          this.transactionService
-            .getTransaction(String(transactionNum))
-            .then((res) => {
-              this.orderRequestService
-                .setTransaction(request, res)
-                .then((newReq) => {
-                  this.formSynced.next(true);
-                  /*
-                   * After a delay, mark the form as pristine to remove
-                   * the 'valid' class decorations
-                   */
-                  setTimeout(
-                    () => group.controls["transaction"].markAsPristine(),
-                    1000
-                  );
-                });
-            });
-        });
+      .subscribe((partNum) => {
+        this.orderRequestService.setPartNum(request, partNum)
+        .then((newReq) => this.formSynced.next(true));
+      });
+    group.controls["notes"].valueChanges
+      .debounceTime(300)
+      .subscribe((notes) => {
+        this.orderRequestService.setNotes(request, notes)
+        .then((newReq) => this.formSynced.next(true));
       });
   }
 
   /**
-   * Converts an order request to a filled out FormGroup
+   * Validator to be sure a number is greater than zero
+   * @param Control: control to validate
+   */
+  static nonZero(control:FormControl):{ [key: string]: any; } {
+    if (Number(control.value) <= 0) {
+      return {nonZero: true};
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Converts an order request to a filled out FormGroup.
+   * Only the fields that should be editable are included in this form.
    * @param req: Order Request to convert
    */
   orderReqToForm(req: OrderRequest): FormGroup {
     return this.fb.group({
       request: [req.request, Validators.required],
-      quantity: [req.quantity, Validators.required],
-      transaction: [req.transaction || "None"],
-      status: [req.status, Validators.required],
-      supplier: [req.supplier],
+      quantity: [req.quantity, Validators.compose([Validators.required, WhiteboardComponent.nonZero])],
+      partNumber: [req.partNumber],
+      notes: [req.notes],
     });
   }
 
-  /**
-   * Converts a FormGroup into an OrderRequest
-   * @param form: FormGroup to convert
-   */
-  formToOrderReq(form: AbstractControl): OrderRequest {
-    return {
-      _id: <number>form.get("id").value,
-      request: <string>form.get("request").value,
-      item: <Item>form.get("item_ref").value,
-      quantity: <number>form.get("quantity").value,
-      transaction: <number>form.get("transaction").value,
-      orderRef: <string>form.get("associatedOrder").value,
-      status: <string>form.get("status").value,
-      supplier: <string>form.get("supplier").value,
-      actions: <Action[]>form.get("actions").value,
-    };
-  }
 }

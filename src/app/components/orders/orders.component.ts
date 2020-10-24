@@ -77,14 +77,14 @@ export class OrdersComponent implements OnInit {
    * string gets too long
    */
   makeItemString(order: Order) {
-    let itemString = order.items[0].item.name;
+    let itemString = order.items[0].itemRef.name;
     for (let i = 1; i < order.items.length; i++) {
       if (itemString.length > 40) {
         itemString = itemString.concat('...');
         break;
       }
       itemString = itemString.concat(', ');
-      itemString = itemString.concat(order.items[i].item.name);
+      itemString = itemString.concat(order.items[i].itemRef.name);
     }
     return itemString;
   }

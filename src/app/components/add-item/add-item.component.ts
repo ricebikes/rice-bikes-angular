@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {SearchService} from '../../services/search.service';
 import {Item} from '../../models/item';
 import {Observable} from 'rxjs/Observable';
@@ -35,6 +35,12 @@ export class AddItemComponent implements OnInit {
     condition: null
   });
 
+  // Form validator that enforces requirement that any "new" item must have a UPC.
+  private newItemFormUPCValidator: ValidatorFn = (fg: FormGroup) => {
+    const upcFilled = fg.get('upc').value != '';
+    return upcFilled || fg.get('condition').value != 'New' ? null : {upc: true};
+  }
+
   newItemForm = this.formBuilder.group({
     name: ['', Validators.required],
     category: ['', Validators.required],
@@ -45,7 +51,7 @@ export class AddItemComponent implements OnInit {
     upc: [''],
     standard_price: ['', Validators.required],
     wholesale_cost: ['', Validators.required]
-  });
+  }, {validator: this.newItemFormUPCValidator});
 
   scanData = new FormControl('');
 

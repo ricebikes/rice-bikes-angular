@@ -1,15 +1,15 @@
 import { Item } from "./item";
 import { Action } from "./action";
-import { Order } from "./order";
 
 export class OrderRequest {
   _id: number;
-  item: Item;
   request: string;
-  status: string;
-  supplier: string;
+  partNumber: string; // If known, the part number of the item
   quantity: number;
-  transaction: number; // ID value of transaction, not auto populated
+  transactions: number[]; // ID value of transactions, not auto populated
+  notes: String;
+  itemRef: Item;
+  status: String;
   orderRef: string; // ID of order, not auto populated
   actions: Action[];
 }

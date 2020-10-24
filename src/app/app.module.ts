@@ -72,7 +72,7 @@ import { WhiteboardComponent } from './components/whiteboard/whiteboard.componen
     AppRoutingModule,
     HttpModule,
     FormsModule,
-    // 110 seconds until idle timer, 10 seconds to stop timer. 2 minutes total.
+    // 20 seconds until idle timer, 10 seconds to stop timer. 30 seconds total.
     UserIdleModule.forRoot({idle: user_inactivity, timeout: user_timeout, ping: 120}),
     ReactiveFormsModule
   ],

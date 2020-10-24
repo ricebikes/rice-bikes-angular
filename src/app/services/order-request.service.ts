@@ -104,16 +104,19 @@ export class OrderRequestService {
   }
 
   /**
-   * Sets the supplier for an order request.
-   * @param orderReq: Order Request
-   * @param supplier: Supplier name to set
+   * Sets the part number string for an OrderRequest
+   * @param orderReq: request to update
+   * @param partNumber: new part number to set for Order Request
    */
-  setSupplier(orderReq: OrderRequest, supplier: string): Promise<OrderRequest> {
-    return this.authService.getUserCredentials().then((cred) =>
-      this.http
+  setPartNum(
+    orderReq: OrderRequest,
+    partNumber: string
+  ): Promise<OrderRequest> {
+    return this.authService.getUserCredentials().then((cred) => {
+      return this.http
         .put(
-          `${this.backendURL}/${orderReq._id}/supplier`,
-          { supplier: supplier },
+          `${this.backendURL}/${orderReq._id}/partnumber`,
+          { partNum: partNumber },
           cred
         )
         .toPromise()
@@ -121,8 +124,33 @@ export class OrderRequestService {
         .catch((err) => {
           this.handleError(err);
           return null;
-        })
-    );
+        });
+    });
+  }
+
+  /**
+   * Sets the notes string for an OrderRequest
+   * @param orderReq: request to update
+   * @param partNumber: new notes string to set for Order Request
+   */
+  setNotes(
+    orderReq: OrderRequest,
+    notes: string
+  ): Promise<OrderRequest> {
+    return this.authService.getUserCredentials().then((cred) => {
+      return this.http
+        .put(
+          `${this.backendURL}/${orderReq._id}/notes`,
+          { notes: notes },
+          cred
+        )
+        .toPromise()
+        .then((res) => res.json() as OrderRequest)
+        .catch((err) => {
+          this.handleError(err);
+          return null;
+        });
+    });
   }
 
   /**
@@ -148,41 +176,19 @@ export class OrderRequestService {
   }
 
   /**
-   * Update the status of an order request
-   * @param orderReq: order request to update
-   * @param status: status to set
-   */
-  setStatus(orderReq: OrderRequest, status: string): Promise<OrderRequest> {
-    return this.authService.getUserCredentials().then((cred) => {
-      return this.http
-        .put(
-          `${this.backendURL}/${orderReq._id}/status`,
-          { status: status },
-          cred
-        )
-        .toPromise()
-        .then((res) => res.json() as OrderRequest)
-        .catch((err) => {
-          this.handleError(err);
-          return null;
-        });
-    });
-  }
-
-  /**
    * Set the transaction for an order request
    * @param orderReq: order request to update
-   * @param transaction: transaction to associate
+   * @param transactions: array of transactions to associate
    */
-  setTransaction(
+  setTransactions(
     orderReq: OrderRequest,
-    transaction: Transaction
+    transactions: Transaction[]
   ): Promise<OrderRequest> {
     return this.authService.getUserCredentials().then((cred) => {
       return this.http
         .put(
-          `${this.backendURL}/${orderReq._id}/transaction`,
-          { transaction_id: transaction._id },
+          `${this.backendURL}/${orderReq._id}/transactions`,
+          { transactions : transactions },
           cred
         )
         .toPromise()
@@ -215,6 +221,7 @@ export class OrderRequestService {
         });
     });
   }
+
 
   /**
    * Deletes an Order Request from the database

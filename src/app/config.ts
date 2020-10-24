@@ -3,7 +3,7 @@ import { environment } from './../environments/environment';
 export let CONFIG;
 
 
-export const user_inactivity = 1;
+export const user_inactivity = 20;
 export const user_timeout =  10;
 
 if (environment.production) {
