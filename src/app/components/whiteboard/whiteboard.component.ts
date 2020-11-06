@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { OrderRequestService } from "../../services/order-request.service";
+import { OrderService } from "../../services/order.service";
 import {
   FormBuilder,
   FormControl,
@@ -11,6 +12,8 @@ import { Item } from "../../models/item";
 import { OrderRequest } from "../../models/orderRequest";
 import { AuthenticationService } from "../../services/authentication.service";
 import { AddItemComponent } from "../add-item/add-item.component";
+import { OrderSelectorComponent } from "../orders/order-selector/order-selector.component";
+import { Order } from "../../models/order";
 
 
 /**
@@ -29,10 +32,12 @@ class OrderRequestContainer {
 })
 export class WhiteboardComponent implements OnInit {
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
+  @ViewChild('orderSelectorComponent') OrderSelectorComponent: OrderSelectorComponent;
   constructor(
     private orderRequestService: OrderRequestService,
     private fb: FormBuilder,
     private authService: AuthenticationService,
+    private orderService: OrderService,
   ) { }
 
   isAdmin = this.authService.isAdmin;
@@ -95,7 +100,7 @@ export class WhiteboardComponent implements OnInit {
       transaction_str = transaction_str.slice(0, -2); // Remove last comma
     }
     // Push an object to hold both the request and its form.
-    return {form: group, request: request, transaction_str: transaction_str};
+    return { form: group, request: request, transaction_str: transaction_str };
   }
 
   /**
@@ -205,13 +210,11 @@ export class WhiteboardComponent implements OnInit {
    */
   addSelectedItem(item: Item) {
     // Save the current requested index, in case it changes before the promise returns.
-    console.log("Setting Item");
     const currentRequestIdx = this.currentSelectedRequestIdx;
     this.orderRequestService.setItem(this.orderRequestsWithForms[currentRequestIdx].request, item)
-    .then(newReq => {
-      console.log("New request")
-      this.orderRequestsWithForms[currentRequestIdx] = this.orderRequestToContainer(newReq);
-    })
+      .then(newReq => {
+        this.orderRequestsWithForms[currentRequestIdx] = this.orderRequestToContainer(newReq);
+      })
   }
 
   /**
@@ -223,7 +226,7 @@ export class WhiteboardComponent implements OnInit {
     // Now, trigger the item dialog. This is the only place we should trigger the dialog.
     this.addItemComponent.triggerItemSearch();
   }
-  
+
   /**
    * Sets the item for the detailed item view modal
    * @param orderReqIdx Index of orderRequest to set item to for detailed view
@@ -240,4 +243,46 @@ export class WhiteboardComponent implements OnInit {
   setOrderReqForActionsView(orderRequest: OrderRequest) {
     this.actionsViewOrderReq = orderRequest;
   }
+
+  /**
+   * Launches Order Selection, and saves the current order request, so that we can set an 
+   * order for it once the selection modal emits an event.
+   * @param request_idx: Index of order request Order should be added to.
+   */
+  triggerOrderSelectModal(request_idx: number) {
+    // Save current Order Request index.
+    this.currentSelectedRequestIdx = request_idx;
+    // Trigger selector.
+    this.OrderSelectorComponent.triggerOrderSelection();
+  }
+
+  /**
+   * Adds the order emitted from the order selection component to the order request at
+   * "currentSelectedRequestIdx" [should have been set by function triggerOrderSelectModal()].
+   * @param order Order to add to the order request that we saved an index for.
+   */
+  addSelectedOrder(order: Order) {
+    // Save the selected request idx
+    const currentIdx = this.currentSelectedRequestIdx;
+    // Set the order.
+    this.orderService.addOrderRequest(order, this.orderRequestsWithForms[currentIdx].request)
+      .then(newOrder => this.orderRequestsWithForms[currentIdx].request.orderRef = (<Order>newOrder)._id);
+  }
+
+  /**
+   * Remove Order Request at  index "idx" from it's Order
+   * @param idx Index of order request to remove order for
+   */
+  removeOrderFromRequest(idx) {
+    // ID is the only required field here, and we have it stored in the order request, so make "dummy" object
+    let order: Order = <Order>{
+      _id: this.orderRequestsWithForms[idx].request.orderRef,
+    };
+    this.orderService.disassociateOrderRequest(order, this.orderRequestsWithForms[idx].request)
+    .then(newOrder => {
+      // Just need to clear the orderRef value in our local copy of the data, no need to pull from backend
+      this.orderRequestsWithForms[idx].request.orderRef = null;
+    })
+  }
+
 }

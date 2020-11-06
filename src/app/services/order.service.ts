@@ -36,10 +36,20 @@ export class OrderService {
    * @param end: newest date to get orders for
    */
   getOrders(start, end): Promise<any> {
-    const queryURL = this.backendURL + '/daterange?start=' + start + '&end=' + end;
+    const queryURL = this.backendURL + '?start_date=' + start + '&end_date=' + end;
     return this.http.get(queryURL, OrderService.jwt())
       .toPromise()
       .then(res => res.json())
+      .catch(err => this.handleError(err));
+  }
+
+  /**
+   * Gets active orders that have yet to be placed with the supplier
+   */
+  getActiveOrders(): Promise<any> {
+    return this.http.get(this.backendURL + '?active=true', OrderService.jwt())
+      .toPromise()
+      .then(res => res.json() as Order[])
       .catch(err => this.handleError(err));
   }
 
@@ -52,7 +62,7 @@ export class OrderService {
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
+      .catch(err => {this.handleError(err); return null;});
   }
 
   /**
@@ -74,7 +84,7 @@ export class OrderService {
    * @param order: Order to update
    * @param supplier: supplier value to set on order
    */
-  updateSupplier(order: Order, supplier: string): Promise<Order> {
+  updateSupplier(order: Order, supplier: string): Promise<Order | void> {
     return this.http.put(`${this.backendURL}/${order._id}/supplier`,
       {supplier: supplier},
       OrderService.jwt())
@@ -88,7 +98,7 @@ export class OrderService {
    * @param order: Order to add item to
    * @param orderItem: OrderRequest to add
    */
-  addItem(order: Order, orderItem: OrderRequest): Promise<Order> {
+  addOrderRequest(order: Order, orderItem: OrderRequest): Promise<Order | void> {
     return this.http.post(`${this.backendURL}/${order._id}/order-request`,
       {order_request_id: orderItem._id},
       OrderService.jwt())
@@ -97,42 +107,13 @@ export class OrderService {
       .catch(err => this.handleError(err));
   }
 
-  /**
-   * Updates the stock of an OrderRequest in an order
-   * @param order: Order to update
-   * @param orderReq: OrderRequest to update stock of
-   * @param stock: new stock to set
-   */
-  updateStock(order: Order, orderReq: OrderRequest, stock: number): Promise<Order> {
-    return this.http.put(`${this.backendURL}/${order._id}/order-request/${orderReq._id}/stock`,
-      {stock: stock},
-      OrderService.jwt())
-      .toPromise()
-      .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
-  }
-
-  /**
-   * Updates the transaction associated with an order
-   * @param order: Order holding relevant item
-   * @param OrderReq: OrderRequest to set transaction for
-   * @param transaction_id: ID of transaction to set
-   */
-  updateTransaction(order: Order, orderReq: OrderRequest, transaction_id: string): Promise<Order> {
-    return this.http.put(`${this.backendURL}/${order._id}/item/${orderReq._id}/transaction`,
-      {transaction_id: transaction_id},
-      OrderService.jwt())
-      .toPromise()
-      .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
-  }
 
   /**
    * Updates the tracking number of an order
    * @param order: Order to set tracking number of
    * @param tracking_number: tracking number to set into order (as string)
    */
-  updateTrackingNumber(order: Order, tracking_number: string): Promise<Order> {
+  updateTrackingNumber(order: Order, tracking_number: string): Promise<Order | void> {
     return this.http.put(`${this.backendURL}/${order._id}/tracking_number`,
       {tracking_number: tracking_number},
       OrderService.jwt())
@@ -146,7 +127,7 @@ export class OrderService {
    * @param order: Order to update the status of
    * @param status: status to set the order to
    */
-  updateStatus(order: Order, status: string): Promise<Order> {
+  updateStatus(order: Order, status: string): Promise<Order | void> {
     return this.http.put(`${this.backendURL}/${order._id}/status`,
       {status: status},
       OrderService.jwt())
@@ -159,7 +140,7 @@ export class OrderService {
    * Deletes an order
    * @param order: Order to delete
    */
-  deleteOrder(order: Order): Promise<void> {
+  deleteOrder(order: Order): Promise<any> {
     return this.http.delete(`${this.backendURL}/${order._id}`,
       OrderService.jwt())
       .toPromise()
@@ -167,11 +148,11 @@ export class OrderService {
   }
 
   /**
-   * Deletes an OrderRequest from the order
+   * Deletes an OrderRequest from the order, and leaves it without an associated order.
    * @param order: Order to remove item from
    * @param orderReq: OrderRequest to remove from order
    */
-  deleteItem(order: Order, orderReq: OrderRequest): Promise<Order> {
+  disassociateOrderRequest(order: Order, orderReq: OrderRequest): Promise<Order | void> {
     return this.http.delete(`${this.backendURL}/${order._id}/order-request/${orderReq._id}`,
       OrderService.jwt())
       .toPromise()

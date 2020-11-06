@@ -77,6 +77,7 @@ export class OrdersComponent implements OnInit {
    * string gets too long
    */
   makeItemString(order: Order) {
+    if (order.items.length == 0) {return "None"}
     let itemString = order.items[0].itemRef.name;
     for (let i = 1; i < order.items.length; i++) {
       if (itemString.length > 40) {

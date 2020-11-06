@@ -1,0 +1,58 @@
+<!-- This component implements an order selection modal that allows users to select an existing order, or create a new one-->
+<button hidden type="button" data-toggle="modal" data-target="#orderSelectionModal" #orderSelectionModalTrigger>
+  Hidden Button to Trigger Order Selection Modal
+</button>
+
+<!-- Order Selection Modal -->
+<div class="modal fade" id="orderSelectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Order</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+            </tr>
+            <th scope="col">Supplier</th>
+            <th scope="col">Status</th>
+            <th scope="col">Created</th>
+            <th scope="col">Items</th>
+            <th scope="col">Cost</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of (activeOrders | async)" (click)="selectOrder(order)">
+              <td>{{order.supplier}}</td>
+              <td>{{order.status}}</td>
+              <td>{{order.date_created | date:'M/d/yyyy'}}</td>
+              <td>{{makeItemString(order)}}</td>
+              <td>${{order.total_price.toFixed(2)}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <h5>Create Order</h5>
+        <hr />
+        <!-- Force input group to not take up whole modal width -->
+        <div class="w-50">
+          <form [formGroup]="newOrderForm">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Order Supplier" formControlName="supplier" />
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button" [disabled]="newOrderForm.invalid"
+                  (click)="createAndEmitOrder()">Create</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

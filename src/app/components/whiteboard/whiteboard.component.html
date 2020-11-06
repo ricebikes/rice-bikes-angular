@@ -1,5 +1,6 @@
 <!-- Add Item Component -->
 <app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" [employee]="true"></app-add-item>
+<app-order-selector #orderSelectorComponent (chosenOrder)="addSelectedOrder($event)"></app-order-selector>
 
 <!-- Make this wider than default veiwport with custom class -->
 <div class="container-fluid padded-container">
@@ -18,7 +19,7 @@
   <div class="form-row">
     <div class="col-2">
       <!--16.7% of width of viewport-->
-      <!-- Awful nesting hack to get the "#" column to be smaller-->
+      <!-- Column nesting hack to get the "#" column to be smaller-->
       <div class="row">
         <div class="col-2"><b>#</b></div> <!-- 2.7% of width-->
         <div class="col-10"><b>Description</b></div> <!-- 13.8% of width -->
@@ -86,8 +87,14 @@
         </div>
         <div class="col-1">
           <!-- Order -->
-          <button *ngIf="!obj.request.orderRef" class="btn btn-outline-secondary">Choose</button>
-          <button *ngIf="obj.request.orderRef" class="btn btn-outline-success">View</button>
+          <button *ngIf="!obj.request.orderRef && isAdmin | async" class="btn btn-outline-secondary"
+            (click)="triggerOrderSelectModal(idx)">Choose</button>
+
+          <div *ngIf="obj.request.orderRef" class="btn-group" role="group">
+            <a role="button" class="btn btn-outline-success" [routerLink]="['/orders', obj.request.orderRef]">View</a>
+            <button *ngIf="isAdmin | async" type="button" class="btn btn-outline-danger"
+              (click)="removeOrderFromRequest(idx)"><i class="fas fa-times"></i></button>
+          </div>
         </div>
         <div class="col-1">
           <!-- Status -->
@@ -95,12 +102,13 @@
         </div>
         <div class="col-2">
           <!-- Notes -->
-          Port Me to Angular 5
-          <!-- <textarea autosize class="form-control" formControlName="notes"></textarea> -->
+          <input class="form-control" formControlName="notes" />
+          <!-- PORT TO ANGULAR 5 and install ngx-autosize to use this: <textarea autosize class="form-control" formControlName="notes"></textarea> -->
         </div>
         <div class="col-1">
           <!-- History -->
-          <button class="btn btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal" (click)="setOrderReqForActionsView(obj.request)">Actions</button>
+          <button class="btn btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal"
+            (click)="setOrderReqForActionsView(obj.request)">Actions</button>
         </div>
       </div>
     </form>
@@ -145,7 +153,7 @@
         <div class="container">
           <div class="row">
             <div class="col-4">
-              <b>Name:</b> 
+              <b>Name:</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.name}}
@@ -153,7 +161,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>UPC:</b> 
+              <b>UPC:</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.upc}}
@@ -161,7 +169,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Price:</b> 
+              <b>Price:</b>
             </div>
             <div class="col-8">
               ${{selectedDetailItem.standard_price}}
@@ -169,7 +177,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Wholesale Price:</b> 
+              <b>Wholesale Price:</b>
             </div>
             <div class="col-8">
               ${{selectedDetailItem.wholesale_cost}}
@@ -177,7 +185,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Current Stock</b> 
+              <b>Current Stock</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.stock}}
@@ -185,7 +193,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Desired Stock</b> 
+              <b>Desired Stock</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.desired_stock}}
@@ -193,7 +201,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Condition:</b> 
+              <b>Condition:</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.condition}}
@@ -201,7 +209,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Brand:</b> 
+              <b>Brand:</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.brand}}
@@ -209,7 +217,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Size:</b> 
+              <b>Size:</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.size}}
@@ -217,7 +225,7 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Category:</b> 
+              <b>Category:</b>
             </div>
             <div class="col-8">
               {{selectedDetailItem.category}}
@@ -242,7 +250,8 @@
       <div class="modal-body" *ngIf="actionsViewOrderReq?.actions && actionsViewOrderReq?.actions.length > 0">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" *ngFor="let action of actionsViewOrderReq?.actions">{{action.employee.firstname}}
-            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time | timeAgo}}</span></li>
+            {{action.employee.lastname}}: {{action.description}} <span
+              class="float-right">{{action.time | timeAgo}}</span></li>
         </ul>
       </div>
     </div>
