@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
-import {CONFIG} from '../config';
-import {Http, Headers, RequestOptions} from '@angular/http';
-import {AlertService} from './alert.service';
-import {OrderRequest} from '../models/orderRequest';
-import {HttpErrorResponse} from '@angular/common/http';
-import {Order} from '../models/order';
-import {AuthenticationService} from './authentication.service';
+import { CONFIG } from '../config';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { AlertService } from './alert.service';
+import { OrderRequest } from '../models/orderRequest';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Order } from '../models/order';
+import { AuthenticationService } from './authentication.service';
 
 @Injectable()
 export class OrderService {
   private backendURL = `${CONFIG.api_url}/orders`;
 
   constructor(private http: Http,
-              private alertService: AlertService) {}
+    private alertService: AlertService) { }
   // gets JWT for any request to backend
   private static jwt() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser.token) {
-      const headers = new Headers({'x-access-token': currentUser.token});
-      return new RequestOptions({headers: headers});
+      const headers = new Headers({ 'x-access-token': currentUser.token });
+      return new RequestOptions({ headers: headers });
     }
   }
 
@@ -40,7 +40,7 @@ export class OrderService {
     return this.http.get(queryURL, OrderService.jwt())
       .toPromise()
       .then(res => res.json())
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -50,7 +50,7 @@ export class OrderService {
     return this.http.get(this.backendURL + '?active=true', OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order[])
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -62,7 +62,7 @@ export class OrderService {
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
-      .catch(err => {this.handleError(err); return null;});
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -72,11 +72,11 @@ export class OrderService {
    */
   createOrder(supplier: string): Promise<any> {
     return this.http.post(this.backendURL,
-      {supplier: supplier},
+      { supplier: supplier },
       OrderService.jwt())
       .toPromise()
       .then(res => res.json())
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -84,13 +84,13 @@ export class OrderService {
    * @param order: Order to update
    * @param supplier: supplier value to set on order
    */
-  updateSupplier(order: Order, supplier: string): Promise<Order | void> {
+  updateSupplier(order: Order, supplier: string): Promise<Order> {
     return this.http.put(`${this.backendURL}/${order._id}/supplier`,
-      {supplier: supplier},
+      { supplier: supplier },
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -98,13 +98,13 @@ export class OrderService {
    * @param order: Order to add item to
    * @param orderItem: OrderRequest to add
    */
-  addOrderRequest(order: Order, orderItem: OrderRequest): Promise<Order | void> {
+  addOrderRequest(order: Order, orderItem: OrderRequest): Promise<Order> {
     return this.http.post(`${this.backendURL}/${order._id}/order-request`,
-      {order_request_id: orderItem._id},
+      { order_request_id: orderItem._id },
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
 
@@ -113,13 +113,13 @@ export class OrderService {
    * @param order: Order to set tracking number of
    * @param tracking_number: tracking number to set into order (as string)
    */
-  updateTrackingNumber(order: Order, tracking_number: string): Promise<Order | void> {
+  updateTrackingNumber(order: Order, tracking_number: string): Promise<Order> {
     return this.http.put(`${this.backendURL}/${order._id}/tracking_number`,
-      {tracking_number: tracking_number},
+      { tracking_number: tracking_number },
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -127,13 +127,13 @@ export class OrderService {
    * @param order: Order to update the status of
    * @param status: status to set the order to
    */
-  updateStatus(order: Order, status: string): Promise<Order | void> {
+  updateStatus(order: Order, status: string): Promise<Order> {
     return this.http.put(`${this.backendURL}/${order._id}/status`,
-      {status: status},
+      { status: status },
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -152,12 +152,12 @@ export class OrderService {
    * @param order: Order to remove item from
    * @param orderReq: OrderRequest to remove from order
    */
-  disassociateOrderRequest(order: Order, orderReq: OrderRequest): Promise<Order | void> {
+  disassociateOrderRequest(order: Order, orderReq: OrderRequest): Promise<Order> {
     return this.http.delete(`${this.backendURL}/${order._id}/order-request/${orderReq._id}`,
       OrderService.jwt())
       .toPromise()
       .then(res => res.json() as Order)
-      .catch(err => this.handleError(err));
+      .catch(err => { this.handleError(err); return null; });
   }
 
 }

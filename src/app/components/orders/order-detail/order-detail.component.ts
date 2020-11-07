@@ -91,7 +91,7 @@ export class OrderDetailComponent implements OnInit {
    * @param item: the OrderRequest to remove
    */
   removeItemFromOrder(item: OrderRequest) {
-    this.orderService.deleteItem(this.order.value, item)
+    this.orderService.disassociateOrderRequest(this.order.value, item)
       .then(newOrder => this.order.next(newOrder));
   }
 

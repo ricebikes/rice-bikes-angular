@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { OrderRequestService } from "../../services/order-request.service";
 import { OrderService } from "../../services/order.service";
 import {
@@ -14,6 +14,8 @@ import { AuthenticationService } from "../../services/authentication.service";
 import { AddItemComponent } from "../add-item/add-item.component";
 import { OrderSelectorComponent } from "../orders/order-selector/order-selector.component";
 import { Order } from "../../models/order";
+import { resolve } from "url";
+import { Observable } from "rxjs";
 
 
 /**
@@ -33,6 +35,8 @@ class OrderRequestContainer {
 export class WhiteboardComponent implements OnInit {
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderSelectorComponent') OrderSelectorComponent: OrderSelectorComponent;
+  @ViewChild('restockQuantityGuardButton') restockQuantityGuardButton: ElementRef;
+
   constructor(
     private orderRequestService: OrderRequestService,
     private fb: FormBuilder,
@@ -45,6 +49,10 @@ export class WhiteboardComponent implements OnInit {
   // Current order request that addItem modal will add item to
   private currentSelectedRequestIdx: number;
 
+  // Form to set restock quantity
+  restockQuantityForm = this.fb.group({
+    quantity: ['', Validators.compose([Validators.required, WhiteboardComponent.nonZero])]
+  });
   // Selected item for detailed view in modal
   selectedDetailItem: Item;
   // Number of orders requested to view
@@ -252,8 +260,14 @@ export class WhiteboardComponent implements OnInit {
   triggerOrderSelectModal(request_idx: number) {
     // Save current Order Request index.
     this.currentSelectedRequestIdx = request_idx;
-    // Trigger selector.
-    this.OrderSelectorComponent.triggerOrderSelection();
+    // Now we need to be sure that the quantity of the order request is set
+    if (this.orderRequestsWithForms[request_idx].request.quantity > 0) {
+      // trigger the order selection, our check has passed.
+      this.OrderSelectorComponent.triggerOrderSelection();
+    } else {
+      // Launch the restock quantity set modal.
+       this.restockQuantityGuardButton.nativeElement.click();
+    }
   }
 
   /**
@@ -279,10 +293,25 @@ export class WhiteboardComponent implements OnInit {
       _id: this.orderRequestsWithForms[idx].request.orderRef,
     };
     this.orderService.disassociateOrderRequest(order, this.orderRequestsWithForms[idx].request)
-    .then(newOrder => {
-      // Just need to clear the orderRef value in our local copy of the data, no need to pull from backend
-      this.orderRequestsWithForms[idx].request.orderRef = null;
-    })
+      .then(newOrder => {
+        // Just need to clear the orderRef value in our local copy of the data, no need to pull from backend
+        this.orderRequestsWithForms[idx].request.orderRef = null;
+      })
+  }
+
+  /**
+   * Submits an order request quantity update, and then triggers the "Select Order" Modal.
+   */
+  submitOrderRequestQuantity() {
+    // Dismiss Popup
+    this.restockQuantityGuardButton.nativeElement.click();
+    const orderReq = this.orderRequestsWithForms[this.currentSelectedRequestIdx].request;
+    this.orderRequestService.setQuantity(orderReq, this.restockQuantityForm.controls['quantity'].value)
+    .then(newOrderReq => {
+      this.orderRequestsWithForms[this.currentSelectedRequestIdx] = this.orderRequestToContainer(newOrderReq);
+      // Now, trigger the order selection modal
+      this.triggerOrderSelectModal(this.currentSelectedRequestIdx);
+    }) 
   }
 
 }
