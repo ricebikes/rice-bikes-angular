@@ -16,7 +16,7 @@ export class OrderRequestService {
     private http: Http,
     private alertService: AlertService,
     private authService: AuthenticationService
-  ) {}
+  ) { }
 
   private handleError(err: HttpErrorResponse): void {
     let message = err.message;
@@ -80,6 +80,16 @@ export class OrderRequestService {
           this.handleError(err);
           return null;
         });
+    });
+  }
+
+  /**
+   * Gets all distinct IDs of order requests in the database.
+   */
+  getDistinctIDs(): Promise<number[]> {
+    return this.authService.getCredentials().then((cred) => {
+      return this.http.get(`${this.backendURL}/distinct-ids`, cred).toPromise().then(res => res.json() as number[])
+        .catch(err => { this.handleError(err); return null });
     });
   }
 
@@ -193,7 +203,7 @@ export class OrderRequestService {
       return this.http
         .put(
           `${this.backendURL}/${orderReq._id}/transactions`,
-          { transactions : transactions },
+          { transactions: transactions },
           cred
         )
         .toPromise()

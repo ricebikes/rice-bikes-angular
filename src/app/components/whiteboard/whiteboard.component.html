@@ -6,8 +6,6 @@
 
 <!-- Make this wider than default viewport with custom class -->
 <div class="container-fluid padded-container">
-
-
   <!-- Top row, just has the sync indicator.-->
   <div class="form-row">
     <div class="col">
@@ -41,7 +39,7 @@
     <div class="col-1"><b>Order</b></div>
     <div class="col-1"><b>Status</b></div>
     <div class="col-2"><b>Notes</b></div>
-    <div class="col-1"><b>History</b></div>
+    <div class="col-1"><b>Actions</b></div>
   </div>
   <hr />
   <div *ngFor="let obj of orderRequestsWithForms; let idx=index">
@@ -116,12 +114,22 @@
           <!-- PORT TO ANGULAR 5 and install ngx-autosize to use this: <textarea autosize class="form-control" formControlName="notes"></textarea> -->
         </div>
         <div class="col-1">
-          <!-- History -->
-          <button class="btn btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal"
-            (click)="setOrderReqForActionsView(obj.request)">Actions</button>
+          <!-- History and Delete-->
+          <div class="btn-group" role="group">
+            <button class="btn btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal"
+              (click)="setOrderReqForActionsView(obj.request)"><i class="fas fa-history"></i></button>
+            <button class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteConfirmationModal"
+              (click)="this.currentSelectedRequestIdx=idx"><i class="fas fa-trash"></i></button>
+          </div>
         </div>
       </div>
     </form>
+  </div>
+  <div class="d-flex justify-content-center">
+    <button *ngIf="this.numberRequested < (this.totalNumRequests | async)"
+      class="btn btn-outline-secondary btn-sm text-center" (click)="loadMoreRequests()">
+      Load More
+    </button>
   </div>
 </div>
 
@@ -161,7 +169,8 @@
               <label for="transactionInput">Transaction</label>
             </div>
             <div class="col">
-              <input [ngClass]="{'form-control': true,
+              <input
+                [ngClass]="{'form-control': true,
                                   'is-invalid': stagedOrderRequestForm.get('transactionID').invalid,
                                   'is-valid': stagedOrderRequestForm.get('transactionID').valid && stagedOrderRequestForm.get('transactionID').dirty}"
                 formControlName="transactionID" id="transactionInput" />
@@ -320,6 +329,29 @@
             </div>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">Are you sure?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this request? This cannot be undone!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button (click)="confirmDeleteOrderRequest()" data-dismiss="modal" type="button" class="btn btn-danger">
+          Delete
+        </button>
       </div>
     </div>
   </div>

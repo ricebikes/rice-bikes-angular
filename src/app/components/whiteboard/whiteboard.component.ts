@@ -47,6 +47,9 @@ export class WhiteboardComponent implements OnInit {
 
   isAdmin = this.authService.isAdmin;
 
+  // Observable of total number of requests known to backend.
+  totalNumRequests: Promise<number>;
+
   // Current order request that addItem modal will add item to
   private currentSelectedRequestIdx: number;
 
@@ -103,8 +106,9 @@ export class WhiteboardComponent implements OnInit {
       // If new requests were returned, populate the form array.
       if (newRequests) this.populateFormArray(newRequests);
     });
-    // Get latest 35 requests by default.
-    this.numberRequested = 35;
+    this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
+    // Get latest 50 requests by default.
+    this.numberRequested = 50;
     this.orderRequestService
       .getLatestRequests(this.numberRequested)
       .then((res) => this.orderRequests.next(res));
@@ -369,7 +373,33 @@ export class WhiteboardComponent implements OnInit {
       null).then(newOrderReq => {
         this.orderRequestsWithForms.push(this.orderRequestToContainer(newOrderReq));
         this.createOrderRequestModalBtn.nativeElement.click();
+        this.numberRequested++;
+        this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
         this.stagedOrderRequestForm.reset();
       });
+  }
+
+  /**
+   * Deletes the order request at "currentSelectedRequestIdx"
+   */
+  confirmDeleteOrderRequest() {
+    const targetIdx = this.currentSelectedRequestIdx;
+    this.orderRequestService.deleteRequest(this.orderRequestsWithForms[targetIdx].request)
+      .then(() => {
+        this.orderRequestsWithForms.splice(targetIdx, 1);
+        this.numberRequested--;
+        this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
+      });
+  }
+
+  /**
+     * Loads more order requests.
+     */
+  loadMoreRequests() {
+    this.numberRequested += 50;
+    this.orderRequestService
+      .getLatestRequests(this.numberRequested)
+      .then((res) => this.orderRequests.next(res));
+    this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
   }
 }
