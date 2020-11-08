@@ -84,7 +84,7 @@ export class WhiteboardComponent implements OnInit {
       }
       return this.transactionService.getTransactionIDs().then(ids => {
         // Check if the transaction ID in form is in list.
-        return (fg.value in ids) ? null : { badTransactionID: true };
+        return (ids.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
       });
     }],
   }, {

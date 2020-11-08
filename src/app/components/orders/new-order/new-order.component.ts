@@ -28,10 +28,10 @@ export class NewOrderComponent implements OnInit {
 
   /**
    * Creates order and navigates to order page
-   * @param supplier
+   * @param supplier: String describing order supplier
    */
   createOrder(supplier: string) {
     this.orderService.createOrder(supplier)
-      .then(order => this.router.navigate(['/orders', order._id]));
+      .then(order => this.router.navigate(['/orders']));
   }
 }

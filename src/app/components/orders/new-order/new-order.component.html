@@ -1,11 +1,20 @@
 <div class="container">
-  <form [formGroup]="orderForm">
-    <div class="form-group row mb-2">
-      <label for="supplier" class="col-2 col-form-label">Supplier</label>
-      <div class="col-10">
-        <input type="text" class="form-control" id="supplier" formControlName="supplier" placeholder="Enter Supplier">
+  <div class="jumbotron">
+    <h1 class="display-4">Create Order</h1>
+    <hr class="my-4" />
+    <form [formGroup]="orderForm">
+      <div class="form-row">
+        <label for="supplier" class="col-2 col-form-label">Supplier</label>
+        <div class="col-8">
+          <input type="text" class="form-control" id="supplier" formControlName="supplier" placeholder="Enter Supplier">
+        </div>
+        <div class="col-2">
+          <button type="submit" class="btn btn-primary mb-2" (click)="submit()" [disabled]="!orderForm.valid">
+            Create Order
+          </button>
+        </div>
       </div>
-    </div>
-    <button type="submit" class="btn btn-primary mb-2" (click)="submit()" [disabled]="!orderForm.valid">Create Order</button>
-  </form>
+    </form>
+  </div>
+
 </div>

@@ -1,45 +1,57 @@
 <div class="container">
   <div class="jumbotron">
-    <h3 class="display-4">View Orders</h3>
+    <h2>View Orders</h2>
     <hr class="my-2">
     <p class="lead">Select date range to view (defaults to one month in the past)</p>
     <form [formGroup]="orderDateForm">
-      <div class="form-group">
-        <label for="orderStartDate">Start Date</label>
-        <input type="date" class="form-control" id="orderStartDate" formControlName="startDate"
-               placeholder="YYYY-MM-DD">
-        <p class="text-danger" *ngIf="!orderDatesValid">Start date cannot be after end date</p>
-        <label for="orderEndDate">End Date</label>
-        <input type="date" class="form-control" id="orderEndDate" formControlName="endDate"
-               placeholder="YYYY-MM-DD">
+      <div class="form-row">
+        <div class="col">
+          <label for="orderStartDate">Start Date</label>
+          <input type="date" class="form-control" id="orderStartDate" formControlName="startDate"
+            placeholder="YYYY-MM-DD">
+          <p class="text-danger" *ngIf="!orderDatesValid">Start date cannot be after end date</p>
+        </div>
+        <div class="col">
+          <label for="orderEndDate">End Date</label>
+          <div class="input-group">
+            <input type="date" class="form-control" id="orderEndDate" formControlName="endDate"
+              placeholder="YYYY-MM-DD">
+            <button type="submit" [disabled]="!orderDateForm.valid" class="btn btn-primary ml-3"
+              (click)="submitOrderDates()">
+              View
+            </button>
+          </div>
+        </div>
       </div>
-      <button type="submit" [disabled]="!orderDateForm.valid" class="btn btn-primary"
-              (click)="submitOrderDates()">View
-      </button>
+      <div class="row my-2">
+        <div class="col">
+          <button class="btn btn-success" [routerLink]="['/orders/new']">Create Order</button>
+        </div>
+      </div>
     </form>
   </div>
   <table class="table table-hover">
     <thead>
-    <tr>
-    </tr>
-    <th scope="col">Supplier</th>
-    <th scope="col">Status</th>
-    <th scope="col">Created</th>
-    <th scope="col">Ordered</th>
-    <th scope="col">Completed</th>
-    <th scope="col">Items</th>
-    <th scope="col">Cost</th>
+      <tr>
+      </tr>
+      <th scope="col">Supplier</th>
+      <th scope="col">Status</th>
+      <th scope="col">Created</th>
+      <th scope="col">Ordered</th>
+      <th scope="col">Completed</th>
+      <th scope="col">Items</th>
+      <th scope="col">Cost</th>
     </thead>
     <tbody>
-    <tr *ngFor="let order of (orders | async)" (click)="navigateOrder(order)">
-      <td>{{order.supplier}}</td>
-      <td>{{order.status}}</td>
-      <td>{{order.date_created | date:'M/d/yyyy'}}</td>
-      <td>{{order.date_submitted | date:'M/d/yyyy'}}</td>
-      <td>{{order.date_completed | date:'M/d/yyyy'}}</td>
-      <td>{{makeItemString(order)}}</td>
-      <td>${{order.total_price.toFixed(2)}}</td>
-    </tr>
+      <tr *ngFor="let order of (orders | async)" (click)="navigateOrder(order)">
+        <td>{{order.supplier}}</td>
+        <td>{{order.status}}</td>
+        <td>{{order.date_created | date:'M/d/yyyy'}}</td>
+        <td>{{order.date_submitted | date:'M/d/yyyy'}}</td>
+        <td>{{order.date_completed | date:'M/d/yyyy'}}</td>
+        <td>{{makeItemString(order)}}</td>
+        <td>${{order.total_price.toFixed(2)}}</td>
+      </tr>
     </tbody>
   </table>
 </div>

@@ -11,7 +11,8 @@
   <!-- Top row, just has the sync indicator.-->
   <div class="form-row">
     <div class="col">
-      <button #createOrderRequestModalBtn class="btn btn-outline-primary my-1" data-toggle="modal" data-target="#createOrderRequestModal">Create
+      <button #createOrderRequestModalBtn class="btn btn-outline-primary my-1" data-toggle="modal"
+        data-target="#createOrderRequestModal">Create
         Request</button>
     </div>
     <div class="col">
@@ -99,7 +100,8 @@
             (click)="triggerOrderSelectModal(idx)" [disabled]="obj.request.itemRef == null">Choose</button>
 
           <div *ngIf="obj.request.orderRef" class="btn-group" role="group">
-            <a role="button" class="btn btn-outline-success" [routerLink]="['/orders', obj.request.orderRef]">{{obj.request.supplier}}</a>
+            <a role="button" class="btn btn-outline-success"
+              [routerLink]="['/orders', obj.request.orderRef]">{{obj.request.supplier}}</a>
             <button *ngIf="isAdmin | async" type="button" class="btn btn-outline-danger"
               (click)="removeOrderFromRequest(idx)"><i class="fas fa-times"></i></button>
           </div>
@@ -154,12 +156,23 @@
               <input class="form-control" id="partNumInput" formControlName="partNum" />
             </div>
           </div>
+          <div class="row my-2">
+            <div class="col-4">
+              <label for="transactionInput">Transaction</label>
+            </div>
+            <div class="col">
+              <input [ngClass]="{'form-control': true,
+                                  'is-invalid': stagedOrderRequestForm.get('transactionID').invalid,
+                                  'is-valid': stagedOrderRequestForm.get('transactionID').valid && stagedOrderRequestForm.get('transactionID').dirty}"
+                formControlName="transactionID" id="transactionInput" />
+            </div>
+          </div>
           <div class="row">
             <div class="col-4">
               <label for="quantityInput">Quantity</label>
             </div>
             <div class="col">
-              <input class="form-control" type="number" min="1" formControlName="quantity" />
+              <input class="form-control" type="number" min="1" formControlName="quantity" id="quantityInput" />
             </div>
           </div>
           <div class="row">
