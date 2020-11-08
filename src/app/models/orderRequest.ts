@@ -10,6 +10,7 @@ export class OrderRequest {
   notes: String;
   itemRef: Item;
   status: String;
+  supplier: String;
   orderRef: string; // ID of order, not auto populated
   actions: Action[];
 }

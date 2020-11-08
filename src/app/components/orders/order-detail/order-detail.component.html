@@ -91,7 +91,7 @@
     <!-- Items in currentOrder-->
     <tbody>
     <!-- Each row in the table is a form element for the specific item-->
-      <tr *ngFor="let control of getItemControls()" [formGroup]="control">
+      <tr *ngFor="let control of getItemControls(); let idx = index" [formGroup]="control">
           <!-- If desired, any of these fields could be changed to inputs, and backend controls could be added
               so that more attributes of an orderItem can be updated inline-->
           <th scope="row">{{control.get('name').value}}</th>
@@ -103,8 +103,8 @@
           <td><input type="number" class="form-control" formControlName="quantity"></td>
           <td><button class="btn btn-primary"
                       [disabled]="!control.dirty"
-                      (click)="updateItemQuantity(control.get('_id').value, control.get('quantity').value)">Update</button></td>
-          <td><button class="btn btn-danger" (click)="removeItemFromOrder(control.get('_id').value)">Remove</button></td>
+                      (click)="updateRequestQuantity(idx, control.get('quantity').value)">Update</button></td>
+          <td><button class="btn btn-danger" (click)="removeRequestFromOrder(idx)">Remove</button></td>
       </tr>
     </tbody>
   </table>

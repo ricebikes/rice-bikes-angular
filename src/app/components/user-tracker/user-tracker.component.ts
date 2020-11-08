@@ -72,7 +72,6 @@ export class UserTrackerComponent implements OnInit {
       for (const user of userList) {
         if (user.username === userName) {
           found = true;
-          console.log('Valid user provided');
           this.setUser(user);
         }
       }
@@ -84,7 +83,6 @@ export class UserTrackerComponent implements OnInit {
     this.authService.setUser(newUser);
     // clear the text box in the modal
     this.userNameForm.get('userName').setValue(undefined);
-    console.log('Net ID fixed');
     this.badNetID = false;
     // close the modal, since the user is set
     this.hiddenModalTrigger.nativeElement.click();

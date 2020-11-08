@@ -14,8 +14,7 @@ import { AuthenticationService } from "../../services/authentication.service";
 import { AddItemComponent } from "../add-item/add-item.component";
 import { OrderSelectorComponent } from "../orders/order-selector/order-selector.component";
 import { Order } from "../../models/order";
-import { resolve } from "url";
-import { Observable } from "rxjs";
+import { TransactionService } from "../../services/transaction.service";
 
 
 /**
@@ -36,12 +35,14 @@ export class WhiteboardComponent implements OnInit {
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderSelectorComponent') OrderSelectorComponent: OrderSelectorComponent;
   @ViewChild('restockQuantityGuardButton') restockQuantityGuardButton: ElementRef;
+  @ViewChild('createOrderRequestModalBtn') createOrderRequestModalBtn: ElementRef;
 
   constructor(
     private orderRequestService: OrderRequestService,
     private fb: FormBuilder,
     private authService: AuthenticationService,
     private orderService: OrderService,
+    private transactionService: TransactionService
   ) { }
 
   isAdmin = this.authService.isAdmin;
@@ -67,13 +68,34 @@ export class WhiteboardComponent implements OnInit {
   orderRequests: BehaviorSubject<OrderRequest[]> = new BehaviorSubject<
     OrderRequest[]
   >(null);
-  // components of the form to create a new order request
-  stagedItem: BehaviorSubject<Item> = new BehaviorSubject<Item>(null);
-  stagedOrderItemForm = this.fb.group({
-    request: ["", Validators.required],
-    quantity: [0, Validators.required],
-    transactionID: [""],
+  stagedOrderRequestForm = this.fb.group({
+    request: [null, Validators.required],
+    partNum: [null],
+    quantity: [null],
+    restock: [false, Validators.required],
+    transactionID: [null, Validators.nullValidator, (fg: FormControl) => {
+      /**
+       * Async validator to verify transaction exists. Requests all transaction IDs
+       * and will throw validation error if the provided ID is not in list.
+       */
+      if (fg.value == null) {
+        // Immediately resolve the transaction field as valid if one is not set.
+        return new Promise((resolve, reject) => { resolve(null) });
+      }
+      return this.transactionService.getTransactionIDs().then(ids => {
+        // Check if the transaction ID in form is in list.
+        return (fg.value in ids) ? null : { badTransactionID: true };
+      });
+    }],
+  }, {
+    validator: (fg: FormGroup) => {
+      // Custom validator, to ensure that either the quantity is valid, or restock is true.
+      const restock = fg.get('restock').value;
+      const quantity = fg.get('quantity').value;
+      return (!restock && (quantity <= 0 || quantity == null)) ? { badQuantity: true } : null;
+    }
   });
+
 
   ngOnInit() {
     // Subscribe to updates to OrderRequest Array
@@ -161,7 +183,10 @@ export class WhiteboardComponent implements OnInit {
          */
         this.orderRequestService
           .setRequestString(request, req)
-          .then((newReq) => this.formSynced.next(true));
+          .then((newReq) => {
+            this.formSynced.next(true);
+            request.actions = newReq.actions;
+          });
       });
     group.controls["quantity"].valueChanges
       .debounceTime(300)
@@ -169,20 +194,29 @@ export class WhiteboardComponent implements OnInit {
         if (group.controls["quantity"].valid) {
           this.orderRequestService
             .setQuantity(request, quantity)
-            .then((newReq) => this.formSynced.next(true));
+            .then((newReq) => {
+              this.formSynced.next(true);
+              request.actions = newReq.actions;
+            });
         }
       });
     group.controls["partNumber"].valueChanges
       .debounceTime(300)
       .subscribe((partNum) => {
         this.orderRequestService.setPartNum(request, partNum)
-          .then((newReq) => this.formSynced.next(true));
+          .then((newReq) => {
+            this.formSynced.next(true);
+            request.actions = newReq.actions;
+          });
       });
     group.controls["notes"].valueChanges
       .debounceTime(300)
       .subscribe((notes) => {
         this.orderRequestService.setNotes(request, notes)
-          .then((newReq) => this.formSynced.next(true));
+          .then((newReq) => {
+            this.formSynced.next(true);
+            request.actions = newReq.actions;
+          });
       });
   }
 
@@ -266,7 +300,7 @@ export class WhiteboardComponent implements OnInit {
       this.OrderSelectorComponent.triggerOrderSelection();
     } else {
       // Launch the restock quantity set modal.
-       this.restockQuantityGuardButton.nativeElement.click();
+      this.restockQuantityGuardButton.nativeElement.click();
     }
   }
 
@@ -280,7 +314,11 @@ export class WhiteboardComponent implements OnInit {
     const currentIdx = this.currentSelectedRequestIdx;
     // Set the order.
     this.orderService.addOrderRequest(order, this.orderRequestsWithForms[currentIdx].request)
-      .then(newOrder => this.orderRequestsWithForms[currentIdx].request.orderRef = (<Order>newOrder)._id);
+      .then(newOrder => {
+        const currentOrderReqId = this.orderRequestsWithForms[currentIdx].request._id;
+        const newOrderReq = newOrder.items.filter(x => x._id == currentOrderReqId)[0];
+        this.orderRequestsWithForms[currentIdx] = this.orderRequestToContainer(newOrderReq);
+      });
   }
 
   /**
@@ -307,11 +345,31 @@ export class WhiteboardComponent implements OnInit {
     this.restockQuantityGuardButton.nativeElement.click();
     const orderReq = this.orderRequestsWithForms[this.currentSelectedRequestIdx].request;
     this.orderRequestService.setQuantity(orderReq, this.restockQuantityForm.controls['quantity'].value)
-    .then(newOrderReq => {
-      this.orderRequestsWithForms[this.currentSelectedRequestIdx] = this.orderRequestToContainer(newOrderReq);
-      // Now, trigger the order selection modal
-      this.triggerOrderSelectModal(this.currentSelectedRequestIdx);
-    }) 
+      .then(newOrderReq => {
+        this.restockQuantityForm.reset();
+        this.orderRequestsWithForms[this.currentSelectedRequestIdx] = this.orderRequestToContainer(newOrderReq);
+        // Now, trigger the order selection modal
+        this.triggerOrderSelectModal(this.currentSelectedRequestIdx);
+      })
   }
 
+  /**
+   * Make an order request from the staged order form.
+   */
+  createOrderRequest() {
+    // If Restock is set, then the quantity should be negative 1.
+    const quantity = this.stagedOrderRequestForm.get('restock').value ?
+      -1 : this.stagedOrderRequestForm.get('quantity').value;
+    const transactions = this.stagedOrderRequestForm.get('transactionID').value != null ?
+      [this.stagedOrderRequestForm.get('transactionID').value] : null;
+    this.orderRequestService.createOrderReq(quantity,
+      this.stagedOrderRequestForm.get('request').value,
+      this.stagedOrderRequestForm.get('partNum').value,
+      transactions,
+      null).then(newOrderReq => {
+        this.orderRequestsWithForms.push(this.orderRequestToContainer(newOrderReq));
+        this.createOrderRequestModalBtn.nativeElement.click();
+        this.stagedOrderRequestForm.reset();
+      });
+  }
 }

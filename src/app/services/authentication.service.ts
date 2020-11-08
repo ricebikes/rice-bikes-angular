@@ -52,13 +52,11 @@ export class AuthenticationService implements OnInit {
     // if we have a set user, reload it from the local storage
     if (localStorage.getItem('accountabilityUser')) {
       const accountabilityUser = JSON.parse(localStorage.getItem('accountabilityUser'));
-      console.log('Found user in storage');
       this.userTrackerSource.next({
         user: accountabilityUser,
         state: 'set',
         timeout: -1
       });
-      console.log('Starting watch');
       this.userIdle.startWatching();
     }
     this.userIdle.onTimerStart().subscribe(count => {
@@ -74,7 +72,6 @@ export class AuthenticationService implements OnInit {
     );
     this.userIdle.onTimeout().subscribe(() => {
       // timeout has been reached. Clear user from store
-      console.log('Timeout!');
       this.userTrackerSource.next({
         user: null,
         state: 'timeout',
@@ -166,7 +163,6 @@ export class AuthenticationService implements OnInit {
    */
   setUser(updatedUser: User) {
     // set the next user in the tracker source
-    console.log('Setting User');
     this.userIdle.resetTimer();
     this.userTrackerSource.next({
       user: updatedUser,
@@ -176,7 +172,6 @@ export class AuthenticationService implements OnInit {
     });
     // set current user into local store as well
     localStorage.setItem('accountabilityUser', JSON.stringify(updatedUser));
-    console.log('Starting watch');
     this.userIdle.startWatching();
     // this will tell any listeners waiting on a user to be selected that the user is ready.
     this.userEmitter.next(updatedUser);
@@ -188,7 +183,6 @@ export class AuthenticationService implements OnInit {
   getUser(): Observable<UserState> {
     if (localStorage.getItem('accountabilityUser')) {
       const accountabilityUser = JSON.parse(localStorage.getItem('accountabilityUser'));
-      console.log('Found user in storage');
       this.userTrackerSource.next({
         user: accountabilityUser,
         state: 'set',
@@ -233,13 +227,11 @@ export class AuthenticationService implements OnInit {
       if (currentUser.token) {
         // async block. Will execute once a value is emitted for the current user
         this.userEmitter.subscribe((nextUser) => {
-          console.log('Got a user');
           const headers = new Headers({'x-access-token': currentUser.token,
             'user-id': nextUser._id});
           resolve(new RequestOptions({headers: headers}));
         });
         if (this.userTrackerSource.value.state === 'timeout') {
-          console.log('Waiting for user');
           // emit a new state. This will trigger user tracker to get another user.
           this.userTrackerSource.next({user: null, state: 'waiting', timeout: -1});
         } else {

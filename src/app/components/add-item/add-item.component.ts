@@ -82,7 +82,6 @@ export class AddItemComponent implements OnInit {
       .distinctUntilChanged() // don't emit unless change is actually new data
       // switchMap swaps the current observable for a new one (the result of the item search)
       .switchMap(formData => {
-        console.log(formData);
         return formData ? this.searchService.
         itemSearch(formData.name, formData.category, formData.size,
           formData.brand, formData.condition) : Observable.of<Item[]>([]);

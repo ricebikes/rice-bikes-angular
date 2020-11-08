@@ -1,15 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {OrderService} from '../../../services/order.service';
-import {Order} from '../../../models/order';
-import {ActivatedRoute, Router} from '@angular/router';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Item} from '../../../models/item';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Transaction} from '../../../models/transaction';
-import {AddItemComponent} from '../../add-item/add-item.component';
-import {debug} from 'util';
-import {OrderRequest} from '../../../models/orderRequest';
-import {SearchService} from '../../../services/search.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { OrderService } from '../../../services/order.service';
+import { Order } from '../../../models/order';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Item } from '../../../models/item';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Transaction } from '../../../models/transaction';
+import { AddItemComponent } from '../../add-item/add-item.component';
+import { OrderRequest } from '../../../models/orderRequest';
+import { OrderRequestService } from '../../../services/order-request.service';
 
 @Component({
   selector: 'app-order-detail',
@@ -22,21 +21,20 @@ export class OrderDetailComponent implements OnInit {
 
   loading = true;
   order: BehaviorSubject<Order> = new BehaviorSubject(null);
-  transactionIDs = this.searchService.getTransactionIDs();
   allOrderItems: FormGroup; // holding OrderItems in FormGroup allows for inline updates
   stagedOrderItem: BehaviorSubject<Item> = new BehaviorSubject(null);
 
   constructor(private orderService: OrderService,
-              private searchService: SearchService,
-              private route: ActivatedRoute,
-              private router: Router,
-              private fb: FormBuilder) { }
+    private orderRequestService: OrderRequestService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
     // Subscribe to order updates, so we can fill the FormArray with order data
     this.order.subscribe(newOrder => {
       if (newOrder) {
-        this.allOrderItems = this.fb.group({items: this.fb.array([])});
+        this.allOrderItems = this.fb.group({ items: this.fb.array([]) });
         const itemsControl = <FormArray>this.allOrderItems.get('items');
         for (const item of newOrder.items) {
           itemsControl.push(this.orderItemToForm(item));
@@ -59,7 +57,7 @@ export class OrderDetailComponent implements OnInit {
    */
   orderItemToForm(item: OrderRequest): FormGroup {
     return this.fb.group({
-      _id: [item.itemRef._id], // not displayed but helps keep track of the item in form
+      _id: [item._id], // not displayed but helps keep track of the OrderRequest in form
       name: [item.itemRef.name],
       wholesale_cost: [item.itemRef.wholesale_cost],
       standard_price: [item.itemRef.standard_price],
@@ -99,7 +97,32 @@ export class OrderDetailComponent implements OnInit {
    * Convenience function to get all order controls
    */
   getItemControls() {
-    const controlArray = <FormArray> this.allOrderItems.get('items');
+    const controlArray = <FormArray>this.allOrderItems.get('items');
     return controlArray.controls;
+  }
+
+  /**
+   * Updates the quantity of an order request.
+   * @param index: index of OrderRequest in form to update.
+   * @param quantity: quantity value to set
+   */
+  updateRequestQuantity(index: number, quantity: number) {
+    let orderReqId = (<FormArray>this.allOrderItems.get('items')).at(index).get('_id').value;
+    this.orderRequestService.setQuantity(<OrderRequest>{ _id: orderReqId }, quantity)
+      .then(newReq => {
+        this.orderService.getOrder(this.order.value._id).then(newOrder => this.order.next(newOrder));
+      });
+  }
+
+  /**
+   * Removes Order Request from ID
+   * @param index index of OrderRequest in form to delete.
+   */
+  removeRequestFromOrder(index: number) {
+    let orderReqId = (<FormArray>this.allOrderItems.get('items')).at(index).get('_id').value;
+    this.orderService.disassociateOrderRequest(this.order.value,<OrderRequest>{_id:orderReqId})
+      .then(newOrder => {
+        this.order.next(newOrder);
+      })
   }
 }

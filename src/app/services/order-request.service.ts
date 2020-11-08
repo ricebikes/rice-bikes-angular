@@ -47,21 +47,26 @@ export class OrderRequestService {
    * Create an order request
    * @param quantity: quantity of item requested
    * @param request: string describing the item requested
-   * @param transaction: transaction, if any, that the item is requested for
-   * @param item: item that will be ordered
+   * @param partNum: part number of the item request (optional)
+   * @param transactions: transaction IDs, if any, that the item is requested for (optional)
+   * @param item: item that will be ordered (optional)
    */
   createOrderReq(
     quantity: number,
     request: string,
-    transaction?: Transaction,
+    partNum?: string,
+    transactions?: number[],
     item?: Item
   ): Promise<OrderRequest> {
     const body = {
       quantity: quantity,
       request: request,
     };
-    if (transaction) {
-      body["transaction"] = transaction;
+    if (partNum) {
+      body["partNum"] = partNum;
+    }
+    if (transactions) {
+      body["transactions"] = transactions;
     }
     if (item) {
       body["item"] = item;

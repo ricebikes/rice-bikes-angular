@@ -2,15 +2,23 @@
 <app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" [employee]="true"></app-add-item>
 <app-order-selector #orderSelectorComponent (chosenOrder)="addSelectedOrder($event)"></app-order-selector>
 
-<!-- Make this wider than default veiwport with custom class -->
+
+
+<!-- Make this wider than default viewport with custom class -->
 <div class="container-fluid padded-container">
+
+
   <!-- Top row, just has the sync indicator.-->
   <div class="form-row">
+    <div class="col">
+      <button #createOrderRequestModalBtn class="btn btn-outline-primary my-1" data-toggle="modal" data-target="#createOrderRequestModal">Create
+        Request</button>
+    </div>
     <div class="col">
       <div class="float-right">
         <i *ngIf="formSynced | async" class="fas fa-check-circle"></i>
         <div *ngIf="!(formSynced | async)" class="spinner-border spinner-border-sm" role="status">
-          <span class="sr-only">Loading...</span>
+          <span class="sr-only">Syncing...</span>
         </div>
       </div>
     </div>
@@ -88,10 +96,10 @@
         <div class="col-1">
           <!-- Order -->
           <button *ngIf="!obj.request.orderRef && isAdmin | async" class="btn btn-outline-secondary"
-            (click)="triggerOrderSelectModal(idx)">Choose</button>
+            (click)="triggerOrderSelectModal(idx)" [disabled]="obj.request.itemRef == null">Choose</button>
 
           <div *ngIf="obj.request.orderRef" class="btn-group" role="group">
-            <a role="button" class="btn btn-outline-success" [routerLink]="['/orders', obj.request.orderRef]">View</a>
+            <a role="button" class="btn btn-outline-success" [routerLink]="['/orders', obj.request.orderRef]">{{obj.request.supplier}}</a>
             <button *ngIf="isAdmin | async" type="button" class="btn btn-outline-danger"
               (click)="removeOrderFromRequest(idx)"><i class="fas fa-times"></i></button>
           </div>
@@ -116,23 +124,58 @@
 </div>
 
 <!--Page specific Modals-->
-<!--"Set Item Quantity" Modal guard- activated before order select modal is, if quantity needs to be set-->
-<div class="modal fade" id="itemQuantityGuardModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<!-- Create Order Request Modal -->
+<div class="modal fade" id="createOrderRequestModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="itemQuantityGuardModalTitle">Set Quantity to Order</h5>
+        <h5 class="modal-title" id="createOrderRequestModalTitle">Create Request</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <!--New Order Request Form -->
+        <form [formGroup]="stagedOrderRequestForm">
+          <div class="row">
+            <div class="col-4">
+              <label for="requestInput">Description</label>
+            </div>
+            <div class="col">
+              <input class="form-control" id="requestInput" formControlName="request" />
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col-4">
+              <label for="partNumInput">Part Number</label>
+            </div>
+            <div class="col">
+              <input class="form-control" id="partNumInput" formControlName="partNum" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <label for="quantityInput">Quantity</label>
+            </div>
+            <div class="col">
+              <input class="form-control" type="number" min="1" formControlName="quantity" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="restockToggle" formControlName="restock">
+                <label class="form-check-label" for="restockToggle">Restock</label>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" (click)="createOrderRequest()"
+          [disabled]="stagedOrderRequestForm.invalid">Create Request</button>
       </div>
     </div>
   </div>
@@ -238,7 +281,8 @@
 </div>
 
 <!--Set Quantity Guard Modal Hidden Trigger Button- used in typescript to open modal -->
-<button hidden #restockQuantityGuardButton data-toggle="modal" data-target="#setRestockQuantityModal">HIDDEN BUTTON</button>
+<button hidden #restockQuantityGuardButton data-toggle="modal" data-target="#setRestockQuantityModal">HIDDEN
+  BUTTON</button>
 
 <!--"Set Quantity" Guard Modal"- Fires when quantity is set to restock, and needs adjustment -->
 <div class="modal fade" id="setRestockQuantityModal" tabindex="-1" role="dialog">
