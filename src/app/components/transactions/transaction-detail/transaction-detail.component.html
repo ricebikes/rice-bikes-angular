@@ -1,4 +1,5 @@
-<div class="modal fade" id="bikeAddModal" tabindex="-1" role="dialog" aria-labelledby="bikeModalLabel" aria-hidden="true">
+<div class="modal fade" id="bikeAddModal" tabindex="-1" role="dialog" aria-labelledby="bikeModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -16,13 +17,15 @@
             <input type="text" placeholder="Model..." class="form-control" formControlName="bike-model" id="bike-model">
           </div>
           <div class="form-group">
-            <input type="text" placeholder="Description..." class="form-control" formControlName="bike-desc" id="bike-desc">
+            <input type="text" placeholder="Description..." class="form-control" formControlName="bike-desc"
+              id="bike-desc">
           </div>
 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addBike()" [disabled]="!bikeForm.valid">Add</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addBike()"
+            [disabled]="!bikeForm.valid">Add</button>
         </div>
       </form>
     </div>
@@ -51,7 +54,7 @@
 </div>
 
 <!-- Past Actions Modal -->
-<div class="modal fade" id="pastActionsModal" tabindex="-1" >
+<div class="modal fade" id="pastActionsModal" tabindex="-1">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -63,7 +66,8 @@
       <div class="modal-body" *ngIf="transaction?.actions && transaction?.actions.length > 0">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" *ngFor="let action of transaction?.actions">{{action.employee.firstname}}
-            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time | timeAgo}}</span></li>
+            {{action.employee.lastname}}: {{action.description}} <span
+              class="float-right">{{action.time | timeAgo}}</span></li>
         </ul>
       </div>
     </div>
@@ -78,8 +82,8 @@
     <h3 *ngIf="!loading" class="display-5">
       <strong>{{transaction?._id}}: </strong>{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}
       <span class="dropdown">
-        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
+        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
                             'badge-primary': transaction?.transaction_type == 'outpatient',
                              'badge-secondary': transaction?.transaction_type == 'merch'
                             }">
@@ -98,8 +102,10 @@
       <span *ngIf="transaction.employee" class="badge badge-primary">Employee</span>
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
-      <button data-toggle="modal" data-target="#deleteTransactionModal" class="btn btn-outline-danger float-right">Delete</button>
-      <button *ngIf="transaction?.actions && transaction?.actions?.length > 0" data-toggle="modal" data-target="#pastActionsModal" class="btn btn-outline-secondary float-right mr-3">Past Actions</button>
+      <button data-toggle="modal" data-target="#deleteTransactionModal"
+        class="btn btn-outline-danger float-right">Delete</button>
+      <button *ngIf="transaction?.actions && transaction?.actions?.length > 0" data-toggle="modal"
+        data-target="#pastActionsModal" class="btn btn-outline-secondary float-right mr-3">Past Actions</button>
     </p>
 
     <p *ngIf="!editingTransaction" class="lead" [innerHTML]="displayDescription"></p>
@@ -107,7 +113,8 @@
       Edit <span class="fa fa-pencil"></span>
     </button>
 
-    <textarea class="form-control" [(ngModel)]="transaction.description" style="width: 100%; min-height: 100px;" *ngIf="editingTransaction"></textarea>
+    <textarea class="form-control" [(ngModel)]="transaction.description" style="width: 100%; min-height: 100px;"
+      *ngIf="editingTransaction"></textarea>
     <button *ngIf="editingTransaction" class="btn btn-secondary btn-sm mt-3" (click)="updateDescription()">
       <span class="fa fa-check"></span>
     </button>
@@ -120,12 +127,13 @@
 <div class="container mb-4">
   <div class="card">
     <div class="card-body">
-      <button *ngIf="!transaction?.is_paid" type="button" class="btn btn-outline-secondary mb-3"
-              data-toggle="modal" data-target="#bikeAddModal">Add bike
+      <button *ngIf="!transaction?.is_paid" type="button" class="btn btn-outline-secondary mb-3" data-toggle="modal"
+        data-target="#bikeAddModal">Add bike
       </button>
 
       <div class="list-group">
-        <a *ngFor="let bike of transaction?.bikes" class="list-group-item list-group-item-action flex-column align-items-start">
+        <a *ngFor="let bike of transaction?.bikes"
+          class="list-group-item list-group-item-action flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">{{bike.make}} {{bike.model}}</h5>
           </div>
@@ -143,13 +151,15 @@
         <div class="col-md-4">
           <app-add-repair *ngIf="!transaction?.is_paid" [transaction]="transaction"></app-add-repair>
           <div class="list-group my-2">
-            <a *ngFor="let repair of transaction?.repairs" class="list-group-item" [ngClass]="{'list-group-item-success': repair?.completed}">
+            <a *ngFor="let repair of transaction?.repairs" class="list-group-item"
+              [ngClass]="{'list-group-item-success': repair?.completed}">
               <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-              <button *ngIf="!transaction?.is_paid" (click)="deleteRepair(repair._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-              <button *ngIf="!transaction?.is_paid" title="Complete or reopen a repair" (click)="toggleCompleteRepair(repair._id)"
-                      style="margin: auto 5px"
-                      [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-success': repair.completed}"
-                      class="float-right btn btn-sm">
+              <button *ngIf="!transaction?.is_paid" (click)="deleteRepair(repair._id)"
+                class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+              <button *ngIf="!transaction?.is_paid" title="Complete or reopen a repair"
+                (click)="toggleCompleteRepair(repair._id)" style="margin: auto 5px"
+                [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-success': repair.completed}"
+                class="float-right btn btn-sm">
                 <i *ngIf="!repair.completed" class="fa fa-check"></i>
                 <i *ngIf="repair.completed" class="fas fa-sync-alt"></i>
               </button>
@@ -157,7 +167,8 @@
           </div>
         </div>
         <div class="col-md-4">
-          <app-add-item #addItemComponent *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)" [employee]="transaction?.employee"></app-add-item>
+          <app-add-item #addItemComponent *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)"
+            [employee]="transaction?.employee"></app-add-item>
           <!-- Item search trigger -->
           <div class="btn-group custom-block" role="group" aria-label="Item Add Group">
             <button type="button" class="btn btn-primary" (click)="triggerItemSearch()">
@@ -171,7 +182,8 @@
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.item.name}}
-              <button *ngIf="!transaction?.is_paid && !item.item.managed" (click)="deleteItem(item.item._id)" class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+              <button *ngIf="!transaction?.is_paid && !item.item.managed" (click)="deleteItem(item.item._id)"
+                class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
             </a>
           </div>
         </div>
@@ -194,7 +206,8 @@
               <h4 class="float-right">${{transaction?.total_cost}}</h4>
             </div>
             <div class="card-footer">
-              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
+              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right"
+                [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
             </div>
           </div>
         </div>
@@ -203,49 +216,60 @@
   </div>
 
   <div class="card mb-2">
+    <app-order-request-selector #orderRequestSelector></app-order-request-selector>
     <div class="card-body">
-      <button *ngIf="!transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+      <button *ngIf="!transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle"
+        type="button" data-toggle="dropdown">
         <span *ngIf="!emailLoading" class="fa fa-check"></span>
         <span *ngIf="emailLoading" class="fa fa-cog loader"></span>
         Complete
       </button>
-      <button *ngIf="transaction?.complete && !transaction?.is_paid" (click)="reopenTransaction()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="transaction?.complete && !transaction?.is_paid" (click)="reopenTransaction()"
+        class="btn btn-outline-warning btn-lg">
         Reopen
       </button>
-      <button *ngIf="!transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="!transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()"
+        class="btn btn-outline-warning btn-lg">
         <i class="fa fa-wrench"></i>
         Wait on part
       </button>
-      <button *ngIf="transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()" class="btn btn-danger btn-lg">
+      <button *ngIf="transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()"
+        class="btn btn-danger btn-lg">
         Waiting on part
       </button>
-      <button *ngIf="!transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-outline-warning btn-lg">
+      <button class="btn btn-outline-warning btn-lg" (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()">Select Order Request</button>
+      <button *ngIf="!transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()"
+        class="btn btn-outline-warning btn-lg">
         <i class="fa fa-envelope"></i>
         Wait on email
       </button>
-      <button *ngIf="transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()" class="btn btn-danger btn-lg">
+      <button *ngIf="transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()"
+        class="btn btn-danger btn-lg">
         Waiting on email
       </button>
-      <button *ngIf="transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-danger btn-lg">
+      <button *ngIf="transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()"
+        class="btn btn-danger btn-lg">
         Unmark as Refurb
       </button>
-      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()" class="btn btn-outline-warning btn-lg">
+      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid"
+        (click)="toggleRefurb()" class="btn btn-outline-warning btn-lg">
         <i class="fa fa-bicycle"></i>
         Mark as Refurb
       </button>
 
-      <button *ngIf = "!transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()" class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>
-      <button *ngIf = "transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()" class="btn btn-danger btn-lg"><i class="fas fa-exclamation"></i></button>
+      <button *ngIf="!transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()"
+        class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>
+      <button *ngIf="transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()"
+        class="btn btn-danger btn-lg"><i class="fas fa-exclamation"></i></button>
       <div class="dropdown-menu">
-        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send email</a>
+        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send
+          email</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span> Complete without sending</a>
+        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span>
+          Complete without sending</a>
       </div>
-      <button (click)="emailCustomer()"  class="btn btn-outline-secondary btn-lg float-right"><span class="fa fa-envelope"></span> Email customer</button>
+      <button (click)="emailCustomer()" class="btn btn-outline-secondary btn-lg float-right"><span
+          class="fa fa-envelope"></span> Email customer</button>
     </div>
   </div>
 </div>
-
-
-
-

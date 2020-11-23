@@ -44,6 +44,21 @@ export class OrderRequestService {
   }
 
   /**
+   * Gets all active order requests: Those with status "Not Ordered" and "In Cart"
+   */
+  getActiveRequests(): Promise<OrderRequest[]> {
+    return this.authService.getCredentials().then((cred) => {
+      return this.http.get(`${this.backendURL}/?active=true`, cred)
+        .toPromise()
+        .then((res) => res.json() as OrderRequest[])
+        .catch(err => {
+          this.handleError(err);
+          return null;
+        })
+    })
+  }
+
+  /**
    * Create an order request
    * @param quantity: quantity of item requested
    * @param request: string describing the item requested

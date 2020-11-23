@@ -40,6 +40,7 @@ import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { OrderRequestService } from './services/order-request.service';
 import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
 import { OrderSelectorComponent } from './components/orders/order-selector/order-selector.component';
+import { OrderRequestSelectorComponent } from './components/whiteboard/order-request-selector/order-request-selector.component';
 
 
 
@@ -68,6 +69,7 @@ import { OrderSelectorComponent } from './components/orders/order-selector/order
     NewOrderComponent,
     WhiteboardComponent,
     OrderSelectorComponent,
+    OrderRequestSelectorComponent,
   ],
   imports: [
     BrowserModule,

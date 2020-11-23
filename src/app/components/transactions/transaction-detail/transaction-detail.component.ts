@@ -7,6 +7,7 @@ import {Bike} from '../../../models/bike';
 import {Item} from '../../../models/item';
 import {AlertService} from '../../../services/alert.service';
 import {AddItemComponent} from '../../add-item/add-item.component';
+import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -18,6 +19,7 @@ export class TransactionDetailComponent implements OnInit {
 
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
+  @ViewChild('orderRequestSelector') orderRequestSelectorComponent: OrderRequestSelectorComponent;
 
   transaction: Transaction;
   bikeForm: FormGroup;
