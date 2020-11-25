@@ -13,6 +13,7 @@ import { OrderRequest } from "../../models/orderRequest";
 import { AuthenticationService } from "../../services/authentication.service";
 import { AddItemComponent } from "../add-item/add-item.component";
 import { OrderSelectorComponent } from "../orders/order-selector/order-selector.component";
+import { OrderRequestSelectorComponent } from "../whiteboard/order-request-selector/order-request-selector.component";
 import { Order } from "../../models/order";
 import { TransactionService } from "../../services/transaction.service";
 
@@ -34,8 +35,8 @@ class OrderRequestContainer {
 export class WhiteboardComponent implements OnInit {
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderSelectorComponent') OrderSelectorComponent: OrderSelectorComponent;
+  @ViewChild('orderRequestSelectorComponent') orderRequestSelectorComponent: OrderRequestSelectorComponent;
   @ViewChild('restockQuantityGuardButton') restockQuantityGuardButton: ElementRef;
-  @ViewChild('createOrderRequestModalBtn') createOrderRequestModalBtn: ElementRef;
 
   constructor(
     private orderRequestService: OrderRequestService,
@@ -71,33 +72,6 @@ export class WhiteboardComponent implements OnInit {
   orderRequests: BehaviorSubject<OrderRequest[]> = new BehaviorSubject<
     OrderRequest[]
   >(null);
-  stagedOrderRequestForm = this.fb.group({
-    request: [null, Validators.required],
-    partNum: [null],
-    quantity: [null],
-    restock: [false, Validators.required],
-    transactionID: [null, Validators.nullValidator, (fg: FormControl) => {
-      /**
-       * Async validator to verify transaction exists. Requests all transaction IDs
-       * and will throw validation error if the provided ID is not in list.
-       */
-      if (fg.value == null) {
-        // Immediately resolve the transaction field as valid if one is not set.
-        return new Promise((resolve, reject) => { resolve(null) });
-      }
-      return this.transactionService.getTransactionIDs().then(ids => {
-        // Check if the transaction ID in form is in list.
-        return (ids.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
-      });
-    }],
-  }, {
-    validator: (fg: FormGroup) => {
-      // Custom validator, to ensure that either the quantity is valid, or restock is true.
-      const restock = fg.get('restock').value;
-      const quantity = fg.get('quantity').value;
-      return (!restock && (quantity <= 0 || quantity == null)) ? { badQuantity: true } : null;
-    }
-  });
 
 
   ngOnInit() {
@@ -326,6 +300,17 @@ export class WhiteboardComponent implements OnInit {
   }
 
   /**
+   * Adds an order request to the list of visible order requests on the 
+   * whiteboard.
+   * @param req OrderRequest to add
+   */
+  addSelectedOrderReq(req: OrderRequest) {
+    this.orderRequestsWithForms.unshift(this.orderRequestToContainer(req));
+    this.numberRequested++;
+    this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
+  }
+
+  /**
    * Remove Order Request at  index "idx" from it's Order
    * @param idx Index of order request to remove order for
    */
@@ -358,28 +343,6 @@ export class WhiteboardComponent implements OnInit {
   }
 
   /**
-   * Make an order request from the staged order form.
-   */
-  createOrderRequest() {
-    // If Restock is set, then the quantity should be negative 1.
-    const quantity = this.stagedOrderRequestForm.get('restock').value ?
-      -1 : this.stagedOrderRequestForm.get('quantity').value;
-    const transactions = this.stagedOrderRequestForm.get('transactionID').value != null ?
-      [this.stagedOrderRequestForm.get('transactionID').value] : null;
-    this.orderRequestService.createOrderReq(quantity,
-      this.stagedOrderRequestForm.get('request').value,
-      this.stagedOrderRequestForm.get('partNum').value,
-      transactions,
-      null).then(newOrderReq => {
-        this.orderRequestsWithForms.push(this.orderRequestToContainer(newOrderReq));
-        this.createOrderRequestModalBtn.nativeElement.click();
-        this.numberRequested++;
-        this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
-        this.stagedOrderRequestForm.reset();
-      });
-  }
-
-  /**
    * Deletes the order request at "currentSelectedRequestIdx"
    */
   confirmDeleteOrderRequest() {
@@ -393,13 +356,21 @@ export class WhiteboardComponent implements OnInit {
   }
 
   /**
-     * Loads more order requests.
-     */
+   * Loads more order requests.
+   */
   loadMoreRequests() {
     this.numberRequested += 50;
     this.orderRequestService
       .getLatestRequests(this.numberRequested)
       .then((res) => this.orderRequests.next(res));
     this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
+  }
+
+  /**
+   * Opens the order request creation modal, the component responsible for
+   * creating (and then emitting) new order requests
+   */
+  openOrderRequestCreationModal() {
+    this.orderRequestSelectorComponent.launchOrderRequestCreator();
   }
 }

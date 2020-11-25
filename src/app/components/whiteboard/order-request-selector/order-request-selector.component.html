@@ -1,38 +1,98 @@
-<button #orderRequestModalButton hidden data-toggle="modal" data-target="#orderReqSelectorModal">HIDDEN: Launch Order Request Selection Modal</button>
+<button #orderRequestModalButton hidden data-toggle="modal" data-target="#orderReqSelectorModal">HIDDEN: Launch Order
+  Request Selection Modal</button>
 
 <!-- Modal -->
-<div class="modal fade" id="orderReqSelectorModal" tabindex="-1" role="dialog" aria-labelledby="orderReqSelectorModalLabel" aria-hidden="true">
+<div class="modal fade" id="orderReqSelectorModal" tabindex="-1" role="dialog"
+  aria-labelledby="orderReqSelectorModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" [hidden]="createMode" id="orderReqSelectorModalTitle">Select White Board Entry</h5>
         <h5 class="modal-title" [hidden]="!createMode" id="orderReqSelectorModalTitleAlt">Create White Board Entry</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="createMode=false">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="disableCreateMode()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-       <table class="table table-hover">
-         <thead>
-           <tr>
-             <th scope="col">#</th>
-             <th scope="col">Description</th>
-             <th scope="col">Part #</th>
-           </tr>
-         </thead>
-         <tbody>
-           <tr *ngFor="let request of (activeOrderRequests | async)">
-             <td>{{request._id}}</td>
-             <td>{{request.request}}</td>
-             <td>{{request.partNumber}}</td>
-           </tr>
-         </tbody>
-       </table> 
-       <button [hidden]="createMode" class="btn btn-block btn-success" (click)="createMode = true">Create New Entry</button>
+        <div [hidden]="createMode">
+          <!--Order Request Selection Mode Content-->
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Description</th>
+                <th scope="col">Part #</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let request of (activeOrderRequests | async)" (click)="selectOrderRequest(request)">
+                <td>{{request._id}}</td>
+                <td>{{request.request}}</td>
+                <td>{{request.partNumber}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- Switches Dialog to create order request mode -->
+          <button class="btn btn-block btn-success" (click)="createMode = true">Create New
+            Entry</button>
+        </div>
+        <div [hidden]="!createMode">
+          <!--New Order Request Form: Shown in Create Order Request Mode-->
+          <form [formGroup]="stagedOrderRequestForm">
+            <div class="row">
+              <div class="col-4">
+                <label for="requestInput">Description</label>
+              </div>
+              <div class="col">
+                <input class="form-control" id="requestInput" formControlName="request" />
+              </div>
+            </div>
+            <div class="row my-2">
+              <div class="col-4">
+                <label for="partNumInput">Part Number</label>
+              </div>
+              <div class="col">
+                <input class="form-control" id="partNumInput" formControlName="partNum" />
+              </div>
+            </div>
+            <div class="row my-2">
+              <div class="col-4">
+                <label for="transactionInput">Transaction</label>
+              </div>
+              <div class="col">
+                <input *ngIf="preset_transaction == null"
+                  [ngClass]="{'form-control': true,
+                                  'is-invalid': stagedOrderRequestForm.get('transactionID').invalid,
+                                  'is-valid': stagedOrderRequestForm.get('transactionID').valid && stagedOrderRequestForm.get('transactionID').dirty}"
+                  formControlName="transactionID" id="transactionInput" />
+                <!--Readonly input if preset_transaction was set -->
+                <input *ngIf="preset_transaction != null" readonly class="form-control" formControlName="transactionID"
+                  id="transactionInput">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <label for="quantityInput">Quantity</label>
+              </div>
+              <div class="col">
+                <input class="form-control" type="number" min="1" formControlName="quantity" id="quantityInput" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="restockToggle" formControlName="restock">
+                  <label class="form-check-label" for="restockToggle">Restock</label>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
       <div class="modal-footer" [hidden]="!createMode">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="createMode=false">Cancel</button>
-        <button type="button" class="btn btn-primary">Create Entry</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="disableCreateMode()">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="this.stagedOrderRequestForm.invalid"
+          (click)="createOrderRequest()">Create Request</button>
       </div>
     </div>
   </div>

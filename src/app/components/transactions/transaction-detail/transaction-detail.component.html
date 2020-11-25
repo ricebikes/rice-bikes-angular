@@ -216,7 +216,8 @@
   </div>
 
   <div class="card mb-2">
-    <app-order-request-selector #orderRequestSelector></app-order-request-selector>
+    <app-order-request-selector #orderRequestSelector
+      [create_only]="false" [preset_transaction]="transaction?._id" (chosenRequest)="setWaitingOnPart($event)"></app-order-request-selector>
     <div class="card-body">
       <button *ngIf="!transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle"
         type="button" data-toggle="dropdown">
@@ -237,7 +238,8 @@
         class="btn btn-danger btn-lg">
         Waiting on part
       </button>
-      <button class="btn btn-outline-warning btn-lg" (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()">Select Order Request</button>
+      <button class="btn btn-outline-warning btn-lg"
+        (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()">Select Order Request</button>
       <button *ngIf="!transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()"
         class="btn btn-outline-warning btn-lg">
         <i class="fa fa-envelope"></i>
