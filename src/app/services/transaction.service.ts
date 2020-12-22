@@ -10,6 +10,7 @@ import { CONFIG } from "../config";
 import { AuthenticationService } from "./authentication.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Http } from "@angular/http";
+import { OrderRequest } from "../models/orderRequest";
 
 @Injectable()
 export class TransactionService {
@@ -316,5 +317,15 @@ export class TransactionService {
         .then((res) => res.json())
         .catch((err) => this.handleError(err));
     });
+  }
+
+  addOrderRequest(transaction_id, request: OrderRequest) {
+    return this.authService.getCredentials().then(credentials => {
+      return this.http
+      .post(`${this.backendUrl}/${transaction_id}/order-request`, {"requestid": request._id}, credentials)
+      .toPromise()
+      .then(res => this.transaction.next(res))
+      .catch(err => this.handleError(err));
+    })
   }
 }

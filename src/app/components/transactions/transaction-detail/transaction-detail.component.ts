@@ -8,7 +8,6 @@ import {Item} from '../../../models/item';
 import {AlertService} from '../../../services/alert.service';
 import {AddItemComponent} from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
-import { Subject } from 'rxjs';
 import { OrderRequest } from '../../../models/orderRequest';
 
 @Component({
@@ -195,9 +194,8 @@ export class TransactionDetailComponent implements OnInit {
    * Sets order request transaction will be waiting on to arrive
    * @param req Order Request Transaction will wait on
    */
-  setWaitingOnPart(req: OrderRequest) {
-    console.log("Got an order request");
-    console.log(req);
+  addOrderRequest(req: OrderRequest) {
+    this.transactionService.addOrderRequest(this.transaction._id, req)
   }
 
 }

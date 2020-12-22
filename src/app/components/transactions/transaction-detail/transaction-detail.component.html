@@ -217,7 +217,7 @@
 
   <div class="card mb-2">
     <app-order-request-selector #orderRequestSelector
-      [create_only]="false" [preset_transaction]="transaction?._id" (chosenRequest)="setWaitingOnPart($event)"></app-order-request-selector>
+      [create_only]="false" [preset_transaction]="transaction?._id" (chosenRequest)="addOrderRequest($event)"></app-order-request-selector>
     <div class="card-body">
       <button *ngIf="!transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle"
         type="button" data-toggle="dropdown">
