@@ -25,7 +25,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let request of (activeOrderRequests | async)" (click)="selectOrderRequest(request)">
+              <tr *ngFor="let request of (availableOrderRequests | async)" (click)="selectOrderRequest(request)">
                 <td>{{request._id}}</td>
                 <td>{{request.request}}</td>
                 <td>{{request.partNumber}}</td>

@@ -320,11 +320,27 @@ export class TransactionService {
   }
 
   addOrderRequest(transaction_id, request: OrderRequest) {
-    return this.authService.getCredentials().then(credentials => {
+    return this.authService.getUserCredentials().then(credentials => {
       return this.http
-      .post(`${this.backendUrl}/${transaction_id}/order-request`, {"requestid": request._id}, credentials)
+        .post(`${this.backendUrl}/${transaction_id}/order-request`, { "requestid": request._id }, credentials)
+        .toPromise()
+        .then(res => {
+          this.transaction.next(res.json());
+          return res.json() as Transaction
+        })
+        .catch(err => this.handleError(err));
+    })
+  }
+
+  removeOrderRequest(transaction_id, request: OrderRequest) {
+    return this.authService.getUserCredentials().then(credentials => {
+      return this.http
+      .delete(`${this.backendUrl}/${transaction_id}/order-request/${request._id}`, credentials)
       .toPromise()
-      .then(res => this.transaction.next(res))
+      .then(res => {
+          this.transaction.next(res.json());
+          return res.json() as Transaction
+      })
       .catch(err => this.handleError(err));
     })
   }

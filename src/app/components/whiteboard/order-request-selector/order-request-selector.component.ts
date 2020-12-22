@@ -4,6 +4,7 @@ import { Order } from '../../../models/order';
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
 import { TransactionService } from '../../../services/transaction.service';
+import { Transaction } from '../../../models/transaction';
 
 @Component({
   selector: 'app-order-request-selector',
@@ -20,11 +21,12 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
    * If non-null, the component will default to the given transaction
    * and not allow modification
    */
-  @Input('preset_transaction') preset_transaction: number;
+  @Input('preset_transaction') preset_transaction: Transaction;
 
   @Output() chosenRequest = new EventEmitter<OrderRequest>();
 
-  activeOrderRequests: Promise<OrderRequest[]>;
+  activeOrderRequests: Promise<OrderRequest[]>; // all active order requests
+  availableOrderRequests: Promise<OrderRequest[]>; // requests to show in selector
 
   stagedOrderRequestForm = this.fb.group({
     request: [null, Validators.required],
@@ -64,9 +66,20 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.activeOrderRequests = this.orderRequestService.getActiveRequests();
+    // If the transaction ID is set, filter out order requests associated with transaction
+    this.availableOrderRequests = this.activeOrderRequests.then(requests => {
+      if (this.preset_transaction != null) {
+        // Filter requests that are in the transaction
+        return requests.filter(candidate => {
+          return this.preset_transaction.orderRequests.findIndex(x => x._id == candidate._id) == -1;
+        })
+      } else {
+        return requests;
+      }
+    })
     this.createMode = this.create_only;
     if (this.preset_transaction != null) {
-      this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction);
+      this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction._id);
     }
   }
 
@@ -79,7 +92,20 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.preset_transaction) {
       this.preset_transaction = changes.preset_transaction.currentValue;
-      this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction);
+      if (this.preset_transaction) {
+        this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction._id);
+        // If the transaction ID is set, filter out order requests associated with transaction
+        this.availableOrderRequests = this.activeOrderRequests.then(requests => {
+          if (this.preset_transaction != null) {
+            // Filter requests that are in the transaction
+            return requests.filter(candidate => {
+              return this.preset_transaction.orderRequests.findIndex(x => x._id == candidate._id) == -1;
+            })
+          } else {
+            return requests;
+          }
+        })
+      }
     }
   }
 

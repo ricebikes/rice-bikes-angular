@@ -3,6 +3,7 @@ import {Bike} from './bike';
 import {RepairItem} from './repairItem';
 import {Action} from './action';
 import {TransactionItem} from './transactionItem';
+import { OrderRequest } from './orderRequest';
 
 export class Transaction {
   _id: string;
@@ -10,7 +11,6 @@ export class Transaction {
   date_completed: string;
   complete: boolean;
   is_paid: boolean;
-  waiting_part: boolean;
   urgent: boolean;
   waiting_email: boolean;
   employee: boolean;
@@ -23,5 +23,6 @@ export class Transaction {
   repairs: RepairItem[];
   actions: Action[];
   refurb: boolean;
+  orderRequests: OrderRequest[];
   constructor() {}
 }

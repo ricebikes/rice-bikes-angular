@@ -53,6 +53,50 @@
   </div>
 </div>
 
+<!-- Active Order Requests Modal -->
+<div class="modal fade" id="waitingOrderRequestsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="waitingOrderRequestsModalLabel">Waiting Order Requests</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <th scope="col">#</th>
+            <th scope="col">Description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Item</th>
+            <th scope="col">Status</th>
+            <th scope="col">Remove</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orderReq of transaction?.orderRequests">
+              <th scope="row">{{orderReq._id}}</th>
+              <td>{{orderReq.request}}</td>
+              <td>{{orderReq.quantity}}</td>
+              <td *ngIf="orderReq.itemRef">{{orderReq.itemRef.name}}</td>
+              <td *ngIf="!orderReq.itemRef">None</td>
+              <td>{{orderReq.status}}</td>
+              <td><button class="btn btn-outline-danger" (click)="removeOrderRequest(orderReq)"><i
+                    class="fas fa-times"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success"
+          (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()"><i class="fas fa-plus"></i> Add
+          Another Part</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Past Actions Modal -->
 <div class="modal fade" id="pastActionsModal" tabindex="-1">
   <div class="modal-dialog modal-lg" role="document">
@@ -66,8 +110,8 @@
       <div class="modal-body" *ngIf="transaction?.actions && transaction?.actions.length > 0">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" *ngFor="let action of transaction?.actions">{{action.employee.firstname}}
-            {{action.employee.lastname}}: {{action.description}} <span
-              class="float-right">{{action.time | timeAgo}}</span></li>
+            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time |
+              timeAgo}}</span></li>
         </ul>
       </div>
     </div>
@@ -216,8 +260,8 @@
   </div>
 
   <div class="card mb-2">
-    <app-order-request-selector #orderRequestSelector
-      [create_only]="false" [preset_transaction]="transaction?._id" (chosenRequest)="addOrderRequest($event)"></app-order-request-selector>
+    <app-order-request-selector #orderRequestSelector [create_only]="false" [preset_transaction]="transaction"
+      (chosenRequest)="addOrderRequest($event)"></app-order-request-selector>
     <div class="card-body">
       <button *ngIf="!transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle"
         type="button" data-toggle="dropdown">
@@ -229,17 +273,13 @@
         class="btn btn-outline-warning btn-lg">
         Reopen
       </button>
-      <button *ngIf="!transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()"
-        class="btn btn-outline-warning btn-lg">
-        <i class="fa fa-wrench"></i>
-        Wait on part
+      <button *ngIf="transaction?.orderRequests?.length > 0" type="button" class="btn btn-danger btn-lg"
+        data-toggle="modal" data-target="#waitingOrderRequestsModal">
+        View Waiting Parts
       </button>
-      <button *ngIf="transaction?.waiting_part && !transaction?.is_paid" (click)="toggleWaitOnPart()"
-        class="btn btn-danger btn-lg">
-        Waiting on part
-      </button>
-      <button class="btn btn-outline-warning btn-lg"
-        (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()">Select Order Request</button>
+      <button *ngIf="transaction?.orderRequests?.length == 0" type="button" class="btn btn-success btn-lg"
+        (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()"><i class="fas fa-plus"></i> Wait on
+        Part</button>
       <button *ngIf="!transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()"
         class="btn btn-outline-warning btn-lg">
         <i class="fa fa-envelope"></i>

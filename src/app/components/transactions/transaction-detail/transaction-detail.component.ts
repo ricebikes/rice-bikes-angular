@@ -1,12 +1,12 @@
-import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { TransactionService } from '../../../services/transaction.service';
 import { Transaction } from '../../../models/transaction';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormGroup, Validators, FormControl} from '@angular/forms';
-import {Bike} from '../../../models/bike';
-import {Item} from '../../../models/item';
-import {AlertService} from '../../../services/alert.service';
-import {AddItemComponent} from '../../add-item/add-item.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { Bike } from '../../../models/bike';
+import { Item } from '../../../models/item';
+import { AlertService } from '../../../services/alert.service';
+import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
 import { OrderRequest } from '../../../models/orderRequest';
 
@@ -35,7 +35,7 @@ export class TransactionDetailComponent implements OnInit {
     private transactionService: TransactionService,
     private route: ActivatedRoute,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.bikeForm = new FormGroup({
@@ -63,7 +63,7 @@ export class TransactionDetailComponent implements OnInit {
           });
           this.loading = false;
           if (this.transaction.description) {
-             this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
+            this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
           }
         });
     });
@@ -91,7 +91,7 @@ export class TransactionDetailComponent implements OnInit {
     bike.make = this.bikeForm.value['bike-make'];
     bike.model = this.bikeForm.value['bike-model'];
     bike.description = this.bikeForm.value['bike-desc'];
-    this.transactionService.addNewBikeToTransaction(this.transaction._id, bike) ;
+    this.transactionService.addNewBikeToTransaction(this.transaction._id, bike);
   }
 
   deleteBike(bike: Bike): void {
@@ -127,7 +127,7 @@ export class TransactionDetailComponent implements OnInit {
     if (!this.transaction) {
       return false;
     }
-    if (this.transaction.waiting_part) {
+    if (this.transaction.orderRequests.length > 0) {
       return false;
     }
     for (const repair of this.transaction.repairs) {
@@ -172,11 +172,6 @@ export class TransactionDetailComponent implements OnInit {
     this.transactionService.updateDescription(this.transaction._id, this.transaction.description);
   }
 
-  toggleWaitOnPart(): void {
-    this.transaction.waiting_part = !this.transaction.waiting_part;
-    this.updateTransaction();
-  }
-
   toggleWaitOnEmail(): void {
     this.transaction.waiting_email = !this.transaction.waiting_email;
     this.updateTransaction();
@@ -195,7 +190,22 @@ export class TransactionDetailComponent implements OnInit {
    * @param req Order Request Transaction will wait on
    */
   addOrderRequest(req: OrderRequest) {
-    this.transactionService.addOrderRequest(this.transaction._id, req)
+    // Check to see if the request already has been associated with our transaction, otherwise add it
+    if (req.transactions.includes(parseInt(this.transaction._id))) {
+      // Just update the transaction
+      this.transactionService.getTransaction(this.transaction._id);
+    } else {
+      // Add the request
+      this.transactionService.addOrderRequest(this.transaction._id, req)
+    }
+  }
+
+  /**
+   * Removes an order request from a transaction
+   * @param req Order Request to remove from transaction
+   */
+  removeOrderRequest(req: OrderRequest) {
+    this.transactionService.removeOrderRequest(this.transaction._id, req)
   }
 
 }

@@ -48,7 +48,7 @@
                                         'badge-primary': transaction?.transaction_type == 'outpatient',
                                         'badge-secondary': transaction?.transaction_type == 'merch'}">
           {{transaction?.transaction_type}}</span>
-        <span *ngIf="transaction?.waiting_part" class="badge badge-danger"><i class="fa fa-wrench"></i></span>
+        <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i class="fa fa-wrench"></i></span>
         <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
         <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i></span>
 
