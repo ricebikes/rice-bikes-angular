@@ -25,6 +25,7 @@ class OrderRequestContainer {
   form: FormGroup;
   request: OrderRequest;
   transaction_str: String;
+  urgent: boolean;
 }
 
 @Component({
@@ -107,8 +108,14 @@ export class WhiteboardComponent implements OnInit {
     } else {
       transaction_str = transaction_str.slice(0, -2); // Remove last comma
     }
+    // Request is urgent if minimum stock is nonzero, and current stock is less than or equal to minimum.
+    const urgent = (request.status != 'Completed') 
+                    && (request.itemRef != null) 
+                    && (request.itemRef.minimum_stock != null) 
+                    && (request.itemRef.minimum_stock > 0)
+                    && (request.itemRef.stock <= request.itemRef.minimum_stock)
     // Push an object to hold both the request and its form.
-    return { form: group, request: request, transaction_str: transaction_str };
+    return { form: group, request: request, transaction_str: transaction_str, urgent: urgent};
   }
 
   /**

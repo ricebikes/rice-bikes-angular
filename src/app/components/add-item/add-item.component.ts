@@ -140,6 +140,7 @@ export class AddItemComponent implements OnInit {
       disabled: false,
       managed: false,
       desired_stock: this.newItemForm.controls['desired_stock'].value,
+      minimum_stock: null,
       stock: 0
     }).then(res => {
       this.newItemForm.reset();

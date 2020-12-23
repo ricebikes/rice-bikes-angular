@@ -15,22 +15,22 @@
             <div class="col-4">
               <label for="updateItemName">Item Name</label>
               <input type="text" class="form-control" formControlName="name" id="updateItemName"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateItemPrice">Item Price</label>
               <input id="updateItemPrice" type="number" class="form-control" formControlName="standard_price"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateWholesalePrice">Wholesale Price</label>
               <input id="updateWholesalePrice" type="number" class="form-control" formControlName="wholesale_cost"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateConditionSelect">Item Condition</label>
               <select id="updateConditionSelect" formControlName="condition" class="form-control"
-                      (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
                 <option>New</option>
                 <option>Used</option>
               </select>
@@ -38,19 +38,19 @@
             <div class="col-2">
               <label for="updateBrandSelect">Brand</label>
               <input id="updateBrandSelect" type="text" formControlName="brand" class="form-control" list="brands"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
             </div>
           </div>
           <div class="row">
             <div class="col-2">
               <label for="updateCategory">Category</label>
               <input type="text" id="updateCategory" class="form-control" formControlName="category" list="categories"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
             </div>
             <div class="col-2">
               <label for="updateSize">Size</label>
               <input type="text" id="updateSize" class="form-control" formControlName="size" list="updateSizes"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
               <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
               <datalist id="updateSizes">
                 <option *ngFor="let size of (existingUpdateSizes | async)">{{size}}</option>
@@ -59,24 +59,34 @@
             <div class="col-2">
               <label for="updateStock">Current Stock</label>
               <input id="updateStock" type="number" class="form-control" formControlName="stock"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
             </div>
-            <div class="col-2">
-              <label for="updateDesiredStock">Desired Stock</label>
-              <input id="updateDesiredStock" type="number" class="form-control" formControlName="desired_stock"
-                     (keyup.enter)="submitItemUpdateForm()">
+            <div class="col-3">
+              <!-- Nesting columns to get more granular control over the width of each column -->
+              <div class="row">
+                <div class="col-6">
+                  <label for="updateDesiredStock">Desired Stock</label>
+                  <input id="updateDesiredStock" type="number" class="form-control" formControlName="desired_stock"
+                    (keyup.enter)="submitItemUpdateForm()">
+                </div>
+                <div class="col-6">
+                  <label for="updateMinimumStock">Minimum Stock</label>
+                  <input id="updateMinimumStock" type="number" class="form-control" formControlName="minimum_stock"
+                    (keyup.enter)="submitItemUpdateForm()">
+                </div>
+              </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
               <label for="updateUPC">UPC</label>
               <input type="text" id="updateUPC" class="form-control" formControlName="upc"
-                     (keyup.enter)="submitItemUpdateForm()">
+                (keyup.enter)="submitItemUpdateForm()">
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button data-dismiss="modal" type="submit" (click)="submitItemUpdateForm()" class="btn btn-primary"
-                [disabled]="editItemForm.invalid">Update Item</button>
+          [disabled]="editItemForm.invalid">Update Item</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -141,40 +151,42 @@
         </div>
       </div>
       <button type="submit" (click)="submitItemCreateForm()" [disabled]="newItemForm.invalid"
-              class="btn btn-primary my-3">Create Item</button>
+        class="btn btn-primary my-3">Create Item</button>
     </form>
   </div>
   <table class="table">
     <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Category</th>
-      <th scope="col">Brand</th>
-      <th scope="col">Condition</th>
-      <th scope="col">Sale Price</th>
-      <th scope="col">Wholesale Cost</th>
-      <th scope="col">Desired Stock</th>
-      <th scope="col">Current Stock</th>
-      <th></th>
-      <th></th>
-    </tr>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Category</th>
+        <th scope="col">Brand</th>
+        <th scope="col">Condition</th>
+        <th scope="col">Sale Price</th>
+        <th scope="col">Wholesale Cost</th>
+        <th scope="col">Desired Stock</th>
+        <th scope="col">Minimum Stock</th>
+        <th scope="col">Current Stock</th>
+        <th></th>
+        <th></th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of items">
-      <td>{{item.name}}</td>
-      <td>{{item.category}}</td>
-      <td>{{item.brand}}</td>
-      <td>{{item.condition}}</td>
-      <td>{{item.standard_price}}</td>
-      <td>{{item.wholesale_cost}}</td>
-      <td>{{item.desired_stock}}</td>
-      <td>{{item.stock}}</td>
-      <td><button class="btn btn-outline-secondary" (click)="editItem(item)">Edit</button></td>
-      <td>
-        <button class="btn btn-outline-danger" *ngIf="!item.disabled" (click)="toggleDisabled(item)">Disable</button>
-        <button class="btn btn-outline-primary" *ngIf="item.disabled" (click)="toggleDisabled(item)">Enable</button>
-      </td>
-    </tr>
+      <tr *ngFor="let item of items">
+        <td>{{item.name}}</td>
+        <td>{{item.category}}</td>
+        <td>{{item.brand}}</td>
+        <td>{{item.condition}}</td>
+        <td>{{item.standard_price}}</td>
+        <td>{{item.wholesale_cost}}</td>
+        <td>{{item.desired_stock}}</td>
+        <td>{{item.minimum_stock}}</td>
+        <td>{{item.stock}}</td>
+        <td><button class="btn btn-outline-secondary" (click)="editItem(item)">Edit</button></td>
+        <td>
+          <button class="btn btn-outline-danger" *ngIf="!item.disabled" (click)="toggleDisabled(item)">Disable</button>
+          <button class="btn btn-outline-primary" *ngIf="item.disabled" (click)="toggleDisabled(item)">Enable</button>
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>

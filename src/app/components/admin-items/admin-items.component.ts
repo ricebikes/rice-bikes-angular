@@ -40,6 +40,7 @@ export class AdminItemsComponent implements OnInit {
     brand: [''],
     condition: ['', Validators.required],
     desired_stock: ['', Validators.required],
+    minimum_stock: [''],
     upc: [''],
     standard_price: ['', Validators.required],
     wholesale_cost: ['', Validators.required],
@@ -95,6 +96,7 @@ export class AdminItemsComponent implements OnInit {
       disabled: false,
       managed: false,
       desired_stock: this.newItemForm.controls['desired_stock'].value,
+      minimum_stock: null,
       stock: 0
     }).then(res => {
       // reload the item list
@@ -114,6 +116,7 @@ export class AdminItemsComponent implements OnInit {
     this.editItemForm.controls['standard_price'].setValue(item.standard_price);
     this.editItemForm.controls['wholesale_cost'].setValue(item.wholesale_cost);
     this.editItemForm.controls['desired_stock'].setValue(item.desired_stock);
+    this.editItemForm.controls['minimum_stock'].setValue(item.minimum_stock);
     this.editItemForm.controls['stock'].setValue(item.stock);
     this.editItemForm.controls['disabled'].setValue(item.disabled);
     this.editItemToggle.nativeElement.click();
@@ -141,6 +144,7 @@ export class AdminItemsComponent implements OnInit {
       brand: this.editItemForm.controls['brand'].value,
       condition: this.editItemForm.controls['condition'].value,
       desired_stock: this.editItemForm.controls['desired_stock'].value,
+      minimum_stock: this.editItemForm.controls['minimum_stock'].value,
       upc: this.editItemForm.controls['upc'].value,
       standard_price: this.editItemForm.controls['standard_price'].value,
       wholesale_cost: this.editItemForm.controls['wholesale_cost'].value,

@@ -49,13 +49,15 @@
       "form" is the editable form for the orderRequest, and "request"
       is the actual request object.-->
     <form [formGroup]="obj.form">
-      <div class="form-row my-2">
+      <div class="form-row py-2" [ngClass]="{'bg-light-red': obj.urgent}">
         <div class="col-2">
-          <!-- Awful hack to get the "#" column to be smaller-->
+          <!-- Awful column nesting hack to get the "#" column to be smaller-->
           <div class="row">
             <div class="col-2">
               <!--Request ID -->
-              <b class="form-control-plaintext">{{ obj.request._id }}</b>
+              <b class="form-control-plaintext">
+                {{ obj.request._id }}
+              </b>
             </div>
             <div class="col-10">
               <!--Request Description -->
@@ -79,7 +81,8 @@
         </div>
         <div class="col-2">
           <!-- Item -->
-          <button *ngIf="!obj.request.itemRef" class="btn btn-outline-secondary"
+          <button *ngIf="!obj.request.itemRef" class="btn"
+            [ngClass]="{'btn-outline-secondary': !obj.urgent, 'btn-primary': obj.urgent}"
             (click)="triggerItemSelectModal(idx)">Select Item</button>
           <div class="input-group" *ngIf="obj.request.itemRef">
             <input type="text" readonly class="form-control" [value]="obj.request.itemRef.name" />
@@ -93,19 +96,22 @@
         </div>
         <div class="col-1">
           <!-- Order -->
-          <button *ngIf="!obj.request.orderRef && isAdmin | async" class="btn btn-outline-secondary"
-            (click)="triggerOrderSelectModal(idx)" [disabled]="obj.request.itemRef == null">Choose</button>
-
+          <button *ngIf="!obj.request.orderRef && isAdmin | async" class="btn" (click)="triggerOrderSelectModal(idx)"
+            [disabled]="obj.request.itemRef == null"
+            [ngClass]="{'btn-outline-secondary': !obj.urgent, 'btn-secondary': obj.urgent}">Choose</button>
           <div *ngIf="obj.request.orderRef" class="btn-group" role="group">
-            <a role="button" class="btn btn-outline-success"
+            <a role="button" class="btn" [ngClass]="{'btn-outline-success': !obj.urgent, 'btn-secondary': obj.urgent}"
               [routerLink]="['/orders', obj.request.orderRef]">{{obj.request.supplier}}</a>
-            <button *ngIf="isAdmin | async" type="button" class="btn btn-outline-danger"
+            <button *ngIf="isAdmin | async" type="button" class="btn"
+              [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-dark':obj.urgent}"
               (click)="removeOrderFromRequest(idx)"><i class="fas fa-times"></i></button>
           </div>
         </div>
         <div class="col-1">
           <!-- Status -->
-          <p class="form-control-plaintext">{{obj.request.status}}</p>
+          <p class="form-control-plaintext">
+            {{obj.request.status}}
+          </p>
         </div>
         <div class="col-2">
           <!-- Notes -->
@@ -115,10 +121,12 @@
         <div class="col-1">
           <!-- History and Delete-->
           <div class="btn-group" role="group">
-            <button class="btn btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal"
-              (click)="setOrderReqForActionsView(obj.request)"><i class="fas fa-history"></i></button>
-            <button class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteConfirmationModal"
-              (click)="this.currentSelectedRequestIdx=idx"><i class="fas fa-trash"></i></button>
+            <button class="btn" [ngClass]="{'btn-outline-primary': !obj.urgent, 'btn-secondary': obj.urgent}"
+              data-toggle="modal" data-target="#pastActionsModal" (click)="setOrderReqForActionsView(obj.request)"><i
+                class="fas fa-history"></i></button>
+            <button class="btn" [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-secondary': obj.urgent}"
+              data-toggle="modal" data-target="#deleteConfirmationModal" (click)="this.currentSelectedRequestIdx=idx"><i
+                class="fas fa-trash"></i></button>
           </div>
         </div>
       </div>
@@ -192,6 +200,14 @@
             </div>
             <div class="col-8">
               {{selectedDetailItem.desired_stock}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <b>Minimum Stock</b>
+            </div>
+            <div class="col-8">
+              {{selectedDetailItem.minimum_stock}}
             </div>
           </div>
           <div class="row">

@@ -11,5 +11,6 @@ export class Item {
   disabled: boolean;
   managed: boolean; // the backend uses this to handle items like tax that the frontend should not interact with
   desired_stock: number;
+  minimum_stock: number;
   stock: number;
 }

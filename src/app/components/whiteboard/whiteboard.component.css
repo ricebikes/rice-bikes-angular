@@ -9,3 +9,8 @@ hr.thick {
 .padded-container {
     padding: 0% 10% 0% 10%
 }
+
+/* Extracted from the bootstrap source. It's the value for a table-danger background color */
+.bg-light-red {
+    background-color: #f8d7daff
+}
