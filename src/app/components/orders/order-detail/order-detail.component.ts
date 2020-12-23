@@ -4,11 +4,12 @@ import { Order } from '../../../models/order';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Item } from '../../../models/item';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Transaction } from '../../../models/transaction';
 import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
+import { NewOrderComponent } from '../new-order/new-order.component';
 
 @Component({
   selector: 'app-order-detail',
@@ -23,6 +24,7 @@ export class OrderDetailComponent implements OnInit {
   order: BehaviorSubject<Order> = new BehaviorSubject(null);
   allOrderItems: FormGroup; // holding OrderItems in FormGroup allows for inline updates
   stagedOrderItem: BehaviorSubject<Item> = new BehaviorSubject(null);
+  freightChargeForm = new FormControl('', Validators.required);
 
   constructor(private orderService: OrderService,
     private orderRequestService: OrderRequestService,
@@ -82,6 +84,15 @@ export class OrderDetailComponent implements OnInit {
   setStatus(status: string) {
     this.orderService.updateStatus(this.order.getValue(), status)
       .then(newOrder => this.order.next(newOrder));
+  }
+
+  /**
+   * Sets the freight charge for an order, based on the freightChargeForm
+   */
+  setFreightCharge() {
+    const charge = parseFloat(this.freightChargeForm.value);
+    this.orderService.updateFreightCharge(this.order.getValue(), charge)
+      .then(newOrder => {this.order.next(newOrder)});
   }
 
   /**

@@ -94,6 +94,19 @@ export class OrderService {
   }
 
   /**
+   * Sets order freight charge
+   * @param order Order to set freight charge for
+   * @param freight_charge value to set for freight charge
+   */
+  updateFreightCharge(order: Order, freight_charge: number): Promise<Order> {
+    return this.http.put(`${this.backendURL}/${order._id}/freight-charge`,
+      { charge: freight_charge }, OrderService.jwt())
+      .toPromise()
+      .then(res => res.json() as OrderRequest)
+      .catch(err => {this.handleError(err); return null});
+  }
+
+  /**
    * Adds an OrderRequest to the order
    * @param order: Order to add item to
    * @param orderItem: OrderRequest to add
