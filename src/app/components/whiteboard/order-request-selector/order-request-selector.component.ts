@@ -26,13 +26,11 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
   @Output() chosenRequest = new EventEmitter<OrderRequest>();
 
   activeOrderRequests: Promise<OrderRequest[]>; // all active order requests
-  availableOrderRequests: Promise<OrderRequest[]>; // requests to show in selector
 
   stagedOrderRequestForm = this.fb.group({
     request: [null, Validators.required],
     partNum: [null],
     quantity: [null],
-    restock: [false, Validators.required],
     transactionID: [null, Validators.nullValidator, (fg: FormControl) => {
       /**
        * Async validator to verify transaction exists. Requests all transaction IDs
@@ -49,10 +47,8 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
     }],
   }, {
     validator: (fg: FormGroup) => {
-      // Custom validator, to ensure that either the quantity is valid, or restock is true.
-      const restock = fg.get('restock').value;
       const quantity = fg.get('quantity').value;
-      return (!restock && (quantity <= 0 || quantity == null)) ? { badQuantity: true } : null;
+      return (quantity == null || quantity < 1) ? { badQuantity: true } : null;
     }
   });
 
@@ -66,17 +62,6 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.activeOrderRequests = this.orderRequestService.getActiveRequests();
-    // If the transaction ID is set, filter out order requests associated with transaction
-    this.availableOrderRequests = this.activeOrderRequests.then(requests => {
-      if (this.preset_transaction != null) {
-        // Filter requests that are in the transaction
-        return requests.filter(candidate => {
-          return this.preset_transaction.orderRequests.findIndex(x => x._id == candidate._id) == -1;
-        })
-      } else {
-        return requests;
-      }
-    })
     this.createMode = this.create_only;
     if (this.preset_transaction != null) {
       this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction._id);
@@ -94,17 +79,6 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
       this.preset_transaction = changes.preset_transaction.currentValue;
       if (this.preset_transaction) {
         this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction._id);
-        // If the transaction ID is set, filter out order requests associated with transaction
-        this.availableOrderRequests = this.activeOrderRequests.then(requests => {
-          if (this.preset_transaction != null) {
-            // Filter requests that are in the transaction
-            return requests.filter(candidate => {
-              return this.preset_transaction.orderRequests.findIndex(x => x._id == candidate._id) == -1;
-            })
-          } else {
-            return requests;
-          }
-        })
       }
     }
   }
@@ -140,20 +114,43 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
    * @param req Order Request to Select
    */
   selectOrderRequest(req: OrderRequest) {
-    this.chosenRequest.emit(req);
-    // Dismiss Modal.
-    this.orderRequestModalButton.nativeElement.click();
+    /**
+     * This is not ideal at all, but due to the way that the association between transactions and order requests
+     * is defined, the transaction component has no way to distinguish between an existing order request 
+     * (which has been emitted by this component, and the transaction component should add itself to) and
+     * a newly created order request (which the transaction will already be added to). Due to this, the
+     * order request selector must handle adding transactions to existing order requests, as well as new ones.
+     * 
+     * the alternative to this would be to either:
+     * a) make a better architecture for the relationship between transactions and order requests
+     * b) split order request selection login into the transaction control
+     * 
+     * I don't want to rewrite the whole architecture, and I want to keep the validation logic for creating an order request
+     * in one component (not both transaction and whiteboard components). Thus we are left with this "solution"
+     */
+    this.transactionService.addOrderRequest(this.preset_transaction._id, req).then(res => {
+      this.chosenRequest.emit(req);
+      // Dismiss Modal.
+      this.orderRequestModalButton.nativeElement.click();
+    })
   }
 
   /**
    * Make an order request from the staged order form.
    */
   createOrderRequest() {
-    // If Restock is set, then the quantity should be negative 1.
-    const quantity = this.stagedOrderRequestForm.get('restock').value ?
-      -1 : this.stagedOrderRequestForm.get('quantity').value;
-    const transactions = this.stagedOrderRequestForm.get('transactionID').value != null ?
-      [this.stagedOrderRequestForm.get('transactionID').value] : null;
+    const quantity = this.stagedOrderRequestForm.get('quantity').value;
+    const transaction_id = this.stagedOrderRequestForm.get('transactionID').value;
+    let transactions = []
+    if (transaction_id) {
+      /**
+       * Internally, one reference to a transaction equates to that transaction needing one part. 
+       * Therefore, we must add the transaction number to an array "quantity" number of times.
+       */
+      for (let i = 0; i < quantity; i++) {
+        transactions.push(transaction_id);
+      }
+    }
     this.orderRequestService.createOrderReq(quantity,
       this.stagedOrderRequestForm.get('request').value,
       this.stagedOrderRequestForm.get('partNum').value,

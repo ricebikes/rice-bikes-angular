@@ -1,3 +1,6 @@
+<button hidden #customPriceModalTrigger data-toggle="modal" data-target="#customItemPriceModal">Hidden Trigger for "Set Custom
+  Price" Modal</button>
+
 <div class="modal fade" id="bikeAddModal" tabindex="-1" role="dialog" aria-labelledby="bikeModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -68,7 +71,6 @@
           <thead>
             <th scope="col">#</th>
             <th scope="col">Description</th>
-            <th scope="col">Quantity</th>
             <th scope="col">Item</th>
             <th scope="col">Status</th>
             <th scope="col">Remove</th>
@@ -77,7 +79,6 @@
             <tr *ngFor="let orderReq of transaction?.orderRequests">
               <th scope="row">{{orderReq._id}}</th>
               <td>{{orderReq.request}}</td>
-              <td>{{orderReq.quantity}}</td>
               <td *ngIf="orderReq.itemRef">{{orderReq.itemRef.name}}</td>
               <td *ngIf="!orderReq.itemRef">None</td>
               <td>{{orderReq.status}}</td>
@@ -113,6 +114,29 @@
             {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time |
               timeAgo}}</span></li>
         </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Item Price Modal -->
+<div class="modal fade" id="customItemPriceModal" tabindex="-1">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="customItemPriceModalLabel">Set Used Item Price</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="customPriceForm">
+          <input class="form-control" type="text" formControlName="price">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" [disabled]="customPriceForm.invalid" (click)="addUsedItem()">Continue</button>
       </div>
     </div>
   </div>

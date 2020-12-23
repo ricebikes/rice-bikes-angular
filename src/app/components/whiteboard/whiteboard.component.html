@@ -70,11 +70,8 @@
         </div>
         <div class="col-1">
           <!-- Quantity -->
-          <!--Only trigger restock string at "magic" -1 quantity, a value the user cannot set-->
-          <p *ngIf="obj.request.quantity == -1" class="form-control-plaintext">restock</p>
-          <input *ngIf="obj.request.quantity != -1"
-            [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number" min="1"
-            formControlName="quantity" />
+          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number"
+            [min]="obj.request.transactions ? obj.request.transactions.length : 1" formControlName="quantity" />
         </div>
         <div class="col-1">
           <!-- Transactions -->
@@ -303,8 +300,8 @@
       <div class="modal-body" *ngIf="actionsViewOrderReq?.actions && actionsViewOrderReq?.actions.length > 0">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" *ngFor="let action of actionsViewOrderReq?.actions">{{action.employee.firstname}}
-            {{action.employee.lastname}}: {{action.description}} <span
-              class="float-right">{{action.time | timeAgo}}</span></li>
+            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time |
+              timeAgo}}</span></li>
         </ul>
       </div>
     </div>

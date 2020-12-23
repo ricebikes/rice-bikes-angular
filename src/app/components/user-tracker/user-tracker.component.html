@@ -6,7 +6,6 @@
 </span>
 <!-- timeout, triggers if there are less than 10 seconds before the user is cleared-->
 <span class="mr-2" *ngIf="(userState | async).timeout > 0 && currentUser">
-  <!-- timeout was set to 10 seconds in app.module.ts-->
   <span class="mr-2"> {{timeout - (userState | async).timeout}} Seconds Until Logout</span>
   <button type="button" class="btn btn-outline-warning" (click)="stopTimer()">Stop Timeout</button>
 </span>

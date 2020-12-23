@@ -15,7 +15,7 @@
       </div>
       <div class="modal-body">
         <label for="scanInput" hidden>Scan Input</label>
-        <input id="scanInput" #scanInput type="text" class="form-control" (keyup.enter)="addByUPC()">
+        <input id="scanInput" [formControl]="scanData" type="text" class="form-control" (keyup.enter)="addByUPC()">
       </div>
     </div>
   </div>

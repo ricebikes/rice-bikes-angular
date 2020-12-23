@@ -19,12 +19,17 @@ import { OrderRequest } from '../../../models/orderRequest';
 export class TransactionDetailComponent implements OnInit {
 
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
+  @ViewChild('customPriceModalTrigger') customPriceModalButtonTrigger: ElementRef;
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderRequestSelector') orderRequestSelectorComponent: OrderRequestSelectorComponent;
 
   transaction: Transaction;
   bikeForm: FormGroup;
+  customPriceForm = new FormGroup({
+    'price': new FormControl('', [Validators.required])
+  });
   editingTransaction = false;
+  stagedUsedItem: Item; // Used to stage a used item while user sets price
 
   loading = true;
   emailLoading = false;
@@ -120,7 +125,24 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   addItem(item: Item) {
-    this.transactionService.addItemToTransaction(this.transaction._id, item._id);
+    if (item.condition == 'Used') {
+      // Prompt user to set custom price.
+      let suggestedPrice = this.transaction.employee ? item.wholesale_cost : item.standard_price;
+      this.customPriceForm.controls['price'].setValue(suggestedPrice);
+      this.stagedUsedItem = item;
+      this.customPriceModalButtonTrigger.nativeElement.click();
+    } else {
+      this.transactionService.addItemToTransaction(this.transaction._id, item._id);
+    }
+  }
+
+  addUsedItem() {
+    // Get the price and the item to add from the custom price form and the stagedUsedItem variable
+    const price = parseFloat(this.customPriceForm.controls['price'].value);
+    const item = this.stagedUsedItem;
+    // Add used item then dismiss modal
+    this.transactionService.addItemToTransaction(this.transaction._id,
+      item._id, price).then(res => this.customPriceModalButtonTrigger.nativeElement.click())
   }
 
   get canComplete(): boolean {
@@ -190,14 +212,8 @@ export class TransactionDetailComponent implements OnInit {
    * @param req Order Request Transaction will wait on
    */
   addOrderRequest(req: OrderRequest) {
-    // Check to see if the request already has been associated with our transaction, otherwise add it
-    if (req.transactions.includes(parseInt(this.transaction._id))) {
-      // Just update the transaction
-      this.transactionService.getTransaction(this.transaction._id);
-    } else {
-      // Add the request
-      this.transactionService.addOrderRequest(this.transaction._id, req)
-    }
+    // The order request selection component will handle adding the request to transaction. Just pull new transaction from backend.
+    this.transactionService.getTransaction(this.transaction._id);
   }
 
   /**

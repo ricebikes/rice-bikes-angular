@@ -25,7 +25,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let request of (availableOrderRequests | async)" (click)="selectOrderRequest(request)">
+              <tr *ngFor="let request of (activeOrderRequests | async)" (click)="selectOrderRequest(request)">
                 <td>{{request._id}}</td>
                 <td>{{request.request}}</td>
                 <td>{{request.partNumber}}</td>
@@ -76,14 +76,6 @@
               </div>
               <div class="col">
                 <input class="form-control" type="number" min="1" formControlName="quantity" id="quantityInput" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="checkbox" id="restockToggle" formControlName="restock">
-                  <label class="form-check-label" for="restockToggle">Restock</label>
-                </div>
               </div>
             </div>
           </form>

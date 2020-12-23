@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import {Http, URLSearchParams, RequestOptions, Headers} from '@angular/http';
-import {Customer} from '../models/customer';
-import {RepairItem} from '../models/repairItem';
-import {Item} from '../models/item';
-import {Transaction} from '../models/transaction';
-import {CONFIG} from '../config';
-import {Observable} from 'rxjs/Observable';
-import {Repair} from '../models/repair';
-import {HttpErrorResponse} from '@angular/common/http';
-import {AlertService} from './alert.service';
+import { Http, URLSearchParams, RequestOptions, Headers } from '@angular/http';
+import { Customer } from '../models/customer';
+import { RepairItem } from '../models/repairItem';
+import { Item } from '../models/item';
+import { Transaction } from '../models/transaction';
+import { CONFIG } from '../config';
+import { Observable } from 'rxjs/Observable';
+import { Repair } from '../models/repair';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertService } from './alert.service';
 
 @Injectable()
 export class SearchService {
@@ -18,12 +18,12 @@ export class SearchService {
   private repairUrl = `${CONFIG.api_url}/repairs/search`;
   private itemUrl = `${CONFIG.api_url}/items`;
 
-  constructor(private http: Http, private alertService: AlertService) {}
+  constructor(private http: Http, private alertService: AlertService) { }
 
   private static jwt_headers() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser.token) {
-      return new Headers({'x-access-token': currentUser.token});
+      return new Headers({ 'x-access-token': currentUser.token });
     }
   }
 
@@ -90,19 +90,19 @@ export class SearchService {
    * @param condition: item condition (New or Used)
    */
   itemSearch(name?: string,
-             category?: string,
-             size?: string,
-             brand?: string,
-             condition?: string): Promise<Item[]> {
+    category?: string,
+    size?: string,
+    brand?: string,
+    condition?: string): Promise<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
     requestOptions.headers = SearchService.jwt_headers();
-    if (name) {params.set('name', name); }
-    if (category) {params.set('category', category); }
-    if (size) {params.set('size', size); }
-    if (brand) {params.set('brand', brand); }
-    if (condition) {params.set('condition', condition); }
-    if (!(name || category || size || brand || condition)) {return Observable.of([]).toPromise(); }
+    if (name) { params.set('name', name); }
+    if (category) { params.set('category', category); }
+    if (size) { params.set('size', size); }
+    if (brand) { params.set('brand', brand); }
+    if (condition) { params.set('condition', condition); }
+    if (!(name || category || size || brand || condition)) { return Observable.of([]).toPromise(); }
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
@@ -111,7 +111,7 @@ export class SearchService {
   }
 
   /**
-   * Searches for an item by the UPC only. Its expected that there will only be one item returned here.
+   * Searches for an item by the UPC only. It is expected that there will only be one item returned here.
    * @param upc
    */
   upcSearch(upc: string): Promise<Item[]> {
@@ -123,7 +123,10 @@ export class SearchService {
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
       .then(res => res.json() as Item[])
-      .catch(err => this.handleError(err));
+      .catch(err => {
+        this.handleError(err);
+        return null;
+      });
   }
 
   /**
@@ -131,7 +134,7 @@ export class SearchService {
    */
   itemCategories(): Promise<String[]> {
     return this.http.get(`${this.itemUrl}/categories`,
-      new RequestOptions({headers: SearchService.jwt_headers()}))
+      new RequestOptions({ headers: SearchService.jwt_headers() }))
       .toPromise()
       .then(res => res.json().sort())
       .catch(err => this.handleError(err));
@@ -142,7 +145,7 @@ export class SearchService {
    */
   itemBrands(): Promise<String[]> {
     return this.http.get(`${this.itemUrl}/brands`,
-      new RequestOptions({headers: SearchService.jwt_headers()}))
+      new RequestOptions({ headers: SearchService.jwt_headers() }))
       .toPromise()
       .then(res => res.json().sort())
       .catch(err => this.handleError(err));

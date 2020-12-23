@@ -246,12 +246,14 @@ export class TransactionService {
     });
   }
 
-  addItemToTransaction(transaction_id: string, item_id: string): Promise<any> {
+  addItemToTransaction(transaction_id: string, item_id: string, custom_price?: number): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
+      let query = {_id: item_id};
+      if (custom_price) query["custom_price"] = parseFloat(custom_price.toFixed(2));
       return this.http
         .post(
           `${this.backendUrl}/${transaction_id}/items`,
-          { _id: item_id },
+          query,
           credentials
         )
         .toPromise()
