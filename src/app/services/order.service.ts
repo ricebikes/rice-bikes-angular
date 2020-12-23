@@ -103,7 +103,7 @@ export class OrderService {
       { charge: freight_charge }, OrderService.jwt())
       .toPromise()
       .then(res => res.json() as OrderRequest)
-      .catch(err => {this.handleError(err); return null});
+      .catch(err => { this.handleError(err); return null });
   }
 
   /**
@@ -147,6 +147,20 @@ export class OrderService {
       .toPromise()
       .then(res => res.json() as Order)
       .catch(err => { this.handleError(err); return null; });
+  }
+
+  /**
+   * Sets the notes string for an order
+   * @param order Order to update
+   * @param notes Notes string to set for order
+   */
+  updateNotes(order: Order, notes: string): Promise<Order> {
+    return this.http.put(`${this.backendURL}/${order._id}/notes`,
+      { notes: notes },
+      OrderService.jwt())
+      .toPromise()
+      .then(res => res.json() as Order)
+      .catch(err => { this.handleError(err); return null; })
   }
 
   /**

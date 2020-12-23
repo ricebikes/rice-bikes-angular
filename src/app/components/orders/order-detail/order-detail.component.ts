@@ -21,10 +21,13 @@ export class OrderDetailComponent implements OnInit {
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
 
   loading = true;
+  editingNotes = false;
+  displayNotes = '';
   order: BehaviorSubject<Order> = new BehaviorSubject(null);
   allOrderItems: FormGroup; // holding OrderItems in FormGroup allows for inline updates
   stagedOrderItem: BehaviorSubject<Item> = new BehaviorSubject(null);
   freightChargeForm = new FormControl('', Validators.required);
+  notesForm = new FormControl('');
 
   constructor(private orderService: OrderService,
     private orderRequestService: OrderRequestService,
@@ -41,6 +44,13 @@ export class OrderDetailComponent implements OnInit {
         for (const item of newOrder.items) {
           itemsControl.push(this.orderItemToForm(item));
         }
+        if (newOrder.notes) {
+          this.displayNotes = newOrder.notes.replace(/\n/g, "</br>"); // Since notes are rendered as html
+          this.notesForm.setValue(newOrder.notes);
+        } else {
+          this.displayNotes = '';
+          this.notesForm.setValue('');
+        }
       }
     });
     // Get param for the order we should display
@@ -51,6 +61,15 @@ export class OrderDetailComponent implements OnInit {
           this.order.next(newOrder);
         });
     });
+  }
+
+  /**
+   * Updates notes for an order, using the notesForm to get the new value for the order's notes
+   */
+  updateNotes() {
+    this.orderService.updateNotes(this.order.value, this.notesForm.value)
+      .then(newOrder => this.order.next(newOrder));
+    this.editingNotes = false;
   }
 
   /**
@@ -92,7 +111,7 @@ export class OrderDetailComponent implements OnInit {
   setFreightCharge() {
     const charge = parseFloat(this.freightChargeForm.value);
     this.orderService.updateFreightCharge(this.order.getValue(), charge)
-      .then(newOrder => {this.order.next(newOrder)});
+      .then(newOrder => { this.order.next(newOrder) });
   }
 
   /**
@@ -131,7 +150,7 @@ export class OrderDetailComponent implements OnInit {
    */
   removeRequestFromOrder(index: number) {
     let orderReqId = (<FormArray>this.allOrderItems.get('items')).at(index).get('_id').value;
-    this.orderService.disassociateOrderRequest(this.order.value,<OrderRequest>{_id:orderReqId})
+    this.orderService.disassociateOrderRequest(this.order.value, <OrderRequest>{ _id: orderReqId })
       .then(newOrder => {
         this.order.next(newOrder);
       })

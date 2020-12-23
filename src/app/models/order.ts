@@ -9,6 +9,7 @@ export class Order {
   tracking_number: string;
   freight_charge: Number;
   total_price: number;
+  notes: string;
   status: string;
   items: OrderRequest[];
 }
