@@ -248,7 +248,7 @@ export class TransactionService {
 
   addItemToTransaction(transaction_id: string, item_id: string, custom_price?: number): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
-      let query = {_id: item_id};
+      let query = { _id: item_id };
       if (custom_price) query["custom_price"] = parseFloat(custom_price.toFixed(2));
       return this.http
         .post(
@@ -319,31 +319,5 @@ export class TransactionService {
         .then((res) => res.json())
         .catch((err) => this.handleError(err));
     });
-  }
-
-  addOrderRequest(transaction_id, request: OrderRequest) {
-    return this.authService.getUserCredentials().then(credentials => {
-      return this.http
-        .post(`${this.backendUrl}/${transaction_id}/order-request`, { "requestid": request._id }, credentials)
-        .toPromise()
-        .then(res => {
-          this.transaction.next(res.json());
-          return res.json() as Transaction
-        })
-        .catch(err => this.handleError(err));
-    })
-  }
-
-  removeOrderRequest(transaction_id, request: OrderRequest) {
-    return this.authService.getUserCredentials().then(credentials => {
-      return this.http
-      .delete(`${this.backendUrl}/${transaction_id}/order-request/${request._id}`, credentials)
-      .toPromise()
-      .then(res => {
-          this.transaction.next(res.json());
-          return res.json() as Transaction
-      })
-      .catch(err => this.handleError(err));
-    })
   }
 }

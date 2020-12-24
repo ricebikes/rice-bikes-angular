@@ -128,8 +128,8 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
      * I don't want to rewrite the whole architecture, and I want to keep the validation logic for creating an order request
      * in one component (not both transaction and whiteboard components). Thus we are left with this "solution"
      */
-    this.transactionService.addOrderRequest(this.preset_transaction._id, req).then(res => {
-      this.chosenRequest.emit(req);
+    this.orderRequestService.addTransaction(req, this.preset_transaction._id).then(res => {
+      this.chosenRequest.emit(res);
       // Dismiss Modal.
       this.orderRequestModalButton.nativeElement.click();
     })

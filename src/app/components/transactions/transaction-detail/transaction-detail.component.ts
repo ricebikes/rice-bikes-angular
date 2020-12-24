@@ -9,6 +9,7 @@ import { AlertService } from '../../../services/alert.service';
 import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
 import { OrderRequest } from '../../../models/orderRequest';
+import { OrderRequestService } from '../../../services/order-request.service';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -38,6 +39,7 @@ export class TransactionDetailComponent implements OnInit {
 
   constructor(
     private transactionService: TransactionService,
+    private orderRequestService: OrderRequestService,
     private route: ActivatedRoute,
     private router: Router,
   ) { }
@@ -221,7 +223,10 @@ export class TransactionDetailComponent implements OnInit {
    * @param req Order Request to remove from transaction
    */
   removeOrderRequest(req: OrderRequest) {
-    this.transactionService.removeOrderRequest(this.transaction._id, req)
+    this.orderRequestService.removeTransaction(req, this.transaction._id).then(res => {
+      // Get new copy of transaction from backend
+      this.transactionService.getTransaction(this.transaction._id);
+    });
   }
 
 }

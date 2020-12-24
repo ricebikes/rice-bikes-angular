@@ -134,6 +134,41 @@ export class OrderRequestService {
   }
 
   /**
+   * Adds a transaction to an order request. Transaction will also have the order request added to it.
+   * @param orderReq Order request to add transaction to
+   * @param transaction_id Transaction ID to add to order request
+   */
+  addTransaction(
+    orderReq: OrderRequest,
+    transaction_id: string
+  ): Promise<OrderRequest> {
+    return this.authService.getUserCredentials().then(credentials => {
+      return this.http
+        .post(`${this.backendURL}/${orderReq._id}/transaction`, 
+        {transaction_id: transaction_id}, 
+        credentials
+        ).toPromise()
+        .then(res => res.json() as OrderRequest)
+        .catch(err => {this.handleError(err); return null;})
+    })
+  }
+
+  removeTransaction(
+    orderReq: OrderRequest,
+    transaction_id: string
+  ): Promise<OrderRequest> {
+    return this.authService.getUserCredentials().then(cred => {
+      return this.http
+        .delete(
+          `${this.backendURL}/${orderReq._id}/transaction/${transaction_id}`,
+          cred
+        ).toPromise()
+        .then(res => res.json() as OrderRequest)
+        .catch(err => {this.handleError(err); return null});
+    })
+  }
+
+  /**
    * Sets the part number string for an OrderRequest
    * @param orderReq: request to update
    * @param partNumber: new part number to set for Order Request
@@ -194,31 +229,6 @@ export class OrderRequestService {
         .put(
           `${this.backendURL}/${orderReq._id}/quantity`,
           { quantity: quantity },
-          cred
-        )
-        .toPromise()
-        .then((res) => res.json() as OrderRequest)
-        .catch((err) => {
-          this.handleError(err);
-          return null;
-        });
-    });
-  }
-
-  /**
-   * Set the transaction for an order request
-   * @param orderReq: order request to update
-   * @param transactions: array of transactions to associate
-   */
-  setTransactions(
-    orderReq: OrderRequest,
-    transactions: Transaction[]
-  ): Promise<OrderRequest> {
-    return this.authService.getUserCredentials().then((cred) => {
-      return this.http
-        .put(
-          `${this.backendURL}/${orderReq._id}/transactions`,
-          { transactions: transactions },
           cred
         )
         .toPromise()
