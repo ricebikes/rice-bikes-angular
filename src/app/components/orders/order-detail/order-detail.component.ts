@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { OrderService } from '../../../services/order.service';
 import { Order } from '../../../models/order';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +19,7 @@ import { NewOrderComponent } from '../new-order/new-order.component';
 export class OrderDetailComponent implements OnInit {
 
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
+  @ViewChild('freightChargeModalBtn') freightChargeModalBtn: ElementRef;
 
   loading = true;
   editingNotes = false;
@@ -111,7 +112,11 @@ export class OrderDetailComponent implements OnInit {
   setFreightCharge() {
     const charge = parseFloat(this.freightChargeForm.value);
     this.orderService.updateFreightCharge(this.order.getValue(), charge)
-      .then(newOrder => { this.order.next(newOrder) });
+      .then(newOrder => { 
+        this.order.next(newOrder);
+        this.freightChargeForm.reset();
+        this.freightChargeModalBtn.nativeElement.click();
+      });
   }
 
   /**

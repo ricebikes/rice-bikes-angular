@@ -39,7 +39,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button type="button" data-dismiss="modal" class="btn btn-primary" (click)="setFreightCharge()"
-          data-dismiss="modal">Confirm</button>
+          data-dismiss="modal" [disabled]="freightChargeForm.invalid">Confirm</button>
       </div>
     </div>
   </div>
@@ -72,7 +72,8 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="setStatus('In Cart')">In Cart</a>
         </div>
-        <button class="btn btn-primary float-right ml-2 my-3" data-toggle="modal" data-target="#setFreightChargeModal">
+        <button #freightChargeModalBtn class="btn btn-primary float-right ml-2 my-3" data-toggle="modal"
+          data-target="#setFreightChargeModal">
           Set Freight Charge
         </button>
         <button *ngIf="!editingNotes" class="btn btn-secondary float-right my-3" (click)="this.editingNotes = true">
@@ -126,7 +127,7 @@
         <td>{{control.get("stock").value}}</td>
         <td *ngIf="control.get('transaction').value">{{control.get("transaction").value}}</td>
         <td *ngIf="!control.get('transaction').value">None</td>
-        <td><input type="number" class="form-control" formControlName="quantity"></td>
+        <td><input type="number" [readonly]="currentOrder.status=='Completed'" class="form-control" formControlName="quantity"></td>
         <td><button class="btn btn-primary" [disabled]="!control.dirty"
             (click)="updateRequestQuantity(idx, control.get('quantity').value)">Update</button></td>
         <td><button class="btn btn-danger" (click)="removeRequestFromOrder(idx)">Remove</button></td>
