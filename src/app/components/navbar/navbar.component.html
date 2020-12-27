@@ -1,9 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" routerLink="/transactions">
       <img src="/assets/img/rice-bikes_white.png" width="80" height="80" class="d-inline-block align-top" alt="">
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -13,7 +14,8 @@
       <!--<app-search-transaction *ngIf="loggedIn | async"></app-search-transaction>-->
       <div class="navbar-nav ml-auto mr-2">
         <li *ngIf="isAdmin | async" class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
             Admin
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -36,7 +38,8 @@
 <div *ngIf="loggedIn | async" class="container mt-3 mb-3">
   <div class="row justify-content-between">
     <div class="col">
-      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+      <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+        data-toggle="dropdown">
         New transaction
       </button>
       <div class="dropdown-menu">
@@ -48,8 +51,13 @@
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" [routerLink]="['/transactions/new']" [queryParams]="{t: 'merch'}">Merchandise</a>
       </div>
-      <button class="btn btn-outline-secondary" type="button" [routerLink]="['/orders/whiteboard']">
+      <button [hidden]="!viewingTransactions()" class="btn btn-outline-secondary" type="button"
+        [routerLink]="['/orders/whiteboard']">
         White Board
+      </button>
+      <button [hidden]="viewingTransactions()" class="btn btn-outline-secondary" type="button"
+        [routerLink]="['/transactions']">
+        Transactions
       </button>
     </div>
     <div class="col-lg">
@@ -60,5 +68,3 @@
   </div>
   <!--<button class="btn btn-outline-secondary">New refurb</button>-->
 </div>
-
-

@@ -37,7 +37,6 @@ export class WhiteboardComponent implements OnInit {
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderSelectorComponent') OrderSelectorComponent: OrderSelectorComponent;
   @ViewChild('orderRequestSelectorComponent') orderRequestSelectorComponent: OrderRequestSelectorComponent;
-  @ViewChild('restockQuantityGuardButton') restockQuantityGuardButton: ElementRef;
 
   constructor(
     private orderRequestService: OrderRequestService,
@@ -109,13 +108,13 @@ export class WhiteboardComponent implements OnInit {
       transaction_str = transaction_str.slice(0, -2); // Remove last comma
     }
     // Request is urgent if minimum stock is nonzero, and current stock is less than or equal to minimum.
-    const urgent = (request.status != 'Completed') 
-                    && (request.itemRef != null) 
-                    && (request.itemRef.minimum_stock != null) 
-                    && (request.itemRef.minimum_stock > 0)
-                    && (request.itemRef.stock <= request.itemRef.minimum_stock)
+    const urgent = (request.status != 'Completed')
+      && (request.itemRef != null)
+      && (request.itemRef.minimum_stock != null)
+      && (request.itemRef.minimum_stock > 0)
+      && (request.itemRef.stock <= request.itemRef.minimum_stock)
     // Push an object to hold both the request and its form.
-    return { form: group, request: request, transaction_str: transaction_str, urgent: urgent};
+    return { form: group, request: request, transaction_str: transaction_str, urgent: urgent };
   }
 
   /**
@@ -225,7 +224,7 @@ export class WhiteboardComponent implements OnInit {
   orderReqToForm(req: OrderRequest): FormGroup {
     return this.fb.group({
       request: [req.request, Validators.required],
-      quantity: [req.quantity, Validators.compose([Validators.required, WhiteboardComponent.nonZero])],
+      quantity: [{ value: req.quantity, disabled: req.status == 'Completed' }, Validators.compose([Validators.required, WhiteboardComponent.nonZero])],
       partNumber: [req.partNumber],
       notes: [req.notes],
     });
@@ -279,14 +278,7 @@ export class WhiteboardComponent implements OnInit {
   triggerOrderSelectModal(request_idx: number) {
     // Save current Order Request index.
     this.currentSelectedRequestIdx = request_idx;
-    // Now we need to be sure that the quantity of the order request is set
-    if (this.orderRequestsWithForms[request_idx].request.quantity > 0) {
-      // trigger the order selection, our check has passed.
-      this.OrderSelectorComponent.triggerOrderSelection();
-    } else {
-      // Launch the restock quantity set modal.
-      this.restockQuantityGuardButton.nativeElement.click();
-    }
+    this.OrderSelectorComponent.triggerOrderSelection();
   }
 
   /**
@@ -330,22 +322,6 @@ export class WhiteboardComponent implements OnInit {
       .then(newOrder => {
         // Just need to clear the orderRef value in our local copy of the data, no need to pull from backend
         this.orderRequestsWithForms[idx].request.orderRef = null;
-      })
-  }
-
-  /**
-   * Submits an order request quantity update, and then triggers the "Select Order" Modal.
-   */
-  submitOrderRequestQuantity() {
-    // Dismiss Popup
-    this.restockQuantityGuardButton.nativeElement.click();
-    const orderReq = this.orderRequestsWithForms[this.currentSelectedRequestIdx].request;
-    this.orderRequestService.setQuantity(orderReq, this.restockQuantityForm.controls['quantity'].value)
-      .then(newOrderReq => {
-        this.restockQuantityForm.reset();
-        this.orderRequestsWithForms[this.currentSelectedRequestIdx] = this.orderRequestToContainer(newOrderReq);
-        // Now, trigger the order selection modal
-        this.triggerOrderSelectModal(this.currentSelectedRequestIdx);
       })
   }
 

@@ -78,7 +78,7 @@ export class SearchService {
     return this.http.get(`${this.transactionUrl}/ids`, requestOptions)
       .toPromise()
       .then(res => res.json() as string[])
-      .catch(err => this.handleError(err));
+      .catch(err => {this.handleError(err); return null;});
   }
 
   /**
@@ -102,12 +102,11 @@ export class SearchService {
     if (size) { params.set('size', size); }
     if (brand) { params.set('brand', brand); }
     if (condition) { params.set('condition', condition); }
-    if (!(name || category || size || brand || condition)) { return Observable.of([]).toPromise(); }
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
       .then(res => res.json() as Item[])
-      .catch(err => this.handleError(err));
+      .catch(err => {this.handleError(err); return null;});
   }
 
   /**

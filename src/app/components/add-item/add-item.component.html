@@ -56,24 +56,28 @@
                   <div class="form-group col-2">
                     <label for="categorySelect">Category</label>
                     <select class="form-control" id="categorySelect" formControlName="category">
+                      <option value="">Any</option>
                       <option *ngFor="let category of categories | async">{{category}}</option>
                     </select>
                   </div>
                   <div class="form-group col-2">
                     <label for="sizeSelect">Size</label>
                     <select class="form-control" id="sizeSelect" formControlName="size">
+                      <option value="">Any</option>
                       <option *ngFor="let size of availableSizes | async">{{size}}</option>
                     </select>
                   </div>
                   <div class="form-group col-2">
                     <label for="brandSelect">Brand</label>
                     <select class="form-control" id="brandSelect" formControlName="brand">
+                      <option value="">Any</option>
                       <option *ngFor="let brand of brands | async">{{brand}}</option>
                     </select>
                   </div>
                   <div class="form-group col-2">
                     <label for="conditionSelect">Condition</label>
                     <select class="form-control" id="conditionSelect" formControlName="condition">
+                      <option value="">Any</option>
                       <option>New</option>
                       <option>Used</option>
                     </select>

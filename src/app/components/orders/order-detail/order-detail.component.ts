@@ -10,6 +10,8 @@ import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
 import { NewOrderComponent } from '../new-order/new-order.component';
+import { AlertService } from '../../../services/alert.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-order-detail',
@@ -34,7 +36,8 @@ export class OrderDetailComponent implements OnInit {
     private orderRequestService: OrderRequestService,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private alertService: AlertService) { }
 
   ngOnInit() {
     // Subscribe to order updates, so we can fill the FormArray with order data
@@ -84,8 +87,9 @@ export class OrderDetailComponent implements OnInit {
       wholesale_cost: [item.itemRef.wholesale_cost],
       standard_price: [item.itemRef.standard_price],
       stock: [item.itemRef.stock],
-      transaction: [item.transactions],
-      quantity: [item.quantity, Validators.required] // make this required, as it is the only component we will allow to be edited
+      transactions: [item.transactions],
+      quantity: [item.quantity, Validators.required], // make this required, as it is the only component we will allow to be edited
+      status: [item.status]
     });
   }
 
@@ -103,7 +107,24 @@ export class OrderDetailComponent implements OnInit {
    */
   setStatus(status: string) {
     this.orderService.updateStatus(this.order.getValue(), status)
-      .then(newOrder => this.order.next(newOrder));
+      .then(newOrder => this.order.next(newOrder))
+      .catch(err => {
+        const body = JSON.parse(err._body);
+        if (err.status == 400 && body.problemTransactions) {
+          console.log(body.problemTransactions);
+          this.alertService.warning("Order Cannot be Reopened",
+            `This order has requests associated with transactions ${body.problemTransactions}, which are completed. Reopen these transactions to reopen the order`,
+            400,
+            false);
+        } else {
+          // Send error alert to user.
+          let message = err.message;
+          if (!message) {
+            message = JSON.stringify(err);
+          }
+          this.alertService.error(err.statusText, message, err.status)
+        }
+      });
   }
 
   /**
@@ -112,7 +133,7 @@ export class OrderDetailComponent implements OnInit {
   setFreightCharge() {
     const charge = parseFloat(this.freightChargeForm.value);
     this.orderService.updateFreightCharge(this.order.getValue(), charge)
-      .then(newOrder => { 
+      .then(newOrder => {
         this.order.next(newOrder);
         this.freightChargeForm.reset();
         this.freightChargeModalBtn.nativeElement.click();

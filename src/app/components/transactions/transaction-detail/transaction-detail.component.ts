@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Bike } from '../../../models/bike';
 import { Item } from '../../../models/item';
-import { AlertService } from '../../../services/alert.service';
 import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
 import { OrderRequest } from '../../../models/orderRequest';
@@ -61,8 +60,6 @@ export class TransactionDetailComponent implements OnInit {
       this.transactionService.getTransaction(params['_id'])
         .then(() => {
           this.transactionService.transaction.subscribe(trans => {
-            AlertService.debugLog('New transaction');
-            AlertService.debugLog(trans);
             this.transaction = trans;
             if (this.transaction.description) {
               this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');

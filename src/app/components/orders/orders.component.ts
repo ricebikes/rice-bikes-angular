@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {OrderService} from '../../services/order.service';
 import {Order} from '../../models/order';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Item} from '../../models/item';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Router} from '@angular/router';
 

@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, Output, Input, ViewChild, EventEmitter, OnChanges } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
-import { Order } from '../../../models/order';
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
 import { TransactionService } from '../../../services/transaction.service';
@@ -26,12 +25,13 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
   @Output() chosenRequest = new EventEmitter<OrderRequest>();
 
   activeOrderRequests: Promise<OrderRequest[]>; // all active order requests
+  transactionIDs = [];
 
   stagedOrderRequestForm = this.fb.group({
     request: [null, Validators.required],
     partNum: [null],
     quantity: [null],
-    transactionID: [null, Validators.nullValidator, (fg: FormControl) => {
+    transactionID: [null, Validators.compose([Validators.nullValidator, (fg: FormControl) => {
       /**
        * Async validator to verify transaction exists. Requests all transaction IDs
        * and will throw validation error if the provided ID is not in list.
@@ -40,12 +40,8 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
         // Immediately resolve the transaction field as valid if one is not set.
         return new Promise((resolve, reject) => { resolve(null) });
       }
-      return this.transactionService.getTransactionIDs().then(ids => {
-        // Check if the transaction ID in form is in list.
-        return (ids.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
-      });
-    }],
-  }, {
+      return (this.transactionIDs.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
+    }])],
     validator: (fg: FormGroup) => {
       const quantity = fg.get('quantity').value;
       return (quantity == null || quantity < 1) ? { badQuantity: true } : null;
@@ -64,7 +60,11 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
     this.activeOrderRequests = this.orderRequestService.getActiveRequests();
     this.createMode = this.create_only;
     if (this.preset_transaction != null) {
+      // We do not need to query transaction IDs. Just put the preset transaction into validator
+      this.transactionIDs = [this.preset_transaction._id];
       this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction._id);
+    } else {
+      this.transactionService.getTransactionIDs().then(res => this.transactionIDs = res);
     }
   }
 

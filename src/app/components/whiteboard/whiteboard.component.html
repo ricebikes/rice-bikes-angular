@@ -72,8 +72,9 @@
         </div>
         <div class="col-1">
           <!-- Quantity -->
-          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number"
-            [min]="obj.request.transactions ? obj.request.transactions.length : 1" formControlName="quantity" />
+          <input
+            [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number"
+            [min]="obj.request.transactions ? obj.request.transactions.length : 1" formControlName="quantity"/>
         </div>
         <div class="col-1">
           <!-- Transactions -->
@@ -243,38 +244,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--Set Quantity Guard Modal Hidden Trigger Button- used in typescript to open modal -->
-<button hidden #restockQuantityGuardButton data-toggle="modal" data-target="#setRestockQuantityModal">HIDDEN
-  BUTTON</button>
-
-<!--"Set Quantity" Guard Modal"- Fires when quantity is set to restock, and needs adjustment -->
-<div class="modal fade" id="setRestockQuantityModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="setRestockQuantityModalLabel">Set Quantity</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="restockQuantityForm">
-          <div class="form-row align-items-center">
-            <div class="col-lg">
-              <label class="sr-only" for="quantityInput">Quantity</label>
-              <input type="number" min="1" class="form-control" id="quantityInput" formControlName="quantity">
-            </div>
-            <div class="col-auto">
-              <button type="submit" class="btn btn-primary" (click)="submitOrderRequestQuantity()"
-                [disabled]="restockQuantityForm.invalid">Submit</button>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
   </div>

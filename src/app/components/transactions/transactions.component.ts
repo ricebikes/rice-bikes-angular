@@ -29,16 +29,6 @@ export class TransactionsComponent implements OnInit {
     this.loading = true;
     this.transactionService.getTransactions(props)
       .then(transactions => {
-        transactions.sort((a, b) => {
-          if ((a.urgent && b.urgent) || (!a.urgent && !b.urgent)) {
-            return new Date(b.date_created).getTime() - new Date(a.date_created).getTime();
-          } else if (b.urgent) {
-            return 1;
-          } else if (a.urgent) {
-            return -1;
-          }
-
-        });
         this.transactions = transactions;
         this.loading = false;
         this.currentTab = tab;

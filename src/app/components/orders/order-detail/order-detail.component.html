@@ -125,9 +125,11 @@
         <td>{{control.get('wholesale_cost').value}}</td>
         <td>{{control.get("standard_price").value}}</td>
         <td>{{control.get("stock").value}}</td>
-        <td *ngIf="control.get('transaction').value">{{control.get("transaction").value}}</td>
-        <td *ngIf="!control.get('transaction').value">None</td>
-        <td><input type="number" [readonly]="currentOrder.status=='Completed'" class="form-control" formControlName="quantity"></td>
+        <td *ngIf="control.get('transactions').value">{{control.get("transactions").value}}</td>
+        <td *ngIf="!control.get('transactions').value">None</td>
+        <td><input type="number" [readonly]="control.get('status').value=='Completed'"
+            [min]="control.get('transactions').value == null ? 1 : control.get('transactions').value.length" class=" form-control"
+            formControlName="quantity"></td>
         <td><button class="btn btn-primary" [disabled]="!control.dirty"
             (click)="updateRequestQuantity(idx, control.get('quantity').value)">Update</button></td>
         <td><button class="btn btn-danger" (click)="removeRequestFromOrder(idx)">Remove</button></td>

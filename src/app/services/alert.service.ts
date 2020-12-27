@@ -61,6 +61,20 @@ export class AlertService {
     this.alertSubject.next({ title: title, code: code, message: message, type: 'error' });
   }
 
+
+  /**
+   * Send a warning message to user
+   * @param title: title of message
+   * @param message: message content
+   * @param code: error code (usually HTTP error code)
+   * @param keepAfterNavigationChange: keep the message for one navigation change
+   */
+  warning(title: string, message: string, code: number, keepAfterNavigationChange = false) {
+    this.keepAfterNavigationChange = keepAfterNavigationChange;
+    console.log('WARNING ' + new Date() + ' ' + message);
+    this.alertSubject.next({ title: title, code: code, message: message, type: 'warning' });
+  }
+
   getMessage(): Observable<Alert> {
     return this.alertSubject.asObservable();
   }

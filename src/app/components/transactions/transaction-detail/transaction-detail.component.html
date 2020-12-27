@@ -1,4 +1,5 @@
-<button hidden #customPriceModalTrigger data-toggle="modal" data-target="#customItemPriceModal">Hidden Trigger for "Set Custom
+<button hidden #customPriceModalTrigger data-toggle="modal" data-target="#customItemPriceModal">Hidden Trigger for "Set
+  Custom
   Price" Modal</button>
 
 <div class="modal fade" id="bikeAddModal" tabindex="-1" role="dialog" aria-labelledby="bikeModalLabel"
@@ -136,7 +137,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" [disabled]="customPriceForm.invalid" (click)="addUsedItem()">Continue</button>
+        <button type="button" class="btn btn-primary" [disabled]="customPriceForm.invalid"
+          (click)="addUsedItem()">Continue</button>
       </div>
     </div>
   </div>
@@ -222,7 +224,7 @@
             <a *ngFor="let repair of transaction?.repairs" class="list-group-item"
               [ngClass]="{'list-group-item-success': repair?.completed}">
               <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-              <button *ngIf="!transaction?.is_paid" (click)="deleteRepair(repair._id)"
+              <button *ngIf="!transaction?.complete" (click)="deleteRepair(repair._id)"
                 class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
               <button *ngIf="!transaction?.is_paid" title="Complete or reopen a repair"
                 (click)="toggleCompleteRepair(repair._id)" style="margin: auto 5px"
@@ -250,7 +252,7 @@
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.item.name}}
-              <button *ngIf="!transaction?.is_paid && !item.item.managed" (click)="deleteItem(item.item._id)"
+              <button *ngIf="!transaction?.complete && !item.item.managed" (click)="deleteItem(item.item._id)"
                 class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
             </a>
           </div>

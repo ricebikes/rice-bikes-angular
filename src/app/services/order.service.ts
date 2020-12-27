@@ -145,8 +145,8 @@ export class OrderService {
       { status: status },
       OrderService.jwt())
       .toPromise()
+      // Do not catch the error here. We want to throw it to the component so the component can send a more useful message to user.
       .then(res => res.json() as Order)
-      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
