@@ -27,26 +27,30 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
   activeOrderRequests: Promise<OrderRequest[]>; // all active order requests
   transactionIDs = [];
 
-  stagedOrderRequestForm = this.fb.group({
-    request: [null, Validators.required],
-    partNum: [null],
-    quantity: [null],
-    transactionID: [null, Validators.compose([Validators.nullValidator, (fg: FormControl) => {
-      /**
-       * Async validator to verify transaction exists. Requests all transaction IDs
-       * and will throw validation error if the provided ID is not in list.
-       */
-      if (fg.value == null || fg.value == "") {
-        // Immediately resolve the transaction field as valid if one is not set.
-        return new Promise((resolve, reject) => { resolve(null) });
+  stagedOrderRequestForm = this.fb.group(
+    {
+      request: [null, Validators.required],
+      partNum: [null],
+      quantity: [null],
+      transactionID: [null, Validators.compose([Validators.nullValidator, (fg: FormControl) => {
+        /**
+         * Async validator to verify transaction exists. Requests all transaction IDs
+         * and will throw validation error if the provided ID is not in list.
+         */
+        if (fg.value == null || fg.value == "") {
+          // Immediately resolve the transaction field as valid if one is not set.
+          return new Promise((resolve, reject) => { resolve(null) });
+        }
+        return (this.transactionIDs.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
+      }])]
+    },
+    {
+      validator: (fg: FormGroup) => {
+        const quantity = fg.get('quantity').value;
+        return (quantity == null || quantity < 1) ? { badQuantity: true } : null;
       }
-      return (this.transactionIDs.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
-    }])],
-    validator: (fg: FormGroup) => {
-      const quantity = fg.get('quantity').value;
-      return (quantity == null || quantity < 1) ? { badQuantity: true } : null;
     }
-  });
+  );
 
 
   // Set to true when the user clicks button to create a new whiteboard entry

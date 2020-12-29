@@ -17,7 +17,7 @@ export class TransactionsComponent implements OnInit {
   currentTab = 'active';
 
   ngOnInit(): void {
-    this.getTransactions(this.currentTab, { complete: false , refurb: false});
+    this.setTab(this.currentTab, { complete: false, refurb: false });
   }
 
   /**
@@ -25,14 +25,27 @@ export class TransactionsComponent implements OnInit {
    * @param {string} tab
    * @param {Object} props
    */
-  getTransactions(tab: string, props?: Object): void {
+  setTab(tab: string, props?: Object): void {
+    this.currentTab = tab;
+    if (tab == 'search') {
+      /**
+       * This tab does not use the 'props' parameter. It allows users to search for transactions
+       * we don't need to take action here beyond setting the current tab, the search widget will handle finding transactions
+       */
+      this.loading = true;
+      return;
+    }
     this.loading = true;
     this.transactionService.getTransactions(props)
       .then(transactions => {
         this.transactions = transactions;
         this.loading = false;
-        this.currentTab = tab;
       });
+  }
+
+  setTransactions(transactions: Transaction[]) {
+    this.transactions = transactions;
+    this.loading = false;
   }
 
   getTimeDifference(transaction: Transaction): number {

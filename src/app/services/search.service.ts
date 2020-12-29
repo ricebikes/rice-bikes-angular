@@ -7,8 +7,9 @@ import { Transaction } from '../models/transaction';
 import { CONFIG } from '../config';
 import { Observable } from 'rxjs/Observable';
 import { Repair } from '../models/repair';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { AlertService } from './alert.service';
+import { Bike } from '../models/bike';
 
 @Injectable()
 export class SearchService {
@@ -17,6 +18,7 @@ export class SearchService {
   private customerUrl = `${CONFIG.api_url}/customers/search`;
   private repairUrl = `${CONFIG.api_url}/repairs/search`;
   private itemUrl = `${CONFIG.api_url}/items`;
+  private bikeUrl = `${CONFIG.api_url}/bikes/search`;
 
   constructor(private http: Http, private alertService: AlertService) { }
 
@@ -36,23 +38,30 @@ export class SearchService {
   }
 
   /**
-   * Searches for transactions, looking in the given field for the given term.
-   * @param field - one of {bike, customer, description}
-   * @param term - term to search for
-   * @returns {Observable}
+   * Searches for transactions
+   * @param customers: Array of customers. Matched transactions will have one customer from the array.
+   * @param bikes: Array of bikes. Matched transactions will have at least one customer from the array.
+   * @param description: Description of the transaction. Matched transactions will contain all words in this string.
+   * @returns {Promise}
    */
-  transactionSearch(field: string, term: string): Observable<Transaction[]> {
+  transactionSearch(customers?: Customer[], bikes?: Bike[], description?: string): Promise<Transaction[]> {
     const requestOptions = new RequestOptions();
     const params = new URLSearchParams();
-    params.set(field, term);
+    requestOptions.headers = SearchService.jwt_headers();
+    if (customers) params.set('customers', customers.map(customer => customer._id).toString());
+    if (bikes) params.set('bikes', bikes.map(bike => bike._id).toString());
+    if (description) params.set('description', description);
     requestOptions.params = params;
     return this.http.get(this.transactionUrl, requestOptions)
-      .map(res => res.json() as Transaction[]);
+      .toPromise()
+      .then(res => res.json() as Transaction[])
+      .catch(err => {this.handleError(err); return null;});
   }
 
   customerSearch(term: string): Observable<Customer[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
+    requestOptions.headers = SearchService.jwt_headers();
     params.set('q', '"' + term + '"');
     requestOptions.params = params;
     return this.http.get(this.customerUrl, requestOptions)
@@ -69,6 +78,20 @@ export class SearchService {
       .map(res => res.json() as Repair[]);
   }
 
+  bikeSearch(make?: string, model?: string, searchString?: string): Promise<Bike[]> {
+    const params = new URLSearchParams();
+    if (make) params.set('make', make);
+    if (model) params.set('model', model);
+    if (searchString) params.set('search', searchString);
+    const requestOptions = new RequestOptions();
+    requestOptions.headers = SearchService.jwt_headers();
+    requestOptions.params = params;
+    return this.http.get(this.bikeUrl, requestOptions)
+      .toPromise()
+      .then(res => res.json() as Bike[])
+      .catch(err => { this.handleError(err); return null; });
+  }
+
   /**
    * Gets all distinct transaction IDs. Useful for quick searching.
    */
@@ -78,7 +101,7 @@ export class SearchService {
     return this.http.get(`${this.transactionUrl}/ids`, requestOptions)
       .toPromise()
       .then(res => res.json() as string[])
-      .catch(err => {this.handleError(err); return null;});
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
@@ -106,7 +129,7 @@ export class SearchService {
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
       .then(res => res.json() as Item[])
-      .catch(err => {this.handleError(err); return null;});
+      .catch(err => { this.handleError(err); return null; });
   }
 
   /**
