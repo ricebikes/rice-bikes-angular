@@ -1,37 +1,28 @@
-<div class="container user-list">
+<div class="container">
   <form class="mb-3" [formGroup]="userForm">
-    <div class="row">
-      <div class="col-10">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              Admin&nbsp;<input formControlName="admin" type="checkbox" style="margin-right:5px">
-              Projects&nbsp;<input formControlName="projects" type="checkbox">
-              Operations<input formControlName="operations" type="checkbox">
-            </div>
-          </div>
-          <input formControlName="username" type="text" class="form-control" placeholder="Username">
-        </div>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><input formControlName="admin" type="checkbox">&nbsp;Admin</span>
+        <span class="input-group-text"><input formControlName="projects" type="checkbox">&nbsp;Projects</span>
+        <span class="input-group-text"><input formControlName="operations" type="checkbox">&nbsp;Operations</span>
       </div>
-      <div class="col-2">
-        <div class="input-group">
-          <button [disabled]="userForm.invalid" (click)="postUser()" class="btn btn-primary">Add</button>
-        </div>
+      <input formControlName="username" type="text" class="form-control" placeholder="Username">
+      <input formControlName="firstName" type="text" class="form-control" placeholder="First Name">
+      <input formControlName="lastName" type="text" class="form-control" placeholder="Last Name">
+      <div class="input-group-append">
+        <button [disabled]="userForm.invalid" (click)="submitUserForm()" class="btn btn-primary"><span
+            *ngIf="!editMode">Add</span><span *ngIf="editMode">Update</span></button>
+        <button *ngIf="editMode" (click)="setEditMode(0, false)" class="btn btn-secondary">Cancel</button>
       </div>
     </div>
   </form>
   <ul class="list-group">
-    <li *ngFor="let user of users" class="list-group-item">{{user.username}} ({{user.firstname}} {{user.lastname}})
+    <li *ngFor="let user of users; let i = index" class="list-group-item">{{user.username}} ({{user.firstname}}
+      {{user.lastname}})
       <i *ngIf="user.roles.includes('admin')" class="fa fa-lock"></i>
       <i *ngIf="user.roles.includes('operations')" class="fa fa-dolly"></i>
       <i *ngIf="user.roles.includes('projects')" class="fas fa-tools"></i>
-      <!-- Disabling deleting user, since they are used for tracking
-      <button (click)="deleteUser(user)" type="button" class="close">
-        <span>&times;</span>
-      </button>
-      -->
+      <button class="btn btn-outline-secondary float-right" (click)="setEditMode(i, true)">Edit</button>
     </li>
   </ul>
 </div>
-
-

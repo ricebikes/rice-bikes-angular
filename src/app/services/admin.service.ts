@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {CONFIG} from '../config';
-import {HttpErrorResponse} from '@angular/common/http';
-import {AlertService} from './alert.service';
+import { Headers, Http, RequestOptions } from '@angular/http';
+import { CONFIG } from '../config';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertService } from './alert.service';
+import { User } from '../models/user';
 
 @Injectable()
 export class AdminService {
 
-  constructor(private http: Http, private alertService: AlertService) {}
+  constructor(private http: Http, private alertService: AlertService) { }
 
   private static jwt() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -32,10 +33,19 @@ export class AdminService {
       .catch(err => this.handleError(err));
   }
 
-  postUser(username: String, roles: Array<string>): Promise<any> {
-    return this.http.post(`${CONFIG.api_url}/users`, { username: username, roles: roles }, AdminService.jwt())
+  createUser(firstName: String, lastName: String, username: String, roles: Array<string>): Promise<any> {
+    return this.http.post(`${CONFIG.api_url}/users`,
+      { firstName: firstName, lastName: lastName, username: username, roles: roles }, AdminService.jwt())
       .toPromise()
       .then(res => res.json())
+      .catch(err => this.handleError(err));
+  }
+
+  updateUser(user: User, firstName: String, lastName: String, username: String, roles: Array<string>) {
+    return this.http.put(`${CONFIG.api_url}/users/${user._id}`,
+      { firstName: firstName, lastName: lastName, username: username, roles: roles }, AdminService.jwt())
+      .toPromise()
+      .then(res => res.json() as User)
       .catch(err => this.handleError(err));
   }
 
