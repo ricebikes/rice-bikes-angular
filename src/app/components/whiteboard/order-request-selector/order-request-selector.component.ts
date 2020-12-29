@@ -39,7 +39,9 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
          */
         if (fg.value == null || fg.value == "") {
           // Immediately resolve the transaction field as valid if one is not set.
-          return new Promise((resolve, reject) => { resolve(null) });
+          // Also set form to pristine
+          fg.markAsPristine();
+          return null;
         }
         return (this.transactionIDs.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
       }])]
