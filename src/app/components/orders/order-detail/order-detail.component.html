@@ -55,15 +55,20 @@
         <h2 class="display-5">Order from {{currentOrder.supplier}}: ${{currentOrder.total_price.toFixed(2)}}</h2>
       </div>
       <div class="col-6">
-        <button class="btn btn-danger float-right ml-2 my-3" type="button" id="deleteButton" data-toggle="modal"
-          data-target="#confirmDeleteModal">Delete</button>
-        <button class="btn btn-md float-right ml-2 my-3" type="button" id="statusDropdownButton" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" [ngClass]="{'badge-primary': currentOrder.status == 'In Cart',
+        <button *ngIf="!(isAdmin | async)" class="btn btn-md float-right ml-2 my-3" type="button"
+          id="statusDropdownButton" [ngClass]="{'badge-primary': currentOrder.status == 'In Cart',
+                      'badge-success': currentOrder.status == 'Ordered',
+                      'badge-secondary': currentOrder.status == 'Completed'}">
+          {{currentOrder.status}}</button>
+        <button *ngIf="(isAdmin | async)" class="btn btn-danger float-right ml-2 my-3" type="button" id="deleteButton"
+          data-toggle="modal" data-target="#confirmDeleteModal">Delete</button>
+        <button *ngIf="(isAdmin | async)" class="btn btn-md float-right ml-2 my-3" type="button"
+          id="statusDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" [ngClass]="{'badge-primary': currentOrder.status == 'In Cart',
                       'badge-success': currentOrder.status == 'Ordered',
                       'badge-secondary': currentOrder.status == 'Completed'}">
           {{currentOrder.status}} <i class="fas fa-caret-down"></i>
         </button>
-        <div class="dropdown-menu">
+        <div *ngIf="(isAdmin | async)" class="dropdown-menu">
           <h6 class="dropdown-header">Set Status</h6>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="setStatus('Completed')">Completed</a>
@@ -72,13 +77,16 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="setStatus('In Cart')">In Cart</a>
         </div>
-        <button #freightChargeModalBtn class="btn btn-primary float-right ml-2 my-3" data-toggle="modal"
-          data-target="#setFreightChargeModal">
+
+        <button #freightChargeModalBtn *ngIf="(isAdmin | async)" class="btn btn-primary float-right ml-2 my-3"
+          data-toggle="modal" data-target="#setFreightChargeModal">
           Set Freight Charge
         </button>
-        <button *ngIf="!editingNotes" class="btn btn-secondary float-right my-3" (click)="this.editingNotes = true">
+        <button *ngIf="(isAdmin | async) && !editingNotes" class="btn btn-secondary float-right my-3"
+          (click)="this.editingNotes = true">
           Edit Notes</button>
-        <button *ngIf="editingNotes" class="btn btn-secondary float-right my-3" (click)="updateNotes()">
+        <button *ngIf="(isAdmin | async) && editingNotes" class="btn btn-secondary float-right my-3"
+          (click)="updateNotes()">
           Save Notes</button>
       </div>
     </div>
@@ -128,8 +136,8 @@
         <td *ngIf="control.get('transactions').value">{{control.get("transactions").value}}</td>
         <td *ngIf="!control.get('transactions').value">None</td>
         <td><input type="number" [readonly]="control.get('status').value=='Completed'"
-            [min]="control.get('transactions').value == null ? 1 : control.get('transactions').value.length" class=" form-control"
-            formControlName="quantity"></td>
+            [min]="control.get('transactions').value == null ? 1 : control.get('transactions').value.length"
+            class=" form-control" formControlName="quantity"></td>
         <td><button class="btn btn-primary" [disabled]="!control.dirty"
             (click)="updateRequestQuantity(idx, control.get('quantity').value)">Update</button></td>
         <td><button class="btn btn-danger" (click)="removeRequestFromOrder(idx)">Remove</button></td>

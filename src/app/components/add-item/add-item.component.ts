@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {SearchService} from '../../services/search.service';
-import {Item} from '../../models/item';
-import {Observable} from 'rxjs/Observable';
-import {ItemService} from '../../services/item.service';
-import {AuthenticationService} from '../../services/authentication.service';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { SearchService } from '../../services/search.service';
+import { Item } from '../../models/item';
+import { Observable } from 'rxjs/Observable';
+import { ItemService } from '../../services/item.service';
+import { AuthenticationService } from '../../services/authentication.service';
 
 
 
@@ -38,7 +38,7 @@ export class AddItemComponent implements OnInit {
   // Form validator that enforces requirement that any "new" item must have a UPC.
   private newItemFormUPCValidator: ValidatorFn = (fg: FormGroup) => {
     const upcFilled = fg.get('upc').value != '';
-    return upcFilled || fg.get('condition').value != 'New' ? null : {upc: true};
+    return upcFilled || fg.get('condition').value != 'New' ? null : { upc: true };
   }
 
   newItemForm = this.formBuilder.group({
@@ -51,9 +51,9 @@ export class AddItemComponent implements OnInit {
     upc: [''],
     standard_price: ['', Validators.required],
     wholesale_cost: ['', Validators.required]
-  }, {validator: this.newItemFormUPCValidator});
+  }, { validator: this.newItemFormUPCValidator });
 
-  scanData = new FormControl('');
+  scanData = new FormControl('', Validators.compose([Validators.required, Validators.pattern('[0-9]+')]));
 
   itemResults: Observable<Item[]>; // item results returned from backend
   availableSizes: Observable<String[]>; // filled when we select a category
@@ -83,13 +83,13 @@ export class AddItemComponent implements OnInit {
       // switchMap swaps the current observable for a new one (the result of the item search)
       .switchMap(formData => {
         return formData ? this.searchService.
-        itemSearch(formData.name, formData.category, formData.size,
-          formData.brand, formData.condition) : Observable.of<Item[]>([]);
+          itemSearch(formData.name, formData.category, formData.size,
+            formData.brand, formData.condition) : Observable.of<Item[]>([]);
       })
       .catch(err => {
         console.log(err);
         return Observable.of<Item[]>([]);
-        }
+      }
       );
     // Setup availableSizes to watch for changes to the category, and update with possible sizes.
     this.availableSizes = this.itemForm.controls['category'] // listen for changes to the item category
@@ -97,9 +97,9 @@ export class AddItemComponent implements OnInit {
       .debounceTime(200) // wait 200ms between changes
       .distinctUntilChanged() // don't emit unless change is actually new data
       .switchMap(newCategory => {
-          // switch to promise from backend request with our category
-          this.itemForm.controls['size'].setValue('');
-          return this.searchService.itemSizes(newCategory);
+        // switch to promise from backend request with our category
+        this.itemForm.controls['size'].setValue('');
+        return this.searchService.itemSizes(newCategory);
       })
       .catch(err => {
         console.log(err);
@@ -152,13 +152,20 @@ export class AddItemComponent implements OnInit {
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
   addByUPC() {
+    if (this.scanData.invalid || this.scanData.value == '') {
+      return;
+    }
     this.searchService.upcSearch(this.scanData.value).then(items => {
       if (items.length > 0) {
         this.chosenItem.emit(items[0]);
+        this.scanData.reset();
+        // dismiss scan modal
+        this.scanTrigger.nativeElement.click();
+      } else {
+        this.scanData.setErrors({ badUPC: "true" })
+        return;
       }
     });
-    // dismiss scan modal
-    this.scanTrigger.nativeElement.click();
   }
 
   triggerItemSearch() {

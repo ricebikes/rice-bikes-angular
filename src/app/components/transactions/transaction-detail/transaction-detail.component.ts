@@ -173,9 +173,11 @@ export class TransactionDetailComponent implements OnInit {
 
   completeWithoutEmail(): void {
     const date = Date.now().toString();
+    this.emailLoading = true; // just switches HTML in dom so that the dropdown box vanishes
     this.transaction.complete = true;
     this.transaction.date_completed = date;
     this.transactionService.setComplete(this.transaction._id, this.transaction.complete);
+    this.emailLoading = false;
   }
 
   reopenTransaction(): void {

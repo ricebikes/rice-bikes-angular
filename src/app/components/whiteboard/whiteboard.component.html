@@ -125,7 +125,7 @@
             <button class="btn" [ngClass]="{'btn-outline-primary': !obj.urgent, 'btn-secondary': obj.urgent}"
               data-toggle="modal" data-target="#pastActionsModal" (click)="setOrderReqForActionsView(obj.request)"><i
                 class="fas fa-history"></i></button>
-            <button class="btn" [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-secondary': obj.urgent}"
+            <button [disabled]="obj.request.status=='Completed' && !(isAdmin | async)" class="btn" [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-secondary': obj.urgent}"
               data-toggle="modal" data-target="#deleteConfirmationModal" (click)="this.currentSelectedRequestIdx=idx"><i
                 class="fas fa-trash"></i></button>
           </div>

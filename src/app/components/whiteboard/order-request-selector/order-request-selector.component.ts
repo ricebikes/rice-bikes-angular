@@ -33,8 +33,9 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
       partNum: [null],
       quantity: [null],
       transactionID: [null, Validators.compose([Validators.nullValidator, (fg: FormControl) => {
+        if (this.preset_transaction) return null; // No need to validate
         /**
-         * Async validator to verify transaction exists. Requests all transaction IDs
+         * validator to verify transaction exists. Requests all transaction IDs
          * and will throw validation error if the provided ID is not in list.
          */
         if (fg.value == null || fg.value == "") {

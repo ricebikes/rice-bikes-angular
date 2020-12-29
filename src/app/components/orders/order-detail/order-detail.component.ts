@@ -12,6 +12,7 @@ import { OrderRequestService } from '../../../services/order-request.service';
 import { NewOrderComponent } from '../new-order/new-order.component';
 import { AlertService } from '../../../services/alert.service';
 import { Subject } from 'rxjs';
+import { AuthenticationService } from '../../../services/authentication.service';
 
 @Component({
   selector: 'app-order-detail',
@@ -31,13 +32,15 @@ export class OrderDetailComponent implements OnInit {
   stagedOrderItem: BehaviorSubject<Item> = new BehaviorSubject(null);
   freightChargeForm = new FormControl('', Validators.required);
   notesForm = new FormControl('');
+  isAdmin = this.authService.isAdmin;
 
   constructor(private orderService: OrderService,
     private orderRequestService: OrderRequestService,
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private alertService: AlertService) { }
+    private alertService: AlertService,
+    private authService: AuthenticationService) { }
 
   ngOnInit() {
     // Subscribe to order updates, so we can fill the FormArray with order data
