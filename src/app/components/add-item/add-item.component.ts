@@ -117,8 +117,8 @@ export class AddItemComponent implements OnInit {
    */
   copyIntoItemForm() {
     for (const controlValue of ['name', 'category', 'size', 'brand']) {
-      if (this.itemForm[controlValue].value) {
-        this.newItemForm.controls[controlValue].setValue(this.itemForm[controlValue].value);
+      if (this.itemForm.get(controlValue).value) {
+        this.newItemForm.get(controlValue).setValue(this.itemForm.get(controlValue).value);
       }
     }
   }
@@ -189,7 +189,6 @@ export class AddItemComponent implements OnInit {
   selectItem(item: Item) {
     this.chosenItem.emit(item);
     this.itemSearchClose.nativeElement.click();
-    this.itemForm.reset();
   }
 }
 
