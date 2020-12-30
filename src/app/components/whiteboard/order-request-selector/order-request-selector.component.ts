@@ -167,6 +167,8 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
         this.chosenRequest.emit(newOrderReq);
         // Close the modal
         this.orderRequestModalButton.nativeElement.click();
+        // Update active order requests
+        this.activeOrderRequests = this.orderRequestService.getActiveRequests();
         this.stagedOrderRequestForm.reset();
       });
   }
