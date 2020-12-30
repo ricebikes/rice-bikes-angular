@@ -22,8 +22,7 @@
 <div class="container mb-4">
   <div class="card mb-2" style="width: 75%; margin: 0 auto;">
     <div #price class="card-body text-center">
-      <h1 *ngIf="!isEdit" (click)="isEdit = true" style="font-size: 100px">${{ transaction.total_cost }}</h1>
-      <input *ngIf="isEdit"  (keydown.escape)="isEdit = false" (keydown.enter)="isEdit = false" [(ngModel)]="transaction.total_cost" class="form-control form-control-lg" type=number style="font-size: 100px;width: 200px; height: 300px">
+      <h1 style="font-size: 100px">${{ transaction?.total_cost }}</h1>
     </div>
   </div>
 
@@ -35,7 +34,7 @@
         </div>
         <div class="card-body">
           <ul class="list-group">
-            <li *ngFor="let repair of transaction.repairs" class="list-group-item">
+            <li *ngFor="let repair of transaction?.repairs" class="list-group-item">
               {{repair.repair.name}}
             </li>
           </ul>
@@ -50,8 +49,8 @@
         </div>
         <div class="card-body">
           <ul class="list-group">
-            <li *ngFor="let item of transaction.items" class="list-group-item">
-              {{item.name}}
+            <li *ngFor="let item of transaction?.items" class="list-group-item">
+              {{item.item.name}}
             </li>
           </ul>
         </div>

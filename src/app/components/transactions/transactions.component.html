@@ -1,32 +1,39 @@
 <div class="container">
   <ul class="nav nav-tabs nav-fill justify-content-center" style="margin-top: 15px;">
     <li class="nav-item">
-      <a (click)="setTab('active', { complete: false , refurb: false })" [ngClass]="{'active': currentTab === 'active'}" class="nav-link">Active</a>
+      <a (click)="setTab('active', { complete: false , refurb: false })" [ngClass]="{'active': currentTab === 'active'}"
+        class="nav-link">Active</a>
     </li>
     <li class="nav-item">
-      <a (click)="setTab('pickup', { complete: true , is_paid: false, refurb: false})" [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
+      <a (click)="setTab('pickup', { complete: true , is_paid: false, refurb: false})"
+        [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" (click)="setTab('part', { waiting_part: true })" [ngClass]="{'active': currentTab === 'part'}">
+      <a class="nav-link" (click)="setTab('part', { waiting_part: true })"
+        [ngClass]="{'active': currentTab === 'part'}">
         <i class="fa fa-wrench"></i> Waiting on part
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" (click)="setTab('email', { waiting_email: true })" [ngClass]="{'active': currentTab === 'email'}">
+      <a class="nav-link" (click)="setTab('email', { waiting_email: true })"
+        [ngClass]="{'active': currentTab === 'email'}">
         <i class="fa fa-envelope"></i> Waiting on email
       </a>
     </li>
-      <li class="nav-item">
-      <a (click)="setTab('refurb',{complete:false, refurb: true})" [ngClass]="{'active': currentTab === 'refurb'}" class="nav-link">Refurbs</a>
+    <li class="nav-item">
+      <a (click)="setTab('refurb',{complete:false, refurb: true})" [ngClass]="{'active': currentTab === 'refurb'}"
+        class="nav-link">Refurbs</a>
     </li>
     <li class="nav-item">
-      <a (click)="setTab('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}" class="nav-link">Paid</a>
+      <a (click)="setTab('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}"
+        class="nav-link">Paid</a>
     </li>
     <li class="nav-item">
       <a (click)="setTab('all', {})" [ngClass]="{'active': currentTab === 'all'}" class="nav-link">All</a>
     </li>
     <li class="nav-item">
-      <a (click)="setTab('search', null)" [ngClass]="{'active': currentTab === 'search'}" class="nav-link"><i class="fas fa-search"></i></a>
+      <a (click)="setTab('search', null)" [ngClass]="{'active': currentTab === 'search'}" class="nav-link"><i
+          class="fas fa-search"></i></a>
     </li>
   </ul>
 </div>
@@ -42,33 +49,34 @@
   </div>
   <table *ngIf="!loading" class="table table-hover">
     <thead>
-    <tr>
-      <th>#</th>
-      <th>Customer</th>
-      <th>Bikes</th>
-      <th *ngIf="currentTab === 'pickup'">Completed</th>
-      <th *ngIf="!(currentTab === 'pickup')">Submitted</th>
-    </tr>
+      <tr>
+        <th>#</th>
+        <th>Customer</th>
+        <th>Bikes</th>
+        <th *ngIf="currentTab === 'pickup'">Completed</th>
+        <th *ngIf="!(currentTab === 'pickup')">Submitted</th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let transaction of transactions" class="transaction-tr"
+      <tr *ngFor="let transaction of transactions" class="transaction-tr"
         [routerLink]="['/transactions', transaction._id]"
         [ngClass]="{'table-warning': getTimeDifference(transaction) >= 3 && getTimeDifference(transaction) < 6, 'table-danger': getTimeDifference(transaction) >= 6}">
-      <th scope="row">{{transaction._id}}
-        <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
+        <th scope="row">{{transaction._id}}
+          <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
                                         'badge-primary': transaction?.transaction_type == 'outpatient',
                                         'badge-secondary': transaction?.transaction_type == 'merch'}">
-          {{transaction?.transaction_type}}</span>
-        <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i class="fa fa-wrench"></i></span>
-        <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
-        <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i></span>
+            {{transaction?.transaction_type}}</span>
+          <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i
+              class="fa fa-wrench"></i></span>
+          <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
+          <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i></span>
 
-      </th>
-      <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
-      <td>{{getBikeList(transaction)}}</td>
-      <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo }}</td>
-      <td *ngIf="!(currentTab === 'pickup')">{{transaction.date_created | timeAgo }}</td>
-    </tr>
+        </th>
+        <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
+        <td>{{getBikeList(transaction)}}</td>
+        <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo }}</td>
+        <td *ngIf="!(currentTab === 'pickup')">{{transaction.date_created | timeAgo }}</td>
+      </tr>
     </tbody>
   </table>
 </div>

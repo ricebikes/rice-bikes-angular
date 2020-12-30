@@ -37,8 +37,8 @@ export class AddItemComponent implements OnInit {
 
   // Form validator that enforces requirement that any "new" item must have a UPC.
   private newItemFormUPCValidator: ValidatorFn = (fg: FormGroup) => {
-    const upcFilled = fg.get('upc').value != '';
-    return upcFilled || fg.get('condition').value != 'New' ? null : { upc: true };
+    const upcValid = fg.get('upc').value != '' && fg.get('upc').valid;
+    return upcValid || fg.get('condition').value != 'New' ? null : { upc: true };
   }
 
   newItemForm = this.formBuilder.group({
@@ -48,7 +48,7 @@ export class AddItemComponent implements OnInit {
     brand: ['', Validators.required],
     condition: ['', Validators.required],
     desired_stock: ['', Validators.required],
-    upc: [''],
+    upc: ['', Validators.pattern('[0-9]+')],
     standard_price: ['', Validators.required],
     wholesale_cost: ['', Validators.required]
   }, { validator: this.newItemFormUPCValidator });

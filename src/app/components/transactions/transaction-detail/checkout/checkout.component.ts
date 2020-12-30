@@ -14,7 +14,6 @@ export class CheckoutComponent implements OnInit {
 
   transaction: Transaction;
   loading = true;
-  isEdit = false;
 
   constructor(private route: ActivatedRoute,
               private transactionService: TransactionService,

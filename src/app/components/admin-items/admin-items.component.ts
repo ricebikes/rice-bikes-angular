@@ -51,8 +51,8 @@ export class AdminItemsComponent implements OnInit {
   items: Item[];
   existingCategories = this.searchService.itemCategories();
   existingBrands = this.searchService.itemBrands();
-  existingSizes: Observable<string[]>;
-  existingUpdateSizes: Observable<string[]>;
+  existingSizes: Observable<String[]>;
+  existingUpdateSizes: Observable<String[]>;
 
   ngOnInit() {
     this.itemService.getItems().then(res => this.items = this.sortItems(res));
