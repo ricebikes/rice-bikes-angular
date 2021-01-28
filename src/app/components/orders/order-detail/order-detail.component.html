@@ -46,7 +46,6 @@
 </div>
 
 <!-- Include app-add-item here to avoid conflict with jumbotron classes-->
-<app-add-item #addItemComponent [employee]="true" (chosenItem)="setItem($event)"></app-add-item>
 <div class="container" *ngIf="(order | async) as currentOrder">
   <div class="jumbotron">
     <h2 class="display-5" *ngIf="loading">...</h2>

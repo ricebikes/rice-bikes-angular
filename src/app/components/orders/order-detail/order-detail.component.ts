@@ -6,7 +6,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Item } from '../../../models/item';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Transaction } from '../../../models/transaction';
-import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
 import { NewOrderComponent } from '../new-order/new-order.component';
@@ -21,7 +20,6 @@ import { AuthenticationService } from '../../../services/authentication.service'
 })
 export class OrderDetailComponent implements OnInit {
 
-  @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('freightChargeModalBtn') freightChargeModalBtn: ElementRef;
 
   loading = true;
