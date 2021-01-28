@@ -9,6 +9,7 @@ import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Component({
   selector: 'app-transaction-detail',
@@ -39,6 +40,7 @@ export class TransactionDetailComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private orderRequestService: OrderRequestService,
+    private analyticsService: AnalyticsService,
     private route: ActivatedRoute,
     private router: Router,
   ) { }
@@ -167,7 +169,9 @@ export class TransactionDetailComponent implements OnInit {
         this.emailLoading = false;
         this.transaction.complete = true;
         this.transaction.date_completed = date;
-        this.transactionService.setComplete(this.transaction._id, this.transaction.complete);
+        this.transactionService.setComplete(this.transaction._id, this.transaction.complete).then(res => {
+          this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
+        });
       });
   }
 
@@ -176,13 +180,17 @@ export class TransactionDetailComponent implements OnInit {
     this.emailLoading = true; // just switches HTML in dom so that the dropdown box vanishes
     this.transaction.complete = true;
     this.transaction.date_completed = date;
-    this.transactionService.setComplete(this.transaction._id, this.transaction.complete);
+    this.transactionService.setComplete(this.transaction._id, this.transaction.complete).then(res => {
+      this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
+    });
     this.emailLoading = false;
   }
 
   reopenTransaction(): void {
     this.transaction.complete = false;
-    this.transactionService.setComplete(this.transaction._id, this.transaction.complete);
+    this.transactionService.setComplete(this.transaction._id, this.transaction.complete).then(res => {
+      this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
+    })
   }
 
   emailCustomer(): void {

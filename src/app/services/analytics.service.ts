@@ -1,14 +1,17 @@
-import {Injectable} from '@angular/core';
-import {saveAs} from 'file-saver';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {CONFIG} from '../config';
+import { Injectable} from '@angular/core';
+import { saveAs } from 'file-saver';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
+import { CONFIG } from '../config';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class AnalyticsService {
 
-  constructor(private http: Http) {}
+  constructor(private http: Http) { }
 
   backendURL = `${CONFIG.api_url}/metrics`;
+  public transactionCompletedEvent = new Subject<string>();
+
   private static jwt() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser.token) {
@@ -45,6 +48,26 @@ export class AnalyticsService {
     return (matches[1] || 'untitled').trim();
   }
 
+
+  /**
+   * Gets a count of inpatient bikes, both those waiting to be picked up
+   * and those not yet completed. No other bikes are included in these totals.
+   */
+  getBikeCounts() {
+    return this.http.get(`${this.backendURL}/transactions/bike_count`, AnalyticsService.jwt())
+      .toPromise()
+      .then(res => res.json())
+      .catch(err => AnalyticsService.handleError(err));
+  }
+
+  /**
+   * Notifies this service a transaction was completed or reopened
+   * and that completed transaction counts must be updated
+   * @param id: transaction string that was completed or reopened
+   */
+  notifyTransactionStatusChange(id: string) {
+    this.transactionCompletedEvent.next(id);
+  }
 
   /**
    * Gets transactions from the backend between start and end. A csv file is returned and downloaded.
