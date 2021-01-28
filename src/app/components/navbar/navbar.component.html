@@ -63,8 +63,18 @@
     <div class="col-lg">
       <div class="float-right">
         <!-- Display count of incomplete bikes, and completed ones waiting on pickup -->
-        <h5><span class="badge badge-primary">{{incompleteInpatientCount}} Incomplete Bikes</span> <span
-            class="badge badge-success">{{incompleteWaitingPickupCount}} Bikes Waiting on Pickup</span></h5>
+        <h5>
+          <span class="badge badge-primary" [ngPlural]="incompleteInpatientCount">
+            <ng-template ngPluralCase="=0">No Incomplete Bikes</ng-template>
+            <ng-template ngPluralCase="=1">{{incompleteInpatientCount}} Incomplete Bike</ng-template>
+            <ng-template ngPluralCase="other">{{incompleteInpatientCount}} Incomplete Bikes</ng-template>
+          </span>
+          <span class="badge badge-success" [ngPlural]="incompleteWaitingPickupCount">
+            <ng-template ngPluralCase="=0">No Bikes Waiting on Pickup</ng-template>
+            <ng-template ngPluralCase="=1">{{incompleteWaitingPickupCount}} Bike Waiting on Pickup</ng-template>
+            <ng-template ngPluralCase="other">{{incompleteWaitingPickupCount}} Bikes Waiting on Pickup</ng-template>
+          </span>
+        </h5>
         <app-user-tracker></app-user-tracker>
       </div>
     </div>
