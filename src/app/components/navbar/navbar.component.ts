@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit {
     this.analyticsService.transactionCompletedEvent.subscribe(x => {
       /**
        * The backend won't have updated the counts yet. 
-       * Wait 500 ms before making request
+       * Wait 1000 ms before making request
        */
       setTimeout(() => {
         this.analyticsService.getBikeCounts().then(res => {
@@ -46,7 +46,7 @@ export class NavbarComponent implements OnInit {
           this.incompleteInpatientCount = res.incomplete;
           this.incompleteWaitingPickupCount = res.complete;
         });
-      }, 500);
+      }, 1000);
     })
     // This triggers the subscription above to run
     this.analyticsService.notifyTransactionStatusChange("none");

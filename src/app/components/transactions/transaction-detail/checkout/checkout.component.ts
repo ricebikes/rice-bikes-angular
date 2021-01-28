@@ -1,7 +1,8 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {TransactionService} from '../../../../services/transaction.service';
-import {Transaction} from '../../../../models/transaction';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TransactionService } from '../../../../services/transaction.service';
+import { Transaction } from '../../../../models/transaction';
+import { AnalyticsService } from '../../../../services/analytics.service';
 
 @Component({
   selector: 'app-checkout',
@@ -16,8 +17,9 @@ export class CheckoutComponent implements OnInit {
   loading = true;
 
   constructor(private route: ActivatedRoute,
-              private transactionService: TransactionService,
-              private router: Router) { }
+    private transactionService: TransactionService,
+    private router: Router,
+    private analyticsService: AnalyticsService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -36,6 +38,7 @@ export class CheckoutComponent implements OnInit {
       .then(() => {
         this.finishModal.nativeElement.click();
         this.router.navigate(['/transactions']);
+        this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
       });
   }
 }
