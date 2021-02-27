@@ -15,6 +15,7 @@ export class CheckoutComponent implements OnInit {
 
   transaction: Transaction;
   loading = true;
+  emailingReceipt = false;
 
   constructor(private route: ActivatedRoute,
     private transactionService: TransactionService,
@@ -34,8 +35,14 @@ export class CheckoutComponent implements OnInit {
   finish() {
     this.transaction.complete = true;
     this.transaction.is_paid = true;
+    /**
+     * This displays a loading wheel while we email receipt, and blocks 
+     * user clicking again
+     */
+    this.emailingReceipt = true;
     this.transactionService.setPaid(this.transaction._id, this.transaction.is_paid)
       .then(() => {
+        this.emailingReceipt = true;
         this.finishModal.nativeElement.click();
         this.router.navigate(['/transactions']);
         this.analyticsService.notifyTransactionStatusChange(this.transaction._id);

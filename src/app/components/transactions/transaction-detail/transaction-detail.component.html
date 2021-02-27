@@ -289,11 +289,21 @@
     <app-order-request-selector #orderRequestSelector [create_only]="false" [preset_transaction]="transaction"
       (chosenRequest)="addOrderRequest($event)"></app-order-request-selector>
     <div class="card-body">
-      <button *ngIf="!transaction?.complete" [disabled]="!canComplete" class="btn btn-primary btn-lg dropdown-toggle"
-        type="button" data-toggle="dropdown">
-        <span *ngIf="!emailLoading" class="fa fa-check"></span>
-        <span *ngIf="emailLoading" class="fa fa-cog loader"></span>
+      <button #completeDropdown *ngIf="!transaction?.complete && !emailLoading" [disabled]="!canComplete"
+        class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+        <span class="fa fa-check"></span>
         Complete
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send
+          email</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span>
+          Complete without sending</a>
+      </div>
+      <button *ngIf="emailLoading" class="btn btn-primary btn-lg">
+        <span class="fa fa-cog loader"></span>
+        Sending Email
       </button>
       <button *ngIf="transaction?.complete && !transaction?.is_paid" (click)="reopenTransaction()"
         class="btn btn-outline-warning btn-lg">
@@ -329,13 +339,6 @@
         class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>
       <button *ngIf="transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()"
         class="btn btn-danger btn-lg"><i class="fas fa-exclamation"></i></button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send
-          email</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span>
-          Complete without sending</a>
-      </div>
       <button (click)="emailCustomer()" class="btn btn-outline-secondary btn-lg float-right"><span
           class="fa fa-envelope"></span> Email customer</button>
     </div>

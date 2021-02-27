@@ -21,6 +21,7 @@ export class TransactionDetailComponent implements OnInit {
 
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
   @ViewChild('customPriceModalTrigger') customPriceModalButtonTrigger: ElementRef;
+  @ViewChild('completeDropdown') completeDropdownButton: ElementRef;
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderRequestSelector') orderRequestSelectorComponent: OrderRequestSelectorComponent;
 
@@ -163,6 +164,7 @@ export class TransactionDetailComponent implements OnInit {
 
   completeTransaction(): void {
     this.emailLoading = true;
+    this.completeDropdownButton.nativeElement.click(); // To close dropdown
     this.transactionService.notifyCustomerEmail(this.transaction._id)
       .then(() => {
         const date = Date.now().toString();
@@ -177,6 +179,7 @@ export class TransactionDetailComponent implements OnInit {
 
   completeWithoutEmail(): void {
     const date = Date.now().toString();
+    this.completeDropdownButton.nativeElement.click(); // To close dropdown
     this.emailLoading = true; // just switches HTML in dom so that the dropdown box vanishes
     this.transaction.complete = true;
     this.transaction.date_completed = date;

@@ -12,8 +12,10 @@
         Are you sure you want to finish the transaction? This cannot be undone!
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        <button (click)="finish()" class="btn btn-success">Finish</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"
+          [disabled]="emailingReceipt">Close</button>
+        <button *ngIf="!emailingReceipt" (click)="finish()" class="btn btn-success">Finish</button>
+        <button *ngIf="emailingReceipt" disabled = "true" class="btn btn-success"><span class="fa fa-cog loader"></span>Sending Email</button>
       </div>
     </div>
   </div>
