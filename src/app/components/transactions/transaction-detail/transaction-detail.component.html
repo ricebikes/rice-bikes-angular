@@ -197,7 +197,7 @@
 <div class="container mb-4">
   <div class="card">
     <div class="card-body">
-      <button *ngIf="!transaction?.is_paid" type="button" class="btn btn-outline-secondary mb-3" data-toggle="modal"
+      <button *ngIf="!transaction?.is_paid && transaction?.bikes?.length == 0" type="button" class="btn btn-outline-secondary mb-3" data-toggle="modal"
         data-target="#bikeAddModal">Add bike
       </button>
 
