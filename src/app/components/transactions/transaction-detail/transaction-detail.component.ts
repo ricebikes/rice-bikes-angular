@@ -214,6 +214,9 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.refurb = !this.transaction.refurb;
     this.updateTransaction();
   }
+  toggleBeerbike(): void {
+      this.transactionService.setBeerBike(this.transaction._id, !this.transaction.beerbike);
+  }
   toggleUrgent(): void {
     this.transaction.urgent = !this.transaction.urgent;
     this.updateTransaction();

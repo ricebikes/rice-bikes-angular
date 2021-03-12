@@ -320,4 +320,16 @@ export class TransactionService {
         .catch((err) => this.handleError(err));
     });
   }
+
+  setBeerBike(transaction_id: string, beerbike: boolean): Promise<any> {
+      return this.authService.getUserCredentials().then((credentials) => {
+          return this.http
+            .put(`${this.backendUrl}/${transaction_id}/beerbike`, 
+                 { beerbike: beerbike },
+                 credentials)
+            .toPromise()
+            .then((res) => this.transaction.next(res.json()))
+            .catch((err) => this.handleError(err));
+      });
+  }
 }

@@ -23,6 +23,7 @@ export class Transaction {
   repairs: RepairItem[];
   actions: Action[];
   refurb: boolean;
+  beerbike: boolean;
   orderRequests: OrderRequest[];
   constructor() {}
 }

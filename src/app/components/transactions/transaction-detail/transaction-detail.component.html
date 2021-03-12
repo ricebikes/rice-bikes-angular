@@ -170,6 +170,8 @@
         </div>
       </span>
       <span *ngIf="transaction.employee" class="badge badge-primary">Employee</span>
+      <span *ngIf="transaction.refurb" class="badge badge-warning">Refurb</span>
+      <span *ngIf="transaction.beerbike" class="badge badge-info">Beer Bike</span>
     </h3>
     <p class="lead">{{transaction?.date_created | date:'medium'}}
       <button data-toggle="modal" data-target="#deleteTransactionModal"
@@ -325,15 +327,17 @@
         class="btn btn-danger btn-lg">
         Waiting on email
       </button>
-      <button *ngIf="transaction?.refurb && !transaction?.is_paid" (click)="toggleRefurb()"
-        class="btn btn-danger btn-lg">
-        Unmark as Refurb
-      </button>
-      <button *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid"
-        (click)="toggleRefurb()" class="btn btn-outline-warning btn-lg">
-        <i class="fa fa-bicycle"></i>
-        Mark as Refurb
-      </button>
+      <div class="dropdown d-inline-block">
+        <button class="btn btn-outline-warning btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Projects
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid" class="dropdown-item" (click)="toggleRefurb()">Mark Refurb</a>
+          <a *ngIf="transaction?.refurb && !transaction?.is_paid" class="dropdown-item" (click)="toggleRefurb()">Unmark Refurb</a>
+          <a *ngIf="!transaction?.beerbike && !transaction?.is_paid" class="dropdown-item" (click)="toggleBeerbike()">Mark Beer Bike</a>
+          <a *ngIf="transaction?.beerbike && !transaction?.is_paid" class="dropdown-item" (click)="toggleBeerbike()">Unmark Beer Bike</a>
+        </div>
+      </div>
 
       <button *ngIf="!transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()"
         class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>

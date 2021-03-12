@@ -25,6 +25,10 @@
         class="nav-link">Refurbs</a>
     </li>
     <li class="nav-item">
+      <a (click)="setTab('beerbike',{complete:false, beerbike: true})" [ngClass]="{'active': currentTab === 'beerbike'}"
+        class="nav-link">Beer Bikes</a>
+    </li>
+    <li class="nav-item">
       <a (click)="setTab('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}"
         class="nav-link">Paid</a>
     </li>
