@@ -3,4 +3,5 @@ export class Repair {
   price: number;
   name: string;
   description: string;
+  disabled: boolean;
 }

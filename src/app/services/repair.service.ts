@@ -3,6 +3,7 @@ import {CONFIG} from '../config';
 import {Http, Headers, RequestOptions} from '@angular/http';
 import {AlertService} from './alert.service';
 import {HttpErrorResponse} from '@angular/common/http';
+import {Repair} from '../models/repair';
 
 @Injectable()
 export class RepairService {
@@ -43,7 +44,7 @@ export class RepairService {
    * Adds a repair to the backend
    */
   postRepair(name: String, price: Number, description: String): Promise<any> {
-    return this.http.post(this.backendURL, {name: name, price: price, description: description}, this.jwt())
+    return this.http.post(this.backendURL, {name: name, price: price, description: description, disabled: false}, this.jwt())
       .toPromise()
       .then(res => res.json())
       .catch(err => this.handleError(err));
@@ -51,7 +52,14 @@ export class RepairService {
 
   // updates a repair
   putRepair(id: String, name: String, price: Number, description: String) {
-    return this.http.put(`${this.backendURL}/${id}`, {id: id, name: name, price: price, description: description}, this.jwt())
+    return this.http.put(`${this.backendURL}/${id}`, {id: id, name: name, price: price, description: description, disabled: false}, this.jwt())
+      .toPromise()
+      .then(res => res.json())
+      .catch(err => this.handleError(err));
+  }
+
+  disableRepair(repair: Repair) {
+    return this.http.put(`${this.backendURL}/${repair._id}`, {id: repair._id, name: repair.name, price: repair.price, description: repair.description, disabled: true}, this.jwt())
       .toPromise()
       .then(res => res.json())
       .catch(err => this.handleError(err));

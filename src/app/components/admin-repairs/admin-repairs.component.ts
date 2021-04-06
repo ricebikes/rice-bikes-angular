@@ -27,14 +27,14 @@ export class AdminRepairsComponent implements OnInit {
         this.repairs.unshift(repair);
       });
   }
-  updaterepair(repair: Repair) {
+  disablerepair(repair: Repair) {
     console.log(repair);
     // PUT the updated repair in
-    this.repairservice.putRepair(repair._id, repair.name, repair.price, repair.description)
+    this.repairservice.disableRepair(repair)
       .then(new_repair => {
         const index = this.repairs.indexOf(repair);
         if (index > -1) {
-          this.repairs.splice(index, 1, new_repair);
+          this.repairs.splice(index, 1);
         }
       });
   }
