@@ -78,7 +78,7 @@ export class OrderRequestService {
       request: request,
     };
     if (partNum) {
-      body["partNum"] = partNum;
+      body["partNumber"] = partNum;
     }
     if (transactions) {
       body["transactions"] = transactions;

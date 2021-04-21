@@ -45,7 +45,14 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
           return null;
         }
         return (this.transactionIDs.includes(parseInt(fg.value))) ? null : { badTransactionID: true };
-      }])]
+      }]), (fg: FormControl) => {
+        if (fg.value == null || fg.value == "") {
+          return new Promise((resolve, reject) => { resolve(null) });
+        } else {
+          return this.transactionService.getTransaction(fg.value)
+            .then(res => res.complete ? { completedTransaction: true } : null)
+        }
+      }]
     },
     {
       validator: (fg: FormGroup) => {

@@ -278,7 +278,7 @@
               <h4 class="float-right">${{transaction?.total_cost}}</h4>
             </div>
             <div class="card-footer">
-              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [disabled]="!transaction.complete" [routerLink]="['/transactions', transaction._id, 'checkout']">Checkout!</button>
+              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [disabled]="!transaction?.complete" [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
             </div>
           </div>
         </div>

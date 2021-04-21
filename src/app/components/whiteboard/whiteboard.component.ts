@@ -165,12 +165,15 @@ export class WhiteboardComponent implements OnInit {
          * looks like, because the user will already see the updates they made.
          * This applies to all the editable items.
          */
-        this.orderRequestService
-          .setRequestString(request, req)
-          .then((newReq) => {
-            this.formSynced.next(true);
-            request.actions = newReq.actions;
-          });
+        if (req) {
+          // If request string was null, don't attempt update
+          this.orderRequestService
+            .setRequestString(request, req)
+            .then((newReq) => {
+              this.formSynced.next(true);
+              request.actions = newReq.actions;
+            });
+        }
       });
     group.controls["quantity"].valueChanges
       .debounceTime(300)
@@ -187,6 +190,10 @@ export class WhiteboardComponent implements OnInit {
     group.controls["partNumber"].valueChanges
       .debounceTime(300)
       .subscribe((partNum) => {
+        if (!partNum) {
+          // Set part number to empty string
+          partNum = '';
+        }
         this.orderRequestService.setPartNum(request, partNum)
           .then((newReq) => {
             this.formSynced.next(true);
@@ -196,6 +203,10 @@ export class WhiteboardComponent implements OnInit {
     group.controls["notes"].valueChanges
       .debounceTime(300)
       .subscribe((notes) => {
+        if (!notes) {
+          // Set notes to empty string
+          notes = '';
+        }
         this.orderRequestService.setNotes(request, notes)
           .then((newReq) => {
             this.formSynced.next(true);
