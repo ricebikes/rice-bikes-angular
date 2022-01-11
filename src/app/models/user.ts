@@ -4,4 +4,5 @@ export class User {
   firstname: String;
   lastname: String;
   roles: Array<String>;
+  active: Boolean;
 }

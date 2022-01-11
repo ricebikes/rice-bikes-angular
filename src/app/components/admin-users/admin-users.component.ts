@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AdminService } from '../../services/admin.service';
 import { User } from '../../models/user';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -23,6 +23,7 @@ export class AdminUsersComponent implements OnInit {
       username: ['', Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
+      active: [true],
       admin: [false],
       projects: [false],
       operations: [false],
@@ -46,6 +47,7 @@ export class AdminUsersComponent implements OnInit {
     this.userForm.get('username').setValue(this.editingUser.username);
     this.userForm.get('firstName').setValue(this.editingUser.firstname);
     this.userForm.get('lastName').setValue(this.editingUser.lastname);
+    this.userForm.get('active').setValue(this.editingUser.active);
     this.userForm.get('admin').setValue(this.editingUser.roles.includes('admin'));
     this.userForm.get('projects').setValue(this.editingUser.roles.includes('projects'));
     this.userForm.get('operations').setValue(this.editingUser.roles.includes('operations'));
@@ -57,18 +59,19 @@ export class AdminUsersComponent implements OnInit {
     if (this.userForm.value['admin']) { user_roles.push('admin'); }
     if (this.userForm.value['projects']) { user_roles.push('projects'); }
     if (this.userForm.value['operations']) { user_roles.push('operations'); }
+    const active = this.userForm.value['active'];
     const username = this.userForm.value['username'];
     const lastName = this.userForm.value['lastName'];
     const firstName = this.userForm.value['firstName'];
     if (this.editMode) {
-      this.updateUser(this.editingUser, username, firstName, lastName, user_roles);
+      this.updateUser(this.editingUser, username, firstName, lastName, user_roles, active);
     } else {
       this.postUser(username, firstName, lastName, user_roles);
     }
   }
 
-  updateUser(user: User, username: string, firstName: string, lastName: string, roles: string[]) {
-    this.adminService.updateUser(user, firstName, lastName, username, roles)
+  updateUser(user: User, username: string, firstName: string, lastName: string, roles: string[], active: Boolean) {
+    this.adminService.updateUser(user, firstName, lastName, username, roles, active)
       .then(res => {
         this.users[this.editIDX] = <User>res
         this.setEditMode(0, false);

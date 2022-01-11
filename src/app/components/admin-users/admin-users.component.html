@@ -2,6 +2,7 @@
   <form class="mb-3" [formGroup]="userForm">
     <div class="input-group">
       <div class="input-group-prepend">
+        <span class="input-group-text"><input formControlName="active" type="checkbox">&nbsp;Active</span>
         <span class="input-group-text"><input formControlName="admin" type="checkbox">&nbsp;Admin</span>
         <span class="input-group-text"><input formControlName="projects" type="checkbox">&nbsp;Projects</span>
         <span class="input-group-text"><input formControlName="operations" type="checkbox">&nbsp;Operations</span>
@@ -17,8 +18,9 @@
     </div>
   </form>
   <ul class="list-group">
-    <li *ngFor="let user of users; let i = index" class="list-group-item">{{user.username}} ({{user.firstname}}
-      {{user.lastname}})
+    <li *ngFor="let user of users; let i = index" class="list-group-item">
+      <span *ngIf="user.active">{{user.username}} ({{user.firstname}} {{user.lastname}})</span>
+      <s *ngIf="!user.active">{{user.username}} ({{user.firstname}} {{user.lastname}})</s>
       <i *ngIf="user.roles.includes('admin')" class="fa fa-lock"></i>
       <i *ngIf="user.roles.includes('operations')" class="fa fa-dolly"></i>
       <i *ngIf="user.roles.includes('projects')" class="fas fa-tools"></i>

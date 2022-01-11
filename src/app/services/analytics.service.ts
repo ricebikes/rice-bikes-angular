@@ -14,7 +14,7 @@ export class AnalyticsService {
 
   private static jwt() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser.token) {
+    if (currentUser && currentUser.token) {
       const headers = new Headers({ 'x-access-token': currentUser.token });
       return new RequestOptions({ headers: headers });
     }
