@@ -41,9 +41,9 @@ export class AdminService {
       .catch(err => this.handleError(err));
   }
 
-  updateUser(user: User, firstName: String, lastName: String, username: String, roles: Array<string>) {
+  updateUser(user: User, firstName: String, lastName: String, username: String, roles: Array<string>, active: Boolean) {
     return this.http.put(`${CONFIG.api_url}/users/${user._id}`,
-      { firstName: firstName, lastName: lastName, username: username, roles: roles }, AdminService.jwt())
+      { firstName: firstName, lastName: lastName, username: username, roles: roles, active }, AdminService.jwt())
       .toPromise()
       .then(res => res.json() as User)
       .catch(err => this.handleError(err));
