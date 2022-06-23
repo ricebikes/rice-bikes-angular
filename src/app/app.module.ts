@@ -8,7 +8,7 @@ import { TransactionsComponent } from './components/transactions/transactions.co
 import { AppRoutingModule } from './app-routing.module';
 import { HttpModule } from '@angular/http';
 import { TransactionDetailComponent } from './components/transactions/transaction-detail/transaction-detail.component';
-import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
+import { NewCustomerTransactionComponent } from './components/new-customer-transaction/new-customer-transaction.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from './services/search.service';
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
@@ -49,7 +49,7 @@ import { OrderRequestSelectorComponent } from './components/whiteboard/order-req
     AppComponent,
     TransactionsComponent,
     TransactionDetailComponent,
-    NewTransactionComponent,
+    NewCustomerTransactionComponent,
     AddRepairComponent,
     AddItemComponent,
     SearchTransactionComponent,
