@@ -6,6 +6,7 @@
         <span class="input-group-text"><input formControlName="admin" type="checkbox">&nbsp;Admin</span>
         <span class="input-group-text"><input formControlName="projects" type="checkbox">&nbsp;Projects</span>
         <span class="input-group-text"><input formControlName="operations" type="checkbox">&nbsp;Operations</span>
+        <span class="input-group-text"><input formControlName="head_mechanic" type="checkbox">&nbsp;Head Mechanic</span>
       </div>
       <input formControlName="username" type="text" class="form-control" placeholder="Username">
       <input formControlName="firstName" type="text" class="form-control" placeholder="First Name">
@@ -24,6 +25,7 @@
       <i *ngIf="user.roles.includes('admin')" class="fa fa-lock"></i>
       <i *ngIf="user.roles.includes('operations')" class="fa fa-dolly"></i>
       <i *ngIf="user.roles.includes('projects')" class="fas fa-tools"></i>
+      <i *ngIf="user.roles.includes('head_mechanic')" class="fas fa-check-double"></i>
       <button class="btn btn-outline-secondary float-right" (click)="setEditMode(i, true)">Edit</button>
     </li>
   </ul>

@@ -105,6 +105,20 @@ export class TransactionService {
     });
   }
 
+  updateCustomer(id: string, customer:Customer):Promise<any> {
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http
+        .put(
+          `${this.backendUrl}/${id}/customer`,
+          { customer },
+          credentials
+        )
+        .toPromise()
+        .then((res) => this.transaction.next(res.json() as Transaction))
+        .catch((err) => this.handleError(err));
+    })
+  }
+
   setComplete(id: string, complete: boolean): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
       return this.http
@@ -154,30 +168,7 @@ export class TransactionService {
   createTransaction(type: string, customer: Customer): Promise<any> {
     const data = {
       transaction_type: type,
-      customer: {
-        email: customer.email,
-        first_name: customer.first_name,
-        last_name: customer.last_name,
-      },
-    };
-    return this.authService.getUserCredentials().then((credentials) => {
-      return this.http
-        .post(this.backendUrl, data, credentials)
-        .toPromise()
-        .then((res) => res.json() as Transaction)
-        .catch((err) => this.handleError(err));
-    });
-  }
-
-  createTransactionCustomerExists(
-    type: string,
-    customer_id: string
-  ): Promise<any> {
-    const data = {
-      transaction_type: type,
-      customer: {
-        _id: customer_id,
-      },
+      customer
     };
     return this.authService.getUserCredentials().then((credentials) => {
       return this.http
@@ -208,7 +199,7 @@ export class TransactionService {
       return this.http
         .post(`${this.backendUrl}/${transaction_id}/bikes`, data, credentials)
         .toPromise()
-        .then((res) => this.transaction.next(res.json()))
+        .then((res) => res.json() as Transaction)
         .catch((err) => this.handleError(err));
     });
   }

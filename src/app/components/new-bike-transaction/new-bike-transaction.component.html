@@ -1,0 +1,25 @@
+<div class="container form-container" style="margin-top: 15px">
+    <form [formGroup]="transactionForm">
+        <div class="form-group row">
+            <label for="bike_model" class="col-2 col-form-label">Model</label>
+            <div class="col-10">
+            <input class="form-control form-control-lg" type="text"  placeholder="Model..."  formControlName="bike_model" id="bike_make">
+            </div>
+        </div>
+        <div class="form-group row">
+        <label for="bike_size" class="col-2 col-form-label">Size</label>
+        <div class="col-10">
+            <input class="form-control form-control-lg" type="number"  placeholder="Size..."  formControlName="bike_size" id="bike_size">
+        </div>
+        </div>
+        <div class="form-group row">
+            <label for="bike_color" class="col-2 col-form-label">Color</label>
+            <div class="col-10">
+                <input class="form-control form-control-lg" type="text"  placeholder="Color..."  formControlName="bike_color" id="bike_color">
+            </div>
+        </div>
+    
+        <button type="submit" class="btn btn-block btn-lg btn-success" (click)="submitTransaction()" [disabled]="!transactionForm.valid">Submit</button>
+    </form>
+  </div>
+  

@@ -41,6 +41,8 @@ import { OrderRequestService } from './services/order-request.service';
 import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
 import { OrderSelectorComponent } from './components/orders/order-selector/order-selector.component';
 import { OrderRequestSelectorComponent } from './components/whiteboard/order-request-selector/order-request-selector.component';
+import { NewBikeTransactionComponent } from './components/new-bike-transaction/new-bike-transaction.component';
+import { SearchCustomerComponent } from './components/search-customer/search-customer.component';
 
 
 
@@ -50,9 +52,11 @@ import { OrderRequestSelectorComponent } from './components/whiteboard/order-req
     TransactionsComponent,
     TransactionDetailComponent,
     NewCustomerTransactionComponent,
+    NewBikeTransactionComponent,
     AddRepairComponent,
     AddItemComponent,
     SearchTransactionComponent,
+    SearchCustomerComponent,
     LoginComponent,
     NavbarComponent,
     AlertComponent,
