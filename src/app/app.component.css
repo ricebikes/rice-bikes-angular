@@ -20,3 +20,14 @@
 }
 
 
+
+.badge-retrospec {
+  background-color: darkorange;
+  color: white;
+}
+
+
+.badge-employee {
+  background-color:deepskyblue;
+  color: white;
+}

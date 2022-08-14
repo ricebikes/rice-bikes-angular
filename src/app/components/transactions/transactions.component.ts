@@ -5,7 +5,7 @@ import { Transaction } from '../../models/transaction';
 @Component({
   selector: 'app-transactions',
   templateUrl: 'transactions.component.html',
-  styleUrls: ['transactions.component.css'],
+  styleUrls: ['transactions.component.css', '../../app.component.css'],
   providers: [TransactionService]
 })
 export class TransactionsComponent implements OnInit {
@@ -60,6 +60,12 @@ export class TransactionsComponent implements OnInit {
   }
 
   getBikeList(transaction: Transaction): string[] {
-    return transaction.bikes.map((b) => `${b.make} ${b.model}`);
+    return transaction.bikes.map((b) => {
+      if (transaction.transaction_type == 'retrospec') {
+        return `${b.model} / ${b.description}`
+      } else {
+        return `${b.make} ${b.model}`
+      }
+    });
   }
 }

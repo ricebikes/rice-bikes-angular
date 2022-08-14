@@ -8,7 +8,7 @@ import { TransactionsComponent } from './components/transactions/transactions.co
 import { AppRoutingModule } from './app-routing.module';
 import { HttpModule } from '@angular/http';
 import { TransactionDetailComponent } from './components/transactions/transaction-detail/transaction-detail.component';
-import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
+import { NewCustomerTransactionComponent } from './components/new-customer-transaction/new-customer-transaction.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from './services/search.service';
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
@@ -41,6 +41,8 @@ import { OrderRequestService } from './services/order-request.service';
 import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
 import { OrderSelectorComponent } from './components/orders/order-selector/order-selector.component';
 import { OrderRequestSelectorComponent } from './components/whiteboard/order-request-selector/order-request-selector.component';
+import { NewBikeTransactionComponent } from './components/new-bike-transaction/new-bike-transaction.component';
+import { SearchCustomerComponent } from './components/search-customer/search-customer.component';
 
 
 
@@ -49,10 +51,12 @@ import { OrderRequestSelectorComponent } from './components/whiteboard/order-req
     AppComponent,
     TransactionsComponent,
     TransactionDetailComponent,
-    NewTransactionComponent,
+    NewCustomerTransactionComponent,
+    NewBikeTransactionComponent,
     AddRepairComponent,
     AddItemComponent,
     SearchTransactionComponent,
+    SearchCustomerComponent,
     LoginComponent,
     NavbarComponent,
     AlertComponent,

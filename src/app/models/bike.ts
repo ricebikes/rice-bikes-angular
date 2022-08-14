@@ -1,6 +1,6 @@
 export class Bike {
   _id: string;
-  make: number;
+  make: string;
   model: string;
   description: string;
 }

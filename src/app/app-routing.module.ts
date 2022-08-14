@@ -2,7 +2,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { TransactionDetailComponent } from './components/transactions/transaction-detail/transaction-detail.component';
-import { NewTransactionComponent } from './components/new-transaction/new-transaction.component';
+import { NewCustomerTransactionComponent } from './components/new-customer-transaction/new-customer-transaction.component';
+import { NewBikeTransactionComponent } from './components/new-bike-transaction/new-bike-transaction.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './components/login/login.component';
 import {AuthComponent} from './components/auth/auth.component';
@@ -40,7 +41,17 @@ const routes: Routes = [
 
       {
         path: 'new',
-        component: NewTransactionComponent
+        children: [
+          {
+            path: '',
+            component: NewCustomerTransactionComponent,
+            pathMatch: 'full'
+          },
+          {
+            path: 'retrospec',
+            component: NewBikeTransactionComponent
+          }
+        ]
       },
 
       {

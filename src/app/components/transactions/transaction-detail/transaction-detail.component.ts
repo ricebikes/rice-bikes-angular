@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Bike } from '../../../models/bike';
 import { Item } from '../../../models/item';
+import { Customer } from '../../../models/customer';
 import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
 import { OrderRequest } from '../../../models/orderRequest';
@@ -14,11 +15,12 @@ import { AnalyticsService } from '../../../services/analytics.service';
 @Component({
   selector: 'app-transaction-detail',
   templateUrl: 'transaction-detail.component.html',
-  styleUrls: ['transaction-detail.component.css'],
+  styleUrls: ['transaction-detail.component.css', '../../../app.component.css'],
   providers: [TransactionService]
 })
 export class TransactionDetailComponent implements OnInit {
 
+  @ViewChild('updateCustomerModal') updateCustomerModal: ElementRef;
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
   @ViewChild('customPriceModalTrigger') customPriceModalButtonTrigger: ElementRef;
   @ViewChild('completeDropdown') completeDropdownButton: ElementRef;
@@ -79,6 +81,13 @@ export class TransactionDetailComponent implements OnInit {
   changeType(type: string): void {
     this.transaction.transaction_type = type;
     this.updateTransaction();
+  }
+
+  // only intended to be used for Retrospec transaction
+  async updateCustomer(customer: Customer) {
+    await this.transactionService.updateCustomer(this.transaction._id, customer)
+    this.transaction.customer = customer
+    this.updateCustomerModal.nativeElement.click()
   }
 
   updateTransaction(): void {

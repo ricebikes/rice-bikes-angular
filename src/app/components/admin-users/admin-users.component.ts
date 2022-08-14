@@ -27,6 +27,7 @@ export class AdminUsersComponent implements OnInit {
       admin: [false],
       projects: [false],
       operations: [false],
+      head_mechanic: [false]
     });
     this.adminService.getUsers()
       .then(users => this.users = users);
@@ -51,6 +52,7 @@ export class AdminUsersComponent implements OnInit {
     this.userForm.get('admin').setValue(this.editingUser.roles.includes('admin'));
     this.userForm.get('projects').setValue(this.editingUser.roles.includes('projects'));
     this.userForm.get('operations').setValue(this.editingUser.roles.includes('operations'));
+    this.userForm.get('head_mechanic').setValue(this.editingUser.roles.includes('head_mechanic'));
   }
 
   submitUserForm() {
@@ -59,6 +61,7 @@ export class AdminUsersComponent implements OnInit {
     if (this.userForm.value['admin']) { user_roles.push('admin'); }
     if (this.userForm.value['projects']) { user_roles.push('projects'); }
     if (this.userForm.value['operations']) { user_roles.push('operations'); }
+    if (this.userForm.value['head_mechanic']) { user_roles.push('head_mechanic'); }
     const active = this.userForm.value['active'];
     const username = this.userForm.value['username'];
     const lastName = this.userForm.value['lastName'];

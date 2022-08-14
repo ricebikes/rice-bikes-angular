@@ -1,0 +1,20 @@
+#customerButton {
+    padding: 0;
+}
+
+#customerButton > h3 {
+    margin: 0;
+}
+
+#customerButton > h3:hover {
+    text-decoration: line-through;
+}
+
+#dropdownMenuButton {
+    border: 0;
+}
+
+#dropdownMenuButton > h5 {
+    font-weight: bold;
+    margin: 0;
+}
