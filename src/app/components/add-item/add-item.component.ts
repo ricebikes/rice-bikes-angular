@@ -155,9 +155,9 @@ export class AddItemComponent implements OnInit {
     if (this.scanData.invalid || this.scanData.value == '') {
       return;
     }
-    this.searchService.upcSearch(this.scanData.value).then(items => {
-      if (items.length > 0) {
-        this.chosenItem.emit(items[0]);
+    this.searchService.upcSearch(this.scanData.value).then(item => {
+      if (item) {
+        this.chosenItem.emit(item);
         this.scanData.reset();
         // dismiss scan modal
         this.scanTrigger.nativeElement.click();
