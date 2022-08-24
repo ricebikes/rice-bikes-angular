@@ -5,3 +5,7 @@
 .transaction-tr {
   cursor: pointer;
 }
+
+.form-check {
+  margin-left: 1rem;
+}
