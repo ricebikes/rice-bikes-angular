@@ -83,6 +83,17 @@ export class TransactionDetailComponent implements OnInit {
     this.updateTransaction();
   }
 
+  changeStatus(status: string): void {
+    this.transactionService.updateStatus(this.transaction._id, status)
+  }
+
+  /**
+   * Mark for sale has seperate function from other statuses as it required admin
+   */
+  markForSale() {
+    this.transactionService.markForSale(this.transaction._id)
+  }
+
   // only intended to be used for Retrospec transaction
   async updateCustomer(customer: Customer) {
     await this.transactionService.updateCustomer(this.transaction._id, customer)
@@ -162,6 +173,9 @@ export class TransactionDetailComponent implements OnInit {
     }
     if (this.transaction.orderRequests.length > 0) {
       return false;
+    }
+    if (this.transaction.transaction_type == 'retrospec' && this.transaction.status != 'for sale'){
+      return false
     }
     for (const repair of this.transaction.repairs) {
       if (!repair.completed) {

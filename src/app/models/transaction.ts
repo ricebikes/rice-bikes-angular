@@ -7,6 +7,7 @@ import { OrderRequest } from './orderRequest';
 
 export class Transaction {
   _id: string;
+  status: string;
   date_created: string;
   date_completed: string;
   complete: boolean;

@@ -1,7 +1,14 @@
 <div class="container">
   <ul class="nav nav-tabs nav-fill justify-content-center" style="margin-top: 15px;">
     <li class="nav-item">
-      <a (click)="setTab('active', { complete: false , refurb: false })" [ngClass]="{'active': currentTab === 'active'}"
+      <a (click)="setTab('active', { 
+          complete: false, 
+          refurb: false, 
+          $or: [
+            {transaction_type : {$ne: 'retrospec'} },
+            {status: 'building'}
+          ]
+        })" [ngClass]="{'active': currentTab === 'active'}"
         class="nav-link">Active</a>
     </li>
     <li class="nav-item">
@@ -55,37 +62,71 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <table *ngIf="!loading" class="table table-hover">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Customer</th>
-        <th>Bikes</th>
-        <th *ngIf="currentTab === 'pickup'">Completed</th>
-        <th *ngIf="!(currentTab === 'pickup')">Submitted</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let transaction of transactions" class="transaction-tr"
-        [routerLink]="['/transactions', transaction._id]"
-        [ngClass]="{'table-warning': getTimeDifference(transaction) >= 3 && getTimeDifference(transaction) < 6, 'table-danger': getTimeDifference(transaction) >= 6}">
-        <th scope="row">{{transaction._id}}
-          <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
-                                        'badge-primary':   transaction?.transaction_type == 'outpatient',
-                                        'badge-secondary': transaction?.transaction_type == 'merch',
-                                        'badge-retrospec':   transaction?.transaction_type == 'retrospec'}">
-            {{transaction?.transaction_type}}</span>
-          <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i
-              class="fa fa-wrench"></i></span>
-          <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
-          <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i></span>
-
-        </th>
-        <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
-        <td>{{getBikeList(transaction)}}</td>
-        <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo }}</td>
-        <td *ngIf="!(currentTab === 'pickup')">{{transaction.date_created | timeAgo }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="row">
+    <div class="col-sm-2" *ngIf="currentTab == 'retrospec'">
+      <h5>Status</h5>
+        <div class="form-check" *ngFor="let status of objectKeys(statusFilters)">
+          <input class="form-check-input" type="checkbox" [checked]="statusFilters[status]" [id]="'statusCheck'+status" (change)="toggleFilter(statusFilters, status)">
+          <label class="form-check-label" [for]="'statusCheck'+status">{{status}}</label>
+        </div>
+      <h5>Models</h5>
+        <div class="form-check" *ngFor="let model of objectKeys(modelFilters)">
+          <input class="form-check-input" type="checkbox" [checked]="modelFilters[model]" [id]="'modelCheck'+model" (change)="toggleFilter(modelFilters, model)">
+          <label class="form-check-label" [for]="'modelCheck'+model">{{model}}</label>
+        </div>
+      <h5>Sizes</h5>
+        <div class="form-check" *ngFor="let size of objectKeys(sizeFilters)">
+          <input class="form-check-input" type="checkbox" [checked]="sizeFilters[size]"  [id]="'sizeCheck'+size" (change)="toggleFilter(sizeFilters, size)">
+          <label class="form-check-label" [id]="'sizeCheck'+size">{{size}}</label>
+        </div>
+      <h5>Colors</h5>
+        <div class="form-check" *ngFor="let color of objectKeys(colorFilters)">
+          <input class="form-check-input" type="checkbox" [checked]="colorFilters[color]" [id]="'colorCheck'+color" (change)="toggleFilter(colorFilters, color)">
+          <label class="form-check-label" [id]="'colorCheck'+color">{{color}}</label>
+        </div>
+    </div>
+    <div class="col">
+      <table *ngIf="!loading" class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Bikes</th>
+            <th *ngIf="currentTab === 'pickup'">Completed</th>
+            <th *ngIf="!['pickup', 'retrospec'].includes(currentTab)">Submitted</th>
+            <th *ngIf="currentTab === 'retrospec'">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let transaction of filteredTransactions" class="transaction-tr"
+            [routerLink]="['/transactions', transaction._id]"
+            [ngClass]="{'table-warning': getTimeDifference(transaction) >= 3 && getTimeDifference(transaction) < 6, 'table-danger': getTimeDifference(transaction) >= 6}">
+            <th scope="row">{{transaction._id}}
+              <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
+                                            'badge-primary':   transaction?.transaction_type == 'outpatient',
+                                            'badge-secondary': transaction?.transaction_type == 'merch',
+                                            'badge-retrospec':   transaction?.transaction_type == 'retrospec'}">
+                {{transaction?.transaction_type}}</span>
+              <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i
+                  class="fa fa-wrench"></i></span>
+              <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
+              <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i></span>
+    
+            </th>
+            <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
+            <td>{{getBikeList(transaction)}}</td>
+            <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo }}</td>
+            <td *ngIf="!['pickup', 'retrospec'].includes(currentTab)">{{transaction.date_created | timeAgo }}</td>
+            <td *ngIf="currentTab === 'retrospec'"><span class="fa" [ngClass]="{
+              'fa-cart-arrow-down': transaction.status == 'ordered',
+              'fa-truck': transaction.status == 'arrived',
+              'fa-wrench': transaction.status == 'building',
+              'fa-check': transaction.status == 'built',
+              'fa-tags': transaction.status == 'for sale'
+            }"></span>  {{transaction.status}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

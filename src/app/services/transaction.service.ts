@@ -44,7 +44,7 @@ export class TransactionService {
     const querystring =
       "?" +
       Object.keys(props)
-        .map((k) => `${k}=${encodeURIComponent(props[k])}`)
+        .map((k) => `${k}=${encodeURIComponent(JSON.stringify(props[k]))}`)
         .join("&");
     return this.authService.getCredentials().then((credentials) => {
       return this.http
@@ -68,6 +68,8 @@ export class TransactionService {
     });
   }
 
+  // route is now deprecated
+  // DO NOT IMPLEMENT NEW FEATURES ON IT
   updateTransaction(transaction: Transaction): Promise<any> {
     return this.authService.getCredentials().then((credentials) => {
       return this.http
@@ -115,6 +117,36 @@ export class TransactionService {
         )
         .toPromise()
         .then((res) => this.transaction.next(res.json() as Transaction))
+        .catch((err) => this.handleError(err));
+    })
+  }
+
+  updateStatus(id: String, status: String): Promise<any> {
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http
+        .put(
+          `${this.backendUrl}/${id}/status`,
+          {status},
+          credentials
+        )
+        .toPromise()
+        .then((res) => this.transaction.next(res.json() as Transaction))
+        .catch((err) => this.handleError(err));
+    })
+  }
+
+  markForSale(id:String) {
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http
+        .put(
+          `${this.backendUrl}/${id}/forsale`,
+          {},
+          credentials
+        )
+        .toPromise()
+        .then((res) => {
+          this.transaction.next(res.json() as Transaction)}
+          )
         .catch((err) => this.handleError(err));
     })
   }

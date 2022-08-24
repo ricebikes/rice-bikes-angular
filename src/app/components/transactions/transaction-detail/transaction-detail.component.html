@@ -155,7 +155,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <app-search-customer  (foundCustomer)="updateCustomer($event)"></app-search-customer>
+        <app-search-customer (foundCustomer)="updateCustomer($event)"></app-search-customer>
       </div>
     </div>
   </div>
@@ -169,8 +169,14 @@
       ...
     </h1>
     <h3 *ngIf="!loading" class="display-5">
-      <strong>{{transaction?._id}}: </strong> <span *ngIf="transaction?.transaction_type != 'retrospec'">{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}</span>
-      <button class="btn" type="button" *ngIf="transaction?.transaction_type == 'retrospec'" id="customerButton" data-toggle="modal" data-target="#updateCustomerModal"><h3>{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}</h3></button>
+      <strong>{{transaction?._id}}: </strong> <span
+        *ngIf="transaction?.transaction_type != 'retrospec'">{{transaction?.customer.first_name}}
+        {{transaction?.customer.last_name}}</span>
+      <button class="btn" type="button" *ngIf="transaction?.transaction_type == 'retrospec'" id="customerButton"
+        data-toggle="modal" data-target="#updateCustomerModal">
+        <h3>{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}</h3>
+      </button>
+      <!--non-retrospec => change transaction type dropdown -->
       <span class="dropdown" *ngIf="transaction?.transaction_type!= 'retrospec'">
         <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
@@ -189,8 +195,44 @@
           <a class="dropdown-item" (click)="changeType('merch')">Merch</a>
         </div>
       </span>
+      <!--retrospec => fixed badge -->
       <span *ngIf="transaction.transaction_type == 'retrospec'" class="badge badge-retrospec">Retrospec</span>
-      <span *ngIf="transaction.employee && transaction.transaction_type!= 'retrospec'" class="badge badge-employee">Employee</span>
+      <!--retrospec => status dropdown-->
+      <span class="dropdown" *ngIf="transaction?.transaction_type== 'retrospec'">
+        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          <h5><span class="fa" [ngClass]="{
+            'fa-cart-arrow-down': transaction?.status == 'ordered',
+            'fa-truck': transaction?.status == 'arrived',
+            'fa-wrench': transaction?.status == 'building',
+            'fa-check': transaction?.status == 'built',
+            'fa-tags': transaction?.status == 'for sale'
+          }"></span>
+            {{transaction?.status || "Set Status"}}</h5>
+        </button>
+        <div class="dropdown-menu">
+          <h6 class="dropdown-header">Choose status</h6>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="changeStatus('ordered')">
+            <span class="fa fa-cart-arrow-down"></span> Ordered </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="changeStatus('arrived')">
+            <span class="fa fa-truck"></span> Arrived </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="changeStatus('building')">
+            <span class="fa fa-wrench"></span> Building </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="changeStatus('built')">
+            <span class="fa fa-check"></span> Built </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="markForSale()">
+            <span class="fa fa-tags"></span> For Sale </a>
+        </div>
+      </span>
+
+
+      <span *ngIf="transaction.employee && transaction.transaction_type!= 'retrospec'"
+        class="badge badge-employee">Employee</span>
       <span *ngIf="transaction.refurb" class="badge badge-warning">Refurb</span>
       <span *ngIf="transaction.beerbike" class="badge badge-info">Beer Bike</span>
     </h3>
@@ -220,8 +262,8 @@
 <div class="container mb-4">
   <div class="card">
     <div class="card-body">
-      <button *ngIf="!transaction?.is_paid && transaction?.bikes?.length == 0" type="button" class="btn btn-outline-secondary mb-3" data-toggle="modal"
-        data-target="#bikeAddModal">Add bike
+      <button *ngIf="!transaction?.is_paid && transaction?.bikes?.length == 0" type="button"
+        class="btn btn-outline-secondary mb-3" data-toggle="modal" data-target="#bikeAddModal">Add bike
       </button>
 
       <div class="list-group">
@@ -299,7 +341,9 @@
               <h4 class="float-right">${{transaction?.total_cost}}</h4>
             </div>
             <div class="card-footer">
-              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right" [disabled]="!transaction?.complete" [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
+              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right"
+                [disabled]="!transaction?.complete"
+                [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
             </div>
           </div>
         </div>
@@ -313,7 +357,7 @@
     <div class="card-body">
       <button #completeDropdown *ngIf="!transaction?.complete && !emailLoading" [disabled]="!canComplete"
         class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
-        <span class="fa fa-check"></span>
+        <span class="fa fa-clipboard-check"></span>
         Complete
       </button>
       <div class="dropdown-menu">
@@ -348,14 +392,19 @@
         Waiting on email
       </button>
       <div class="dropdown d-inline-block">
-        <button class="btn btn-outline-warning btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Projects
+        <button class="btn btn-outline-warning btn-lg dropdown-toggle" type="button" id="dropdownMenuButton"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Projects
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid" class="dropdown-item" (click)="toggleRefurb()">Mark Refurb</a>
-          <a *ngIf="transaction?.refurb && !transaction?.is_paid" class="dropdown-item" (click)="toggleRefurb()">Unmark Refurb</a>
-          <a *ngIf="!transaction?.beerbike && !transaction?.is_paid" class="dropdown-item" (click)="toggleBeerbike()">Mark Beer Bike</a>
-          <a *ngIf="transaction?.beerbike && !transaction?.is_paid" class="dropdown-item" (click)="toggleBeerbike()">Unmark Beer Bike</a>
+          <a *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid"
+            class="dropdown-item" (click)="toggleRefurb()">Mark Refurb</a>
+          <a *ngIf="transaction?.refurb && !transaction?.is_paid" class="dropdown-item" (click)="toggleRefurb()">Unmark
+            Refurb</a>
+          <a *ngIf="!transaction?.beerbike && !transaction?.is_paid" class="dropdown-item"
+            (click)="toggleBeerbike()">Mark Beer Bike</a>
+          <a *ngIf="transaction?.beerbike && !transaction?.is_paid" class="dropdown-item"
+            (click)="toggleBeerbike()">Unmark Beer Bike</a>
         </div>
       </div>
 
