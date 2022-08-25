@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {CONFIG} from '../config';
-import {HttpErrorResponse} from '@angular/common/http';
-import {AlertService} from './alert.service';
-import {Item} from '../models/item';
+import { Headers, Http, RequestOptions } from '@angular/http';
+import { CONFIG } from '../config';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertService } from './alert.service';
+import { Item } from '../models/item';
 
 
 @Injectable()
@@ -61,6 +61,18 @@ export class ItemService {
       item, this.jwt())
       .toPromise()
       .then(res => res.json())
-      .catch( err => this.handleError(err));
+      .catch(err => this.handleError(err));
+  }
+
+  /**
+   * Grab updated item attributes from supplier
+   * Searches supplier by upc
+   * @param item the item to refresh 
+   */
+  refreshItem(upc: String) {
+    return this.http.get(`${CONFIG.api_url}/items/upc/${upc}`, this.jwt())
+      .toPromise()
+      .then(res => res.json())
+      .catch(err => this.handleError(err))
   }
 }

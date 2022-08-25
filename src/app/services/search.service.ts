@@ -136,15 +136,12 @@ export class SearchService {
    * Searches for an item by the UPC only. It is expected that there will only be one item returned here.
    * @param upc
    */
-  upcSearch(upc: string): Promise<Item[]> {
-    const params = new URLSearchParams();
+  upcSearch(upc: string): Promise<Item> {
     const requestOptions = new RequestOptions();
     requestOptions.headers = SearchService.jwt_headers();
-    params.set('upc', upc);
-    requestOptions.params = params;
-    return this.http.get(`${this.itemUrl}/search`, requestOptions)
+    return this.http.put(`${this.itemUrl}/upc/${upc}`, {}, requestOptions)
       .toPromise()
-      .then(res => res.json() as Item[])
+      .then(res => res.json() as Item)
       .catch(err => {
         this.handleError(err);
         return null;

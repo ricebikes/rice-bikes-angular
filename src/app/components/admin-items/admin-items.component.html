@@ -1,3 +1,4 @@
+<!--Edit Item Modal-->
 <!-- Hidden button controls for modals-->
 <button #editItemToggle hidden data-toggle="modal" data-target="#editItemModal">HIDDEN CONTROL</button>
 <div class="modal fade" id="editItemModal" tabindex="-1" role="dialog">
@@ -85,6 +86,7 @@
         </form>
       </div>
       <div class="modal-footer">
+        <button (click)="refreshItem()" class="btn btn-success">Refresh</button>
         <button data-dismiss="modal" type="submit" (click)="submitItemUpdateForm()" class="btn btn-primary"
           [disabled]="editItemForm.invalid">Update Item</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -92,6 +94,7 @@
     </div>
   </div>
 </div>
+
 <div class="container">
   <div class="jumbotron">
     <h4 class="display-4">Create Item</h4>

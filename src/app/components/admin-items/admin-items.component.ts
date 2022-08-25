@@ -122,6 +122,32 @@ export class AdminItemsComponent implements OnInit {
     this.editItemToggle.nativeElement.click();
   }
 
+  refreshItem() {
+    const attrs = [
+      'itemID',
+      'name',
+      'upc',
+      'category',
+      'size',
+      'brand',
+      'condition',
+      'standard_price',
+      'wholesale_cost',
+      'desired_stock',
+      'minimum_stock',
+      'stock',
+      'disabled'
+    ]
+    this.itemService.refreshItem(this.editItemForm.controls['upc'].value)
+      .then(item => attrs.forEach(attr => {
+        const old_value = this.editItemForm.controls[attr].value
+        const new_value = item[attr]
+        if (new_value && old_value != new_value) {
+          this.editItemForm.controls[attr].setValue(new_value)
+        }
+      }))
+  }
+
   /**
    * Toggles the disabled state of an item
    * @param item: item to toggle state of
