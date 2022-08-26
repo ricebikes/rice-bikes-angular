@@ -6,6 +6,11 @@
   cursor: pointer;
 }
 
-.form-check {
+.filter-group {
+  margin-top: 1rem;
   margin-left: 1rem;
+}
+
+.filter {
+  margin-left: 2rem;
 }

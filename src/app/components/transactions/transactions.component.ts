@@ -87,7 +87,10 @@ export class TransactionsComponent implements OnInit {
       return this.modelFilters[model] &&
         this.sizeFilters[size] &&
         this.colorFilters[color] &&
-        this.statusFilters[transaction.status]
+        (
+          !transaction.status || 
+          this.statusFilters[transaction.status]
+        )
     }).length >0
   }
 
@@ -108,6 +111,25 @@ export class TransactionsComponent implements OnInit {
     this.filterTransactions()
   }
 
+
+  isGroupChecked(filtersGroup) {
+    const filters = Object.keys(filtersGroup)
+    const checked = filters.filter(filter => filtersGroup[filter])
+    return checked.length >0
+  }
+
+  toggleFilterGroup(filtersGroup) {
+    const filters = Object.keys(filtersGroup)
+    if (this.isGroupChecked(filtersGroup)) {
+      filters.forEach(filter => {
+        filtersGroup[filter] = false
+      })
+    } else {
+      filters.forEach(filter => {
+        filtersGroup[filter] = true
+      })
+    }
+  }
 
   /**
    * Sets the current tab to the given string. Accepts optional props to request the backend with.
