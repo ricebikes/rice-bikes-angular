@@ -65,32 +65,32 @@
   <div class="row">
     <div class="col-sm-2" *ngIf="currentTab == 'retrospec'">
       <div class="form-check filter-group">
-        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(statusFilters)" [id]="statusGroupCheck" (change)="toggleFilterGroup(statusFilters)">
-        <label class="form-check-label" [for]="statusGroupCheck"><h5>Status</h5></label>
+        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(statusFilters)" id="statusGroupCheck" (change)="toggleFilterGroup(statusFilters)">
+        <label class="form-check-label" for="statusGroupCheck"><h5>Status</h5></label>
       </div>
         <div class="form-check filter" *ngFor="let status of objectKeys(statusFilters)">
           <input class="form-check-input" type="checkbox" [checked]="statusFilters[status]" [id]="'statusCheck'+status" (change)="toggleFilter(statusFilters, status)">
           <label class="form-check-label" [for]="'statusCheck'+status">{{status}}</label>
         </div>
       <div class="form-check filter-group">
-        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(modelFilters)" [id]="modelGroupCheck" (change)="toggleFilterGroup(modelFilters)">
-        <label class="form-check-label" [for]="modelGroupCheck"><h5>Models</h5></label>
+        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(modelFilters)" id="modelGroupCheck" (change)="toggleFilterGroup(modelFilters)">
+        <label class="form-check-label" for="modelGroupCheck"><h5>Models</h5></label>
       </div>
         <div class="form-check filter" *ngFor="let model of objectKeys(modelFilters)">
           <input class="form-check-input" type="checkbox" [checked]="modelFilters[model]" [id]="'modelCheck'+model" (change)="toggleFilter(modelFilters, model)">
           <label class="form-check-label" [for]="'modelCheck'+model">{{model}}</label>
         </div>
       <div class="form-check filter-group">
-        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(sizeFilters)" [id]="sizeGroupCheck" (change)="toggleFilterGroup(sizeFilters)">
-        <label class="form-check-label" [for]="sizeGroupCheck"><h5>Models</h5></label>
+        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(sizeFilters)" id="sizeGroupCheck" (change)="toggleFilterGroup(sizeFilters)">
+        <label class="form-check-label" for="sizeGroupCheck"><h5>Size</h5></label>
       </div>
         <div class="form-check filter" *ngFor="let size of objectKeys(sizeFilters)">
           <input class="form-check-input" type="checkbox" [checked]="sizeFilters[size]"  [id]="'sizeCheck'+size" (change)="toggleFilter(sizeFilters, size)">
           <label class="form-check-label" [for]="'sizeCheck'+size">{{size}}</label>
         </div>
       <div class="form-check filter-group">
-        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(colorFilters)" [id]="colorGroupCheck" (change)="toggleFilterGroup(colorFilters)">
-        <label class="form-check-label" [for]="colorGroupCheck"><h5>Colors</h5></label>
+        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(colorFilters)" id="colorGroupCheck" (change)="toggleFilterGroup(colorFilters)">
+        <label class="form-check-label" for="colorGroupCheck"><h5>Colors</h5></label>
       </div>
         <div class="form-check filter" *ngFor="let color of objectKeys(colorFilters)">
           <input class="form-check-input" type="checkbox" [checked]="colorFilters[color]" [id]="'colorCheck'+color" (change)="toggleFilter(colorFilters, color)">
