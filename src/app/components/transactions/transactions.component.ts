@@ -128,6 +128,7 @@ export class TransactionsComponent implements OnInit {
       filters.forEach(filter => {
         filtersGroup[filter] = true
       })
+      this.filterTransactions()
     }
   }
 
