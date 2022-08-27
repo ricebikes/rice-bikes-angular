@@ -16,7 +16,7 @@
         [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
-      <a (click)="setTab('retrospec', { transaction_type: 'retrospec'})"
+      <a (click)="setTab('retrospec', { transaction_type: 'retrospec', complete: false})"
         [ngClass]="{'active': currentTab === 'retrospec'}" class="nav-link">Retrospec</a>
     </li>
     <li class="nav-item">
