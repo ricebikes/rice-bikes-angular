@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Observable } from 'rxjs/Observable';
 import { CONFIG } from '../../config';
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../../services/analytics.service';
+import { AddItemComponent } from '../add-item/add-item.component';
+import { Item } from '../../models/item';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +16,10 @@ export class NavbarComponent implements OnInit {
 
   loggedIn: Observable<boolean>;
   isAdmin: Observable<boolean>;
-  authUrl = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
+  authUrl = `${CONFIG.cas_auth_url}?ser'../../vice=${CONFIG.service_url}`;
+  @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
+  @ViewChild('priceCheckTrigger') priceCheckTrigger: ElementRef;
+  priceCheckItem: Item;
 
   // Number of inpatient bikes not completed
   incompleteInpatientCount = 0;
@@ -62,4 +67,20 @@ export class NavbarComponent implements OnInit {
   viewingTransactions() {
     return this.router.url.includes('transactions')
   }
+
+
+  triggerScanModal() {
+    this.addItemComponent.triggerScanModal();
+  }
+
+
+  showPriceCheck(item : Item){
+    this.priceCheckItem = item;
+    this.priceCheckTrigger.nativeElement.click();
+  }
+
+
+
 }
+
+
