@@ -84,7 +84,9 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   changeStatus(status: string): void {
-    this.transactionService.updateStatus(this.transaction._id, status)
+    this.transactionService.updateStatus(this.transaction._id, status).then(res => {
+      this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
+    })
   }
 
   /**

@@ -24,6 +24,10 @@ export class TransactionsComponent implements OnInit {
     building: true,
     built: true,
     'for sale': true
+  };
+  customerFilters = {
+    reserved: true,
+    unreserved: true
   }
 
 
@@ -90,6 +94,9 @@ export class TransactionsComponent implements OnInit {
         (
           !transaction.status || 
           this.statusFilters[transaction.status]
+        ) && (
+          (transaction.reserved && this.customerFilters.reserved) ||
+          (!transaction.reserved && this.customerFilters.unreserved)
         )
     }).length >0
   }

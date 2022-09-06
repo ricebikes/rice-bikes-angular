@@ -46,7 +46,7 @@
 
 
 <div *ngIf="loggedIn | async" class="container mt-3 mb-3">
-  <div class="row justify-content-between">
+  <div class="row">
     <div class="col">
       <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"
         data-toggle="dropdown">
@@ -76,8 +76,7 @@
         Price Check
       </button>
     </div>
-    <div class="col-lg">
-      <div class="float-right">
+    <div class="col-7 text-right">
         <!-- Display count of incomplete bikes, and completed ones waiting on pickup -->
         <h5>
           <span class="badge badge-primary" [ngPlural]="incompleteInpatientCount">
@@ -86,13 +85,17 @@
             <ng-template ngPluralCase="other">{{incompleteInpatientCount}} Incomplete Bikes</ng-template>
           </span>
           <span class="badge badge-success" [ngPlural]="incompleteWaitingPickupCount">
-            <ng-template ngPluralCase="=0">No Bikes Waiting on Pickup</ng-template>
-            <ng-template ngPluralCase="=1">{{incompleteWaitingPickupCount}} Bike Waiting on Pickup</ng-template>
-            <ng-template ngPluralCase="other">{{incompleteWaitingPickupCount}} Bikes Waiting on Pickup</ng-template>
+            <ng-template ngPluralCase="=0">No Bikes Awaiting Pickup</ng-template>
+            <ng-template ngPluralCase="=1">{{incompleteWaitingPickupCount}} Bike Awaiting Pickup</ng-template>
+            <ng-template ngPluralCase="other">{{incompleteWaitingPickupCount}} Bikes Awaiting Pickup</ng-template>
+          </span>
+          <span class="badge badge-retrospec" [ngPlural]="waitingSafetyCheckCount">
+            <ng-template ngPluralCase="=0">No Bikes Awaiting Safety Check</ng-template>
+            <ng-template ngPluralCase="=1">{{waitingSafetyCheckCount}} Bike Awaiting Safety Check</ng-template>
+            <ng-template ngPluralCase="other">{{waitingSafetyCheckCount}} Bikes Awaiting Safety Check</ng-template>
           </span>
         </h5>
         <app-user-tracker></app-user-tracker>
-      </div>
     </div>
   </div>
   <!--<button class="btn btn-outline-secondary">New refurb</button>-->

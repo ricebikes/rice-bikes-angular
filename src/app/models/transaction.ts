@@ -11,6 +11,7 @@ export class Transaction {
   date_created: string;
   date_completed: string;
   complete: boolean;
+  reserved: boolean;
   is_paid: boolean;
   urgent: boolean;
   waiting_email: boolean;

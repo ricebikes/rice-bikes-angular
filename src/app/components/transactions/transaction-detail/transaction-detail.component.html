@@ -157,6 +157,9 @@
       <div class="modal-body">
         <app-search-customer (foundCustomer)="updateCustomer($event)"></app-search-customer>
       </div>
+      <div class="modal-footer">
+        RESERVATION REQUIRES NON-REFUNDABLE DEPOSIT
+      </div>
     </div>
   </div>
 
@@ -174,7 +177,8 @@
         {{transaction?.customer.last_name}}</span>
       <button class="btn" type="button" *ngIf="transaction?.transaction_type == 'retrospec'" id="customerButton"
         data-toggle="modal" data-target="#updateCustomerModal">
-        <h3>{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}</h3>
+        <h3 *ngIf="transaction?.reserved">{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}</h3>
+        <h3 *ngIf="!transaction?.reserved">(unreserved)</h3>
       </button>
       <!--non-retrospec => change transaction type dropdown -->
       <span class="dropdown" *ngIf="transaction?.transaction_type!= 'retrospec'">

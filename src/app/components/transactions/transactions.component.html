@@ -65,6 +65,14 @@
   <div class="row">
     <div class="col-sm-2" *ngIf="currentTab == 'retrospec'">
       <div class="form-check filter-group">
+        <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(customerFilters)" id="customerGroupCheck" (change)="toggleFilterGroup(customerFilters)">
+        <label class="form-check-label" for="customerGroupCheck"><h5>Status</h5></label>
+      </div>
+        <div class="form-check filter" *ngFor="let customer of objectKeys(customerFilters)">
+          <input class="form-check-input" type="checkbox" [checked]="customerFilters[customer]" [id]="'customerCheck'+customer" (change)="toggleFilter(customerFilters, customer)">
+          <label class="form-check-label" [for]="'customerCheck'+customer">{{customer}}</label>
+        </div>
+      <div class="form-check filter-group">
         <input class="form-check-input" type="checkbox" [checked]="isGroupChecked(statusFilters)" id="statusGroupCheck" (change)="toggleFilterGroup(statusFilters)">
         <label class="form-check-label" for="statusGroupCheck"><h5>Status</h5></label>
       </div>
@@ -125,7 +133,8 @@
               <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i></span>
     
             </th>
-            <td>{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
+            <td *ngIf="!(currentTab === 'retrospec' && !transaction.reserved)">{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
+            <td *ngIf="(currentTab === 'retrospec' && !transaction.reserved)"> - </td>
             <td>{{getBikeList(transaction)}}</td>
             <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo }}</td>
             <td *ngIf="!['pickup', 'retrospec'].includes(currentTab)">{{transaction.date_created | timeAgo }}</td>
