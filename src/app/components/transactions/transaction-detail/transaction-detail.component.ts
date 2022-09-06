@@ -93,7 +93,9 @@ export class TransactionDetailComponent implements OnInit {
    * Mark for sale has seperate function from other statuses as it required admin
    */
   markForSale() {
-    this.transactionService.markForSale(this.transaction._id)
+    this.transactionService.markForSale(this.transaction._id).then(res => {
+      this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
+    })
   }
 
   // only intended to be used for Retrospec transaction
