@@ -1,0 +1,61 @@
+{
+  "_from": "bootstrap-stacked-modals@^2.1.4",
+  "_id": "bootstrap-stacked-modals@2.1.4",
+  "_inBundle": false,
+  "_integrity": "sha512-UJ3uJJq52Mkd+AufFeh3cmTbGD/HScNAArOVDI5ehzjDc9XWW+vV95iFPl/YOMn6B2vfKv+6AIL4dY706fWkpA==",
+  "_location": "/bootstrap-stacked-modals",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "bootstrap-stacked-modals@^2.1.4",
+    "name": "bootstrap-stacked-modals",
+    "escapedName": "bootstrap-stacked-modals",
+    "rawSpec": "^2.1.4",
+    "saveSpec": null,
+    "fetchSpec": "^2.1.4"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bootstrap-stacked-modals/-/bootstrap-stacked-modals-2.1.4.tgz",
+  "_shasum": "880ed36187f6c2da151da8157fc85e85fba2f913",
+  "_spec": "bootstrap-stacked-modals@^2.1.4",
+  "_where": "/home/josh/ricebikes/rice-bikes-angular",
+  "author": {
+    "name": "Alexander Hofbauer"
+  },
+  "bugs": {
+    "url": "https://github.com/aleho/bootstrap-multimodal/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "A Bootstrap plugin that supports stacking of modals.",
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-concat": "2.6.1",
+    "gulp-rename": "1.2.2",
+    "gulp-sourcemaps": "2.6.1",
+    "gulp-uglify": "3.0.0",
+    "uglify-save-license": "0.4.1"
+  },
+  "homepage": "https://aleho.github.io/bootstrap-multimodal/",
+  "keywords": [
+    "Bootstrap",
+    "stacked",
+    "modals",
+    "modal",
+    "multiple"
+  ],
+  "license": "MIT",
+  "name": "bootstrap-stacked-modals",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleho/bootstrap-multimodal.git"
+  },
+  "scripts": {
+    "prepublish": "./bin/gulp"
+  },
+  "version": "2.1.4"
+}
