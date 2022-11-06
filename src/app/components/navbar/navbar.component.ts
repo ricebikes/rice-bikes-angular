@@ -4,8 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { CONFIG } from '../../config';
 import { Router } from '@angular/router';
 import { AnalyticsService } from '../../services/analytics.service';
-import { AddItemComponent } from '../add-item/add-item.component';
-import { Item } from '../../models/item';
+import { PriceCheckComponent } from '../price-check/price-check.component';
 
 @Component({
   selector: 'app-navbar',
@@ -17,9 +16,7 @@ export class NavbarComponent implements OnInit {
   loggedIn: Observable<boolean>;
   isAdmin: Observable<boolean>;
   authUrl = `${CONFIG.cas_auth_url}?ser'../../vice=${CONFIG.service_url}`;
-  @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
-  @ViewChild('priceCheckTrigger') priceCheckTrigger: ElementRef;
-  priceCheckItem: Item;
+  @ViewChild('priceCheckComponent') priceCheckComponent: PriceCheckComponent;
 
   // Number of inpatient bikes not completed
   incompleteInpatientCount = 0;
@@ -71,18 +68,9 @@ export class NavbarComponent implements OnInit {
     return this.router.url.includes('transactions')
   }
 
-
-  triggerScanModal() {
-    this.addItemComponent.triggerScanModal();
+  triggerPriceCheck() {
+    this.priceCheckComponent.triggerScanModal()
   }
-
-
-  showPriceCheck(item : Item){
-    this.priceCheckItem = item;
-    this.priceCheckTrigger.nativeElement.click();
-  }
-
-
 
 }
 

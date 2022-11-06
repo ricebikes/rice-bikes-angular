@@ -43,7 +43,7 @@ import { OrderSelectorComponent } from './components/orders/order-selector/order
 import { OrderRequestSelectorComponent } from './components/whiteboard/order-request-selector/order-request-selector.component';
 import { NewBikeTransactionComponent } from './components/new-bike-transaction/new-bike-transaction.component';
 import { SearchCustomerComponent } from './components/search-customer/search-customer.component';
-
+import { PriceCheckComponent } from './components/price-check/price-check.component';
 
 
 @NgModule({
@@ -74,6 +74,7 @@ import { SearchCustomerComponent } from './components/search-customer/search-cus
     WhiteboardComponent,
     OrderSelectorComponent,
     OrderRequestSelectorComponent,
+    PriceCheckComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,11 +1,5 @@
 <!-- Hidden buttons, useful to trigger modal from typescript -->
-<button #priceCheckTrigger hidden type="button"
-        class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
-        data-target="#priceCheckModal">FAKE BUTTON</button>
-
-<app-add-item #addItemComponent (chosenItem)="showPriceCheck($event)"
-[employee]="false"></app-add-item>
-
+<app-price-check #priceCheckComponent></app-price-check>
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -71,7 +65,7 @@
         [routerLink]="['/transactions']">
         Transactions
       </button>
-      <button  class="btn btn-outline-info" type="button" (click)="triggerScanModal()">
+      <button  class="btn btn-outline-info" type="button" (click)="triggerPriceCheck()">
         <i class="fa fa-barcode"></i>
         Price Check
       </button>
@@ -101,78 +95,3 @@
   <!--<button class="btn btn-outline-secondary">New refurb</button>-->
 </div>
 
-
-<!-- Price Check modal-->
-<div class="modal fade" id="priceCheckModal" tabindex="-1" role="dialog" aria-labelledby="priceCheckModal"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="priceCheckTitle">Item Price Check</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" *ngIf="priceCheckItem">
-        <div class="container">
-          <div class="row">
-            <div class="col-4">
-              <b>Price:</b>
-            </div>
-            <div class="col-8">
-              ${{priceCheckItem.standard_price}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Name:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.name}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Brand:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.brand}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Size:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.size}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Category:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.category}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Condition:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.condition}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>UPC:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.upc}}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
