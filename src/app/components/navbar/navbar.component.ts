@@ -15,7 +15,7 @@ export class NavbarComponent implements OnInit {
 
   loggedIn: Observable<boolean>;
   isAdmin: Observable<boolean>;
-  authUrl = `${CONFIG.cas_auth_url}?ser'../../vice=${CONFIG.service_url}`;
+  authUrl = `${CONFIG.cas_auth_url}?service=${CONFIG.service_url}`;
   @ViewChild('priceCheckComponent') priceCheckComponent: PriceCheckComponent;
 
   // Number of inpatient bikes not completed
