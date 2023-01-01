@@ -6,7 +6,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Bike } from '../../../models/bike';
 import { Item } from '../../../models/item';
 import { Customer } from '../../../models/customer';
-import { AddItemComponent } from '../../add-item/add-item.component';
+// import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
@@ -24,7 +24,7 @@ export class TransactionDetailComponent implements OnInit {
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
   @ViewChild('customPriceModalTrigger') customPriceModalButtonTrigger: ElementRef;
   @ViewChild('completeDropdown') completeDropdownButton: ElementRef;
-  @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
+//   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderRequestSelector') orderRequestSelectorComponent: OrderRequestSelectorComponent;
 
   transaction: Transaction;
@@ -109,13 +109,13 @@ export class TransactionDetailComponent implements OnInit {
     this.transactionService.updateTransaction(this.transaction);
   }
 
-  triggerItemSearch() {
-    this.addItemComponent.triggerItemSearch();
-  }
+//   triggerItemSearch() {
+//     this.addItemComponent.triggerItemSearch();
+//   }
 
-  triggerScanModal() {
-    this.addItemComponent.triggerScanModal();
-  }
+//   triggerScanModal() {
+//     this.addItemComponent.triggerScanModal();
+//   }
 
   addBike(): void {
     const bike = new Bike();
@@ -151,15 +151,16 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   addItem(item: Item) {
-    if (item.condition == 'Used') {
-      // Prompt user to set custom price.
-      let suggestedPrice = this.transaction.employee ? item.wholesale_cost : item.standard_price;
-      this.customPriceForm.controls['price'].setValue(suggestedPrice);
-      this.stagedUsedItem = item;
-      this.customPriceModalButtonTrigger.nativeElement.click();
-    } else {
-      this.transactionService.addItemToTransaction(this.transaction._id, item._id);
-    }
+    // if (item.condition == 'Used') {
+    //   // Prompt user to set custom price.
+    //   let suggestedPrice = this.transaction.employee ? item.wholesale_cost : item.standard_price;
+    //   this.customPriceForm.controls['price'].setValue(suggestedPrice);
+    //   this.stagedUsedItem = item;
+    //   this.customPriceModalButtonTrigger.nativeElement.click();
+    // } 
+    // else {
+    this.transactionService.addItemToTransaction(this.transaction._id, item._id);
+    // }
   }
 
   addUsedItem() {

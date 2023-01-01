@@ -4,7 +4,6 @@
   data-target="#priceCheckModal">FAKE BUTTON</button>
 
 
-
 <!--UPC scan trigger -->
 <div class="modal" id="priceCheckScanModal" tabindex="-1" role="dialog" aria-labelledby="scanModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -62,10 +61,10 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <b>Size:</b>
+              <b>Specifications:</b>
             </div>
             <div class="col-8">
-              {{priceCheckItem.size}}
+              {{ priceCheckItem.specifications | json }}
             </div>
           </div>
           <div class="row">
@@ -73,15 +72,8 @@
               <b>Category:</b>
             </div>
             <div class="col-8">
-              {{priceCheckItem.category}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Condition:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.condition}}
+              {{priceCheckItem.category_1}} <span *ngIf="priceCheckItem.category_2">></span> {{priceCheckItem.category_2}}
+              <span *ngIf="priceCheckItem.category_3">></span> {{priceCheckItem.category_3}}
             </div>
           </div>
           <div class="row">
