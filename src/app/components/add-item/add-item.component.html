@@ -56,16 +56,9 @@
                   </div>
                   <div class="form-group col-2">
                     <label for="categorySelect">Category</label>
-                    <select class="form-control" id="categorySelect" formControlName="category">
+                    <select class="form-control" id="categorySelect" formControlName="category_1">
                       <option value="">Any</option>
-                      <option *ngFor="let category of categories | async">{{category}}</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-2">
-                    <label for="sizeSelect">Size</label>
-                    <select class="form-control" id="sizeSelect" formControlName="size">
-                      <option value="">Any</option>
-                      <option *ngFor="let size of availableSizes | async">{{size}}</option>
+                      <option *ngFor="let category of categories | async">{{category_1}}</option>
                     </select>
                   </div>
                   <div class="form-group col-2">
@@ -73,14 +66,6 @@
                     <select class="form-control" id="brandSelect" formControlName="brand">
                       <option value="">Any</option>
                       <option *ngFor="let brand of brands | async">{{brand}}</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-2">
-                    <label for="conditionSelect">Condition</label>
-                    <select class="form-control" id="conditionSelect" formControlName="condition">
-                      <option value="">Any</option>
-                      <option>New</option>
-                      <option>Used</option>
                     </select>
                   </div>
                 </div>
@@ -118,7 +103,8 @@
           </table>
       </div>
     </div>
-    <div *ngIf="isAdmin | async" class="modal-content" [hidden]="!addDialog" id="itemAddDialog">
+    <!-- *ngIf="isAdmin | async" -->
+    <div class="modal-content" [hidden]="!addDialog" id="itemAddDialog">
       <nav aria-label="Navigate Between Adding and Searching for Items">
         <ul class="pagination">
           <li class="page-item"><a class="page-link"(click)="addDialog = false">Search</a></li>
@@ -147,13 +133,6 @@
               <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
             </div>
             <div class="col-2">
-              <label for="newConditionSelect">Item Condition</label>
-              <select id="newConditionSelect" formControlName="condition" class="form-control">
-                <option>New</option>
-                <option>Used</option>
-              </select>
-            </div>
-            <div class="col-2">
               <label for="newBrandSelect">Brand</label>
               <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands">
               <!-- Datalist provides a simple list of existing options (like a combobox). supported on most browsers.-->
@@ -164,22 +143,11 @@
           </div>
           <div class="row">
             <div class="col-3">
-              <label for="newCategory">Category</label>
-              <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories">
+              <label for="newCategory">Category 1</label>
+              <input type="text" id="newCategory" class="form-control" formControlName="category_1" list="categories">
               <datalist id="categories">
-                <option *ngFor="let category of (categories | async)">{{category}}</option>
+                <option *ngFor="let category of (categories | async)">{{category_1}}</option>
               </datalist>
-            </div>
-            <div class="col-3">
-              <label for="newSize">Size</label>
-              <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes">
-              <datalist id="sizes">
-                <option *ngFor="let size of (existingSizes | async)">{{size}}</option>
-              </datalist>
-            </div>
-            <div class="col-2">
-              <label for="desiredStock">Desired Stock</label>
-              <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock">
             </div>
             <div class="col-4">
               <label for="newUPC">UPC</label>

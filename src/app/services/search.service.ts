@@ -107,14 +107,15 @@ export class SearchService {
   /**
    * Searches for item by given parameters, returns an observable of results
    * @param name: name of item
-   * @param category: item category
+   * @param category: item category (old)
+   * @param category_1: item category 1
    * @param size: item size
    * @param brand: item brand
    * @param condition: item condition (New or Used)
    */
   itemSearch(name?: string,
     category?: string,
-    size?: string,
+    category_1?: string,
     brand?: string,
     condition?: string): Promise<Item[]> {
     const params = new URLSearchParams();
@@ -122,7 +123,7 @@ export class SearchService {
     requestOptions.headers = SearchService.jwt_headers();
     if (name) { params.set('name', name); }
     if (category) { params.set('category', category); }
-    if (size) { params.set('size', size); }
+    if (category_1) { params.set('category_1', category_1); }
     if (brand) { params.set('brand', brand); }
     if (condition) { params.set('condition', condition); }
     requestOptions.params = params;

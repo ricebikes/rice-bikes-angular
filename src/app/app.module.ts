@@ -12,7 +12,7 @@ import { NewCustomerTransactionComponent } from './components/new-customer-trans
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from './services/search.service';
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
-// import { AddItemComponent } from './components/add-item/add-item.component';
+import { AddItemComponent } from './components/add-item/add-item.component';
 import { SearchTransactionComponent } from './components/search-transaction/search-transaction.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthenticationService } from './services/authentication.service';
@@ -54,7 +54,7 @@ import { PriceCheckComponent } from './components/price-check/price-check.compon
     NewCustomerTransactionComponent,
     NewBikeTransactionComponent,
     AddRepairComponent,
-    // AddItemComponent,
+    AddItemComponent,
     SearchTransactionComponent,
     SearchCustomerComponent,
     LoginComponent,
