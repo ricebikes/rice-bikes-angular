@@ -231,7 +231,7 @@ export class TransactionService {
       return this.http
         .post(`${this.backendUrl}/${transaction_id}/bikes`, data, credentials)
         .toPromise()
-        .then((res) => res.json() as Transaction)
+        .then((res) => this.transaction.next(res.json()))
         .catch((err) => this.handleError(err));
     });
   }
