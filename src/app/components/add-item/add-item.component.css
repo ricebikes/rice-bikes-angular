@@ -9,23 +9,23 @@
 }
 
 label {
+  font-size: 1rem;
+  margin-top: 5px;
   margin-bottom: 0;
-  font-size: .8rem;
 }
 
 .key-value {
-  display: flex;
-  
+  display: flex;  
 }
 
 .key {
   margin-right: 10;
 }
 
-
 .currencyinput {
   border: 1px inset #ccc;
 }
+
 .currencyinput input {
   border: 0;
 }

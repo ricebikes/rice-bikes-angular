@@ -113,9 +113,9 @@ export class TransactionDetailComponent implements OnInit {
     this.addItemComponent.triggerItemSearch();
   }
 
-//   triggerScanModal() {
-//     this.addItemComponent.triggerScanModal();
-//   }
+  triggerScanModal() {
+    this.addItemComponent.triggerScanModal();
+  }
 
   addBike(): void {
     const bike = new Bike();

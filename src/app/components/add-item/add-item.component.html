@@ -62,21 +62,21 @@
                   <label for="category1Select">Category 1</label>
                   <select class="form-control" id="category1Select" formControlName="category_1">
                     <option value="">Any</option>
-                    <option *ngFor="let category of categories | async">{{category}}</option>
+                    <option *ngFor="let category of categories1 | async">{{category}}</option>
                   </select>
                 </div>
                 <div class="form-group col-2">
                   <label for="category1Select">Category 2</label>
                   <select class="form-control" id="category2Select" formControlName="category_2">
                     <option value="">Any</option>
-                    <!-- <option *ngFor="let category of categories | async">{{category}}</option> -->
+                    <option *ngFor="let category of categories2 | async">{{category}}</option>
                   </select>
                 </div>
                 <div class="form-group col-2">
                   <label for="category1Select">Category 3</label>
                   <select class="form-control" id="category3Select" formControlName="category_3">
                     <option value="">Any</option>
-                    <!-- <option *ngFor="let category of categories | async">{{category}}</option> -->
+                    <option *ngFor="let category of categories3 | async">{{category}}</option>
                   </select>
                 </div>
               </div>
@@ -132,46 +132,46 @@
             <div class="col-6">
               <div>
                 <label for="name">Name</label>
-                <input type="text" class="form-control" formControlName="name" id="name">
+                <input type="text" class="form-control" value="FOUR CASSETTE,  8,  11-42" formControlName="name" id="name">
               </div>
               <div>
                 <label for="brand">Brand</label>
-                <input type="text" class="form-control" formControlName="brand" id="brand">
+                <input type="text" class="form-control" value="BOX" formControlName="brand" id="brand">
               </div>
             </div>
             <div class="col-6">
               <div>
                 <label for="retailPrice">Retail Price</label>
-                <input id="retailPrice" type="number" class="form-control" placeholder="$" formControlName="standard_price">
+                <input id="retailPrice" type="number" class="form-control" value="20" placeholder="$" formControlName="standard_price">
               </div>
               <div>
                 <label for="wholesalePrice">Wholesale Price</label>
-                <input id="wholesalePrice" type="number" class="form-control" placeholder="$" formControlName="wholesale_cost">
+                <input id="wholesalePrice" type="number" class="form-control" value="10" placeholder="$" formControlName="wholesale_cost">
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col">
               <label for="upc">UPC #</label>
-              <input type="text" id="newUPC" class="form-control" formControlName="upc">
+              <input type="text" id="newUPC" class="form-control" value="639266097419" formControlName="upc">
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <label for="category1">Category 1</label>
+              <label for="category_1">Category 1</label>
               <input type="text" id="category1" class="form-control" formControlName="category_1">
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <label for="category2">Category 2</label>
+              <label for="category_2">Category 2</label>
               <input type="text" id="category2" class="form-control" formControlName="category_2">
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <label for="category3">Category 3</label>
-              <input type="text" id="category3" class="form-control" formControlName="category3">
+              <label for="category_3">Category 3</label>
+              <input type="text" id="category3" class="form-control" formControlName="category_3">
             </div>
           </div>
           <h2><label for="specifications">Specifications</label></h2>
@@ -181,16 +181,21 @@
               <input class="form-control" formControlName="value">
               <button type="button" class="btn btn-secondary" (click)="removeSpec()">del</button>
             </div>
+            <label
+              *ngIf="specifications.controls[i].get('key')?.errors?.required"
+              class="error">
+              Specification cannot be empty
+            </label>
           </div>
           <button type="button" class="btn btn-primary" (click)="addSpec()">add</button>
             
           <h2><label for="features">Features</label></h2>
           <div *ngFor="let entry of features.controls; let i = index">
             <div class="key-value" [formGroup]="entry">
-              <input class="form-control" formControlName="key">
               <input class="form-control" formControlName="value">
               <button type="button" class="btn btn-secondary" (click)="removeFeature()">del</button>
             </div>
+            
           </div>
           <button type="button" class="btn btn-primary" (click)="addFeature()">add</button>
             
@@ -200,7 +205,9 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary" (click)="submitItemCreateForm()"
-                [disabled]="newItemForm.invalid" data-dismiss="modal">Create item</button>
+        [disabled]="newItemForm.invalid" data-dismiss="modal">Create item</button>
+                
+        <p [hidden]="!newItemForm.invalid">validation errors:</p>
       </div>
     </div>
   </div>
