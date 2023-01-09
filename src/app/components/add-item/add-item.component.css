@@ -7,3 +7,25 @@
 .custom-block .btn {
   flex: 1
 }
+
+label {
+  margin-bottom: 0;
+  font-size: .8rem;
+}
+
+.key-value {
+  display: flex;
+  
+}
+
+.key {
+  margin-right: 10;
+}
+
+
+.currencyinput {
+  border: 1px inset #ccc;
+}
+.currencyinput input {
+  border: 0;
+}

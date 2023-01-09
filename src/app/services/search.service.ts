@@ -109,15 +109,13 @@ export class SearchService {
    * @param name: name of item
    * @param category: item category (old)
    * @param category_1: item category 1
-   * @param size: item size
    * @param brand: item brand
    * @param condition: item condition (New or Used)
    */
   itemSearch(name?: string,
     category?: string,
     category_1?: string,
-    brand?: string,
-    condition?: string): Promise<Item[]> {
+    brand?: string): Promise<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
     requestOptions.headers = SearchService.jwt_headers();
@@ -125,7 +123,6 @@ export class SearchService {
     if (category) { params.set('category', category); }
     if (category_1) { params.set('category_1', category_1); }
     if (brand) { params.set('brand', brand); }
-    if (condition) { params.set('condition', condition); }
     requestOptions.params = params;
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()

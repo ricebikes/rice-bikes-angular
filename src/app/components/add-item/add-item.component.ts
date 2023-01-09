@@ -1,10 +1,31 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input, Pipe, PipeTransform } from '@angular/core';
+import { FormBuilder, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { SearchService } from '../../services/search.service';
 import { Item } from '../../models/item';
 import { Observable } from 'rxjs/Observable';
 import { ItemService } from '../../services/item.service';
 import { AuthenticationService } from '../../services/authentication.service';
+
+@Pipe({name: 'mapToArray'})
+export class MapToArray implements PipeTransform {
+  transform(value: Map<String, String>): Array<String> {
+    const entries = value.entries();
+    const result = [];
+    console.log("hi", value);
+    let done = false;
+    while (!done) {
+      const { value: currentValue, done: isDone } = entries.next();
+      result.push(currentValue);
+      done = isDone;
+    }
+    return result;
+  }
+};
+
+class Entry {
+  key: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-add-item',
@@ -36,27 +57,30 @@ export class AddItemComponent implements OnInit {
   // Form validator that enforces requirement that any "new" item must have a UPC.
   private newItemFormUPCValidator: ValidatorFn = (fg: FormGroup) => {
     const upcValid = fg.get('upc').value != '' && fg.get('upc').valid;
-    return upcValid || fg.get('condition').value != 'New' ? null : { upc: true };
+    return {upc: upcValid};
+  }
+
+  numberValidator(control: FormControl) {
+    if (isNaN(control.value)) {
+      return {
+        number: true
+      }
+    }
+    return null;
   }
 
   newItemForm = this.formBuilder.group({
     name: ['', Validators.required],
-    standard_price: ['', Validators.required],
-    wholesale_cost: ['', Validators.required]
-  });
-
-//   newItemForm = this.formBuilder.group({
-//     name: ['', Validators.required],
-//     upc: ['', Validators.pattern('[0-9]+')],
-//     category_1: ['', Validators.required],
-//     category_2: ['', Validators.required],
-//     category_3: ['', Validators.required],
-//     brand: ['', Validators.required],
-//     specifications: ['', Validators.required],
-//     features: ['', Validators.required],
-//     standard_price: ['', Validators.required],
-//     wholesale_cost: ['', Validators.required]
-//   }, { validator: this.newItemFormUPCValidator });
+    brand: ['', Validators.required],
+    standard_price: ['', this.numberValidator],
+    upc: ['', Validators.pattern('[0-9]+')],
+    category1: ['', Validators.required],
+    category2: ['', Validators.required],
+    category3: ['', Validators.required],
+    wholesale_cost: ['', Validators.required],
+    specifications: this.formBuilder.array([]),
+    features: this.formBuilder.array([])
+  }, { validator: this.newItemFormUPCValidator });
 
   scanData = new FormControl('', Validators.compose([Validators.required, Validators.pattern('[0-9]+')]));
 
@@ -76,9 +100,16 @@ export class AddItemComponent implements OnInit {
     private formBuilder: FormBuilder,
     private itemService: ItemService,
     private authenticationService: AuthenticationService
-  ) { }
+  ) {
+  }
 
+  get specifications() {
+    return this.newItemForm.controls["specifications"] as FormArray;
+  }
 
+  get features() {
+    return this.newItemForm.controls["features"] as FormArray;
+  }
   ngOnInit() {
     // watch form for changes, and search when it does
     this.itemResults = this.itemForm
@@ -88,32 +119,13 @@ export class AddItemComponent implements OnInit {
       // switchMap swaps the current observable for a new one (the result of the item search)
       .switchMap(formData => {
         return formData ? this.searchService.
-          itemSearch(formData.name, formData.category_1, formData.brand) : Observable.of<Item[]>([]);
+          itemSearch(formData.name, formData.category_1, null, formData.brand) : Observable.of<Item[]>([]);
       })
       .catch(err => {
         console.log(err);
         return Observable.of<Item[]>([]);
       }
       );
-    // // Setup availableSizes to watch for changes to the category, and update with possible sizes.
-    // this.availableSizes = this.itemForm.controls['category'] // listen for changes to the item category
-    //   .valueChanges
-    //   .debounceTime(200) // wait 200ms between changes
-    //   .distinctUntilChanged() // don't emit unless change is actually new data
-    //   .switchMap(newCategory => {
-    //     // switch to promise from backend request with our category
-    //     this.itemForm.controls['size'].setValue('');
-    //     return this.searchService.itemSizes(newCategory);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //     return Observable.of([]);
-    //   });
-    // this.existingSizes = this.newItemForm.controls['category']
-    //   .valueChanges
-    //   .debounceTime(200)
-    //   .distinctUntilChanged()
-    //   .switchMap(newCategory => this.searchService.itemSizes(newCategory));
   }
 
   /**
@@ -127,6 +139,31 @@ export class AddItemComponent implements OnInit {
     }
   }
 
+  addSpec() {
+    const spec = this.formBuilder.group({
+      key: ['', Validators.required],
+      value: ['', Validators.required]
+    });
+
+    this.specifications.push(spec);
+  }
+
+  removeSpec(index: number) {
+    this.specifications.removeAt(index);
+  }
+
+  addFeature() {
+    const feature = this.formBuilder.group({
+      key: ['', Validators.required],
+      value: ['', Validators.required]
+    });
+
+    this.features.push(feature);
+  }
+
+  removeFeature(index: number) {
+    this.features.removeAt(index);
+  }
   /**
    * Submits the item creation form, and creates the item
    */
@@ -147,6 +184,8 @@ export class AddItemComponent implements OnInit {
     //   this.newItemForm.reset();
     //   this.chosenItem.emit(res);
     // });
+
+    console.log("submitting");
   }
 
   /**
@@ -192,4 +231,3 @@ export class AddItemComponent implements OnInit {
     this.itemSearchClose.nativeElement.click();
   }
 }
-

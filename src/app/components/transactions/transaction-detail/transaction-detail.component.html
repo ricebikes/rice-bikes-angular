@@ -308,7 +308,7 @@
         <div class="col-md-4">
           <app-add-item #addItemComponent *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)"
             [employee]="transaction?.employee"></app-add-item>
-          Item search trigger
+          <!-- Item search trigger -->
           <div class="btn-group custom-block" role="group" aria-label="Item Add Group">
             <button type="button" class="btn btn-primary" (click)="triggerScanModal()">
               <i class="fa fa-barcode"></i>
