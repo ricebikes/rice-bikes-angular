@@ -50,19 +50,6 @@ export class AddItemComponent implements OnInit {
     category_3: null,
   });
 
-  newItemForm = this.formBuilder.group({
-    name: ["", Validators.required],
-    brand: ["", Validators.required],
-    standard_price: ["", [Validators.required, Validators.pattern("^[0-9]*$")]],
-    upc: ["", [Validators.required, Validators.pattern("[0-9]+")]],
-    category_1: ["", Validators.required],
-    category_2: "",
-    category_3: "",
-    wholesale_cost: ["", [Validators.required, Validators.pattern("^[0-9]*$")]],
-    specifications: this.formBuilder.array([]),
-    features: this.formBuilder.array([]),
-  });
-
   scanData = new FormControl(
     "",
     Validators.compose([Validators.required, Validators.pattern("[0-9]+")])
@@ -71,31 +58,39 @@ export class AddItemComponent implements OnInit {
   itemResults: Observable<Item[]>; // item results returned from backend
 
   addDialog = false;
+  createItemFromUPC = false;
+  
   isAdmin = this.authenticationService.isAdmin;
 
-  categories = this.searchService.itemCategories();
+  categories = this.searchService.itemCategories1();
+  categories2 = this.searchService.itemCategories2();
+  // categories3 = this.searchService.itemCategories3();
+
   brands = this.searchService.itemBrands();
 
+  showSpinner = false;
+  activeButton = "search";
+
+  setActive = function (buttonName) {
+    this.activeButton = buttonName;
+    if (buttonName == "search") this.addDialog = false;
+    else this.addDialog = true;
+  };
+
+  isActive = function (buttonName) {
+    return this.activeButton === buttonName;
+  };
+
+  scanToCreateItem = function() {
+    this.createItemFromUPC = true;
+  }
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
     private itemService: ItemService,
     private authenticationService: AuthenticationService
-  ) {}
-
-  get specifications() {
-    return this.newItemForm.controls["specifications"] as FormArray;
-  }
-
-  get features() {
-    return this.newItemForm.controls["features"] as FormArray;
-  }
-
-  createEmpFormGroup() {
-    return this.formBuilder.group({
-      key: ["", Validators.required],
-      value: ["", Validators.required],
-    });
+  ) {
+    console.log("c", this.categories);
   }
 
   ngOnInit() {
@@ -120,95 +115,40 @@ export class AddItemComponent implements OnInit {
       });
   }
 
-  /**
-   * Lets the item search copy any entered data into the create item component
-   */
-  copyIntoItemForm() {
-    for (const controlValue of [
-      "name",
-      "category_1",
-      "category_2",
-      "category_3",
-      "size",
-      "brand",
-    ]) {
-      if (
-        this.itemForm.get(controlValue) &&
-        this.itemForm.get(controlValue).value
-      ) {
-        this.newItemForm
-          .get(controlValue)
-          .setValue(this.itemForm.get(controlValue).value);
-      }
-    }
-  }
-
-  addSpec() {
-    this.specifications.push(this.createEmpFormGroup());
-  }
-
-  removeSpec(index: number) {
-    this.specifications.removeAt(index);
-  }
-
-  addFeature() {
-    this.features.push(
-      this.formBuilder.group({ value: ["", Validators.required] })
-    );
-  }
-
-  removeFeature(index: number) {
-    this.features.removeAt(index);
-  }
-  /**
-   * Submits the item creation form, and creates the item
-   */
-  submitItemCreateForm() {
-    this.itemService
-      .createItem({
-        _id: "",
-        name: this.newItemForm.controls["name"].value,
-        upc: this.newItemForm.controls["upc"].value,
-        category_1: this.newItemForm.controls["category_1"].value,
-        category_2: this.newItemForm.controls["category_2"].value,
-        category_3: this.newItemForm.controls["category_3"].value,
-        brand: this.newItemForm.controls["brand"].value,
-        standard_price: this.newItemForm.controls["standard_price"].value,
-        wholesale_cost: this.newItemForm.controls["wholesale_cost"].value,
-        specifications: this.newItemForm.controls[
-          "specifications"
-        ].value.reduce(function (map, obj) {
-          map[obj.key] = obj.value;
-          return map;
-        }, {}),
-        features: this.newItemForm.controls["features"].value.map(
-          (obj) => obj.value
-        ),
-      })
-      .then((res) => {
-        this.newItemForm.reset();
-        this.chosenItem.emit(res);
-      });
+  addItem(item: Item) {
+    this.scanData.reset();
+    this.createItemFromUPC = false;
+    this.chosenItem.emit(item);
   }
 
   /**
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
   addByUPC() {
+    this.showSpinner = true;
     if (this.scanData.invalid || this.scanData.value == "") {
+      this.showSpinner = false;
       return;
     }
-    this.searchService.upcSearch(this.scanData.value).then((item) => {
-      if (item) {
-        this.chosenItem.emit(item);
-        this.scanData.reset();
-        // dismiss scan modal
-        this.scanTrigger.nativeElement.click();
-      } else {
-        this.scanData.setErrors({ badUPC: "true" });
-        return;
+
+    this.searchService.upcSearch(this.scanData.value).then(
+      (item) => {
+        this.showSpinner = false;
+        if (item) {
+          this.chosenItem.emit(item);
+          this.scanData.reset();
+          // dismiss scan modal
+          this.scanTrigger.nativeElement.click();
+        } else {
+          this.scanData.setErrors({ badUPC: "true" });
+          return;
+        }
+      },
+      (err) => {
+        this.showSpinner = false;
+        this.scanData.setErrors({ unexpectedError: "true"})
       }
-    });
+    );
   }
 
   triggerItemSearch() {

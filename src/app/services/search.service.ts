@@ -149,13 +149,53 @@ export class SearchService {
   /**
    * Gets distinct item categories
    */
-  itemCategories(): Promise<String[]> {
+  itemCategories1(): Promise<string[]> {
     return this.http.get(`${this.itemUrl}/categories`,
       new RequestOptions({ headers: SearchService.jwt_headers() }))
       .toPromise()
-      .then(res => res.json().sort())
+      .then(res => Object.keys(res.json()))
       .catch(err => this.handleError(err));
   }
+
+  /**
+   * Gets distinct item sub-categories
+   */
+  itemCategories2(): Promise<Map<String,String[]>> {
+    return this.http.get(`${this.itemUrl}/categories`,
+      new RequestOptions({ headers: SearchService.jwt_headers() }))
+      .toPromise()
+      .then(res => {
+        let ret = new Map<String, String[]>();
+        console.log("hello?");
+        Object.keys(res.json()).forEach(function(cat1, keyIndex) {
+          // console.log("index:",keyIndex,"cat1:",cat1,"value:",res.json()[cat1]);
+          Object.keys(res.json()[cat1]).forEach(function(cat2, keyIndex2) {
+            if(ret.has(cat1)) {
+              let cats = ret[cat1];
+              cats.push(cat2);
+              ret.set(cat1, cats);
+            }
+            else ret.set(cat1, [cat2]);
+
+            console.log("2", ret);
+          });
+        });
+        
+        return ret;
+      })
+      .catch(err => this.handleError(err));
+  }
+
+  //  /**
+  //  * Gets distinct item sub-sub-categories
+  //  */
+  //  itemCategories3(): Promise<string[]> {
+  //   return this.http.get(`${this.itemUrl}/categories`,
+  //     new RequestOptions({ headers: SearchService.jwt_headers() }))
+  //     .toPromise()
+  //     .then(res => Object.keys(res.json()))
+  //     .catch(err => this.handleError(err));
+  // }
 
   /**
    * Gets distinct item brands known to database

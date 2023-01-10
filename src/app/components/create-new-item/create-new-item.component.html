@@ -1,0 +1,155 @@
+<div class="modal-header">
+  <h5 class="modal-title">Create New Item</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div id="create-item-body" class="modal-body">
+  <div>
+    <form [formGroup]="newItemForm" autocomplete="off">
+      <div class="row">
+        <div class="col-6">
+          <div>
+            <label for="name">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              id="name"
+            />
+          </div>
+          <div>
+            <label for="brand">Brand</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="brand"
+              id="brand"
+            />
+          </div>
+        </div>
+        <div class="col-6">
+          <div>
+            <label for="retailPrice">Retail Price</label>
+            <input
+              id="retailPrice"
+              type="number"
+              class="form-control"
+              placeholder="$"
+              formControlName="standard_price"
+            />
+          </div>
+          <div>
+            <label for="wholesalePrice">Wholesale Price</label>
+            <input
+              id="wholesalePrice"
+              type="number"
+              class="form-control"
+              placeholder="$"
+              formControlName="wholesale_cost"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="upc">UPC #</label>
+          <input
+            type="text"
+            id="newUPC"
+            class="form-control"
+            formControlName="upc"
+            value="upc"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="category_1">Category 1</label>
+          <input
+            type="text"
+            id="category1"
+            class="form-control"
+            formControlName="category_1"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="category_2">Category 2</label>
+          <input
+            type="text"
+            id="category2"
+            class="form-control"
+            formControlName="category_2"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="category_3">Category 3</label>
+          <input
+            type="text"
+            id="category3"
+            class="form-control"
+            formControlName="category_3"
+          />
+        </div>
+      </div>
+      <h2><label for="specifications">Specifications</label></h2>
+      <div *ngFor="let entry of specifications.controls; let i = index">
+        <div class="key-value" [formGroup]="entry">
+          <input class="form-control" formControlName="key" />
+          <input class="form-control" formControlName="value" />
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="removeSpec()"
+          >
+            del
+          </button>
+        </div>
+        <label
+          *ngIf="specifications.controls[i].get('key')?.errors?.required"
+          class="error"
+        >
+          Specification cannot be empty
+        </label>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="addSpec()">
+        add
+      </button>
+
+      <h2><label for="features">Features</label></h2>
+      <div *ngFor="let entry of features.controls; let i = index">
+        <div class="key-value" [formGroup]="entry">
+          <input class="form-control" formControlName="value" />
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="removeFeature()"
+          >
+            del
+          </button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="addFeature()">
+        add
+      </button>
+    </form>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+    Close
+  </button>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    (click)="submitItemCreateForm()"
+    [disabled]="newItemForm.invalid"
+    data-dismiss="modal"
+  >
+    Create item
+  </button>
+</div>
