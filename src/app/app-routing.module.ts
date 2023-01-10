@@ -10,12 +10,12 @@ import {AuthComponent} from './components/auth/auth.component';
 import {AdminUsersComponent} from './components/admin-users/admin-users.component';
 import {CheckoutComponent} from './components/transactions/transaction-detail/checkout/checkout.component';
 import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.component';
-import {AdminItemsComponent} from './components/admin-items/admin-items.component';
+// import {AdminItemsComponent} from './components/admin-items/admin-items.component';
 import {OrdersComponent} from './components/orders/orders.component';
 import {NewOrderComponent} from './components/orders/new-order/new-order.component';
-import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
+// import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
 import {AnalyticsComponent} from './components/analytics/analytics.component';
-import {WhiteboardComponent} from './components/whiteboard/whiteboard.component';
+// import {WhiteboardComponent} from './components/whiteboard/whiteboard.component';
 
 const routes: Routes = [
   {
@@ -91,7 +91,8 @@ const routes: Routes = [
       },
       {
         path: 'items',
-        component: AdminItemsComponent
+        // component: AdminItemsComponent
+        component: LoginComponent
       },
       {
         path: 'analytics',
@@ -115,11 +116,13 @@ const routes: Routes = [
       },
       {
         path: 'whiteboard',
-        component: WhiteboardComponent
+        // component: WhiteboardComponent
+        component: LoginComponent
       },
       {
         path: ':_id',
-        component: OrderDetailComponent
+        // component: OrderDetailComponent
+        component: LoginComponent
       }
     ]
   }

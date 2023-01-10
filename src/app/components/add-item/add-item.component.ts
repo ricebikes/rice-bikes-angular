@@ -1,171 +1,172 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { SearchService } from '../../services/search.service';
-import { Item } from '../../models/item';
-import { Observable } from 'rxjs/Observable';
-import { ItemService } from '../../services/item.service';
-import { AuthenticationService } from '../../services/authentication.service';
-
-
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  Output,
+  EventEmitter,
+  Input,
+  Pipe,
+  PipeTransform,
+} from "@angular/core";
+import {
+  FormBuilder,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  ValidationErrors,
+  Validators,
+} from "@angular/forms";
+import { SearchService } from "../../services/search.service";
+import { Item } from "../../models/item";
+import { Observable } from "rxjs/Observable";
+import { ItemService } from "../../services/item.service";
+import { AuthenticationService } from "../../services/authentication.service";
 
 @Component({
-  selector: 'app-add-item',
-  templateUrl: 'add-item.component.html',
-  styleUrls: ['add-item.component.css', '../../app.component.css']
+  selector: "app-add-item",
+  templateUrl: "add-item.component.html",
+  styleUrls: ["add-item.component.css", "../../app.component.css"],
 })
 export class AddItemComponent implements OnInit {
   // Input: if user is an employee or not
-  @Input('employee') employee: boolean;
+  @Input("employee") employee: boolean;
   // Emit this to the listening component
   @Output() chosenItem = new EventEmitter<Item>();
 
   // References to HTML elements
-  @ViewChild('itemSearchClose') itemSearchClose: ElementRef;
-  @ViewChild('searchTrigger') hiddenSearchTrigger: ElementRef;
-  @ViewChild('nameInput') nameInput: ElementRef;
-  @ViewChild('scanTrigger') scanTrigger: ElementRef;
-  @ViewChild('scanInput') scanInput: ElementRef;
-
+  @ViewChild("itemSearchClose") itemSearchClose: ElementRef;
+  @ViewChild("searchTrigger") hiddenSearchTrigger: ElementRef;
+  @ViewChild("nameInput") nameInput: ElementRef;
+  @ViewChild("scanTrigger") scanTrigger: ElementRef;
+  @ViewChild("scanInput") scanInput: ElementRef;
 
   itemForm = this.formBuilder.group({
     name: null,
-    category: null,
-    size: null,
     brand: null,
-    condition: null
+    category_1: null,
+    category_2: null,
+    category_3: null,
   });
 
-  // Form validator that enforces requirement that any "new" item must have a UPC.
-  private newItemFormUPCValidator: ValidatorFn = (fg: FormGroup) => {
-    const upcValid = fg.get('upc').value != '' && fg.get('upc').valid;
-    return upcValid || fg.get('condition').value != 'New' ? null : { upc: true };
-  }
-
-  newItemForm = this.formBuilder.group({
-    name: ['', Validators.required],
-    category: ['', Validators.required],
-    size: ['', Validators.required],
-    brand: ['', Validators.required],
-    condition: ['', Validators.required],
-    desired_stock: ['', Validators.required],
-    upc: ['', Validators.pattern('[0-9]+')],
-    standard_price: ['', Validators.required],
-    wholesale_cost: ['', Validators.required]
-  }, { validator: this.newItemFormUPCValidator });
-
-  scanData = new FormControl('', Validators.compose([Validators.required, Validators.pattern('[0-9]+')]));
+  scanData = new FormControl(
+    "",
+    Validators.compose([Validators.required, Validators.pattern("[0-9]+")])
+  );
 
   itemResults: Observable<Item[]>; // item results returned from backend
-  availableSizes: Observable<String[]>; // filled when we select a category
 
   addDialog = false;
-
+  createItemFromUPC = false;
+  
   isAdmin = this.authenticationService.isAdmin;
 
-  existingSizes: Observable<String[]>; // for use in add item dialog
-  categories = this.searchService.itemCategories();
+  category1 = "";
+  categories = this.searchService.itemCategories1();
+  categories2 = this.searchService.itemCategories2();
+  categories3 = null;
+
   brands = this.searchService.itemBrands();
+
+  searchingForUPC = false;
+  activeButton = "search";
+
+  setActive = function (buttonName) {
+    this.activeButton = buttonName;
+    if (buttonName == "search") this.addDialog = false;
+    else this.addDialog = true;
+  };
+
+  isActive = function (buttonName) {
+    return this.activeButton === buttonName;
+  };
+
+  scanToCreateItem = function() {
+    this.createItemFromUPC = true;
+  }
 
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
     private itemService: ItemService,
     private authenticationService: AuthenticationService
-  ) { }
-
+  ) {}
 
   ngOnInit() {
     // watch form for changes, and search when it does
-    this.itemResults = this.itemForm
-      .valueChanges
+    this.itemResults = this.itemForm.valueChanges
       .debounceTime(200) // wait 200ms between changes
       .distinctUntilChanged() // don't emit unless change is actually new data
       // switchMap swaps the current observable for a new one (the result of the item search)
-      .switchMap(formData => {
-        return formData ? this.searchService.
-          itemSearch(formData.name, formData.category, formData.size,
-            formData.brand, formData.condition) : Observable.of<Item[]>([]);
+      .switchMap((formData) => {
+        return formData
+          ? this.searchService.itemSearch(
+              formData.name,
+              null,
+              formData.category_1,
+              formData.category_2,
+              formData.category_3,
+              formData.brand
+            )
+          : Observable.of<Item[]>([]);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         return Observable.of<Item[]>([]);
-      }
-      );
-    // Setup availableSizes to watch for changes to the category, and update with possible sizes.
-    this.availableSizes = this.itemForm.controls['category'] // listen for changes to the item category
-      .valueChanges
-      .debounceTime(200) // wait 200ms between changes
-      .distinctUntilChanged() // don't emit unless change is actually new data
-      .switchMap(newCategory => {
-        // switch to promise from backend request with our category
-        this.itemForm.controls['size'].setValue('');
-        return this.searchService.itemSizes(newCategory);
-      })
-      .catch(err => {
-        console.log(err);
-        return Observable.of([]);
       });
-    this.existingSizes = this.newItemForm.controls['category']
-      .valueChanges
-      .debounceTime(200)
-      .distinctUntilChanged()
-      .switchMap(newCategory => this.searchService.itemSizes(newCategory));
+
   }
 
-  /**
-   * Lets the item search copy any entered data into the create item component
-   */
-  copyIntoItemForm() {
-    for (const controlValue of ['name', 'category', 'size', 'brand']) {
-      if (this.itemForm.get(controlValue).value) {
-        this.newItemForm.get(controlValue).setValue(this.itemForm.get(controlValue).value);
-      }
-    }
+  addItem(item: Item) {
+    this.scanData.reset();
+    this.createItemFromUPC = false;
+    this.chosenItem.emit(item);
   }
 
-  /**
-   * Submits the item creation form, and creates the item
-   */
-  submitItemCreateForm() {
-    this.itemService.createItem({
-      _id: '',
-      name: this.newItemForm.controls['name'].value,
-      upc: this.newItemForm.controls['upc'].value,
-      category: this.newItemForm.controls['category'].value,
-      size: this.newItemForm.controls['size'].value,
-      brand: this.newItemForm.controls['brand'].value,
-      condition: this.newItemForm.controls['condition'].value,
-      standard_price: this.newItemForm.controls['standard_price'].value,
-      wholesale_cost: this.newItemForm.controls['wholesale_cost'].value,
-      disabled: false,
-      managed: false,
-      desired_stock: this.newItemForm.controls['desired_stock'].value,
-      minimum_stock: null,
-      stock: 0
-    }).then(res => {
-      this.newItemForm.reset();
-      this.chosenItem.emit(res);
-    });
+  isSearching() {
+    return this.searchingForUPC;
   }
 
+  onCat1Change(e) {
+    this.category1 = e.target.value;
+    this.categories2 = this.searchService.itemCategories2(e.target.value);
+  }
+
+  onCat2Change(e) {
+    this.categories3 = this.searchService.itemCategories3(this.category1, e.target.value);
+  }
   /**
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
   addByUPC() {
-    if (this.scanData.invalid || this.scanData.value == '') {
+    this.searchingForUPC = true;
+    this.scanData.disable(); 
+    if (this.scanData.invalid || this.scanData.value == "") {
+      this.searchingForUPC = false;
       return;
     }
-    this.searchService.upcSearch(this.scanData.value).then(item => {
-      if (item) {
-        this.chosenItem.emit(item);
-        this.scanData.reset();
-        // dismiss scan modal
-        this.scanTrigger.nativeElement.click();
-      } else {
-        this.scanData.setErrors({ badUPC: "true" })
-        return;
+
+    this.searchService.upcSearch(this.scanData.value).then(
+      (item) => {
+        this.searchingForUPC = false;
+        this.scanData.enable(); 
+        if (item) {
+          this.chosenItem.emit(item);
+          this.scanData.reset();
+          // dismiss scan modal
+          this.scanTrigger.nativeElement.click();
+        } else {
+          this.scanData.setErrors({ badUPC: "true" });
+          return;
+        }
+      },
+      (err) => {
+        this.searchingForUPC = false;
+        this.scanData.enable(); 
+        this.scanData.setErrors({ unexpectedError: "true"})
       }
-    });
+    );
   }
 
   triggerItemSearch() {
@@ -191,4 +192,3 @@ export class AddItemComponent implements OnInit {
     this.itemSearchClose.nativeElement.click();
   }
 }
-

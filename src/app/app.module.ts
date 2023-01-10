@@ -12,7 +12,8 @@ import { NewCustomerTransactionComponent } from './components/new-customer-trans
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from './services/search.service';
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
-import { AddItemComponent } from './components/add-item/add-item.component';
+import { AddItemComponent} from './components/add-item/add-item.component';
+import { CreateNewItemComponent} from './components/create-new-item/create-new-item.component';
 import { SearchTransactionComponent } from './components/search-transaction/search-transaction.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthenticationService } from './services/authentication.service';
@@ -28,17 +29,17 @@ import { AdminService } from './services/admin.service';
 import { CheckoutComponent } from './components/transactions/transaction-detail/checkout/checkout.component';
 import { AdminRepairsComponent } from './components/admin-repairs/admin-repairs.component';
 import { RepairService } from './services/repair.service';
-import { AdminItemsComponent } from './components/admin-items/admin-items.component';
+// import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import { ItemService } from './services/item.service';
 import { UserTrackerComponent } from './components/user-tracker/user-tracker.component';
 import { UserIdleModule } from 'angular-user-idle/user-idle.module';
 import { OrdersComponent } from './components/orders/orders.component';
-import { OrderDetailComponent } from './components/orders/order-detail/order-detail.component';
+// import { OrderDetailComponent } from './components/orders/order-detail/order-detail.component';
 import { NewOrderComponent } from './components/orders/new-order/new-order.component';
 import { OrderService } from './services/order.service';
 import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { OrderRequestService } from './services/order-request.service';
-import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
+// import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
 import { OrderSelectorComponent } from './components/orders/order-selector/order-selector.component';
 import { OrderRequestSelectorComponent } from './components/whiteboard/order-request-selector/order-request-selector.component';
 import { NewBikeTransactionComponent } from './components/new-bike-transaction/new-bike-transaction.component';
@@ -55,6 +56,7 @@ import { PriceCheckComponent } from './components/price-check/price-check.compon
     NewBikeTransactionComponent,
     AddRepairComponent,
     AddItemComponent,
+    CreateNewItemComponent,
     SearchTransactionComponent,
     SearchCustomerComponent,
     LoginComponent,
@@ -66,12 +68,12 @@ import { PriceCheckComponent } from './components/price-check/price-check.compon
     AnalyticsComponent,
     CheckoutComponent,
     AdminRepairsComponent,
-    AdminItemsComponent,
+    // AdminItemsComponent,
     UserTrackerComponent,
     OrdersComponent,
-    OrderDetailComponent,
+    // OrderDetailComponent,
     NewOrderComponent,
-    WhiteboardComponent,
+    // WhiteboardComponent,
     OrderSelectorComponent,
     OrderRequestSelectorComponent,
     PriceCheckComponent,
