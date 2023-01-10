@@ -10,4 +10,5 @@ export class Item {
   features: string[];
   standard_price: number;
   wholesale_cost: number;
+  in_stock: number;
 }

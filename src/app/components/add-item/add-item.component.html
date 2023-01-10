@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <div *ngIf="isAdmin | async">
+      <div class="scroll" *ngIf="isAdmin | async">
       <app-create-new-item [upc] = "scanData.value" (chosenItem)="addItem($event)" *ngIf="createItemFromUPC"></app-create-new-item>
       </div>
     </div>
@@ -214,7 +214,7 @@
                 <tr *ngFor="let item of items" (click)="selectItem(item)">
                   <td>{{ item.name }}</td>
                   <td>{{ item.brand }}</td>
-                  <td>{{ item.stock }}</td>
+                  <td>{{ item.in_stock }}</td>
                   <td *ngIf="employee">${{ item.wholesale_cost }}</td>
                   <td>${{ item.standard_price }}</td>
                 </tr>
@@ -229,7 +229,7 @@
         </div>
       </div>
 
-      <div *ngIf="isAdmin | async">
+      <div class="scroll" *ngIf="isAdmin | async">
       <app-create-new-item [hidden]="!addDialog"></app-create-new-item></div>
     </div>
   </div>

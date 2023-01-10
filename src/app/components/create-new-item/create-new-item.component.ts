@@ -56,6 +56,7 @@ import {
       wholesale_cost: ["", [Validators.required, Validators.pattern("^[0-9]*$")]],
       specifications: this.formBuilder.array([]),
       features: this.formBuilder.array([]),
+      in_stock: ["", [Validators.required, Validators.pattern("^[0-9]*$")]]
     });
   
     scanData = new FormControl(
@@ -137,6 +138,7 @@ import {
           features: this.newItemForm.controls["features"].value.map(
             (obj) => obj.value
           ),
+          in_stock: this.newItemForm.controls["in_stock"].value
         })
         .then((res) => {
           this.newItemForm.reset();
