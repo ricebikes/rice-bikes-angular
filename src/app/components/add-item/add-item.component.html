@@ -47,9 +47,9 @@
             class="form-control"
             (keyup.enter)="addByUPC()"
           />
-          <div [hidden]="!showSpinner">
+          <div [hidden]="!searchingForUPC" class="load-msg" >
             <div class="loader"></div>
-            <p>searching for UPC . . .</p>
+            <p class="loading-text">searching for UPC . . .</p>
           </div>
           <p
             class="text-danger"
@@ -62,15 +62,19 @@
             class="text-danger"
             [hidden]="!(scanData.invalid && scanData.errors.badUPC)"
           >
-            UPC not found. Would you like to create an item?
-            <button (click)="scanToCreateItem()">Yes</button>
-            <button>No</button>
+            UPC not found.
+            <div *ngIf="isAdmin | async">
+              Would you like to create an item?
+              <button class="btn btn-outline-primary" (click)="scanToCreateItem()">Yes</button>
+              <button class="btn btn-outline-secondary">No</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- *ngIf="isAdmin | async" -->
+      <div *ngIf="isAdmin | async">
       <app-create-new-item [upc] = "scanData.value" (chosenItem)="addItem($event)" *ngIf="createItemFromUPC"></app-create-new-item>
+      </div>
     </div>
     
   </div>
@@ -87,8 +91,7 @@
 >
   <div class="modal-dialog modal-dialog-scrollable modal-xl">
     <div class="modal-content">
-      <!-- *ngIf="isAdmin | async" -->
-      <nav aria-label="Navigate Between Adding and Searching for Items">
+      <nav *ngIf="isAdmin | async" aria-label="Navigate Between Adding and Searching for Items">
         <div class="btn-group">
             <button
               class="btn"
@@ -126,7 +129,7 @@
                 <form autocomplete="off" [formGroup]="itemForm">
                   <!-- first row of form elements-->
                   <div class="form-row">
-                    <div class="form-group col-2">
+                    <div class="form-group col-3">
                       <label for="nameInput">Name</label>
                       <input
                         #nameInput
@@ -155,6 +158,7 @@
                         class="form-control"
                         id="category1Select"
                         formControlName="category_1"
+                        (change)="onCat1Change($event)"
                       >
                         <option value="">Any</option>
                         <option *ngFor="let category of categories | async">
@@ -168,6 +172,7 @@
                         class="form-control"
                         id="category2Select"
                         formControlName="category_2"
+                        (change)="onCat2Change($event)"
                       >
                         <option value="">Any</option>
                         <option *ngFor="let category of categories2 | async">
@@ -224,8 +229,8 @@
         </div>
       </div>
 
-      <!-- *ngIf="isAdmin | async" -->
-      <app-create-new-item [hidden]="!addDialog"></app-create-new-item>
+      <div *ngIf="isAdmin | async">
+      <app-create-new-item [hidden]="!addDialog"></app-create-new-item></div>
     </div>
   </div>
 </div>

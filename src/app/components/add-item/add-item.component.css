@@ -31,7 +31,20 @@ app-create-new-item {
 }
 
 /* SPINNER */
+.load-msg {
+  display: flex;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.loading-text {
+  margin-left: 5px;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
 .loader {
+  padding-top: 2px;
   border: 2px solid #f3f3f3;
   border-radius: 50%;
   border-top: 2px solid black;

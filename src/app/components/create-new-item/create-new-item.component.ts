@@ -63,8 +63,8 @@ import {
       Validators.compose([Validators.required, Validators.pattern("[0-9]+")])
     );
   
-    categories = this.searchService.itemCategories1();
-    categories2 = this.searchService.itemCategories2();
+    // categories = this.searchService.itemCategories1();
+    // categories2 = this.searchService.itemCategories2();
     brands = this.searchService.itemBrands();
   
     constructor(
@@ -72,9 +72,7 @@ import {
       private formBuilder: FormBuilder,
       private itemService: ItemService,
       private authenticationService: AuthenticationService
-    ) {
-      console.log("c", this.categories);
-    }
+    ) {}
   
     get specifications() {
       return this.newItemForm.controls["specifications"] as FormArray;

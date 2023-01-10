@@ -62,13 +62,14 @@ export class AddItemComponent implements OnInit {
   
   isAdmin = this.authenticationService.isAdmin;
 
+  category1 = "";
   categories = this.searchService.itemCategories1();
   categories2 = this.searchService.itemCategories2();
-  // categories3 = this.searchService.itemCategories3();
+  categories3 = null;
 
   brands = this.searchService.itemBrands();
 
-  showSpinner = false;
+  searchingForUPC = false;
   activeButton = "search";
 
   setActive = function (buttonName) {
@@ -84,14 +85,13 @@ export class AddItemComponent implements OnInit {
   scanToCreateItem = function() {
     this.createItemFromUPC = true;
   }
+
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
     private itemService: ItemService,
     private authenticationService: AuthenticationService
-  ) {
-    console.log("c", this.categories);
-  }
+  ) {}
 
   ngOnInit() {
     // watch form for changes, and search when it does
@@ -103,8 +103,10 @@ export class AddItemComponent implements OnInit {
         return formData
           ? this.searchService.itemSearch(
               formData.name,
-              formData.category_1,
               null,
+              formData.category_1,
+              formData.category_2,
+              formData.category_3,
               formData.brand
             )
           : Observable.of<Item[]>([]);
@@ -113,6 +115,7 @@ export class AddItemComponent implements OnInit {
         console.log(err);
         return Observable.of<Item[]>([]);
       });
+
   }
 
   addItem(item: Item) {
@@ -121,19 +124,33 @@ export class AddItemComponent implements OnInit {
     this.chosenItem.emit(item);
   }
 
+  isSearching() {
+    return this.searchingForUPC;
+  }
+
+  onCat1Change(e) {
+    this.category1 = e.target.value;
+    this.categories2 = this.searchService.itemCategories2(e.target.value);
+  }
+
+  onCat2Change(e) {
+    this.categories3 = this.searchService.itemCategories3(this.category1, e.target.value);
+  }
   /**
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
   addByUPC() {
-    this.showSpinner = true;
+    this.searchingForUPC = true;
+    this.scanData.disable(); 
     if (this.scanData.invalid || this.scanData.value == "") {
-      this.showSpinner = false;
+      this.searchingForUPC = false;
       return;
     }
 
     this.searchService.upcSearch(this.scanData.value).then(
       (item) => {
-        this.showSpinner = false;
+        this.searchingForUPC = false;
+        this.scanData.enable(); 
         if (item) {
           this.chosenItem.emit(item);
           this.scanData.reset();
@@ -145,7 +162,8 @@ export class AddItemComponent implements OnInit {
         }
       },
       (err) => {
-        this.showSpinner = false;
+        this.searchingForUPC = false;
+        this.scanData.enable(); 
         this.scanData.setErrors({ unexpectedError: "true"})
       }
     );
