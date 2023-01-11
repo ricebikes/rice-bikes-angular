@@ -338,7 +338,7 @@
               <li *ngFor="let repair of transaction?.repairs" class="list-group-item">{{repair.repair.name}}
                 <span class="float-right">{{repair.repair.price}}</span>
               </li>
-              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.item.name}}
+              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.item?.name || item.name_DEPRECATED}}
                 <span class="float-right">{{item.price}}</span>
               </li>
             </ul>
