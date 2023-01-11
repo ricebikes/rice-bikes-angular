@@ -322,7 +322,7 @@
           <div class="list-group my-2">
             <a *ngFor="let item of transaction?.items" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.item?.name || item.name_DEPRECATED}}
-              <button *ngIf="!transaction?.complete" (click)="deleteItem(item.item._id)"
+              <button *ngIf="!transaction?.complete" (click)="deleteItem(item.item?.name || item._id)"
                 class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
             </a>
           </div>
@@ -338,7 +338,7 @@
               <li *ngFor="let repair of transaction?.repairs" class="list-group-item">{{repair.repair.name}}
                 <span class="float-right">{{repair.repair.price}}</span>
               </li>
-              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.item.name}}
+              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.item?.name || item.name_DEPRECATED}}
                 <span class="float-right">{{item.price}}</span>
               </li>
             </ul>
