@@ -178,9 +178,10 @@ export class AddItemComponent implements OnInit {
   triggerScanModal() {
     // trigger the scan modal
     this.scanTrigger.nativeElement.click();
+    console.log("helo");
     // keeping timeout in case it needs to be raise but it appears to not be required if the modal does not fade
     // timeout works as 0 ms, but keeping a small buffer just in case
-    setTimeout(() => this.scanInput.nativeElement.focus(), 50);
+    setTimeout(() => this.scanInput.nativeElement.focus());
   }
 
   /**

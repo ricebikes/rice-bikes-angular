@@ -13,7 +13,7 @@
       </div>
       <div class="modal-body">
         <label for="scanInput" hidden>Scan Input</label>
-        <input #scanInput id="scanInput" [formControl]="scanData" type="text" class="form-control"
+        <input autocomplete="off" #scanInput id="scanInput" [formControl]="scanData" type="text" class="form-control"
           (keyup.enter)="addByUPC()">
         <p class="text-danger" [hidden]="!(scanData.invalid && scanData.errors.badUPC)">UPC not found</p>
       </div>
