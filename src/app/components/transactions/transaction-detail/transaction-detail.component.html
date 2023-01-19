@@ -320,9 +320,9 @@
             </button>
           </div>
           <div class="list-group my-2">
-            <a *ngFor="let item of transaction?.items" class="list-group-item">
+            <a *ngFor="let item of transaction?.items; let idx=index" class="list-group-item">
               <strong>${{item.price}}</strong> {{item.item?.name || item.name_DEPRECATED}}
-              <button *ngIf="!transaction?.complete" (click)="deleteItem(item.item._id)"
+              <button *ngIf="!transaction?.complete && !item.item?.managed" (click)="deleteItem(idx)"
                 class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
             </a>
           </div>

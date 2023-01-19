@@ -146,8 +146,9 @@ export class TransactionDetailComponent implements OnInit {
     this.transactionService.deleteRepairFromTransaction(this.transaction._id, repair_id);
   }
 
-  deleteItem(item_id: string): void {
-    this.transactionService.deleteItemFromTransaction(this.transaction._id, item_id);
+  // temp fix: if item is old (deprecated), item_id should be -1
+  deleteItem(item_idx: string): void {
+    this.transactionService.deleteItemFromTransaction(this.transaction._id, item_idx);
   }
 
   addItem(item: Item) {
