@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Bike } from '../../../models/bike';
 import { Item } from '../../../models/item';
+import { ItemDetailsFormComponent } from '../../item-details-form/item-details-form.component';
 import { Customer } from '../../../models/customer';
 import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
@@ -25,6 +26,7 @@ export class TransactionDetailComponent implements OnInit {
   @ViewChild('customPriceModalTrigger') customPriceModalButtonTrigger: ElementRef;
   @ViewChild('completeDropdown') completeDropdownButton: ElementRef;
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
+  @ViewChild('itemDetailsForm') itemDetailsForm: ItemDetailsFormComponent;
   @ViewChild('orderRequestSelector') orderRequestSelectorComponent: OrderRequestSelectorComponent;
 
   transaction: Transaction;
@@ -117,6 +119,18 @@ export class TransactionDetailComponent implements OnInit {
     this.addItemComponent.triggerScanModal();
   }
 
+  triggerItemDetailsForm() {
+    this.itemDetailsForm.triggerItemDetailsForm();
+  }
+
+  test(index: String) {
+    console.log('hey', index);
+    // open item details form
+    this.itemDetailsForm.triggerItemDetailsForm();
+    // if admin, allow for editing
+
+  }
+  
   addBike(): void {
     const bike = new Bike();
     bike.make = this.bikeForm.value['bike-make'];

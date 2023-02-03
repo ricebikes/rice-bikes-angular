@@ -15,7 +15,6 @@
   type="button"
   class="btn btn-outline-primary"
   data-toggle="modal"
-  data-dismiss="modal"
   data-target="#scanModal"
 >
   FAKE BUTTON
@@ -66,14 +65,14 @@
             <div *ngIf="isAdmin | async">
               Would you like to create an item?
               <button class="btn btn-outline-primary" (click)="scanToCreateItem()">Yes</button>
-              <button class="btn btn-outline-secondary">No</button>
+              <button class="btn btn-outline-secondary" (click) = "resetUPC()">Enter another UPC</button>
             </div>
           </div>
         </div>
       </div>
 
       <div class="scroll" *ngIf="isAdmin | async">
-      <app-create-new-item [upc] = "scanData.value" (chosenItem)="addItem($event)" *ngIf="createItemFromUPC"></app-create-new-item>
+      <app-create-new-item #itemModal id="itemModal" [upc] = "scanData.value" (chosenItem)="addItem($event)" *ngIf="createItemFromUPC"></app-create-new-item>
       </div>
     </div>
     
@@ -84,6 +83,7 @@
 <div
   class="modal fade"
   id="itemSearchModal"
+  #itemSearchModal
   tabindex="-1"
   role="dialog"
   aria-labelledby="itemSearchModalLabel"
@@ -95,6 +95,7 @@
         <div class="btn-group">
             <button
               class="btn"
+              #searchButton
               [class.btn-primary]="isActive('search')"
               [class.btn-outline-secondary]="isActive('create')"
               (click)="setActive('search')"
@@ -116,6 +117,7 @@
             type="button"
             id="itemSearchClose"
             class="close"
+            (click)="modalClose()"
             data-dismiss="modal"
             aria-label="Close"
           >
@@ -230,7 +232,13 @@
       </div>
 
       <div class="scroll" *ngIf="isAdmin | async">
-      <app-create-new-item [hidden]="!addDialog"></app-create-new-item></div>
+        <app-create-new-item 
+          [modalClose] = "modalClose"
+          [itemForm] = "itemForm"
+          [searchButton] = "searchButton"
+          [hidden]="!addDialog">
+        </app-create-new-item>
+      </div>
     </div>
   </div>
 </div>

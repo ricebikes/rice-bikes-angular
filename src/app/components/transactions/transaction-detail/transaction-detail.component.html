@@ -319,13 +319,15 @@
               Find Item
             </button>
           </div>
-          <div class="list-group my-2">
-            <a *ngFor="let item of transaction?.items; let idx=index" class="list-group-item">
+          <div class="list-group my-2" *ngFor="let item of transaction?.items; let idx=index" class="list-group-item">
+            <a (click)="test(idx)">
               <strong>${{item.price}}</strong> {{item.item?.name || item.name_DEPRECATED}}
               <button *ngIf="!transaction?.complete && !item.item?.managed" (click)="deleteItem(idx)"
                 class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
             </a>
           </div>
+          <!-- <app-item-details-form #itemDetailsForm *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)"
+            [employee]="transaction?.employee"></app-item-details-form> -->
         </div>
         <div class="col-md-4">
           <div class="card" style="height: auto">

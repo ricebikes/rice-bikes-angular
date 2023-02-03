@@ -8,6 +8,7 @@ import {
   Input,
   Pipe,
   PipeTransform,
+  Renderer2
 } from "@angular/core";
 import {
   FormBuilder,
@@ -41,6 +42,8 @@ export class AddItemComponent implements OnInit {
   @ViewChild("nameInput") nameInput: ElementRef;
   @ViewChild("scanTrigger") scanTrigger: ElementRef;
   @ViewChild("scanInput") scanInput: ElementRef;
+  @ViewChild("itemSearchModal") itemSearchModal: ElementRef;
+  @ViewChild("searchButton") searchButton: ElementRef;
 
   itemForm = this.formBuilder.group({
     name: null,
@@ -73,9 +76,12 @@ export class AddItemComponent implements OnInit {
   activeButton = "search";
 
   setActive = function (buttonName) {
+    console.log(this.addDialog, buttonName);
     this.activeButton = buttonName;
     if (buttonName == "search") this.addDialog = false;
     else this.addDialog = true;
+
+    console.log(this.addDialog);
   };
 
   isActive = function (buttonName) {
@@ -86,12 +92,33 @@ export class AddItemComponent implements OnInit {
     this.createItemFromUPC = true;
   }
 
+  resetAndCloseModal = function() {
+    console.log("close");
+    this.setActive('search');
+    this.createItemFromUPC = false;
+  }
+
+  resetUPC = function() {
+    this.scanData.reset();
+    setTimeout(() => this.scanInput.nativeElement.focus());
+  }
+
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
     private itemService: ItemService,
-    private authenticationService: AuthenticationService
-  ) {}
+    private authenticationService: AuthenticationService,
+    private renderer: Renderer2
+  ) {
+    this.renderer.listen('window', 'click',(e:Event)=>{
+      if(e.target == this.itemSearchModal.nativeElement){
+        this.itemForm.reset();
+        // TODO: reset the new item form
+        this.modalClose();
+      }
+    })
+
+  }
 
   ngOnInit() {
     // watch form for changes, and search when it does
@@ -115,7 +142,6 @@ export class AddItemComponent implements OnInit {
         console.log(err);
         return Observable.of<Item[]>([]);
       });
-
   }
 
   addItem(item: Item) {
@@ -170,6 +196,7 @@ export class AddItemComponent implements OnInit {
   }
 
   triggerItemSearch() {
+    console.log("opening item search");
     // simply opens the item search, waits for the modal to grab focus, then shifts it to the item name input
     this.hiddenSearchTrigger.nativeElement.click();
     setTimeout(() => this.nameInput.nativeElement.focus(), 500);
@@ -178,12 +205,18 @@ export class AddItemComponent implements OnInit {
   triggerScanModal() {
     // trigger the scan modal
     this.scanTrigger.nativeElement.click();
-    console.log("helo");
+    
     // keeping timeout in case it needs to be raise but it appears to not be required if the modal does not fade
     // timeout works as 0 ms, but keeping a small buffer just in case
     setTimeout(() => this.scanInput.nativeElement.focus());
   }
 
+  modalClose() {
+    console.log("close button clicked!");
+    this.itemForm.reset();
+    this.searchButton.nativeElement.click();
+  }
+  
   /**
    * Selects an item, returns it to parent component
    * @param item: Item to return

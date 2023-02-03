@@ -8,7 +8,6 @@ import {
     Input,
     Pipe,
     PipeTransform,
-    TemplateRef
   } from "@angular/core";
   import {
     FormBuilder,
@@ -26,20 +25,25 @@ import {
   import { AuthenticationService } from "../../services/authentication.service";
   
   @Component({
-    selector: "app-create-new-item",
-    templateUrl: "create-new-item.component.html",
-    styleUrls: ["create-new-item.component.css", "../../app.component.css"],
+    selector: "app-item-details-form",
+    templateUrl: "item-details-form.component.html",
+    styleUrls: ["item-details-form.component.css", "../../app.component.css"],
   })
-  export class CreateNewItemComponent implements OnInit {
+  export class ItemDetailsFormComponent implements OnInit {
     // Input: if user is an employee or not
     @Input("employee") employee: boolean;
     @Input("upc") upc: string;
-    @Input("itemForm") itemForm: FormBuilder;
-    @Input() modalClose: () => void;
-    @Input() searchButton: TemplateRef<any>;
 
     // Emit this to the listening component
     @Output() chosenItem = new EventEmitter<Item>();
+  
+    itemForm = this.formBuilder.group({
+      name: null,
+      brand: null,
+      category_1: null,
+      category_2: null,
+      category_3: null,
+    });
   
     newItemForm = this.formBuilder.group({
       name: ["", Validators.required],
@@ -79,11 +83,6 @@ import {
       return this.newItemForm.controls["features"] as FormArray;
     }
   
-    closeItemModal() {
-      this.newItemForm.reset();
-      this.modalClose();
-    }
-
     createEmpFormGroup() {
       return this.formBuilder.group({
         key: ["", Validators.required],
@@ -96,6 +95,12 @@ import {
       this.newItemForm.patchValue({
         upc: this.upc
       });
+    }
+
+    triggerItemDetailsForm() {
+        // simply opens the item search, waits for the modal to grab focus, then shifts it to the item name input
+        // this.hiddenTrigger.nativeElement.click();
+        // setTimeout(() => this.nameInput.nativeElement.focus(), 500); 
     }
 
     addSpec() {

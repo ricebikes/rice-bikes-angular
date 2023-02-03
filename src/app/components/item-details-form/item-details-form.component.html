@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title">Create New Item</h5>
-  <button (click)="closeItemModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -76,13 +76,18 @@
       </div>
       <div class="row">
         <div class="col">
-          <label for="category_1">Category 1</label>
-          <input
-            type="text"
-            id="category1"
+          <label for="category1Select">Category 1</label>
+          <select
             class="form-control"
+            id="category1Select"
             formControlName="category_1"
-          />
+            (change)="onCat1Change($event)"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let category of categories | async">
+              {{ category }}
+            </option>
+          </select>
         </div>
       </div>
       <div class="row">
