@@ -76,12 +76,9 @@ export class AddItemComponent implements OnInit {
   activeButton = "search";
 
   setActive = function (buttonName) {
-    console.log(this.addDialog, buttonName);
     this.activeButton = buttonName;
     if (buttonName == "search") this.addDialog = false;
     else this.addDialog = true;
-
-    console.log(this.addDialog);
   };
 
   isActive = function (buttonName) {
@@ -93,7 +90,6 @@ export class AddItemComponent implements OnInit {
   }
 
   resetAndCloseModal = function() {
-    console.log("close");
     this.setActive('search');
     this.createItemFromUPC = false;
   }
@@ -145,6 +141,7 @@ export class AddItemComponent implements OnInit {
   }
 
   addItem(item: Item) {
+    console.log("add item component called");
     this.scanData.reset();
     this.createItemFromUPC = false;
     this.chosenItem.emit(item);

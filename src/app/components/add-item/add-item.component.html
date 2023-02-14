@@ -72,7 +72,7 @@
       </div>
 
       <div class="scroll" *ngIf="isAdmin | async">
-      <app-create-new-item #itemModal id="itemModal" [upc] = "scanData.value" (chosenItem)="addItem($event)" *ngIf="createItemFromUPC"></app-create-new-item>
+      <app-create-new-item #itemModal id="itemModal" [upc] = "scanData.value" (newItem)="addItem($event)" *ngIf="createItemFromUPC"></app-create-new-item>
       </div>
     </div>
     
@@ -234,9 +234,10 @@
       <div class="scroll" *ngIf="isAdmin | async">
         <app-create-new-item 
           [modalClose] = "modalClose"
-          [itemForm] = "itemForm"
           [searchButton] = "searchButton"
+          (newItem)="addItem($event)"
           [hidden]="!addDialog">
+          
         </app-create-new-item>
       </div>
     </div>

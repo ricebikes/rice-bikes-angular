@@ -166,6 +166,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   addItem(item: Item) {
+    console.log("transaction details add item called");
     this.transactionService.addItemToTransaction(this.transaction._id, item._id);
   }
 
