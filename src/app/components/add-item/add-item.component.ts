@@ -41,6 +41,7 @@ export class AddItemComponent implements OnInit {
   @ViewChild("searchTrigger") hiddenSearchTrigger: ElementRef;
   @ViewChild("nameInput") nameInput: ElementRef;
   @ViewChild("scanTrigger") scanTrigger: ElementRef;
+  @ViewChild("scanModal") scanModal: ElementRef;
   @ViewChild("scanInput") scanInput: ElementRef;
   @ViewChild("itemSearchModal") itemSearchModal: ElementRef;
   @ViewChild("searchButton") searchButton: ElementRef;
@@ -94,6 +95,11 @@ export class AddItemComponent implements OnInit {
     this.createItemFromUPC = false;
   }
 
+  resetScanningModal = function() {
+    this.createItemFromUPC = false;
+    this.resetUPC();
+  }
+
   resetUPC = function() {
     this.scanData.reset();
     setTimeout(() => this.scanInput.nativeElement.focus());
@@ -109,11 +115,17 @@ export class AddItemComponent implements OnInit {
     this.renderer.listen('window', 'click',(e:Event)=>{
       if(e.target == this.itemSearchModal.nativeElement){
         this.itemForm.reset();
-        // TODO: reset the new item form
         this.modalClose();
       }
     })
-
+    this.renderer.listen('window', 'click',(e:Event)=>{
+      if(e.target == this.scanModal.nativeElement){
+        this.scanData.reset();
+        this.itemForm.reset();
+        this.createItemFromUPC = false;
+        this.modalClose();
+      }
+    })
   }
 
   ngOnInit() {

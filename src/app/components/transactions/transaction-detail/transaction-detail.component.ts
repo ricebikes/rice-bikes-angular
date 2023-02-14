@@ -119,14 +119,14 @@ export class TransactionDetailComponent implements OnInit {
     this.addItemComponent.triggerScanModal();
   }
 
-  triggerItemDetailsForm() {
-    this.itemDetailsForm.triggerItemDetailsForm();
-  }
+  // triggerItemDetailsForm() {
+  //   this.itemDetailsForm.triggerItemDetailsForm();
+  // }
 
   test(index: String) {
     console.log('hey', index);
     // open item details form
-    this.itemDetailsForm.triggerItemDetailsForm();
+    // this.itemDetailsForm.triggerItemDetailsForm();
     // if admin, allow for editing
 
   }
