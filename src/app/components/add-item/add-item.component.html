@@ -51,48 +51,53 @@
             <div class="loader"></div>
             <p class="loading-text">searching for UPC . . .</p>
           </div>
-          <p
-            class="text-danger"
+          <div
+            class="alert alert-warning"
+            role="alert"
             [hidden]="!(scanData.invalid && scanData.errors.unexpectedError)"
           >
-            Unexpected error
-          </p>
-
+            unexpected error...
+          </div>
           <div
-            class="text-danger"
+            class="alert alert-warning"
+            style="padding: 10px; margin-top: 10px"
+            role="alert"
             [hidden]="!(scanData.invalid && scanData.errors.badUPC)"
           >
-            UPC not found.
-            <div *ngIf="isAdmin | async">
+            <small>UPC not found.</small>
+            <small style="margin-right: 5px" *ngIf="isAdmin | async">
               Would you like to create an item?
-              <button
-                class="btn btn-outline-primary"
-                (click)="scanToCreateItem()"
-              >
-                Yes
-              </button>
-              <button class="btn btn-outline-secondary" (click)="resetUPC()">
-                Enter another UPC
-              </button>
-            </div>
+              <div style="float: right">
+                <button
+                  style="font-size: 0.75rem; margin-right: 10px"
+                  class="btn btn-sm btn-outline-warning"
+                  (click)="scanToCreateItem()"
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  class="close btn-sm"
+                  data-dismiss="alert"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </small>
           </div>
         </div>
       </div>
 
       <div class="scroll" *ngIf="isAdmin | async">
         <app-item-details-form
-          [mode]="'create'"
-          [modalClose]="modalClose"
-          [searchButton]="searchButton"
-          [resetAndCloseModal] = "resetScanningModal"
-          [resetUPC] = "resetUPC"
-          [scanData] = "scanData"
-          [scanInput] = "scanInput"
           #itemModal
+          *ngIf="createItemFromUPC"
           id="itemModal"
+          [mode]="'create'"
           [upc]="scanData.value"
           (newItem)="addItem($event)"
-          *ngIf="createItemFromUPC"
+          (closeAll)="closeAndResetAll($event)"
         ></app-item-details-form>
       </div>
     </div>
@@ -144,7 +149,7 @@
             type="button"
             id="itemSearchClose"
             class="close"
-            (click)="modalClose()"
+            (click)="closeAndResetAll(null)"
             data-dismiss="modal"
             aria-label="Close"
           >
@@ -261,10 +266,10 @@
       <div class="scroll" *ngIf="isAdmin | async">
         <app-item-details-form
           [mode]="'create'"
-          [modalClose]="modalClose"
-          [searchButton]="searchButton"
           (newItem)="addItem($event)"
           [hidden]="!addDialog"
+          [close]="close"
+          (closeAll)="closeAndResetAll($event)"
         >
         </app-item-details-form>
       </div>

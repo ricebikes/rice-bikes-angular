@@ -8,6 +8,7 @@ import {
   Input,
   Pipe,
   PipeTransform,
+  SimpleChange,
   TemplateRef,
 } from "@angular/core";
 import {
@@ -35,18 +36,14 @@ export class ItemDetailsFormComponent implements OnInit {
   @Input("employee") employee: boolean;
   @Input("upc") upc: string;
   @Input() modalClose: () => void;
-  @Input() resetAndCloseModal: () => void;
-  @Input() searchButton: TemplateRef<any>;
   @Input("mode") mode: string;
-  @Input() resetUPC: () => void;
-  @Input() scanData: FormBuilder;
-  @Input("scanInput") scanInput: ElementRef;
-  
+  @Input("close") close: boolean;
 
   // Emit this to the listening component
   @Output() newItem = new EventEmitter<Item>();
+  @Output() closeAll = new EventEmitter<String>();
 
-  title = "Item Details"
+  title = "Item Details";
 
   newItemForm = this.formBuilder.group({
     name: ["", Validators.required],
@@ -75,6 +72,13 @@ export class ItemDetailsFormComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
 
+  ngOnChanges(changes: { [property: string]: SimpleChange }) {
+    // Extract changes to the input property by its name
+    let change: SimpleChange = changes["close"];
+    
+    this.newItemForm.reset();
+  }
+
   get specifications() {
     return this.newItemForm.controls["specifications"] as FormArray;
   }
@@ -96,13 +100,11 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("upc", this.upc, this.mode);
     this.newItemForm.patchValue({
       upc: this.upc,
     });
-    if(this.mode == "create") {
-      console.log("create");
-      this.title = "Create New Item"
+    if (this.mode == "create") {
+      this.title = "Create New Item";
     }
   }
 
@@ -118,21 +120,23 @@ export class ItemDetailsFormComponent implements OnInit {
     newUPC += itemCode;
 
     // https://support.honeywellaidc.com/s/article/How-is-the-UPC-A-check-digit-calculated
-    let checkDigit = 10 - 
-      (Array.from(newUPC)
+    let checkDigit =
+      10 -
+      ((Array.from(newUPC)
         .filter((ch, idx) => idx % 2 == 0)
-        .map(i => parseInt(i))
+        .map((i) => parseInt(i))
         .reduce((sum, curr) => sum + curr) *
         3 +
-      Array.from(newUPC)
-        .filter((ch, idx) => ((idx + 1) % 2) == 0)
-        .map(i => parseInt(i))
-        .reduce((sum, curr) => sum + curr)) % 10;
-    if(checkDigit == 10) checkDigit = 0;
+        Array.from(newUPC)
+          .filter((ch, idx) => (idx + 1) % 2 == 0)
+          .map((i) => parseInt(i))
+          .reduce((sum, curr) => sum + curr)) %
+        10);
+    if (checkDigit == 10) checkDigit = 0;
     newUPC += checkDigit;
 
     this.newItemForm.patchValue({
-      upc: newUPC
+      upc: newUPC,
     });
   }
 
@@ -176,8 +180,6 @@ export class ItemDetailsFormComponent implements OnInit {
     } else {
       this.submitItemCreateForm();
     }
-
-    console.log("new item", this.newItemForm.controls);
   }
 
   /**
@@ -209,14 +211,14 @@ export class ItemDetailsFormComponent implements OnInit {
       .then((res) => {
         this.newItemForm.reset();
         this.newItem.emit(res);
-
         console.log("item created", res);
 
         // add new item to transaction
       });
   }
-  
+
   resetForms() {
-    this.resetAndCloseModal();
+    this.newItemForm.reset();
+    this.closeAll.emit("close!");
   }
 }

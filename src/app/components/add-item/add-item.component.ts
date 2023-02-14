@@ -8,7 +8,7 @@ import {
   Input,
   Pipe,
   PipeTransform,
-  Renderer2
+  Renderer2,
 } from "@angular/core";
 import {
   FormBuilder,
@@ -63,7 +63,7 @@ export class AddItemComponent implements OnInit {
 
   addDialog = false;
   createItemFromUPC = false;
-  
+
   isAdmin = this.authenticationService.isAdmin;
 
   category1 = "";
@@ -76,6 +76,8 @@ export class AddItemComponent implements OnInit {
   searchingForUPC = false;
   activeButton = "search";
 
+  close = false;
+
   setActive = function (buttonName) {
     this.activeButton = buttonName;
     if (buttonName == "search") this.addDialog = false;
@@ -86,24 +88,9 @@ export class AddItemComponent implements OnInit {
     return this.activeButton === buttonName;
   };
 
-  scanToCreateItem = function() {
+  scanToCreateItem = function () {
     this.createItemFromUPC = true;
-  }
-
-  resetAndCloseModal = function() {
-    this.setActive('search');
-    this.createItemFromUPC = false;
-  }
-
-  resetScanningModal = function() {
-    this.createItemFromUPC = false;
-    this.resetUPC();
-  }
-
-  resetUPC = function() {
-    this.scanData.reset();
-    setTimeout(() => this.scanInput.nativeElement.focus());
-  }
+  };
 
   constructor(
     private searchService: SearchService,
@@ -112,20 +99,20 @@ export class AddItemComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private renderer: Renderer2
   ) {
-    this.renderer.listen('window', 'click',(e:Event)=>{
-      if(e.target == this.itemSearchModal.nativeElement){
+    this.renderer.listen("window", "click", (e: Event) => {
+      if (e.target == this.itemSearchModal.nativeElement) {
         this.itemForm.reset();
-        this.modalClose();
+        this.closeAndResetAll("clicked out of modal");
       }
-    })
-    this.renderer.listen('window', 'click',(e:Event)=>{
-      if(e.target == this.scanModal.nativeElement){
+    });
+    this.renderer.listen("window", "click", (e: Event) => {
+      if (e.target == this.scanModal.nativeElement) {
         this.scanData.reset();
         this.itemForm.reset();
         this.createItemFromUPC = false;
-        this.modalClose();
+        this.closeAndResetAll("clicked out of modal");
       }
-    })
+    });
   }
 
   ngOnInit() {
@@ -169,14 +156,17 @@ export class AddItemComponent implements OnInit {
   }
 
   onCat2Change(e) {
-    this.categories3 = this.searchService.itemCategories3(this.category1, e.target.value);
+    this.categories3 = this.searchService.itemCategories3(
+      this.category1,
+      e.target.value
+    );
   }
   /**
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
   addByUPC() {
     this.searchingForUPC = true;
-    this.scanData.disable(); 
+    this.scanData.disable();
     if (this.scanData.invalid || this.scanData.value == "") {
       this.searchingForUPC = false;
       return;
@@ -185,23 +175,41 @@ export class AddItemComponent implements OnInit {
     this.searchService.upcSearch(this.scanData.value).then(
       (item) => {
         this.searchingForUPC = false;
-        this.scanData.enable(); 
+        this.scanData.enable();
         if (item) {
           this.chosenItem.emit(item);
           this.scanData.reset();
           // dismiss scan modal
           this.scanTrigger.nativeElement.click();
         } else {
+          this.resetUPC();
+          this.scanData.reset();
           this.scanData.setErrors({ badUPC: "true" });
           return;
         }
       },
       (err) => {
         this.searchingForUPC = false;
-        this.scanData.enable(); 
-        this.scanData.setErrors({ unexpectedError: "true"})
+        this.resetUPC();
+        this.scanData.reset();
+        this.scanData.setErrors({ unexpectedError: "true" });
       }
     );
+  }
+
+  resetUPC = function () {
+    this.scanData.reset();
+    setTimeout(() => this.scanInput.nativeElement.focus());
+  };
+
+  closeAndResetAll(message: string) {
+    console.log("emitted", message, "from item details form component");
+    this.close = !this.close;
+    this.setActive("search");
+    this.createItemFromUPC = false;
+    this.itemForm.reset();
+    this.searchButton.nativeElement.click();
+    this.resetUPC();
   }
 
   triggerItemSearch() {
@@ -214,18 +222,12 @@ export class AddItemComponent implements OnInit {
   triggerScanModal() {
     // trigger the scan modal
     this.scanTrigger.nativeElement.click();
-    
+
     // keeping timeout in case it needs to be raise but it appears to not be required if the modal does not fade
     // timeout works as 0 ms, but keeping a small buffer just in case
     setTimeout(() => this.scanInput.nativeElement.focus());
   }
 
-  modalClose() {
-    console.log("close button clicked!");
-    this.itemForm.reset();
-    this.searchButton.nativeElement.click();
-  }
-  
   /**
    * Selects an item, returns it to parent component
    * @param item: Item to return
