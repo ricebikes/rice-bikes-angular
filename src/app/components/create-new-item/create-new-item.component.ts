@@ -94,12 +94,45 @@ export class CreateNewItemComponent implements OnInit {
     });
   }
 
+  async generateUPC() {
+    // 0-6 digit: 011111 for now
+    let newUPC = "011111";
+    // 7-11 digits: assigned by manufacturer (starting at 0, inc everytime an item is created)
+    let itemCode = await this.searchService.nextUPC();
+    // generate check digit
+    for (let i = 0; i < 5 - itemCode.length; i++) {
+      newUPC += "0";
+    }
+    newUPC += itemCode;
+
+    // https://support.honeywellaidc.com/s/article/How-is-the-UPC-A-check-digit-calculated
+    let checkDigit = 10 - 
+      (Array.from(newUPC)
+        .filter((ch, idx) => idx % 2 == 0)
+        .map(i => parseInt(i))
+        .reduce((sum, curr) => sum + curr) *
+        3 +
+      Array.from(newUPC)
+        .filter((ch, idx) => ((idx + 1) % 2) == 0)
+        .map(i => parseInt(i))
+        .reduce((sum, curr) => sum + curr)) % 10;
+    if(checkDigit == 10) checkDigit = 0;
+    newUPC += checkDigit;
+
+    this.newItemForm.patchValue({
+      upc: newUPC
+    });
+  }
+
   onCat1Change(e) {
     this.categories2 = this.searchService.itemCategories2(e.target.value);
   }
 
   onCat2Change(e) {
-    this.categories3 = this.searchService.itemCategories3(this.newItemForm.controls["category_1"].value, e.target.value);
+    this.categories3 = this.searchService.itemCategories3(
+      this.newItemForm.controls["category_1"].value,
+      e.target.value
+    );
   }
 
   addSpec() {
@@ -120,17 +153,18 @@ export class CreateNewItemComponent implements OnInit {
     this.features.removeAt(index);
   }
 
-  validate(){
-    var form = document.getElementsByClassName('needs-validation')[0] as HTMLFormElement;
+  validate() {
+    var form = document.getElementsByClassName(
+      "needs-validation"
+    )[0] as HTMLFormElement;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
-      form.classList.add('was-validated');
-    }
-    else {
+      form.classList.add("was-validated");
+    } else {
       this.submitItemCreateForm();
     }
-  
+
     console.log("new item", this.newItemForm.controls);
   }
 

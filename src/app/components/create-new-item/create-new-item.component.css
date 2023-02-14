@@ -8,10 +8,14 @@
   flex: 1
 }
 
-label, button {
+label {
   font-size: .8rem;
   margin-top: 5px;
   margin-bottom: 0;
+}
+
+form button {
+  font-size: .8rem;
 }
 
 .key-value {

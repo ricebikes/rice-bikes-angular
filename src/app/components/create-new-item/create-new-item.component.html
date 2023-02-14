@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col">
+        <div class="col col-3">
           <label for="in_stock">In Stock</label>
           <input
             type="number"
@@ -78,21 +78,24 @@
             id="in_stock"
           />
         </div>
-      </div>
-      <div class="row">
-        <div class="col">
+        <div class="col col-9">
           <label for="upc">UPC #*</label>
-          <input
+          <div class="input-group mb-3">
+            <input
             type="text"
             id="newUPC"
             class="form-control"
             formControlName="upc"
             value="upc"
             pattern="[0-9]+"
-            minlength="12"
-            maxlength="12"
+            minlength="6"
+            maxlength="20"
             required
           />
+            <div class="input-group-append">
+              <button (click)="generateUPC()" class="btn btn-outline-secondary generate" type="button">Generate</button>
+            </div>
+          </div>
           <div class="invalid-feedback">required field (12 digits)</div>
         </div>
       </div>
