@@ -1,11 +1,36 @@
-<button #scanTrigger hidden type="button" class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
-  data-target="#priceCheckScanModal">FAKE BUTTON</button>
-<button #priceCheckTrigger hidden type="button" class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
-  data-target="#priceCheckModal">FAKE BUTTON</button>
-
+<button
+  #scanTrigger
+  hidden
+  type="button"
+  class="btn btn-outline-primary"
+  data-toggle="modal"
+  data-dismiss="modal"
+  data-target="#priceCheckScanModal"
+>
+  FAKE BUTTON
+</button>
+<button
+  #priceCheckTrigger
+  hidden
+  type="button"
+  class="btn btn-outline-primary"
+  data-toggle="modal"
+  data-dismiss="modal"
+  data-target="#priceCheckModal"
+>
+  FAKE BUTTON
+</button>
 
 <!--UPC scan trigger -->
-<div class="modal" id="priceCheckScanModal" tabindex="-1" role="dialog" aria-labelledby="scanModalLabel" aria-hidden="true">
+<div
+  class="modal"
+  #priceCheckScanModal
+  id="priceCheckScanModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="scanModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <!-- Price Check modal-->
@@ -43,46 +68,19 @@
             <div class="loader"></div>
             <small class="loading-text">searching for UPC . . .</small>
           </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Name:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.name}}
-            </div>
+          <div
+            class="alert alert-warning"
+            role="alert"
+            [hidden]="!(scanData.invalid && scanData.errors.unexpectedError)"
+          >
+            unexpected error...
           </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Brand:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.brand}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Specifications:</b>
-            </div>
-            <div class="col-8">
-              {{ priceCheckItem.specifications | json }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Category:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.category_1}} <span *ngIf="priceCheckItem.category_2">></span> {{priceCheckItem.category_2}}
-              <span *ngIf="priceCheckItem.category_3">></span> {{priceCheckItem.category_3}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>UPC:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.upc}}
-            </div>
+          <div
+            class="alert alert-warning"
+            role="alert"
+            [hidden]="!(scanData.invalid && scanData.errors.badUPC)"
+          >
+            <small>UPC not found.</small>
           </div>
         </div>
       </div>

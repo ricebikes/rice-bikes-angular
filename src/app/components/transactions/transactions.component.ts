@@ -39,6 +39,7 @@ export class TransactionsComponent implements OnInit {
     this.setTab(this.currentTab, { 
       complete: false, 
       refurb: false ,
+      employee: false,
       $or: [ //only show retrospecs w/ "building" status on active tab
         {transaction_type : {$ne: 'retrospec'} },
         {status: 'building'}

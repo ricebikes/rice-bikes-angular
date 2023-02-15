@@ -52,7 +52,7 @@
         <div class="card-body">
           <ul class="list-group">
             <li *ngFor="let item of transaction?.items" class="list-group-item">
-              {{item.item.name}}
+              {{item.item?.name || item.name_DEPRECATED}}
             </li>
           </ul>
         </div>

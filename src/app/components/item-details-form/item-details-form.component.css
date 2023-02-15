@@ -1,0 +1,44 @@
+/* Use flexbox to get full parent width button groups*/
+.btn-group.custom-block {
+    display: flex;
+  }
+  
+/* Use flexbox to get full parent width button groups*/
+.custom-block .btn {
+  flex: 1
+}
+
+label {
+  font-size: .8rem;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+form button {
+  font-size: .8rem;
+}
+
+.key-value {
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+}
+
+.key-value input {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.item-details-form {
+  max-width: 540px;
+}
+
+.form-control.is-valid, .was-validated .form-control:valid {
+  background-image: none; /* remove checkmark icon on the right of the input */
+  padding-right: .75rem; /* taken from bootstrap .form-control class to reset padding */
+}
+
+.form-control.is-invalid, .was-validated .form-control:invalid {
+  background-image: none; /* remove invalid icon on the right of the input */
+  padding-right: .75rem; /* taken from bootstrap .form-control class to reset padding */
+}
