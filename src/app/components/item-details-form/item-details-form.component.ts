@@ -109,32 +109,7 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   async generateUPC() {
-    // 0-6 digit: 011111 for now
-    let newUPC = "011111";
-    // 7-11 digits: assigned by manufacturer (starting at 0, inc everytime an item is created)
-    let itemCode = await this.searchService.nextUPC();
-    // generate check digit
-    for (let i = 0; i < 5 - itemCode.length; i++) {
-      newUPC += "0";
-    }
-    newUPC += itemCode;
-
-    // https://support.honeywellaidc.com/s/article/How-is-the-UPC-A-check-digit-calculated
-    let checkDigit =
-      10 -
-      ((Array.from(newUPC)
-        .filter((ch, idx) => idx % 2 == 0)
-        .map((i) => parseInt(i))
-        .reduce((sum, curr) => sum + curr) *
-        3 +
-        Array.from(newUPC)
-          .filter((ch, idx) => (idx + 1) % 2 == 0)
-          .map((i) => parseInt(i))
-          .reduce((sum, curr) => sum + curr)) %
-        10);
-    if (checkDigit == 10) checkDigit = 0;
-    newUPC += checkDigit;
-
+    let newUPC = await this.itemService.nextUPC();
     this.newItemForm.patchValue({
       upc: newUPC,
     });
