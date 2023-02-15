@@ -1,0 +1,302 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{ title }}</h5>
+  <button
+    (click)="resetForms()"
+    type="button"
+    class="close"
+    data-dismiss="modal"
+    aria-label="Close"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div id="create-item-body" class="modal-body item-details-form">
+  <div>
+    <form class="needs-validation" [formGroup]="newItemForm" autocomplete="off">
+      <div class="row">
+        <div class="col col-6">
+          <label for="name">Name*</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.name }}
+          </p>
+          <input
+            *ngIf="mode != 'view'"
+            type="text"
+            class="form-control"
+            formControlName="name"
+            id="name"
+            required
+          />
+          <div class="invalid-feedback">required field</div>
+        </div>
+        <div class="col col-6">
+          <div>
+            <label for="brand">Brand*</label>
+            <p *ngIf="mode == 'view'" class="form-control-static">
+              {{ item.brand }}
+            </p>
+            <input
+              *ngIf="mode != 'view'"
+              type="text"
+              class="form-control"
+              formControlName="brand"
+              id="brand"
+              style="text-transform: uppercase"
+              required
+            />
+            <div class="invalid-feedback">required field</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-6">
+          <label for="retailPrice">Retail Price*</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.standard_price }}
+          </p>
+          <input
+            *ngIf="mode != 'view'"
+            id="retailPrice"
+            type="number"
+            step="any"
+            class="form-control"
+            placeholder="$"
+            formControlName="standard_price"
+            required
+          />
+          <div class="invalid-feedback">required field</div>
+        </div>
+        <div class="col col-6">
+          <label for="wholesalePrice">Wholesale Price*</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.wholesale_cost }}
+          </p>
+          <input
+            *ngIf="mode != 'view'"
+            id="wholesalePrice"
+            type="number"
+            step="any"
+            class="form-control"
+            placeholder="$"
+            formControlName="wholesale_cost"
+            required
+          />
+          <div class="invalid-feedback">required field</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-3">
+          <label for="in_stock">In Stock</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.in_stock }}
+          </p>
+          <input
+            *ngIf="mode != 'view'"
+            type="number"
+            class="form-control"
+            formControlName="in_stock"
+            id="in_stock"
+          />
+        </div>
+        <div class="col col-9">
+          <label for="upc">UPC #*</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.upc }}
+          </p>
+          <div class="input-group">
+            <input
+              *ngIf="mode != 'view'"
+              type="text"
+              id="newUPC"
+              class="form-control"
+              formControlName="upc"
+              value="upc"
+              pattern="[0-9]+"
+              minlength="6"
+              maxlength="20"
+              required
+            />
+            <div *ngIf="mode != 'view'" class="input-group-append">
+              <button
+                (click)="generateUPC()"
+                class="btn btn-outline-secondary generate"
+                type="button"
+              >
+                Generate
+              </button>
+            </div>
+          </div>
+          <small *ngIf="mode != 'view'" class="form-text text-muted"
+            >only generate a UPC if the item doesn't have one</small
+          >
+          <div class="invalid-feedback">required field</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="category_1">Category 1*</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.category_1 }}
+          </p>
+          <select
+            *ngIf="mode != 'view'"
+            required
+            class="form-control"
+            id="category1Select"
+            formControlName="category_1"
+            (change)="onCat1Change($event)"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let category of categories | async">
+              {{ category }}
+            </option>
+          </select>
+          <div class="invalid-feedback">required field</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="category_2">Category 2</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.category_2 }}
+          </p>
+          <select
+            *ngIf="mode != 'view'"
+            class="form-control"
+            id="category2Select"
+            formControlName="category_2"
+            (change)="onCat2Change($event)"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let category of categories2 | async">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="category_3">Category 3</label>
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.category_3 }}
+          </p>
+          <select
+            *ngIf="mode != 'view'"
+            class="form-control"
+            id="category3Select"
+            formControlName="category_3"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let category of categories3 | async">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="specifications">Specifications</label><br />
+          <div [hidden]="mode != 'view'" *ngFor="let entry of viewspecs">
+            {{ entry }}
+          </div>
+
+          <div
+            [hidden]="mode == 'view'"
+            *ngFor="let entry of specifications.controls; let i = index"
+          >
+            <div class="key-value" [formGroup]="entry">
+              <input
+                required
+                class="form-control"
+                formControlName="key"
+                placeholder="e.g., Length"
+              />
+              <input
+                required
+                class="form-control"
+                formControlName="value"
+                placeholder="e.g., 35 mm"
+              />
+              <i
+                color="blue"
+                type="button"
+                (click)="removeSpec(i)"
+                class="bi bi-dash-circle text-primary"
+              ></i>
+            </div>
+          </div>
+          <button
+            *ngIf="mode != 'view'"
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="addSpec()"
+          >
+            add
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="features">Features</label><br />
+          <p *ngIf="mode == 'view'" class="form-control-static">
+            {{ item.features }}
+          </p>
+          <div
+            [hidden]="mode == 'view'"
+            *ngFor="let entry of features.controls; let i = index"
+          >
+            <div class="key-value" [formGroup]="entry">
+              <input
+                required
+                class="form-control"
+                formControlName="value"
+                placeholder="e.g., All purpose inner tube, an excellent choice for replacements"
+              />
+              <i
+                color="blue"
+                type="button"
+                (click)="removeFeature(i)"
+                class="bi bi-dash-circle text-primary"
+              ></i>
+            </div>
+          </div>
+          <button
+            *ngIf="mode != 'view'"
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="addFeature()"
+          >
+            add
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    data-dismiss="modal"
+    (click)="resetForms()"
+  >
+    Close
+  </button>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    (click)="validate()"
+    data-dismiss="modal"
+    *ngIf="mode == 'create' || mode == 'view'"
+  >
+    {{ mode == "create" ? "Create item" : "Edit item" }}
+  </button>
+  <button
+    class="btn btn-primary"
+    (click)="edit()"
+    data-dismiss="modal"
+    *ngIf="mode == 'create' || mode == 'view'"
+  >
+    {{ mode == "create" ? "Create item" : "Edit item" }}
+  </button>
+</div>

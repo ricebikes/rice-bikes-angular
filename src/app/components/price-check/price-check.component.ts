@@ -32,6 +32,18 @@ export class PriceCheckComponent {
         // timeout works as 0 ms, but keeping a small buffer just in case
         setTimeout(() => this.scanInput.nativeElement.focus(), 50);
     }
+    this.searchService.upcSearch(this.scanData.value).then((item) => {
+      this.searchingForUPC = false;
+      if (item) {
+        this.viewItemFromUPC = true;
+        this.priceCheckItem = item;
+        this.scanData.reset();
+      } else {
+        this.scanData.setErrors({ badUPC: "true" });
+        return;
+      }
+    });
+  }
 
 
     /**
