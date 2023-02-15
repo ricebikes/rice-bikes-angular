@@ -157,7 +157,7 @@ export class SearchService {
       params.set("category", category);
     } // TO BE REMOVED IN ITEM MIGRATION
     else {
-      if (category_1) {
+      if (category_3) {
         params.set("category_1", category_1);
       }
       if (category_2) {
@@ -171,7 +171,6 @@ export class SearchService {
       params.set("brand", brand);
     }
     requestOptions.params = params;
-    console.log("PARAMS", params);
     return this.http
       .get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()

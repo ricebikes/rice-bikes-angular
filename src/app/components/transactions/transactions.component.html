@@ -4,6 +4,7 @@
       <a (click)="setTab('active', { 
           complete: false, 
           refurb: false, 
+          employee: false,
           $or: [
             {transaction_type : {$ne: 'retrospec'} },
             {status: 'building'}
@@ -26,7 +27,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" (click)="setTab('email', { waiting_email: true })"
+      <a class="nav-link" (click)="setTab('email', { waiting_email: true, complete: false })"
         [ngClass]="{'active': currentTab === 'email'}">
         <i class="fa fa-envelope"></i> Waiting on email
       </a>
@@ -38,6 +39,10 @@
     <li class="nav-item">
       <a (click)="setTab('beerbike',{complete:false, beerbike: true})" [ngClass]="{'active': currentTab === 'beerbike'}"
         class="nav-link">Beer Bikes</a>
+    </li>
+    <li class="nav-item">
+      <a (click)="setTab('employee',{employee:true, complete: false, refurb: false, beerbike: false})" [ngClass]="{'active': currentTab === 'employee'}"
+        class="nav-link">Employee</a>
     </li>
     <li class="nav-item">
       <a (click)="setTab('paid', { is_paid: true })" [ngClass]="{'active': currentTab === 'paid'}"
