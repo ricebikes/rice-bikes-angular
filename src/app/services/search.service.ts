@@ -107,25 +107,32 @@ export class SearchService {
   /**
    * Searches for item by given parameters, returns an observable of results
    * @param name: name of item
-   * @param category: item category
-   * @param size: item size
+   * @param category: item category (old)
+   * @param category_1: item category 1
+   * @param category_2: item category 2
+   * @param category_3: item category 3
    * @param brand: item brand
    * @param condition: item condition (New or Used)
    */
   itemSearch(name?: string,
     category?: string,
-    size?: string,
-    brand?: string,
-    condition?: string): Promise<Item[]> {
+    category_1?: string,
+    category_2?: string,
+    category_3?: string,
+    brand?: string): Promise<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
     requestOptions.headers = SearchService.jwt_headers();
     if (name) { params.set('name', name); }
-    if (category) { params.set('category', category); }
-    if (size) { params.set('size', size); }
+    if (category) { params.set('category', category); } // TO BE REMOVED IN ITEM MIGRATION
+    else {
+      if (category_1) { params.set('category_1', category_1); }
+      if (category_2) { params.set('category_2', category_2); }
+      if (category_3) { params.set('category_3', category_3); }
+    }
     if (brand) { params.set('brand', brand); }
-    if (condition) { params.set('condition', condition); }
     requestOptions.params = params;
+    console.log("PARAMS", params);
     return this.http.get(`${this.itemUrl}/search`, requestOptions)
       .toPromise()
       .then(res => res.json() as Item[])
@@ -151,11 +158,47 @@ export class SearchService {
   /**
    * Gets distinct item categories
    */
-  itemCategories(): Promise<String[]> {
+  itemCategories1(): Promise<string[]> {
     return this.http.get(`${this.itemUrl}/categories`,
       new RequestOptions({ headers: SearchService.jwt_headers() }))
       .toPromise()
-      .then(res => res.json().sort())
+      .then(res => Object.keys(res.json()))
+      .catch(err => this.handleError(err));
+  }
+
+  /**
+   * Gets distinct item sub-categories
+   */
+  itemCategories2(cat1?: string): Promise<string[]> {
+    if(cat1 != null) {
+      return this.http.get(`${this.itemUrl}/categories`,
+        new RequestOptions({headers: SearchService.jwt_headers() }))
+        .toPromise()
+        .then(res => Object.keys(res.json()[cat1]))
+    }
+    // let category2 = [];
+    // console.log("null");
+    // return this.http.get(`${this.itemUrl}/categories`,
+    // new RequestOptions({headers: SearchService.jwt_headers() }))
+    // .toPromise()
+    // .then(res => {
+    //   for(let cat in this.itemCategories1()) {
+    //     category2.push(Object.keys(res.json()[cat]))
+    //   }
+    //   console.log(category2);
+    //   return null;
+    // })
+    // .catch(err=> this.handleError(err));
+  }
+
+   /**
+   * Gets distinct item sub-sub-categories
+   */
+   itemCategories3(cat1: string, cat2: string): Promise<string[]> {
+    return this.http.get(`${this.itemUrl}/categories`,
+      new RequestOptions({ headers: SearchService.jwt_headers() }))
+      .toPromise()
+      .then(res => Object.keys(res.json()[cat1][cat2]))
       .catch(err => this.handleError(err));
   }
 

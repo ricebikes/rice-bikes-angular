@@ -151,15 +151,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   addItem(item: Item) {
-    if (item.condition == 'Used') {
-      // Prompt user to set custom price.
-      let suggestedPrice = this.transaction.employee ? item.wholesale_cost : item.standard_price;
-      this.customPriceForm.controls['price'].setValue(suggestedPrice);
-      this.stagedUsedItem = item;
-      this.customPriceModalButtonTrigger.nativeElement.click();
-    } else {
-      this.transactionService.addItemToTransaction(this.transaction._id, item._id);
-    }
+    this.transactionService.addItemToTransaction(this.transaction._id, item._id);
   }
 
   addUsedItem() {

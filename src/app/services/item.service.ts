@@ -70,7 +70,7 @@ export class ItemService {
    * @param item the item to refresh 
    */
   refreshItem(upc: String) {
-    return this.http.get(`${CONFIG.api_url}/items/upc/${upc}`, this.jwt())
+    return this.http.get(`${CONFIG.api_url}/items/upc/khs/${upc}`, this.jwt())
       .toPromise()
       .then(res => res.json())
       .catch(err => this.handleError(err))
