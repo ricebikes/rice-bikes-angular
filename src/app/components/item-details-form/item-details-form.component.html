@@ -287,16 +287,16 @@
     class="btn btn-primary"
     (click)="validate()"
     data-dismiss="modal"
-    *ngIf="mode == 'create' || mode == 'view'"
+    *ngIf="mode == 'create'"
   >
-    {{ mode == "create" ? "Create item" : "Edit item" }}
+    Create Item
   </button>
   <button
     class="btn btn-primary"
     (click)="edit()"
     data-dismiss="modal"
-    *ngIf="mode == 'create' || mode == 'view'"
+    *ngIf="mode == 'view'"
   >
-    {{ mode == "create" ? "Create item" : "Edit item" }}
+    Edit Item
   </button>
 </div>
