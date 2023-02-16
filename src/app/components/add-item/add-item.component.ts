@@ -76,6 +76,7 @@ export class AddItemComponent implements OnInit {
   searchingForUPC = false;
   activeButton = "search";
 
+  lastUPC = "";
   close = false;
 
   setActive = function (buttonName) {
@@ -182,6 +183,7 @@ export class AddItemComponent implements OnInit {
           // dismiss scan modal
           this.scanTrigger.nativeElement.click();
         } else {
+          this.lastUPC = this.scanData.value;
           this.resetUPC();
           this.scanData.reset();
           this.scanData.setErrors({ badUPC: "true" });
@@ -189,6 +191,7 @@ export class AddItemComponent implements OnInit {
         }
       },
       (err) => {
+        this.lastUPC = this.scanData.value;
         this.searchingForUPC = false;
         this.resetUPC();
         this.scanData.reset();

@@ -100,6 +100,7 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("upc", this.upc);
     this.newItemForm.patchValue({
       upc: this.upc,
     });

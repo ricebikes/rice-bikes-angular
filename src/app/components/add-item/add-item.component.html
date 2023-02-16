@@ -95,7 +95,7 @@
           *ngIf="createItemFromUPC"
           id="itemModal"
           [mode]="'create'"
-          [upc]="scanData.value"
+          [upc]="lastUPC"
           (newItem)="addItem($event)"
           (closeAll)="closeAndResetAll($event)"
         ></app-item-details-form>
