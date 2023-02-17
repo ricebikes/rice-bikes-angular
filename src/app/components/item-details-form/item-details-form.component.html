@@ -12,7 +12,7 @@
 </div>
 <div id="create-item-body" class="modal-body item-details-form">
   <div>
-    <form class="needs-validation" [formGroup]="newItemForm" autocomplete="off">
+    <form #itemDetailsForm class="needs-validation" [formGroup]="newItemForm" autocomplete="off">
       <div class="row">
         <div class="col col-6">
           <label for="name">Name*</label>

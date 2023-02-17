@@ -1,20 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { CONFIG } from '../config';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AlertService } from './alert.service';
-import { Item } from '../models/item';
-
+import { Injectable } from "@angular/core";
+import { Headers, Http, RequestOptions } from "@angular/http";
+import { CONFIG } from "../config";
+import { HttpErrorResponse } from "@angular/common/http";
+import { AlertService } from "./alert.service";
+import { Item } from "../models/item";
 
 @Injectable()
 export class ItemService {
-
-  constructor(private http: Http, private alertService: AlertService) { }
+  constructor(private http: Http, private alertService: AlertService) {}
 
   private jwt() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (currentUser.token) {
-      const headers = new Headers({ 'x-access-token': currentUser.token });
+      const headers = new Headers({ "x-access-token": currentUser.token });
       return new RequestOptions({ headers: headers });
     }
   }
@@ -32,10 +30,11 @@ export class ItemService {
    * from the backend that should not be added to tranasactions
    */
   getItems(): Promise<Item[]> {
-    return this.http.get(`${CONFIG.api_url}/items`, this.jwt())
+    return this.http
+      .get(`${CONFIG.api_url}/items`, this.jwt())
       .toPromise()
-      .then(res => res.json())
-      .catch(err => this.handleError(err));
+      .then((res) => res.json())
+      .catch((err) => this.handleError(err));
   }
 
   /**
@@ -44,10 +43,11 @@ export class ItemService {
    */
   createItem(newItem: Item): Promise<Item> {
     delete newItem._id; // to prevent errors on backend
-    return this.http.post(`${CONFIG.api_url}/items`, newItem, this.jwt())
+    return this.http
+      .post(`${CONFIG.api_url}/items`, newItem, this.jwt())
       .toPromise()
-      .then(res => res.json())
-      .catch(err => this.handleError(err));
+      .then((res) => res.json())
+      .catch((err) => this.handleError(err));
   }
 
   /**
@@ -57,22 +57,34 @@ export class ItemService {
    */
   updateItem(id: String, item: Item): Promise<any> {
     delete item._id; // to prevent errors on backend
-    return this.http.put(`${CONFIG.api_url}/items/${id}`,
-      item, this.jwt())
+    return this.http
+      .put(`${CONFIG.api_url}/items/${id}`, item, this.jwt())
       .toPromise()
-      .then(res => res.json())
-      .catch(err => this.handleError(err));
+      .then((res) => res.json())
+      .catch((err) => this.handleError(err));
   }
 
   /**
    * Grab updated item attributes from supplier
    * Searches supplier by upc
-   * @param item the item to refresh 
+   * @param item the item to refresh
    */
   refreshItem(upc: String) {
-    return this.http.get(`${CONFIG.api_url}/items/upc/khs/${upc}`, this.jwt())
+    return this.http
+      .get(`${CONFIG.api_url}/items/upc/khs/${upc}`, this.jwt())
       .toPromise()
-      .then(res => res.json())
-      .catch(err => this.handleError(err))
+      .then((res) => res.json())
+      .catch((err) => this.handleError(err));
+  }
+
+  /**
+   * Gets the next UPC item number created by Rice Bikes
+   */
+  nextUPC(): Promise<string> {
+    return this.http
+      .get(`${CONFIG.api_url}/items/upc/newUPC`, this.jwt())
+      .toPromise()
+      .then((res) => res.json())
+      .catch((err) => this.handleError(err));
   }
 }

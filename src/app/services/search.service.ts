@@ -284,14 +284,4 @@ export class SearchService {
       .then((res) => res.json().sort())
       .catch((err) => this.handleError(err));
   }
-
-  nextUPC(): Promise<String> {
-    const requestOptions = new RequestOptions();
-    requestOptions.headers = SearchService.jwt_headers();
-    return this.http
-      .get(`${this.transactionUrl}/newUPC`, requestOptions)
-      .toPromise()
-      .then((res) => res.json())
-      .catch((err) => this.handleError(err));
-  }
 }

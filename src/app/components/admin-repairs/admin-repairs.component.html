@@ -1,28 +1,76 @@
-<div class="container repair-list" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<div
+  class="container repair-list"
+  xmlns="http://www.w3.org/1999/html"
+  xmlns="http://www.w3.org/1999/html"
+>
   <form #repairForm="ngForm">
     <div class="input-group">
       <div class="input-group-prepend">
         <span class="input-group-text">Repair Name</span>
       </div>
-      <input type="text" class="form-control" placeholder="" id="name" [(ngModel)]="editable_repair.name" name="name" required>
+      <input
+        type="text"
+        class="form-control"
+        placeholder=""
+        id="name"
+        [(ngModel)]="editable_repair.name"
+        name="name"
+        required
+      />
       <div class="input-group-prepend">
         <span class="input-group-text">Price</span>
       </div>
-      <input type="number" class="form-control" placeholder="0.00" id="price" [(ngModel)]="editable_repair.price" name="price" required>
-      <button type="button" class="btn btn-primary" (click)="addrepair(); repairForm.reset()" [disabled]="repairForm.invalid">Add Repair</button>
+      <input
+        type="number"
+        class="form-control"
+        placeholder="0.00"
+        id="price"
+        [(ngModel)]="editable_repair.price"
+        name="price"
+        required
+      />
     </div>
-    <div class="input-group mb-3">
+    <div class="input-group">
       <div class="input-group-prepend">
         <span class="input-group-text">Description</span>
       </div>
-      <textarea class="form-control" [ngModel]="editable_repair.description" name="description"></textarea>
+      <textarea
+        class="form-control"
+        [(ngModel)]="editable_repair.description"
+        name="description"
+      ></textarea>
+    </div>
+    <div style="justify-content: flex-end" class="input-group-append mb-3">
+      <button
+        [disabled]="repairForm.invalid"
+        (click)="addrepair()"
+        class="btn btn-primary"
+      >
+        <span *ngIf="!editMode">Add</span><span *ngIf="editMode">Update</span>
+      </button>
+      <button
+        *ngIf="editMode"
+        (click)="setEditMode(0, false)"
+        class="btn btn-secondary"
+      >
+        Cancel
+      </button>
     </div>
   </form>
-    <ul class="list-group">
-        <li *ngFor="let repair of repairs; let in=index" class="list-group-item">
-        {{repair.name}}
-        <span style="float: right">Price: ${{repair.price}}
-          <button class="btn btn-danger" style="margin-left:15px" (click)="disablerepair(repair)">Delete</button></span>
-        </li>
-    </ul>
+  <ul class="list-group">
+    <li *ngFor="let repair of repairs; let i = index" class="list-group-item">
+      {{ repair.name }}
+      <span style="float: right"
+        >Price: ${{ repair.price }}
+        <button
+          class="btn btn-outline-secondary"
+          (click)="setEditMode(i, true)"
+        >
+          Edit
+        </button>
+        <button class="btn btn-outline-danger" (click)="disablerepair(repair)">
+          <i class="bi bi-trash"></i></button
+      ></span>
+    </li>
+  </ul>
 </div>

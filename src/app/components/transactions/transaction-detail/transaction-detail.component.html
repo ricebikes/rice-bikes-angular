@@ -1,35 +1,76 @@
-<button hidden #customPriceModalTrigger data-toggle="modal" data-target="#customItemPriceModal">Hidden Trigger for "Set
-  Custom
-  Price" Modal</button>
+<button
+  hidden
+  #customPriceModalTrigger
+  data-toggle="modal"
+  data-target="#customItemPriceModal"
+>
+  Hidden Trigger for "Set Custom Price" Modal
+</button>
 
-<div class="modal fade" id="bikeAddModal" tabindex="-1" role="dialog" aria-labelledby="bikeModalLabel"
-  aria-hidden="true">
+<div
+  class="modal fade"
+  id="bikeAddModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="bikeModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="bikeModalLabel">Add bike</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <form [formGroup]="bikeForm">
         <div class="modal-body">
           <div class="form-group">
-            <input type="text" placeholder="Make..." class="form-control" formControlName="bike-make" id="bike-make">
+            <input
+              type="text"
+              placeholder="Make..."
+              class="form-control"
+              formControlName="bike-make"
+              id="bike-make"
+            />
           </div>
           <div class="form-group">
-            <input type="text" placeholder="Model..." class="form-control" formControlName="bike-model" id="bike-model">
+            <input
+              type="text"
+              placeholder="Model..."
+              class="form-control"
+              formControlName="bike-model"
+              id="bike-model"
+            />
           </div>
           <div class="form-group">
-            <input type="text" placeholder="Description..." class="form-control" formControlName="bike-desc"
-              id="bike-desc">
+            <input
+              type="text"
+              placeholder="Description..."
+              class="form-control"
+              formControlName="bike-desc"
+              id="bike-desc"
+            />
           </div>
-
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addBike()"
-            [disabled]="!bikeForm.valid">Add</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-dismiss="modal"
+            (click)="addBike()"
+            [disabled]="!bikeForm.valid"
+          >
+            Add
+          </button>
         </div>
       </form>
     </div>
@@ -37,12 +78,24 @@
 </div>
 
 <!-- Delete Transaction Modal -->
-<div class="modal fade" #deleteTransactionModal id="deleteTransactionModal" tabindex="-1">
+<div
+  class="modal fade"
+  #deleteTransactionModal
+  id="deleteTransactionModal"
+  tabindex="-1"
+>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteTransactionModalLabel">Are you sure?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="deleteTransactionModalLabel">
+          Are you sure?
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -50,8 +103,16 @@
         Are you sure you want to delete this transaction?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button (click)="deleteTransaction()" type="button" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button
+          (click)="deleteTransaction()"
+          type="button"
+          class="btn btn-danger"
+        >
+          Delete
+        </button>
       </div>
     </div>
   </div>
@@ -62,8 +123,15 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="waitingOrderRequestsModalLabel">Waiting Order Requests</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="waitingOrderRequestsModalLabel">
+          Waiting Order Requests
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -78,22 +146,36 @@
           </thead>
           <tbody>
             <tr *ngFor="let orderReq of transaction?.orderRequests">
-              <th scope="row">{{orderReq._id}}</th>
-              <td>{{orderReq.request}}</td>
-              <td *ngIf="orderReq.itemRef">{{orderReq.itemRef.name}}</td>
+              <th scope="row">{{ orderReq._id }}</th>
+              <td>{{ orderReq.request }}</td>
+              <td *ngIf="orderReq.itemRef">{{ orderReq.itemRef.name }}</td>
               <td *ngIf="!orderReq.itemRef">None</td>
-              <td>{{orderReq.status}}</td>
-              <td><button class="btn btn-outline-danger" (click)="removeOrderRequest(orderReq)"><i
-                    class="fas fa-times"></i></button></td>
+              <td>{{ orderReq.status }}</td>
+              <td>
+                <button
+                  class="btn btn-outline-danger"
+                  (click)="removeOrderRequest(orderReq)"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success"
-          (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()"><i class="fas fa-plus"></i> Add
-          Another Part</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="
+            this.orderRequestSelectorComponent.launchOrderRequestSelector()
+          "
+        >
+          <i class="fas fa-plus"></i> Add Another Part
+        </button>
       </div>
     </div>
   </div>
@@ -105,15 +187,28 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="pastActionsModalLabel">Past Actions</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" *ngIf="transaction?.actions && transaction?.actions.length > 0">
+      <div
+        class="modal-body"
+        *ngIf="transaction?.actions && transaction?.actions.length > 0"
+      >
         <ul class="list-group list-group-flush">
-          <li class="list-group-item" *ngFor="let action of transaction?.actions">{{action.employee.firstname}}
-            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time |
-              timeAgo}}</span></li>
+          <li
+            class="list-group-item"
+            *ngFor="let action of transaction?.actions"
+          >
+            {{ action.employee.firstname }} {{ action.employee.lastname }}:
+            {{ action.description }}
+            <span class="float-right">{{ action.time | timeAgo }}</span>
+          </li>
         </ul>
       </div>
     </div>
@@ -125,139 +220,250 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="customItemPriceModalLabel">Set Used Item Price</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="customItemPriceModalLabel">
+          Set Used Item Price
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <form [formGroup]="customPriceForm">
-          <input class="form-control" type="text" formControlName="price">
+          <input class="form-control" type="text" formControlName="price" />
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" [disabled]="customPriceForm.invalid"
-          (click)="addUsedItem()">Continue</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="customPriceForm.invalid"
+          (click)="addUsedItem()"
+        >
+          Continue
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-
-<div class="modal fade" #updateCustomerModal id="updateCustomerModal" tabindex="-1">
+<div
+  class="modal fade"
+  #updateCustomerModal
+  id="updateCustomerModal"
+  tabindex="-1"
+>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="updateCustomerModalLabel">Reserve for Customer</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="updateCustomerModalLabel">
+          Reserve for Customer
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <app-search-customer (foundCustomer)="updateCustomer($event)"></app-search-customer>
+        <app-search-customer
+          (foundCustomer)="updateCustomer($event)"
+        ></app-search-customer>
       </div>
       <div class="modal-footer text-center">
         *Reservations require $50 deposit
       </div>
     </div>
   </div>
-
-
 </div>
 
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h1 *ngIf="loading">
-      ...
-    </h1>
+    <h1 *ngIf="loading">...</h1>
     <h3 *ngIf="!loading" class="display-5">
-      <strong>{{transaction?._id}}: </strong> <span
-        *ngIf="transaction?.transaction_type != 'retrospec'">{{transaction?.customer.first_name}}
-        {{transaction?.customer.last_name}}</span>
-      <button class="btn" type="button" *ngIf="transaction?.transaction_type == 'retrospec'" id="customerButton"
-        data-toggle="modal" data-target="#updateCustomerModal">
-        <h3 *ngIf="transaction?.reserved">{{transaction?.customer.first_name}} {{transaction?.customer.last_name}}</h3>
+      <strong>{{ transaction?._id }}: </strong>
+      <span *ngIf="transaction?.transaction_type != 'retrospec'"
+        >{{ transaction?.customer.first_name }}
+        {{ transaction?.customer.last_name }}</span
+      >
+      <button
+        class="btn"
+        type="button"
+        *ngIf="transaction?.transaction_type == 'retrospec'"
+        id="customerButton"
+        data-toggle="modal"
+        data-target="#updateCustomerModal"
+      >
+        <h3 *ngIf="transaction?.reserved">
+          {{ transaction?.customer.first_name }}
+          {{ transaction?.customer.last_name }}
+        </h3>
         <h3 *ngIf="!transaction?.reserved">(Unreserved)</h3>
       </button>
       <!--non-retrospec => change transaction type dropdown -->
-      <span class="dropdown" *ngIf="transaction?.transaction_type!= 'retrospec'">
-        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-          aria-expanded="false" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
-                            'badge-primary': transaction?.transaction_type == 'outpatient',
-                             'badge-secondary': transaction?.transaction_type == 'merch'
-                            }">
-          <h5>{{transaction?.transaction_type}}</h5>
+      <span
+        class="dropdown"
+        *ngIf="transaction?.transaction_type != 'retrospec'"
+      >
+        <button
+          class="btn btn-sm"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          [ngClass]="{
+            'badge-success': transaction?.transaction_type == 'inpatient',
+            'badge-primary': transaction?.transaction_type == 'outpatient',
+            'badge-secondary': transaction?.transaction_type == 'merch'
+          }"
+        >
+          <h5>{{ transaction?.transaction_type }}</h5>
         </button>
         <div class="dropdown-menu">
           <h6 class="dropdown-header">Choose type</h6>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="changeType('inpatient')">Inpatient</a>
+          <a class="dropdown-item" (click)="changeType('inpatient')"
+            >Inpatient</a
+          >
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="changeType('outpatient')">Outpatient</a>
+          <a class="dropdown-item" (click)="changeType('outpatient')"
+            >Outpatient</a
+          >
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="changeType('merch')">Merch</a>
         </div>
       </span>
       <!--retrospec => fixed badge -->
-      <span *ngIf="transaction.transaction_type == 'retrospec'" class="badge badge-retrospec">Retrospec</span>
+      <span
+        *ngIf="transaction.transaction_type == 'retrospec'"
+        class="badge badge-retrospec"
+        >Retrospec</span
+      >
       <!--retrospec => status dropdown-->
-      <span class="dropdown" *ngIf="transaction?.transaction_type== 'retrospec'">
-        <button class="btn btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-          aria-expanded="false">
-          <h5><span class="fa" [ngClass]="{
-            'fa-cart-arrow-down': transaction?.status == 'ordered',
-            'fa-truck': transaction?.status == 'arrived',
-            'fa-wrench': transaction?.status == 'building',
-            'fa-check': transaction?.status == 'built',
-            'fa-tags': transaction?.status == 'for sale'
-          }"></span>
-            {{transaction?.status || "Awaiting Order"}}</h5>
+      <span
+        class="dropdown"
+        *ngIf="transaction?.transaction_type == 'retrospec'"
+      >
+        <button
+          class="btn btn-sm"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <h5>
+            <span
+              class="fa"
+              [ngClass]="{
+                'fa-cart-arrow-down': transaction?.status == 'ordered',
+                'fa-truck': transaction?.status == 'arrived',
+                'fa-wrench': transaction?.status == 'building',
+                'fa-check': transaction?.status == 'built',
+                'fa-tags': transaction?.status == 'for sale'
+              }"
+            ></span>
+            {{ transaction?.status || "Awaiting Order" }}
+          </h5>
         </button>
         <div class="dropdown-menu">
           <h6 class="dropdown-header">Choose status</h6>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="changeStatus('ordered')">
-            <span class="fa fa-cart-arrow-down"></span> Ordered </a>
+            <span class="fa fa-cart-arrow-down"></span> Ordered
+          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="changeStatus('arrived')">
-            <span class="fa fa-truck"></span> Arrived </a>
+            <span class="fa fa-truck"></span> Arrived
+          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="changeStatus('building')">
-            <span class="fa fa-wrench"></span> Building </a>
+            <span class="fa fa-wrench"></span> Building
+          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="changeStatus('built')">
-            <span class="fa fa-check"></span> Built </a>
+            <span class="fa fa-check"></span> Built
+          </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="markForSale()">
-            <span class="fa fa-tags"></span> For Sale </a>
+            <span class="fa fa-tags"></span> For Sale
+          </a>
         </div>
       </span>
 
-
-      <span *ngIf="transaction.employee && transaction.transaction_type!= 'retrospec'"
-        class="badge badge-employee">Employee</span>
+      <span
+        *ngIf="
+          transaction.employee && transaction.transaction_type != 'retrospec'
+        "
+        class="badge badge-employee"
+        >Employee</span
+      >
       <span *ngIf="transaction.refurb" class="badge badge-warning">Refurb</span>
-      <span *ngIf="transaction.beerbike" class="badge badge-info">Beer Bike</span>
+      <span *ngIf="transaction.beerbike" class="badge badge-info"
+        >Beer Bike</span
+      >
     </h3>
-    <p class="lead">{{transaction?.date_created | date:'medium'}}
-      <button data-toggle="modal" data-target="#deleteTransactionModal"
-        class="btn btn-outline-danger float-right">Delete</button>
-      <button *ngIf="transaction?.actions && transaction?.actions?.length > 0" data-toggle="modal"
-        data-target="#pastActionsModal" class="btn btn-outline-secondary float-right mr-3">Past Actions</button>
+    <p class="lead">
+      {{ transaction?.date_created | date : "medium" }}
+      <button
+        data-toggle="modal"
+        data-target="#deleteTransactionModal"
+        class="btn btn-outline-danger float-right"
+      >
+        Delete
+      </button>
+      <button
+        *ngIf="transaction?.actions && transaction?.actions?.length > 0"
+        data-toggle="modal"
+        data-target="#pastActionsModal"
+        class="btn btn-outline-secondary float-right mr-3"
+      >
+        Past Actions
+      </button>
     </p>
 
-    <p *ngIf="!editingTransaction" class="lead" [innerHTML]="displayDescription"></p>
-    <button *ngIf="!editingTransaction" (click)="editingTransaction = true" class="btn btn-secondary btn-sm">
+    <p
+      *ngIf="!editingTransaction"
+      class="lead"
+      [innerHTML]="displayDescription"
+    ></p>
+    <button
+      *ngIf="!editingTransaction"
+      (click)="editingTransaction = true"
+      class="btn btn-secondary btn-sm"
+    >
       Edit <span class="fa fa-pencil"></span>
     </button>
 
-    <textarea class="form-control" [(ngModel)]="transaction.description" style="width: 100%; min-height: 100px;"
-      *ngIf="editingTransaction"></textarea>
-    <button *ngIf="editingTransaction" class="btn btn-secondary btn-sm mt-3" (click)="updateDescription()">
+    <textarea
+      class="form-control"
+      [(ngModel)]="transaction.description"
+      style="width: 100%; min-height: 100px"
+      *ngIf="editingTransaction"
+    ></textarea>
+    <button
+      *ngIf="editingTransaction"
+      class="btn btn-secondary btn-sm mt-3"
+      (click)="updateDescription()"
+    >
       <span class="fa fa-check"></span>
     </button>
-    <button *ngIf="editingTransaction" class="btn btn-secondary btn-sm mt-3" (click)="editingTransaction = false">
+    <button
+      *ngIf="editingTransaction"
+      class="btn btn-secondary btn-sm mt-3"
+      (click)="editingTransaction = false"
+    >
       <span class="fa fa-times"></span>
     </button>
   </div>
@@ -266,17 +472,25 @@
 <div class="container mb-4">
   <div class="card">
     <div class="card-body">
-      <button *ngIf="!transaction?.is_paid && transaction?.bikes?.length == 0" type="button"
-        class="btn btn-outline-secondary mb-3" data-toggle="modal" data-target="#bikeAddModal">Add bike
+      <button
+        *ngIf="!transaction?.is_paid && transaction?.bikes?.length == 0"
+        type="button"
+        class="btn btn-outline-secondary mb-3"
+        data-toggle="modal"
+        data-target="#bikeAddModal"
+      >
+        Add bike
       </button>
 
       <div class="list-group">
-        <a *ngFor="let bike of transaction?.bikes"
-          class="list-group-item list-group-item-action flex-column align-items-start">
+        <a
+          *ngFor="let bike of transaction?.bikes"
+          class="list-group-item list-group-item-action flex-column align-items-start"
+        >
           <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{bike.make}} {{bike.model}}</h5>
+            <h5 class="mb-1">{{ bike.make }} {{ bike.model }}</h5>
           </div>
-          <p class="mb-1">{{bike.description}}</p>
+          <p class="mb-1">{{ bike.description }}</p>
         </a>
       </div>
     </div>
@@ -288,17 +502,38 @@
     <div class="card-body">
       <div class="row">
         <div class="col-md-4">
-          <app-add-repair *ngIf="!transaction?.is_paid" [transaction]="transaction"></app-add-repair>
+          <app-add-repair
+            *ngIf="!transaction?.is_paid"
+            [transaction]="transaction"
+          ></app-add-repair>
           <div class="list-group my-2">
-            <a *ngFor="let repair of transaction?.repairs" class="list-group-item"
-              [ngClass]="{'list-group-item-success': repair?.completed}">
-              <strong>${{repair.repair.price}}</strong> {{repair.repair.name}}
-              <button *ngIf="!transaction?.complete" (click)="deleteRepair(repair._id)"
-                class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
-              <button *ngIf="!transaction?.is_paid" title="Complete or reopen a repair"
-                (click)="toggleCompleteRepair(repair._id)" style="margin: auto 5px"
-                [ngClass]="{'btn-outline-primary': !repair.completed, 'btn-success': repair.completed}"
-                class="float-right btn btn-sm">
+            <a
+              *ngFor="let repair of transaction?.repairs"
+              class="list-group-item"
+              [ngClass]="{ 'list-group-item-success': repair?.completed }"
+            >
+              {{ repair.repair.name }}
+              <i *ngIf="repair.repair.description" class="bi bi-info-circle tip"
+                ><div>{{ repair.repair.description }}</div></i
+              >
+              <button
+                *ngIf="!transaction?.complete"
+                (click)="deleteRepair(repair._id)"
+                class="float-right btn btn-sm btn-outline-danger"
+              >
+                <i class="fa fa-times"></i>
+              </button>
+              <button
+                *ngIf="!transaction?.is_paid"
+                title="Complete or reopen a repair"
+                (click)="toggleCompleteRepair(repair._id)"
+                style="margin: auto 5px"
+                [ngClass]="{
+                  'btn-outline-primary': !repair.completed,
+                  'btn-success': repair.completed
+                }"
+                class="float-right btn btn-sm"
+              >
                 <i *ngIf="!repair.completed" class="fa fa-check"></i>
                 <i *ngIf="repair.completed" class="fas fa-sync-alt"></i>
               </button>
@@ -306,49 +541,86 @@
           </div>
         </div>
         <div class="col-md-4">
-          <app-add-item #addItemComponent *ngIf="!transaction?.is_paid" (chosenItem)="addItem($event)"
-            [employee]="transaction?.employee"></app-add-item>
+          <app-add-item
+            #addItemComponent
+            *ngIf="!transaction?.is_paid"
+            (chosenItem)="addItem($event)"
+            [employee]="transaction?.employee"
+          ></app-add-item>
           <!-- Item search trigger -->
-          <div class="btn-group custom-block" role="group" aria-label="Item Add Group">
-            <button type="button" class="btn btn-primary" (click)="triggerScanModal()">
+          <div
+            class="btn-group custom-block"
+            role="group"
+            aria-label="Item Add Group"
+          >
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="triggerScanModal()"
+            >
               <i class="fa fa-barcode"></i>
               Scan Item
             </button>
-            <button type="button" class="btn btn-secondary" (click)="triggerItemSearch()">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="triggerItemSearch()"
+            >
               <i class="fa fa-list"></i>
               Find Item
             </button>
           </div>
-          <div class="list-group my-2" *ngFor="let item of transaction?.items; let idx=index" class="list-group-item">
+          <div
+            class="list-group my-2"
+            *ngFor="let item of transaction?.items; let idx = index"
+            class="list-group-item"
+          >
             <a>
-              <strong>${{item.price}}</strong> {{item.item?.name || item.name_DEPRECATED}}
-              <button *ngIf="!transaction?.complete && !item.item?.managed" (click)="deleteItem(idx)"
-                class="float-right btn btn-sm btn-outline-danger"><i class="fa fa-times"></i></button>
+              <strong>${{ item.price }}</strong>
+              {{ item.item?.name || item.name_DEPRECATED }}
+              <button
+                *ngIf="!transaction?.complete && !item.item?.managed"
+                (click)="deleteItem(idx)"
+                class="float-right btn btn-sm btn-outline-danger"
+              >
+                <i class="fa fa-times"></i>
+              </button>
             </a>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card" style="height: auto">
             <div class="card-body">
-              <h4 class="card-title">
-                Subtotal
-              </h4>
+              <h4 class="card-title">Subtotal</h4>
             </div>
             <ul class="list-group list-group-flush">
-              <li *ngFor="let repair of transaction?.repairs" class="list-group-item">{{repair.repair.name}}
-                <span class="float-right">{{repair.repair.price}}</span>
+              <li
+                *ngFor="let repair of transaction?.repairs"
+                class="list-group-item"
+              >
+                {{ repair.repair.name }}
+                <span class="float-right">{{ repair?.price }}</span>
               </li>
-              <li *ngFor="let item of transaction?.items" class="list-group-item">{{item.item?.name || item.name_DEPRECATED}}
-                <span class="float-right">{{item.price}}</span>
+              <li
+                *ngFor="let item of transaction?.items"
+                class="list-group-item"
+              >
+                {{ item.item?.name || item.name_DEPRECATED }}
+                <span class="float-right">{{ item.price }}</span>
               </li>
             </ul>
             <div class="card-footer">
-              <h4 class="float-right">${{transaction?.total_cost}}</h4>
+              <h4 class="float-right">${{ transaction?.total_cost }}</h4>
             </div>
             <div class="card-footer">
-              <button *ngIf="!transaction?.is_paid" class="btn btn-outline-success float-right"
+              <button
+                *ngIf="!transaction?.is_paid"
+                class="btn btn-outline-success float-right"
                 [disabled]="!transaction?.complete"
-                [routerLink]="['/transactions', transaction?._id, 'checkout']">Checkout!</button>
+                [routerLink]="['/transactions', transaction?._id, 'checkout']"
+              >
+                Checkout!
+              </button>
             </div>
           </div>
         </div>
@@ -357,68 +629,141 @@
   </div>
 
   <div class="card mb-2">
-    <app-order-request-selector #orderRequestSelector [create_only]="false" [preset_transaction]="transaction"
-      (chosenRequest)="addOrderRequest($event)"></app-order-request-selector>
+    <app-order-request-selector
+      #orderRequestSelector
+      [create_only]="false"
+      [preset_transaction]="transaction"
+      (chosenRequest)="addOrderRequest($event)"
+    ></app-order-request-selector>
     <div class="card-body">
-      <button #completeDropdown *ngIf="!transaction?.complete && !emailLoading" [disabled]="!canComplete"
-        class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+      <button
+        #completeDropdown
+        *ngIf="!transaction?.complete && !emailLoading"
+        [disabled]="!canComplete"
+        class="btn btn-primary btn-lg dropdown-toggle"
+        type="button"
+        data-toggle="dropdown"
+      >
         <span class="fa fa-clipboard-check"></span>
         Complete
       </button>
       <div class="dropdown-menu">
-        <a class="dropdown-item" (click)="completeTransaction()"><span class="fa fa-envelope"></span> Complete and send
-          email</a>
+        <a class="dropdown-item" (click)="completeTransaction()"
+          ><span class="fa fa-envelope"></span> Complete and send email</a
+        >
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"><span class="fa fa-envelope-o"></span>
-          Complete without sending</a>
+        <a class="dropdown-item text-danger" (click)="completeWithoutEmail()"
+          ><span class="fa fa-envelope-o"></span> Complete without sending</a
+        >
       </div>
       <button *ngIf="emailLoading" class="btn btn-primary btn-lg">
         <span class="fa fa-cog loader"></span>
         Sending Email
       </button>
-      <button *ngIf="transaction?.complete && !transaction?.is_paid" (click)="reopenTransaction()"
-        class="btn btn-outline-warning btn-lg">
+      <button
+        *ngIf="transaction?.complete && !transaction?.is_paid"
+        (click)="reopenTransaction()"
+        class="btn btn-outline-warning btn-lg"
+      >
         Reopen
       </button>
-      <button *ngIf="transaction?.orderRequests?.length > 0" type="button" class="btn btn-danger btn-lg"
-        data-toggle="modal" data-target="#waitingOrderRequestsModal">
+      <button
+        *ngIf="transaction?.orderRequests?.length > 0"
+        type="button"
+        class="btn btn-danger btn-lg"
+        data-toggle="modal"
+        data-target="#waitingOrderRequestsModal"
+      >
         View Waiting Parts
       </button>
-      <button *ngIf="transaction?.orderRequests?.length == 0" type="button" class="btn btn-success btn-lg"
-        (click)="this.orderRequestSelectorComponent.launchOrderRequestSelector()"><i class="fas fa-plus"></i> Wait on
-        Part</button>
-      <button *ngIf="!transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()"
-        class="btn btn-outline-warning btn-lg">
+      <button
+        *ngIf="transaction?.orderRequests?.length == 0"
+        type="button"
+        class="btn btn-success btn-lg"
+        (click)="
+          this.orderRequestSelectorComponent.launchOrderRequestSelector()
+        "
+      >
+        <i class="fas fa-plus"></i> Wait on Part
+      </button>
+      <button
+        *ngIf="!transaction?.waiting_email && !transaction?.is_paid"
+        (click)="toggleWaitOnEmail()"
+        class="btn btn-outline-warning btn-lg"
+      >
         <i class="fa fa-envelope"></i>
         Wait on email
       </button>
-      <button *ngIf="transaction?.waiting_email && !transaction?.is_paid" (click)="toggleWaitOnEmail()"
-        class="btn btn-danger btn-lg">
+      <button
+        *ngIf="transaction?.waiting_email && !transaction?.is_paid"
+        (click)="toggleWaitOnEmail()"
+        class="btn btn-danger btn-lg"
+      >
         Waiting on email
       </button>
       <div class="dropdown d-inline-block">
-        <button class="btn btn-outline-warning btn-lg dropdown-toggle" type="button" id="dropdownMenuButton"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button
+          class="btn btn-outline-warning btn-lg dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
           Projects
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a *ngIf="transaction?.transaction_type != 'merch' && !transaction?.refurb && !transaction?.is_paid"
-            class="dropdown-item" (click)="toggleRefurb()">Mark Refurb</a>
-          <a *ngIf="transaction?.refurb && !transaction?.is_paid" class="dropdown-item" (click)="toggleRefurb()">Unmark
-            Refurb</a>
-          <a *ngIf="!transaction?.beerbike && !transaction?.is_paid" class="dropdown-item"
-            (click)="toggleBeerbike()">Mark Beer Bike</a>
-          <a *ngIf="transaction?.beerbike && !transaction?.is_paid" class="dropdown-item"
-            (click)="toggleBeerbike()">Unmark Beer Bike</a>
+          <a
+            *ngIf="
+              transaction?.transaction_type != 'merch' &&
+              !transaction?.refurb &&
+              !transaction?.is_paid
+            "
+            class="dropdown-item"
+            (click)="toggleRefurb()"
+            >Mark Refurb</a
+          >
+          <a
+            *ngIf="transaction?.refurb && !transaction?.is_paid"
+            class="dropdown-item"
+            (click)="toggleRefurb()"
+            >Unmark Refurb</a
+          >
+          <a
+            *ngIf="!transaction?.beerbike && !transaction?.is_paid"
+            class="dropdown-item"
+            (click)="toggleBeerbike()"
+            >Mark Beer Bike</a
+          >
+          <a
+            *ngIf="transaction?.beerbike && !transaction?.is_paid"
+            class="dropdown-item"
+            (click)="toggleBeerbike()"
+            >Unmark Beer Bike</a
+          >
         </div>
       </div>
 
-      <button *ngIf="!transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()"
-        class="btn btn-outline-warning btn-lg"><i class="fas fa-exclamation"></i></button>
-      <button *ngIf="transaction?.urgent && !transaction?.complete" (click)="toggleUrgent()"
-        class="btn btn-danger btn-lg"><i class="fas fa-exclamation"></i></button>
-      <button (click)="emailCustomer()" class="btn btn-outline-secondary btn-lg float-right"><span
-          class="fa fa-envelope"></span> Email customer</button>
+      <button
+        *ngIf="!transaction?.urgent && !transaction?.complete"
+        (click)="toggleUrgent()"
+        class="btn btn-outline-warning btn-lg"
+      >
+        <i class="fas fa-exclamation"></i>
+      </button>
+      <button
+        *ngIf="transaction?.urgent && !transaction?.complete"
+        (click)="toggleUrgent()"
+        class="btn btn-danger btn-lg"
+      >
+        <i class="fas fa-exclamation"></i>
+      </button>
+      <button
+        (click)="emailCustomer()"
+        class="btn btn-outline-secondary btn-lg float-right"
+      >
+        <span class="fa fa-envelope"></span> Email customer
+      </button>
     </div>
   </div>
 </div>

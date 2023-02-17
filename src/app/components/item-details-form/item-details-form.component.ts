@@ -44,6 +44,8 @@ export class ItemDetailsFormComponent implements OnInit {
   @Output() newItem = new EventEmitter<Item>();
   @Output() closeAll = new EventEmitter<String>();
 
+  @ViewChild("itemDetailsForm") itemDetailsForm: ElementRef;
+
   title = "Item Details";
 
   newItemForm = this.formBuilder.group({
@@ -74,11 +76,24 @@ export class ItemDetailsFormComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
 
+  ngOnInit() {
+    console.log("upc", this.upc);
+    this.newItemForm.patchValue({
+      upc: this.upc,
+    });
+    if (this.mode == "create") {
+      this.title = "Create New Item";
+    }
+  }
+
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
     // Extract changes to the input property by its name
     let change: SimpleChange = changes["close"];
-    
+
     this.newItemForm.reset();
+    this.newItemForm.controls.specifications = this.formBuilder.array([]);
+    this.newItemForm.controls.features = this.formBuilder.array([]);
+    this.itemDetailsForm.nativeElement.classList.remove("was-validated");
   }
 
   get specifications() {
@@ -87,13 +102,6 @@ export class ItemDetailsFormComponent implements OnInit {
 
   get features() {
     return this.newItemForm.controls["features"] as FormArray;
-  }
-
-  // get mapEntries() { return Array.from(this.item.specifications.entries()); }
-
-  closeItemModal() {
-    this.newItemForm.reset();
-    this.modalClose();
   }
 
   createEmpFormGroup() {
@@ -120,32 +128,8 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   async generateUPC() {
-    // 0-6 digit: 011111 for now
-    let newUPC = "011111";
-    // 7-11 digits: assigned by manufacturer (starting at 0, inc everytime an item is created)
-    let itemCode = await this.searchService.nextUPC();
-    // generate check digit
-    for (let i = 0; i < 5 - itemCode.length; i++) {
-      newUPC += "0";
-    }
-    newUPC += itemCode;
-
-    // https://support.honeywellaidc.com/s/article/How-is-the-UPC-A-check-digit-calculated
-    let checkDigit =
-      10 -
-      ((Array.from(newUPC)
-        .filter((ch, idx) => idx % 2 == 0)
-        .map((i) => parseInt(i))
-        .reduce((sum, curr) => sum + curr) *
-        3 +
-        Array.from(newUPC)
-          .filter((ch, idx) => (idx + 1) % 2 == 0)
-          .map((i) => parseInt(i))
-          .reduce((sum, curr) => sum + curr)) %
-        10);
-    if (checkDigit == 10) checkDigit = 0;
-    newUPC += checkDigit;
-
+    console.log("?");
+    let newUPC = await this.itemService.nextUPC();
     this.newItemForm.patchValue({
       upc: newUPC,
     });
@@ -220,7 +204,7 @@ export class ItemDetailsFormComponent implements OnInit {
         in_stock: this.newItemForm.controls["in_stock"].value,
       })
       .then((res) => {
-        this.newItemForm.reset();
+        this.resetForms();
         this.newItem.emit(res);
         console.log("item created", res);
 
@@ -229,7 +213,10 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   resetForms() {
+    this.itemDetailsForm.nativeElement.classList.remove("was-validated");
     this.newItemForm.reset();
+    this.newItemForm.controls.specifications = this.formBuilder.array([]);
+    this.newItemForm.controls.features = this.formBuilder.array([]);
     this.closeAll.emit("close!");
   }
 }

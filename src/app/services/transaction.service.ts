@@ -107,48 +107,36 @@ export class TransactionService {
     });
   }
 
-  updateCustomer(id: string, customer:Customer):Promise<any> {
+  updateCustomer(id: string, customer: Customer): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
       return this.http
-        .put(
-          `${this.backendUrl}/${id}/customer`,
-          { customer },
-          credentials
-        )
+        .put(`${this.backendUrl}/${id}/customer`, { customer }, credentials)
         .toPromise()
         .then((res) => this.transaction.next(res.json() as Transaction))
         .catch((err) => this.handleError(err));
-    })
+    });
   }
 
   updateStatus(id: String, status: String): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
       return this.http
-        .put(
-          `${this.backendUrl}/${id}/status`,
-          {status},
-          credentials
-        )
+        .put(`${this.backendUrl}/${id}/status`, { status }, credentials)
         .toPromise()
         .then((res) => this.transaction.next(res.json() as Transaction))
         .catch((err) => this.handleError(err));
-    })
+    });
   }
 
-  markForSale(id:String) {
+  markForSale(id: String) {
     return this.authService.getUserCredentials().then((credentials) => {
       return this.http
-        .put(
-          `${this.backendUrl}/${id}/forsale`,
-          {},
-          credentials
-        )
+        .put(`${this.backendUrl}/${id}/forsale`, {}, credentials)
         .toPromise()
         .then((res) => {
-          this.transaction.next(res.json() as Transaction)}
-          )
+          this.transaction.next(res.json() as Transaction);
+        })
         .catch((err) => this.handleError(err));
-    })
+    });
   }
 
   setComplete(id: string, complete: boolean): Promise<any> {
@@ -200,7 +188,7 @@ export class TransactionService {
   createTransaction(type: string, customer: Customer): Promise<any> {
     const data = {
       transaction_type: type,
-      customer
+      customer,
     };
     return this.authService.getUserCredentials().then((credentials) => {
       return this.http
@@ -269,16 +257,17 @@ export class TransactionService {
     });
   }
 
-  addItemToTransaction(transaction_id: string, item_id: string, custom_price?: number): Promise<any> {
+  addItemToTransaction(
+    transaction_id: string,
+    item_id: string,
+    custom_price?: number
+  ): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
       let query = { _id: item_id };
-      if (custom_price) query["custom_price"] = parseFloat(custom_price.toFixed(2));
+      if (custom_price)
+        query["custom_price"] = parseFloat(custom_price.toFixed(2));
       return this.http
-        .post(
-          `${this.backendUrl}/${transaction_id}/items`,
-          query,
-          credentials
-        )
+        .post(`${this.backendUrl}/${transaction_id}/items`, query, credentials)
         .toPromise()
         .then((res) => this.transaction.next(res.json()))
         .catch((err) => this.handleError(err));
@@ -313,7 +302,10 @@ export class TransactionService {
           credentials
         )
         .toPromise()
-        .then((res) => this.transaction.next(res.json()))
+        .then((res) => {
+          console.log("r", res);
+          this.transaction.next(res.json());
+        })
         .catch((err) => this.handleError(err));
     });
   }
@@ -345,14 +337,16 @@ export class TransactionService {
   }
 
   setBeerBike(transaction_id: string, beerbike: boolean): Promise<any> {
-      return this.authService.getUserCredentials().then((credentials) => {
-          return this.http
-            .put(`${this.backendUrl}/${transaction_id}/beerbike`, 
-                 { beerbike: beerbike },
-                 credentials)
-            .toPromise()
-            .then((res) => this.transaction.next(res.json()))
-            .catch((err) => this.handleError(err));
-      });
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http
+        .put(
+          `${this.backendUrl}/${transaction_id}/beerbike`,
+          { beerbike: beerbike },
+          credentials
+        )
+        .toPromise()
+        .then((res) => this.transaction.next(res.json()))
+        .catch((err) => this.handleError(err));
+    });
   }
 }
