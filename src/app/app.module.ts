@@ -46,7 +46,6 @@ import { NewBikeTransactionComponent } from './components/new-bike-transaction/n
 import { SearchCustomerComponent } from './components/search-customer/search-customer.component';
 import { PriceCheckComponent } from './components/price-check/price-check.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,

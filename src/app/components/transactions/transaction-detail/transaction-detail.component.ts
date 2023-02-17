@@ -68,6 +68,7 @@ export class TransactionDetailComponent implements OnInit {
         .then(() => {
           this.transactionService.transaction.subscribe(trans => {
             this.transaction = trans;
+            console.log("trans", this.transaction);
             if (this.transaction.description) {
               this.displayDescription = this.transaction.description.replace(/(\n)+/g, '<br />');
             }
@@ -190,6 +191,7 @@ export class TransactionDetailComponent implements OnInit {
       return false
     }
     for (const repair of this.transaction.repairs) {
+      console.log("repair", repair);
       if (!repair.completed) {
         return false;
       }

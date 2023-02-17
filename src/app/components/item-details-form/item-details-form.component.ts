@@ -83,12 +83,14 @@ export class ItemDetailsFormComponent implements OnInit {
       this.title = "Create New Item";
     }
   }
-  
+
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
     // Extract changes to the input property by its name
     let change: SimpleChange = changes["close"];
-    
+
     this.newItemForm.reset();
+    this.newItemForm.controls.specifications = this.formBuilder.array([]);
+    this.newItemForm.controls.features = this.formBuilder.array([]);
     this.itemDetailsForm.nativeElement.classList.remove("was-validated");
   }
 
@@ -108,6 +110,7 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   async generateUPC() {
+    console.log("?");
     let newUPC = await this.itemService.nextUPC();
     this.newItemForm.patchValue({
       upc: newUPC,
@@ -183,7 +186,7 @@ export class ItemDetailsFormComponent implements OnInit {
         in_stock: this.newItemForm.controls["in_stock"].value,
       })
       .then((res) => {
-        this.newItemForm.reset();
+        this.resetForms();
         this.newItem.emit(res);
         console.log("item created", res);
 
@@ -194,6 +197,8 @@ export class ItemDetailsFormComponent implements OnInit {
   resetForms() {
     this.itemDetailsForm.nativeElement.classList.remove("was-validated");
     this.newItemForm.reset();
+    this.newItemForm.controls.specifications = this.formBuilder.array([]);
+    this.newItemForm.controls.features = this.formBuilder.array([]);
     this.closeAll.emit("close!");
   }
 }
