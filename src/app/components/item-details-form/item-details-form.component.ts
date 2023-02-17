@@ -65,7 +65,7 @@ export class ItemDetailsFormComponent implements OnInit {
   categories = this.searchService.itemCategories1();
   categories2 = this.searchService.itemCategories2();
   categories3 = null;
-  viewspecs = []
+  viewspecs = [];
 
   brands = this.searchService.itemBrands();
 
@@ -75,16 +75,6 @@ export class ItemDetailsFormComponent implements OnInit {
     private itemService: ItemService,
     private authenticationService: AuthenticationService
   ) {}
-
-  ngOnInit() {
-    console.log("upc", this.upc);
-    this.newItemForm.patchValue({
-      upc: this.upc,
-    });
-    if (this.mode == "create") {
-      this.title = "Create New Item";
-    }
-  }
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
     // Extract changes to the input property by its name
@@ -115,16 +105,16 @@ export class ItemDetailsFormComponent implements OnInit {
     console.log("mode", this.mode);
     console.log("item", this.item);
     let json = JSON.stringify(this.item.specifications);
-    let specs = new Map(Object.entries(JSON.parse(json)))
-    this.viewspecs = Array.from(specs)
-    this.upc = this.item.upc
+    let specs = new Map(Object.entries(JSON.parse(json)));
+    this.viewspecs = Array.from(specs);
+    this.upc = this.item.upc;
     this.newItemForm.patchValue({
       upc: this.upc,
     });
     if (this.mode == "create") {
       this.title = "Create New Item";
     }
-    console.log(this.newItemForm)
+    console.log(this.newItemForm);
   }
 
   async generateUPC() {
