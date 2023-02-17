@@ -43,6 +43,8 @@ export class ItemDetailsFormComponent implements OnInit {
   @Output() newItem = new EventEmitter<Item>();
   @Output() closeAll = new EventEmitter<String>();
 
+  @ViewChild("itemDetailsForm") itemDetailsForm: ElementRef;
+
   title = "Item Details";
 
   newItemForm = this.formBuilder.group({
@@ -72,11 +74,22 @@ export class ItemDetailsFormComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
 
+  ngOnInit() {
+    console.log("upc", this.upc);
+    this.newItemForm.patchValue({
+      upc: this.upc,
+    });
+    if (this.mode == "create") {
+      this.title = "Create New Item";
+    }
+  }
+  
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
     // Extract changes to the input property by its name
     let change: SimpleChange = changes["close"];
     
     this.newItemForm.reset();
+    this.itemDetailsForm.nativeElement.classList.remove("was-validated");
   }
 
   get specifications() {
@@ -87,26 +100,11 @@ export class ItemDetailsFormComponent implements OnInit {
     return this.newItemForm.controls["features"] as FormArray;
   }
 
-  closeItemModal() {
-    this.newItemForm.reset();
-    this.modalClose();
-  }
-
   createEmpFormGroup() {
     return this.formBuilder.group({
       key: ["", Validators.required],
       value: ["", Validators.required],
     });
-  }
-
-  ngOnInit() {
-    console.log("upc", this.upc);
-    this.newItemForm.patchValue({
-      upc: this.upc,
-    });
-    if (this.mode == "create") {
-      this.title = "Create New Item";
-    }
   }
 
   async generateUPC() {
@@ -194,6 +192,7 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   resetForms() {
+    this.itemDetailsForm.nativeElement.classList.remove("was-validated");
     this.newItemForm.reset();
     this.closeAll.emit("close!");
   }

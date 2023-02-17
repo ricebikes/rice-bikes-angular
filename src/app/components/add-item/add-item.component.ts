@@ -46,6 +46,8 @@ export class AddItemComponent implements OnInit {
   @ViewChild("itemSearchModal") itemSearchModal: ElementRef;
   @ViewChild("searchButton") searchButton: ElementRef;
 
+  isAdmin = this.authenticationService.isAdmin;
+
   itemForm = this.formBuilder.group({
     name: null,
     brand: null,
@@ -64,34 +66,16 @@ export class AddItemComponent implements OnInit {
   addDialog = false;
   createItemFromUPC = false;
 
-  isAdmin = this.authenticationService.isAdmin;
-
   category1 = "";
   categories = this.searchService.itemCategories1();
   categories2 = this.searchService.itemCategories2();
   categories3 = null;
-
   brands = this.searchService.itemBrands();
 
   searchingForUPC = false;
   activeButton = "search";
-
   lastUPC = "";
   close = false;
-
-  setActive = function (buttonName) {
-    this.activeButton = buttonName;
-    if (buttonName == "search") this.addDialog = false;
-    else this.addDialog = true;
-  };
-
-  isActive = function (buttonName) {
-    return this.activeButton === buttonName;
-  };
-
-  scanToCreateItem = function () {
-    this.createItemFromUPC = true;
-  };
 
   constructor(
     private searchService: SearchService,
@@ -140,6 +124,20 @@ export class AddItemComponent implements OnInit {
       });
   }
 
+  setActive = function (buttonName) {
+    this.activeButton = buttonName;
+    if (buttonName == "search") this.addDialog = false;
+    else this.addDialog = true;
+  };
+
+  isActive = function (buttonName) {
+    return this.activeButton === buttonName;
+  };
+
+  scanToCreateItem = function () {
+    this.createItemFromUPC = true;
+  };
+  
   addItem(item: Item) {
     console.log("add item component called");
     this.scanData.reset();
