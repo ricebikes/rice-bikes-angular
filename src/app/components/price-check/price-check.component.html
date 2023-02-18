@@ -1,88 +1,86 @@
-<button #scanTrigger hidden type="button" class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
-  data-target="#priceCheckScanModal">FAKE BUTTON</button>
-<button #priceCheckTrigger hidden type="button" class="btn btn-outline-primary" data-toggle="modal" data-dismiss="modal"
-  data-target="#priceCheckModal">FAKE BUTTON</button>
-
+<button
+  #scanTrigger
+  hidden
+  type="button"
+  class="btn btn-outline-primary"
+  data-toggle="modal"
+  data-dismiss="modal"
+  data-target="#priceCheckScanModal"
+>
+  FAKE BUTTON
+</button>
+<button
+  #priceCheckTrigger
+  hidden
+  type="button"
+  class="btn btn-outline-primary"
+  data-toggle="modal"
+  data-dismiss="modal"
+  data-target="#priceCheckModal"
+>
+  FAKE BUTTON
+</button>
 
 <!--UPC scan trigger -->
-<div class="modal" id="priceCheckScanModal" tabindex="-1" role="dialog" aria-labelledby="scanModalLabel" aria-hidden="true">
+<div
+  class="modal"
+  #priceCheckScanModal
+  id="priceCheckScanModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="scanModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="scanModalTitle">Scan Item to Price Check</h5>
-      </div>
-      <div class="modal-body">
-        <label for="scanInput" hidden>Scan Input</label>
-        <input #scanInput id="scanInput" [formControl]="scanData" type="text" class="form-control"
-          (keyup.enter)="addByUPC()">
-        <p class="text-danger" [hidden]="!(scanData.invalid && scanData.errors.badUPC)">UPC not found</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- Price Check modal-->
-<div class="modal fade" id="priceCheckModal" tabindex="-1" role="dialog" aria-labelledby="priceCheckModal"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="priceCheckTitle">Item Price Check</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" *ngIf="priceCheckItem">
-        <div class="container">
-          <div class="row">
-            <div class="col-4">
-              <b>Price:</b>
-            </div>
-            <div class="col-8">
-              ${{priceCheckItem.standard_price}}
-            </div>
+      <!-- Price Check modal-->
+      <app-item-details-form
+        #itemModal
+        *ngIf="viewItemFromUPC"
+        id="itemModal"
+        [mode]=1
+        [item]="priceCheckItem"
+        (closeAll)="closeAndResetAll($event)"
+      ></app-item-details-form>
+      <div *ngIf="!viewItemFromUPC">
+        <div class="modal-header">
+          <h5 class="modal-title" id="scanModalTitle">
+            Scan Item to Price Check
+          </h5>
+        </div>
+        <div class="modal-body">
+          <label for="scanInput" hidden>Scan Input</label>
+          <input
+            autocomplete="off"
+            #scanInput
+            id="scanInput"
+            [formControl]="scanData"
+            type="text"
+            maxlength="20"
+            class="form-control"
+            (keyup.enter)="addByUPC()"
+          />
+          <div
+            [hidden]="!searchingForUPC"
+            role="alert"
+            class="alert alert-secondary load-msg"
+          >
+            <div class="loader"></div>
+            <small class="loading-text">searching for UPC . . .</small>
           </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Name:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.name}}
-            </div>
+          <div
+            class="alert alert-warning"
+            role="alert"
+            [hidden]="!(scanData.invalid && scanData.errors.unexpectedError)"
+          >
+            unexpected error...
           </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Brand:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.brand}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Specifications:</b>
-            </div>
-            <div class="col-8">
-              {{ priceCheckItem.specifications | json }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Category:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.category_1}} <span *ngIf="priceCheckItem.category_2">></span> {{priceCheckItem.category_2}}
-              <span *ngIf="priceCheckItem.category_3">></span> {{priceCheckItem.category_3}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>UPC:</b>
-            </div>
-            <div class="col-8">
-              {{priceCheckItem.upc}}
-            </div>
+          <div
+            class="alert alert-warning"
+            role="alert"
+            [hidden]="!(scanData.invalid && scanData.errors.badUPC)"
+          >
+            <small>UPC not found.</small>
           </div>
         </div>
       </div>

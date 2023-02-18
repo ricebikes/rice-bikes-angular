@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchService } from './services/search.service';
 import { AddRepairComponent } from './components/add-repair/add-repair.component';
 import { AddItemComponent} from './components/add-item/add-item.component';
-import { CreateNewItemComponent} from './components/create-new-item/create-new-item.component';
+import { ItemDetailsFormComponent} from './components/item-details-form/item-details-form.component';
 import { SearchTransactionComponent } from './components/search-transaction/search-transaction.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthenticationService } from './services/authentication.service';
@@ -46,7 +46,6 @@ import { NewBikeTransactionComponent } from './components/new-bike-transaction/n
 import { SearchCustomerComponent } from './components/search-customer/search-customer.component';
 import { PriceCheckComponent } from './components/price-check/price-check.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,7 +55,7 @@ import { PriceCheckComponent } from './components/price-check/price-check.compon
     NewBikeTransactionComponent,
     AddRepairComponent,
     AddItemComponent,
-    CreateNewItemComponent,
+    ItemDetailsFormComponent,
     SearchTransactionComponent,
     SearchCustomerComponent,
     LoginComponent,

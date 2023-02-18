@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Bike } from '../../../models/bike';
 import { Item } from '../../../models/item';
+import { ItemDetailsFormComponent } from '../../item-details-form/item-details-form.component';
 import { Customer } from '../../../models/customer';
 import { AddItemComponent } from '../../add-item/add-item.component';
 import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-selector/order-request-selector.component';
@@ -25,6 +26,7 @@ export class TransactionDetailComponent implements OnInit {
   @ViewChild('customPriceModalTrigger') customPriceModalButtonTrigger: ElementRef;
   @ViewChild('completeDropdown') completeDropdownButton: ElementRef;
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
+  @ViewChild('itemDetailsForm') itemDetailsForm: ItemDetailsFormComponent;
   @ViewChild('orderRequestSelector') orderRequestSelectorComponent: OrderRequestSelectorComponent;
 
   transaction: Transaction;
@@ -117,6 +119,18 @@ export class TransactionDetailComponent implements OnInit {
     this.addItemComponent.triggerScanModal();
   }
 
+  // triggerItemDetailsForm() {
+  //   this.itemDetailsForm.triggerItemDetailsForm();
+  // }
+
+  test(index: String) {
+    console.log('hey', index);
+    // open item details form
+    // this.itemDetailsForm.triggerItemDetailsForm();
+    // if admin, allow for editing
+
+  }
+  
   addBike(): void {
     const bike = new Bike();
     bike.make = this.bikeForm.value['bike-make'];
@@ -146,11 +160,13 @@ export class TransactionDetailComponent implements OnInit {
     this.transactionService.deleteRepairFromTransaction(this.transaction._id, repair_id);
   }
 
-  deleteItem(item_id: string): void {
-    this.transactionService.deleteItemFromTransaction(this.transaction._id, item_id);
+  // temp fix: if item is old (deprecated), item_id should be -1
+  deleteItem(item_idx: string): void {
+    this.transactionService.deleteItemFromTransaction(this.transaction._id, item_idx);
   }
 
   addItem(item: Item) {
+    console.log("transaction details add item called");
     this.transactionService.addItemToTransaction(this.transaction._id, item._id);
   }
 
