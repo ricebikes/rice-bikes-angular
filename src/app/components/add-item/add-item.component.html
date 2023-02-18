@@ -94,7 +94,7 @@
           #itemModal
           *ngIf="createItemFromUPC"
           id="itemModal"
-          [mode]="'create'"
+          [mode]=0
           [upc]="lastUPC"
           (newItem)="addItem($event)"
           (closeAll)="closeAndResetAll($event)"
@@ -209,7 +209,7 @@
                       (change)="onCat2Change($event)"
                     >
                       <option value="">Any</option>
-                      <option *ngFor="let category of categories2 | async">
+                      <option *ngFor="let category of categories2">
                         {{ category }}
                       </option>
                     </select>
@@ -222,7 +222,7 @@
                       formControlName="category_3"
                     >
                       <option value="">Any</option>
-                      <option *ngFor="let category of categories3 | async">
+                      <option *ngFor="let category of categories3">
                         {{ category }}
                       </option>
                     </select>
@@ -265,7 +265,7 @@
 
       <div class="scroll" *ngIf="isAdmin | async">
         <app-item-details-form
-          [mode]="'create'"
+          [mode]=0
           (newItem)="addItem($event)"
           [hidden]="!addDialog"
           [close]="close"

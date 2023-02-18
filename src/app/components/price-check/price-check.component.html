@@ -38,7 +38,7 @@
         #itemModal
         *ngIf="viewItemFromUPC"
         id="itemModal"
-        [mode]="'view'"
+        [mode]=1
         [item]="priceCheckItem"
         (closeAll)="closeAndResetAll($event)"
       ></app-item-details-form>

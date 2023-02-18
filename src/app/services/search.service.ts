@@ -132,7 +132,6 @@ export class SearchService {
   /**
    * Searches for item by given parameters, returns an observable of results
    * @param name: name of item
-   * @param category: item category (old)
    * @param category_1: item category 1
    * @param category_2: item category 2
    * @param category_3: item category 3
@@ -141,7 +140,6 @@ export class SearchService {
    */
   itemSearch(
     name?: string,
-    category?: string,
     category_1?: string,
     category_2?: string,
     category_3?: string,
@@ -153,18 +151,13 @@ export class SearchService {
     if (name) {
       params.set("name", name);
     }
-    if (category) {
-      params.set("category", category);
-    } // TO BE REMOVED IN ITEM MIGRATION
-    else {
-      if (category_3) {
-        params.set("category_1", category_1);
-      }
+    if (category_1) {
+      params.set("category_1", category_1);
       if (category_2) {
         params.set("category_2", category_2);
-      }
-      if (category_3) {
-        params.set("category_3", category_3);
+        if (category_3) {
+          params.set("category_3", category_3);
+        }
       }
     }
     if (brand) {
@@ -223,21 +216,9 @@ export class SearchService {
           new RequestOptions({ headers: SearchService.jwt_headers() })
         )
         .toPromise()
-        .then((res) => Object.keys(res.json()[cat1]));
+        .then((res) => Object.keys(res.json()[cat1]))
+        .catch((err) => null);
     }
-    // let category2 = [];
-    // console.log("null");
-    // return this.http.get(`${this.itemUrl}/categories`,
-    // new RequestOptions({headers: SearchService.jwt_headers() }))
-    // .toPromise()
-    // .then(res => {
-    //   for(let cat in this.itemCategories1()) {
-    //     category2.push(Object.keys(res.json()[cat]))
-    //   }
-    //   console.log(category2);
-    //   return null;
-    // })
-    // .catch(err=> this.handleError(err));
   }
 
   /**

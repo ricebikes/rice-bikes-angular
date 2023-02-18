@@ -36,7 +36,7 @@ export class ItemDetailsFormComponent implements OnInit {
   @Input("employee") employee: boolean;
   @Input("upc") upc: string;
   @Input() modalClose: () => void;
-  @Input("mode") mode: string;
+  @Input("mode") mode: number;
   @Input("close") close: boolean;
   @Input("item") item: Item;
 
@@ -45,6 +45,8 @@ export class ItemDetailsFormComponent implements OnInit {
   @Output() closeAll = new EventEmitter<String>();
 
   @ViewChild("itemDetailsForm") itemDetailsForm: ElementRef;
+  @ViewChild("inStock") inStock: ElementRef;
+  @ViewChild("UPC") UPCinput: ElementRef;
 
   title = "Item Details";
 
@@ -63,9 +65,10 @@ export class ItemDetailsFormComponent implements OnInit {
   });
 
   categories = this.searchService.itemCategories1();
-  categories2 = this.searchService.itemCategories2();
+  categories2 = null;
   categories3 = null;
   viewspecs = [];
+  viewfeatures = [];
 
   brands = this.searchService.itemBrands();
 
@@ -83,6 +86,8 @@ export class ItemDetailsFormComponent implements OnInit {
     this.newItemForm.reset();
     this.newItemForm.controls.specifications = this.formBuilder.array([]);
     this.newItemForm.controls.features = this.formBuilder.array([]);
+    this.categories2 = null;
+    this.categories3 = null;
     this.itemDetailsForm.nativeElement.classList.remove("was-validated");
   }
 
@@ -101,36 +106,48 @@ export class ItemDetailsFormComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    console.log("mode", this.mode);
-    console.log("item", this.item);
-    let json = JSON.stringify(this.item.specifications);
-    let specs = new Map(Object.entries(JSON.parse(json)));
-    this.viewspecs = Array.from(specs);
-    this.upc = this.item.upc;
+  async ngOnInit() {
+    console.log(this.newItemForm.controls)
+    if(this.item) {
+      let json = JSON.stringify(this.item.specifications);
+      let specs = new Map(Object.entries(JSON.parse(json)));
+      this.viewspecs = Array.from(specs);
+      this.viewfeatures = this.item.features;
+      this.categories2 = await this.searchService.itemCategories2(this.item.category_1);
+      if(this.categories2) {
+        this.categories3 = await this.searchService.itemCategories3(this.item.category_1, this.item.category_2);
+      }
+    }
     this.newItemForm.patchValue({
-      upc: this.upc,
+      upc: this.upc ? this.upc : (this.item && this.item.upc),
+      name: this.item && this.item.name,
+      brand: this.item && this.item.brand,
+      standard_price: this.item && this.item.standard_price,
+      wholesale_cost: this.item && this.item.wholesale_cost,
+      in_stock: this.item && this.item.in_stock,
+      category_1: this.item && this.item.category_1,
+      category_2: this.item && this.item.category_2,
+      category_3: this.item && this.item.category_3,
     });
-    if (this.mode == "create") {
+    if (this.mode == 0) {
       this.title = "Create New Item";
     }
-    console.log(this.newItemForm);
   }
 
   async generateUPC() {
-    console.log("?");
     let newUPC = await this.itemService.nextUPC();
     this.newItemForm.patchValue({
       upc: newUPC,
     });
   }
 
-  onCat1Change(e) {
-    this.categories2 = this.searchService.itemCategories2(e.target.value);
+  async onCat1Change(e) {
+    this.categories2 = await this.searchService.itemCategories2(e.target.value);
+    this.categories3 = null;
   }
 
-  onCat2Change(e) {
-    this.categories3 = this.searchService.itemCategories3(
+  async onCat2Change(e) {
+    this.categories3 = await this.searchService.itemCategories3(
       this.newItemForm.controls["category_1"].value,
       e.target.value
     );
@@ -179,7 +196,7 @@ export class ItemDetailsFormComponent implements OnInit {
         category_1: this.newItemForm.controls["category_1"].value,
         category_2: this.newItemForm.controls["category_2"].value,
         category_3: this.newItemForm.controls["category_3"].value,
-        brand: this.newItemForm.controls["brand"].value,
+        brand: this.newItemForm.controls["brand"].value.toUpperCase(),
         standard_price: this.newItemForm.controls["standard_price"].value,
         wholesale_cost: this.newItemForm.controls["wholesale_cost"].value,
         specifications: this.newItemForm.controls[
@@ -196,15 +213,18 @@ export class ItemDetailsFormComponent implements OnInit {
       .then((res) => {
         this.resetForms();
         this.newItem.emit(res);
-        console.log("item created", res);
-
-        // add new item to transaction
       });
+  }
+
+  setMode(mode: number) {
+    this.mode = mode;
   }
 
   resetForms() {
     this.itemDetailsForm.nativeElement.classList.remove("was-validated");
     this.newItemForm.reset();
+    this.categories2 = null;
+    this.categories3 = null;
     this.newItemForm.controls.specifications = this.formBuilder.array([]);
     this.newItemForm.controls.features = this.formBuilder.array([]);
     this.closeAll.emit("close!");

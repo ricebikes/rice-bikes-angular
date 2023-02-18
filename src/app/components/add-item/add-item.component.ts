@@ -66,10 +66,10 @@ export class AddItemComponent implements OnInit {
   addDialog = false;
   createItemFromUPC = false;
 
-  category1 = "";
   categories = this.searchService.itemCategories1();
-  categories2 = this.searchService.itemCategories2();
+  categories2 = null;
   categories3 = null;
+
   brands = this.searchService.itemBrands();
 
   searchingForUPC = false;
@@ -110,7 +110,6 @@ export class AddItemComponent implements OnInit {
         return formData
           ? this.searchService.itemSearch(
               formData.name,
-              null,
               formData.category_1,
               formData.category_2,
               formData.category_3,
@@ -149,17 +148,20 @@ export class AddItemComponent implements OnInit {
     return this.searchingForUPC;
   }
 
-  onCat1Change(e) {
-    this.category1 = e.target.value;
-    this.categories2 = this.searchService.itemCategories2(e.target.value);
+  async onCat1Change(e) {
+    this.categories2 = await this.searchService.itemCategories2(e.target.value);
+    this.categories3 = null;
+    console.log(this.categories2);
   }
 
-  onCat2Change(e) {
-    this.categories3 = this.searchService.itemCategories3(
-      this.category1,
+  async onCat2Change(e) {
+    this.categories3 = await this.searchService.itemCategories3(
+      this.itemForm.controls["category_1"].value,
       e.target.value
     );
+    console.log(this.categories3);
   }
+
   /**
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
@@ -209,6 +211,8 @@ export class AddItemComponent implements OnInit {
     this.setActive("search");
     this.createItemFromUPC = false;
     this.itemForm.reset();
+    this.categories2 = null;
+    this.categories3 = null;
     this.searchButton.nativeElement.click();
     this.resetUPC();
   }

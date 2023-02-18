@@ -512,7 +512,8 @@
               class="list-group-item"
               [ngClass]="{ 'list-group-item-success': repair?.completed }"
             >
-              {{ repair.repair.name }}
+              <strong>${{ repair.price }} </strong
+              >{{ repair.repair.name }}
               <i *ngIf="repair.repair.description" class="bi bi-info-circle tip"
                 ><div>{{ repair.repair.description }}</div></i
               >
