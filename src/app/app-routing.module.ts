@@ -10,7 +10,7 @@ import {AuthComponent} from './components/auth/auth.component';
 import {AdminUsersComponent} from './components/admin-users/admin-users.component';
 import {CheckoutComponent} from './components/transactions/transaction-detail/checkout/checkout.component';
 import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.component';
-// import {AdminItemsComponent} from './components/admin-items/admin-items.component';
+import {AdminItemsComponent} from './components/admin-items/admin-items.component';
 import {OrdersComponent} from './components/orders/orders.component';
 import {NewOrderComponent} from './components/orders/new-order/new-order.component';
 // import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
@@ -91,8 +91,7 @@ const routes: Routes = [
       },
       {
         path: 'items',
-        // component: AdminItemsComponent
-        component: LoginComponent
+        component: AdminItemsComponent
       },
       {
         path: 'analytics',

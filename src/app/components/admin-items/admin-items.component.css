@@ -1,3 +1,8 @@
+tbody tr:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
 .item-list {
   width: 40%;
   margin: 0 auto;

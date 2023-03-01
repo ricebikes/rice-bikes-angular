@@ -29,7 +29,7 @@ import { AdminService } from './services/admin.service';
 import { CheckoutComponent } from './components/transactions/transaction-detail/checkout/checkout.component';
 import { AdminRepairsComponent } from './components/admin-repairs/admin-repairs.component';
 import { RepairService } from './services/repair.service';
-// import { AdminItemsComponent } from './components/admin-items/admin-items.component';
+import { AdminItemsComponent } from './components/admin-items/admin-items.component';
 import { ItemService } from './services/item.service';
 import { UserTrackerComponent } from './components/user-tracker/user-tracker.component';
 import { UserIdleModule } from 'angular-user-idle/user-idle.module';
@@ -67,7 +67,7 @@ import { PriceCheckComponent } from './components/price-check/price-check.compon
     AnalyticsComponent,
     CheckoutComponent,
     AdminRepairsComponent,
-    // AdminItemsComponent,
+    AdminItemsComponent,
     UserTrackerComponent,
     OrdersComponent,
     // OrderDetailComponent,
