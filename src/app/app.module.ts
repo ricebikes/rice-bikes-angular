@@ -47,6 +47,8 @@ import { NewBikeTransactionComponent } from "./components/new-bike-transaction/n
 import { SearchCustomerComponent } from "./components/search-customer/search-customer.component";
 import { PriceCheckComponent } from "./components/price-check/price-check.component";
 
+import { NgxBarcodeModule } from "ngx-barcode";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -90,6 +92,7 @@ import { PriceCheckComponent } from "./components/price-check/price-check.compon
       timeout: user_timeout,
       ping: 120,
     }),
+    NgxBarcodeModule,
     ReactiveFormsModule,
   ],
   providers: [

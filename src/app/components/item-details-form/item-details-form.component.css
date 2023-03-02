@@ -42,3 +42,7 @@ form button {
   background-image: none; /* remove invalid icon on the right of the input */
   padding-right: .75rem; /* taken from bootstrap .form-control class to reset padding */
 }
+
+.item-details-form-footer {
+  justify-content: space-between;
+}

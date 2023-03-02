@@ -1,14 +1,33 @@
 <div class="modal-header">
   <h5 class="modal-title">{{ title }}</h5>
-  <button
-    (click)="resetForms()"
-    type="button"
-    class="close"
-    data-dismiss="modal"
-    aria-label="Close"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
+  <div>
+    <button [hidden]="mode != 1" (click)="print()" class="btn btn-sm btn-outline-dark">
+      <i class="bi bi-printer"></i> Barcode
+    </button>
+    <button
+      (click)="resetForms()"
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div [hidden]="'true'" id="print-section">
+    <ngx-barcode
+      [bc-element-type]="elementType"
+      [bc-value]="item && item.upc"
+      [bc-format]="format"
+      [bc-width]="width"
+      [bc-height]="height"
+      [bc-display-value]="displayValue"
+      [bc-font]="font"
+      [bc-text-margin]="textMargin"
+      [bc-font-size]="fontSize"
+      [bc-margin]="margin"
+    ></ngx-barcode>
+  </div>
 </div>
 <div id="create-item-body" class="modal-body item-details-form">
   <div>
@@ -324,11 +343,7 @@
   >
     Create Item
   </button>
-  <button
-    class="btn btn-primary"
-    (click)="setMode(2)"
-    *ngIf="mode == 1"
-  >
+  <button class="btn btn-primary" (click)="setMode(2)" *ngIf="mode == 1">
     Edit Item
   </button>
   <button class="btn btn-primary" (click)="validate(true)" *ngIf="mode == 2">

@@ -12,8 +12,9 @@
 <div class="container" id="item-search">
   <div style="display: flex; justify-content: space-between">
     <h5>Item Search</h5>
-    <button class="btn btn-primary" (click)="triggerCreateItem()">Create Item</button>
-    
+    <button class="btn btn-primary" (click)="triggerCreateItem()">
+      Create Item
+    </button>
   </div>
   <app-item-search-modal
     (results)="setItems($event)"
@@ -35,7 +36,7 @@
         <app-item-details-form
           #itemModal
           id="itemModal"
-          [mode]=itemModalMode
+          [mode]="itemModalMode"
           [item]="chosenItem"
           (newItem)="addItem($event)"
           (editItem)="refreshItem($event)"

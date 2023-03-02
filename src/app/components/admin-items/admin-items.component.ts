@@ -74,6 +74,7 @@ export class AdminItemsComponent implements OnInit {
     // enable item-details-form modal in edit mode and fill the values with chosenItem
     this.chosenItem = item;
     this.chosenIdx = idx;
+    this.itemModalMode = 1;
     this.triggerItemDetailsModal();
   }
 

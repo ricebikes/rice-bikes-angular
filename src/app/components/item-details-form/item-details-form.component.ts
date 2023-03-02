@@ -73,6 +73,35 @@ export class ItemDetailsFormComponent implements OnInit {
 
   brands = this.searchService.itemBrands();
 
+  /** UPC TEST */
+  elementType = "svg";
+  format = "UPC";
+  width = 2;
+  height = 60;
+  displayValue = true;
+  font = "monospace";
+  textMargin = 2;
+  fontSize = 20;
+  margin = 5;
+
+  print(): void {
+    let printContents, popupWin;
+    printContents = document.getElementById("print-section").innerHTML;
+    var mywindow = window.open("", "PRINT", "height=400,width=600");
+
+    mywindow.document.write("<html><body >");
+    mywindow.document.write(printContents);
+    mywindow.document.write(
+      "<div style='display: flex'><p style='margin: 0px; margin-left: 110px; margin-top: 5px'>RICE BIKES</p><img style='width: 32px' src='../../assets/img/favicon-96x96.png'/></div></body></html>"
+    );
+
+    mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); // necessary for IE >= 10*/
+
+    mywindow.print();
+    // window.print();
+  }
+
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
