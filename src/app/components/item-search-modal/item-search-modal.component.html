@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col">
+    <!-- Form column-->
+    <form autocomplete="off" [formGroup]="itemForm" (change)="onChange()">
+      <!-- first row of form elements-->
+      <div class="form-row">
+        <div class="form-group col-3">
+          <label for="nameInput">Name</label>
+          <input
+            #nameInput
+            type="text"
+            class="form-control"
+            id="nameInput"
+            formControlName="name"
+          />
+        </div>
+        <div class="form-group col-2">
+          <label for="brandSelect">Brand</label>
+          <select class="form-control" id="brandSelect" formControlName="brand">
+            <option value="">Any</option>
+            <option *ngFor="let brand of brands | async">
+              {{ brand }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-2">
+          <label for="category1Select">Category 1</label>
+          <select
+            class="form-control"
+            id="category1Select"
+            formControlName="category_1"
+            (change)="onCat1Change($event)"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let category of categories | async">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-2">
+          <label for="category2Select">Category 2</label>
+          <select
+            class="form-control"
+            id="category2Select"
+            formControlName="category_2"
+            (change)="onCat2Change($event)"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let category of categories2">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-2">
+          <label for="category3Select">Category 3</label>
+          <select
+            class="form-control"
+            id="category3Select"
+            formControlName="category_3"
+          >
+            <option value="">Any</option>
+            <option *ngFor="let category of categories3">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-1">
+          <label for="inStock"></label>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="flexCheckDefault"
+              (click)="toggleInStock()"
+            />
+            <label class="form-check-label" for="flexCheckDefault">
+              In Stock
+            </label>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -10,7 +10,15 @@
 </button>
 
 <div class="container" id="item-search">
-  <div class="in_stock">In Stock ?</div>
+  <div style="display: flex; justify-content: space-between">
+    <h5>Item Search</h5>
+    <button class="btn btn-primary" (click)="triggerCreateItem()">Create Item</button>
+    
+  </div>
+  <app-item-search-modal
+    (results)="setItems($event)"
+    (checked)="toggleCheck($event)"
+  ></app-item-search-modal>
 </div>
 <div
   class="modal fade"
@@ -27,8 +35,10 @@
         <app-item-details-form
           #itemModal
           id="itemModal"
-          [mode]="0"
+          [mode]=itemModalMode
+          [item]="chosenItem"
           (newItem)="addItem($event)"
+          (editItem)="refreshItem($event)"
           (closeAll)="closeAndResetAll($event)"
         ></app-item-details-form>
       </div>
@@ -46,12 +56,17 @@
         <th scope="col">Brand</th>
         <th scope="col">Sale Price</th>
         <th scope="col">Wholesale Cost</th>
+        <th *ngIf="showInStock" scope="col">In Stock</th>
         <th></th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of items" (click)="editItem(item)">
+      <tr
+        [hidden]="showInStock"
+        *ngFor="let item of items; let i = index"
+        (click)="editItem(item, i)"
+      >
         <td>{{ item.name }}</td>
         <td>{{ item.category_1 }}</td>
         <td>{{ item.category_2 }}</td>
@@ -59,6 +74,20 @@
         <td>{{ item.brand }}</td>
         <td>${{ item.standard_price }}</td>
         <td>${{ item.wholesale_cost }}</td>
+      </tr>
+      <tr
+        [hidden]="!showInStock"
+        *ngFor="let item of inStockItems; let i = index"
+        (click)="editItem(item, i)"
+      >
+        <td>{{ item.name }}</td>
+        <td>{{ item.category_1 }}</td>
+        <td>{{ item.category_2 }}</td>
+        <td>{{ item.category_3 }}</td>
+        <td>{{ item.brand }}</td>
+        <td>${{ item.standard_price }}</td>
+        <td>${{ item.wholesale_cost }}</td>
+        <td>{{ item.in_stock }}</td>
       </tr>
     </tbody>
   </table>

@@ -101,6 +101,7 @@ export class AddItemComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("ngOnInit");
     // watch form for changes, and search when it does
     this.itemResults = this.itemForm.valueChanges
       .debounceTime(200) // wait 200ms between changes

@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from "@angular/core";
 import { ItemService } from "../../services/item.service";
 import { Item } from "../../models/item";
 import { FormBuilder, Validators } from "@angular/forms";
@@ -15,36 +21,45 @@ export class AdminItemsComponent implements OnInit {
   constructor(
     private itemService: ItemService,
     private formBuilder: FormBuilder,
-    private searchService: SearchService
-  ) {}
+    private searchService: SearchService,
+    private renderer: Renderer2
+  ) {
+    this.renderer.listen("window", "click", (e: Event) => {
+      if (e.target == this.itemDetailsModal.nativeElement) {
+        this.closeAndResetAll("clicked out of modal");
+      }
+    });
+  }
 
   @ViewChild("itemDetailsModal") itemDetailsModal: ElementRef;
   @ViewChild("formTrigger") formTrigger: ElementRef;
 
-  clicked: boolean;
-
-  newItemForm = this.formBuilder.group({
-    name: ["", Validators.required],
-    brand: ["", Validators.required],
-    standard_price: ["", Validators.required],
-    upc: ["", [Validators.required, Validators.pattern("[0-9]+")]],
-    category_1: ["Any", Validators.required],
-    category_2: "",
-    category_3: "",
-    wholesale_cost: ["", Validators.required],
-    specifications: this.formBuilder.array([]),
-    features: this.formBuilder.array([]),
-    in_stock: ["", Validators.required],
-  });
-
+  itemModalMode = 1;
+  chosenItem: Item;
+  showInStock: boolean = false;
+  chosenIdx: number;
+  inStockItems: Item[];
   items: Item[];
   categories = this.searchService.itemCategories1();
   brands = this.searchService.itemBrands();
 
+  closeAndResetAll(message: string) {
+    console.log("emitted", message, "from item details form component");
+  }
+
   ngOnInit() {
-    this.itemService
-      .getItems()
-      .then((res) => (this.items = this.sortItems(res)));
+    this.itemService.getItems().then((res) => {
+      this.items = this.sortItems(res);
+      this.inStockItems = this.items.filter(
+        (i) => i.in_stock && i.in_stock > 0
+      );
+    });
+  }
+
+  setItems(items: Item[]) {
+    this.items = this.sortItems(items);
+    this.inStockItems = items.filter((i) => i.in_stock && i.in_stock > 0);
+    console.log("in stock items", this.inStockItems);
   }
 
   /**
@@ -55,52 +70,33 @@ export class AdminItemsComponent implements OnInit {
     return items.reverse();
   }
 
-  /**
-   * Submits the item creation form, and creates the item
-   */
-  submitItemCreateForm() {
-    if (this.newItemForm.invalid) {
-      return;
-    }
-    this.itemService
-      .createItem({
-        _id: "",
-        name: this.newItemForm.controls["name"].value,
-        upc: this.newItemForm.controls["upc"].value,
-        category_1: this.newItemForm.controls["category_1"].value,
-        category_2: this.newItemForm.controls["category_2"].value,
-        category_3: this.newItemForm.controls["category_3"].value,
-        brand: this.newItemForm.controls["brand"].value.toUpperCase(),
-        standard_price: this.newItemForm.controls["standard_price"].value,
-        wholesale_cost: this.newItemForm.controls["wholesale_cost"].value,
-        specifications: this.newItemForm.controls[
-          "specifications"
-        ].value.reduce(function (map, obj) {
-          map[obj.key] = obj.value;
-          return map;
-        }, {}),
-        features: this.newItemForm.controls["features"].value.map(
-          (obj) => obj.value
-        ),
-        in_stock: this.newItemForm.controls["in_stock"].value,
-      })
-      .then((res) => {
-        // reload the item list
-        this.items.unshift(res);
-        this.newItemForm.reset();
-      });
+  editItem(item, idx) {
+    // enable item-details-form modal in edit mode and fill the values with chosenItem
+    this.chosenItem = item;
+    this.chosenIdx = idx;
+    this.triggerItemDetailsModal();
   }
 
-  editItem(item) {
-    // enable item-details-form modal in edit mode
-    console.log("opening item details form", item);
-    this.clicked = !this.clicked;
-    console.log(this.clicked);
+  refreshItem(item: Item) {
+    // replace the item at index this.idx with the newly updated item
+    if (this.showInStock) {
+      this.inStockItems[this.chosenIdx] = item;
+    } else this.items[this.chosenIdx] = item;
+  }
+
+  toggleCheck(checked: boolean) {
+    console.log("checked", checked);
+    this.showInStock = checked;
+    this.inStockItems = this.items.filter((i) => i.in_stock && i.in_stock > 0);
+    console.log(this.inStockItems);
+  }
+
+  triggerCreateItem() {
+    this.itemModalMode = 0;
     this.triggerItemDetailsModal();
   }
 
   triggerItemDetailsModal() {
-    console.log("opening item details form");
     this.formTrigger.nativeElement.click();
   }
 }
