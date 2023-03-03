@@ -34,7 +34,7 @@
     <div class="modal-content">
       <div class="scroll">
         <app-item-details-form
-          #itemModal
+          #itemDetailsForm
           id="itemModal"
           [mode]="itemModalMode"
           [item]="chosenItem"
@@ -63,32 +63,71 @@
       </tr>
     </thead>
     <tbody>
-      <tr
-        [hidden]="showInStock"
-        *ngFor="let item of items; let i = index"
-        (click)="editItem(item, i)"
-      >
-        <td>{{ item.name }}</td>
-        <td>{{ item.category_1 }}</td>
-        <td>{{ item.category_2 }}</td>
-        <td>{{ item.category_3 }}</td>
-        <td>{{ item.brand }}</td>
-        <td>${{ item.standard_price }}</td>
-        <td>${{ item.wholesale_cost }}</td>
+      <tr [hidden]="showInStock" *ngFor="let item of items; let i = index">
+        <td (click)="editItem(item, i)">{{ item.name }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_1 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_2 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_3 }}</td>
+        <td (click)="editItem(item, i)">{{ item.brand }}</td>
+        <td (click)="editItem(item, i)">${{ item.standard_price }}</td>
+        <td (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
+        <td>
+          <div class="dropdown">
+            <button
+              class="btn"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              (click)="openItemMenu(item)"
+            >
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" (click)="disableItem()">Disable</a>
+              <a class="dropdown-item" (click)="print()"
+                >Print barcode</a
+              >
+            </div>
+          </div>
+        </td>
       </tr>
+      <!-- TODO: merge these two tables -->
       <tr
         [hidden]="!showInStock"
         *ngFor="let item of inStockItems; let i = index"
-        (click)="editItem(item, i)"
       >
-        <td>{{ item.name }}</td>
-        <td>{{ item.category_1 }}</td>
-        <td>{{ item.category_2 }}</td>
-        <td>{{ item.category_3 }}</td>
-        <td>{{ item.brand }}</td>
-        <td>${{ item.standard_price }}</td>
-        <td>${{ item.wholesale_cost }}</td>
-        <td>{{ item.in_stock }}</td>
+        <td (click)="editItem(item, i)">{{ item.name }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_1 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_2 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_3 }}</td>
+        <td (click)="editItem(item, i)">{{ item.brand }}</td>
+        <td (click)="editItem(item, i)">${{ item.standard_price }}</td>
+        <td (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
+        <td (click)="editItem(item, i)">${{ item.in_stock }}</td>
+
+        <td>
+          <div class="dropdown">
+            <button
+              class="btn"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              (click)="openItemMenu()"
+            >
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" (click)="disableItem()">Disable</a>
+              <a class="dropdown-item" (click)="print()"
+                >Print barcode</a
+              >
+            </div>
+          </div>
+        </td>
       </tr>
     </tbody>
   </table>

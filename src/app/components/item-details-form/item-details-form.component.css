@@ -46,3 +46,15 @@ form button {
 .item-details-form-footer {
   justify-content: space-between;
 }
+
+@media print {
+  :not(.print) {
+    visibility: hidden;
+  }
+}
+
+@media print {
+  .print {
+    visibility: visible
+  }
+}

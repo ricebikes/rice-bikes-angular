@@ -1,7 +1,30 @@
+<!--USED FOR BARCODE PRINTING OF THIS ITEM-->
+<div [hidden]="'true'" id="print-section">
+  <div class="print" style="width: 100%; height: 100%">
+    <ngx-barcode
+      style="position: relative; right: 25px; z-index: 1"
+      [bc-element-type]="elementType"
+      [bc-value]="barcodeVal ? barcodeVal : item && item.upc"
+      [bc-format]="format"
+      [bc-width]="width"
+      [bc-height]="height"
+      [bc-display-value]="displayValue"
+      [bc-font]="font"
+      [bc-text-margin]="textMargin"
+      [bc-font-size]="fontSize"
+      [bc-margin]="margin"
+    ></ngx-barcode>
+  </div>
+</div>
+
 <div class="modal-header">
-  <h5 class="modal-title">{{ title }}</h5>
+  <h5 class="modal-title">Item Details</h5>
   <div>
-    <button [hidden]="mode != 1" (click)="print()" class="btn btn-sm btn-outline-dark">
+    <button
+      [hidden]="mode != 1"
+      (click)="print()"
+      class="btn btn-sm btn-outline-dark"
+    >
       <i class="bi bi-printer"></i> Barcode
     </button>
     <button
@@ -13,20 +36,6 @@
     >
       <span aria-hidden="true">&times;</span>
     </button>
-  </div>
-  <div [hidden]="'true'" id="print-section">
-    <ngx-barcode
-      [bc-element-type]="elementType"
-      [bc-value]="item && item.upc"
-      [bc-format]="format"
-      [bc-width]="width"
-      [bc-height]="height"
-      [bc-display-value]="displayValue"
-      [bc-font]="font"
-      [bc-text-margin]="textMargin"
-      [bc-font-size]="fontSize"
-      [bc-margin]="margin"
-    ></ngx-barcode>
   </div>
 </div>
 <div id="create-item-body" class="modal-body item-details-form">
@@ -78,7 +87,7 @@
             >Retail Price<span *ngIf="mode != 1">*</span></label
           >
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item && item.standard_price }}
+            ${{ item && item.standard_price }}
           </p>
           <input
             *ngIf="mode != 1"
@@ -97,7 +106,7 @@
             >Wholesale Price<span *ngIf="mode != 1">*</span></label
           >
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item && item.wholesale_cost }}
+            ${{ item && item.wholesale_cost }}
           </p>
           <input
             *ngIf="mode != 1"

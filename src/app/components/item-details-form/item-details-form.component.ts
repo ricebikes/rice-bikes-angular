@@ -49,8 +49,6 @@ export class ItemDetailsFormComponent implements OnInit {
   @ViewChild("inStock") inStock: ElementRef;
   @ViewChild("UPC") UPCinput: ElementRef;
 
-  title = "Item Details";
-
   newItemForm = this.formBuilder.group({
     name: ["", Validators.required],
     brand: ["", Validators.required],
@@ -73,11 +71,11 @@ export class ItemDetailsFormComponent implements OnInit {
 
   brands = this.searchService.itemBrands();
 
-  /** UPC TEST */
+  barcodeVal = null;
   elementType = "svg";
   format = "UPC";
   width = 2;
-  height = 60;
+  height = 100;
   displayValue = true;
   font = "monospace";
   textMargin = 2;
@@ -87,19 +85,18 @@ export class ItemDetailsFormComponent implements OnInit {
   print(): void {
     let printContents, popupWin;
     printContents = document.getElementById("print-section").innerHTML;
-    var mywindow = window.open("", "PRINT", "height=400,width=600");
+    var mywindow = window.open("", "PRINT");
 
-    mywindow.document.write("<html><body >");
-    mywindow.document.write(printContents);
     mywindow.document.write(
-      "<div style='display: flex'><p style='margin: 0px; margin-left: 110px; margin-top: 5px'>RICE BIKES</p><img style='width: 32px' src='../../assets/img/favicon-96x96.png'/></div></body></html>"
+      "<html><body style='margin: 0'><div class='print' style='display: flex; align-items:center'><img style='z-index: 2; width: 75px; height: 75px' src='../../assets/img/favicon-96x96.png'/>"
     );
+    mywindow.document.write(printContents);
+    mywindow.document.write("</div></body></html>");
 
     mywindow.document.close(); // necessary for IE >= 10
     mywindow.focus(); // necessary for IE >= 10*/
 
     mywindow.print();
-    // window.print();
   }
 
   constructor(
@@ -110,6 +107,7 @@ export class ItemDetailsFormComponent implements OnInit {
   ) {}
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
+    if (this.mode != 0) this.fillValuesIfEdit();
     // Extract changes to the input property by its name
     let change: SimpleChange = changes["close"];
 
@@ -134,10 +132,10 @@ export class ItemDetailsFormComponent implements OnInit {
     return this.newItemForm.controls["features"] as FormArray;
   }
 
-  createEmpFormGroup() {
+  createFormGroup(key: string, value: string) {
     return this.formBuilder.group({
-      key: ["", Validators.required],
-      value: ["", Validators.required],
+      key: [key, Validators.required],
+      value: [value, Validators.required],
     });
   }
 
@@ -147,6 +145,15 @@ export class ItemDetailsFormComponent implements OnInit {
       let specs = new Map(Object.entries(JSON.parse(json)));
       this.viewspecs = Array.from(specs);
       this.viewfeatures = this.item.features;
+
+      this.newItemForm.controls["features"] = this.formBuilder.array([]);
+      for (const feature of this.viewfeatures) {
+        this.addFeature(feature);
+      }
+      this.newItemForm.controls["specifications"] = this.formBuilder.array([]);
+      for (const spec of this.viewspecs) {
+        this.addSpec(spec[0], spec[1]);
+      }
       this.categories2 = await this.searchService.itemCategories2(
         this.item.category_1
       );
@@ -171,15 +178,10 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log(this.newItemForm.controls);
     this.fillValuesIfEdit();
     this.newItemForm.patchValue({
       upc: this.upc ? this.upc : this.item && this.item.upc,
     });
-    if (this.mode == 0) {
-      this.title = "Create New Item";
-    }
-    console.log("item", this.item);
   }
 
   async generateUPC() {
@@ -195,23 +197,24 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   async onCat2Change(e) {
+    if(e.target.value == '') return;
     this.categories3 = await this.searchService.itemCategories3(
       this.newItemForm.controls["category_1"].value,
       e.target.value
     );
   }
 
-  addSpec() {
-    this.specifications.push(this.createEmpFormGroup());
+  addSpec(key?: string, value?: string) {
+    this.specifications.push(this.createFormGroup(key, value));
   }
 
   removeSpec(index: number) {
     this.specifications.removeAt(index);
   }
 
-  addFeature() {
+  addFeature(value?: string) {
     this.features.push(
-      this.formBuilder.group({ value: ["", Validators.required] })
+      this.formBuilder.group({ value: [value, Validators.required] })
     );
   }
 
@@ -267,8 +270,6 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   updateItem() {
-    this.setMode(1);
-    console.log(this.item._id, "id");
     this.itemService
       .updateItem(this.item._id, {
         _id: "",
@@ -293,6 +294,7 @@ export class ItemDetailsFormComponent implements OnInit {
       })
       .then((res) => {
         this.item = res;
+        this.setMode(1);
         this.editItem.emit(res);
       });
   }
@@ -300,7 +302,6 @@ export class ItemDetailsFormComponent implements OnInit {
   setMode(mode: number) {
     this.mode = mode;
     this.fillValuesIfEdit();
-    console.log(mode, this.item);
   }
 
   resetForms() {

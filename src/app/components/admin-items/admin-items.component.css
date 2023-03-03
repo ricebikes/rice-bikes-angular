@@ -10,4 +10,5 @@ tbody tr:hover {
 
 table {
   overflow: scroll;
+  font-size: .9rem;
 }

@@ -7,6 +7,7 @@ import {
 } from "@angular/core";
 import { ItemService } from "../../services/item.service";
 import { Item } from "../../models/item";
+import { ItemDetailsFormComponent } from "../item-details-form/item-details-form.component";
 import { FormBuilder, Validators } from "@angular/forms";
 import { SearchService } from "../../services/search.service";
 import { Observable } from "rxjs/Observable";
@@ -33,6 +34,7 @@ export class AdminItemsComponent implements OnInit {
 
   @ViewChild("itemDetailsModal") itemDetailsModal: ElementRef;
   @ViewChild("formTrigger") formTrigger: ElementRef;
+  @ViewChild("itemDetailsForm") itemDetailsForm: ItemDetailsFormComponent;
 
   itemModalMode = 1;
   chosenItem: Item;
@@ -43,8 +45,25 @@ export class AdminItemsComponent implements OnInit {
   categories = this.searchService.itemCategories1();
   brands = this.searchService.itemBrands();
 
+  elementType = "svg";
+  format = "UPC";
+  width = 2;
+  height = 100;
+  displayValue = true;
+  font = "monospace";
+  textMargin = 2;
+  fontSize = 20;
+  margin = 5;
+
+  addItem(item: Item) {
+    console.log("item created", item);
+    this.items.splice(0, 0, item);
+    if (item.in_stock && item.in_stock > 0)
+      this.inStockItems.splice(0, 0, item);
+  }
+
   closeAndResetAll(message: string) {
-    console.log("emitted", message, "from item details form component");
+    this.itemDetailsForm.resetForms();
   }
 
   ngOnInit() {
@@ -59,7 +78,6 @@ export class AdminItemsComponent implements OnInit {
   setItems(items: Item[]) {
     this.items = this.sortItems(items);
     this.inStockItems = items.filter((i) => i.in_stock && i.in_stock > 0);
-    console.log("in stock items", this.inStockItems);
   }
 
   /**
@@ -79,14 +97,16 @@ export class AdminItemsComponent implements OnInit {
   }
 
   refreshItem(item: Item) {
-    // replace the item at index this.idx with the newly updated item
-    if (this.showInStock) {
-      this.inStockItems[this.chosenIdx] = item;
-    } else this.items[this.chosenIdx] = item;
+    // refreshes the item list with the item that was just edited
+    this.itemService.getItems().then((res) => {
+      this.items = this.sortItems(res);
+      this.inStockItems = this.items.filter(
+        (i) => i.in_stock && i.in_stock > 0
+      );
+    });
   }
 
   toggleCheck(checked: boolean) {
-    console.log("checked", checked);
     this.showInStock = checked;
     this.inStockItems = this.items.filter((i) => i.in_stock && i.in_stock > 0);
     console.log(this.inStockItems);
@@ -99,5 +119,14 @@ export class AdminItemsComponent implements OnInit {
 
   triggerItemDetailsModal() {
     this.formTrigger.nativeElement.click();
+  }
+
+  openItemMenu(item?: Item) {
+    console.log("clicked menu item");
+    this.chosenItem = item;
+  }
+
+  print(): void {
+    this.itemDetailsForm.print();
   }
 }
