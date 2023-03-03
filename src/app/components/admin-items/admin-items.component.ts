@@ -88,6 +88,10 @@ export class AdminItemsComponent implements OnInit {
     return items.reverse();
   }
 
+  disableItem() {
+    console.log("can't disable items yet");
+  }
+
   editItem(item, idx) {
     // enable item-details-form modal in edit mode and fill the values with chosenItem
     this.chosenItem = item;

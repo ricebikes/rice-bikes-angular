@@ -75,7 +75,7 @@ export class ItemDetailsFormComponent implements OnInit {
   elementType = "svg";
   format = "UPC";
   width = 2;
-  height = 100;
+  height = 80;
   displayValue = true;
   font = "monospace";
   textMargin = 2;
@@ -87,11 +87,11 @@ export class ItemDetailsFormComponent implements OnInit {
     printContents = document.getElementById("print-section").innerHTML;
     var mywindow = window.open("", "PRINT");
 
-    mywindow.document.write(
-      "<html><body style='margin: 0'><div class='print' style='display: flex; align-items:center'><img style='z-index: 2; width: 75px; height: 75px' src='../../assets/img/favicon-96x96.png'/>"
-    );
+    mywindow.document.write("<html><body style='margin: 0'>");
     mywindow.document.write(printContents);
-    mywindow.document.write("</div></body></html>");
+    mywindow.document.write(
+      "</body></html>"
+    );
 
     mywindow.document.close(); // necessary for IE >= 10
     mywindow.focus(); // necessary for IE >= 10*/
@@ -197,7 +197,7 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   async onCat2Change(e) {
-    if(e.target.value == '') return;
+    if (e.target.value == "") return;
     this.categories3 = await this.searchService.itemCategories3(
       this.newItemForm.controls["category_1"].value,
       e.target.value
