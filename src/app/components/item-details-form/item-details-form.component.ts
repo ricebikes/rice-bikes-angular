@@ -142,7 +142,9 @@ export class ItemDetailsFormComponent implements OnInit {
   async fillValuesIfEdit() {
     if (this.item) {
       let json = JSON.stringify(this.item.specifications);
-      let specs = new Map(Object.entries(JSON.parse(json)));
+      let specs;
+      if(json) specs = new Map(Object.entries(JSON.parse(json)));
+      else specs = new Map();
       this.viewspecs = Array.from(specs);
       this.viewfeatures = this.item.features;
 
@@ -194,6 +196,8 @@ export class ItemDetailsFormComponent implements OnInit {
   async onCat1Change(e) {
     this.categories2 = await this.searchService.itemCategories2(e.target.value);
     this.categories3 = null;
+    this.newItemForm.controls["category_2"].setValue(null);
+    this.newItemForm.controls["category_3"].setValue(null);
   }
 
   async onCat2Change(e) {
@@ -202,6 +206,7 @@ export class ItemDetailsFormComponent implements OnInit {
       this.newItemForm.controls["category_1"].value,
       e.target.value
     );
+    this.newItemForm.controls["category_3"].setValue(null);
   }
 
   addSpec(key?: string, value?: string) {
