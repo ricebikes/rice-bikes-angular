@@ -1,14 +1,60 @@
-<div class="modal-header">
-  <h5 class="modal-title">{{ title }}</h5>
-  <button
-    (click)="resetForms()"
-    type="button"
-    class="close"
-    data-dismiss="modal"
-    aria-label="Close"
+<!--USED FOR BARCODE PRINTING OF THIS ITEM-->
+<div [hidden]="'true'" id="print-section">
+  <div class="print" style="display: flex; align-items: center">
+    <img
+      style="z-index: 2; width: 75px; height: 75px"
+      src="../../assets/img/favicon-96x96.png"
+    />
+    <ngx-barcode
+      style="position: relative; right: 25px; z-index: 1"
+      [bc-element-type]="elementType"
+      [bc-value]="barcodeVal ? barcodeVal : item && item.upc"
+      [bc-format]="format"
+      [bc-width]="width"
+      [bc-height]="height"
+      [bc-display-value]="displayValue"
+      [bc-font]="font"
+      [bc-text-margin]="textMargin"
+      [bc-font-size]="fontSize"
+      [bc-margin]="margin"
+    ></ngx-barcode>
+  </div>
+  <div
+    style="
+      font-size: 10px;
+      width: 280px;
+      height: 12px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: block;
+      overflow: hidden;
+    "
+    class="print"
   >
-    <span aria-hidden="true">&times;</span>
-  </button>
+    <p style="margin: 0 5px">{{ item && item.name }}</p>
+  </div>
+</div>
+
+<div class="modal-header">
+  <h5 class="modal-title">Item Details</h5>
+  <div>
+    <button
+      [hidden]="mode != 1"
+      (click)="print()"
+      class="btn btn-sm btn-outline-dark"
+    >
+      <i class="bi bi-printer"></i> Barcode
+    </button>
+    <button
+      (click)="resetForms()"
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
 </div>
 <div id="create-item-body" class="modal-body item-details-form">
   <div>
@@ -22,7 +68,7 @@
         <div class="col col-6">
           <label for="name">Name<span *ngIf="mode != 1">*</span></label>
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item.name }}
+            {{ item && item.name }}
           </p>
           <input
             *ngIf="mode != 1"
@@ -38,7 +84,7 @@
           <div>
             <label for="brand">Brand<span *ngIf="mode != 1">*</span></label>
             <p *ngIf="mode == 1" class="form-control-static">
-              {{ item.brand }}
+              {{ item && item.brand }}
             </p>
             <input
               *ngIf="mode != 1"
@@ -59,7 +105,7 @@
             >Retail Price<span *ngIf="mode != 1">*</span></label
           >
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item.standard_price }}
+            ${{ item && item.standard_price }}
           </p>
           <input
             *ngIf="mode != 1"
@@ -78,7 +124,7 @@
             >Wholesale Price<span *ngIf="mode != 1">*</span></label
           >
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item.wholesale_cost }}
+            ${{ item && item.wholesale_cost }}
           </p>
           <input
             *ngIf="mode != 1"
@@ -97,7 +143,7 @@
         <div #inStock class="col">
           <label for="in_stock">In Stock</label>
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item.in_stock }}
+            {{ item && item.in_stock }}
           </p>
           <input
             *ngIf="mode != 1"
@@ -110,7 +156,7 @@
         <div #UPC class="col">
           <label for="upc">UPC #<span *ngIf="mode != 1">*</span></label>
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item.upc }}
+            {{ item && item.upc }}
           </p>
           <div class="input-group">
             <input
@@ -147,7 +193,7 @@
             >Category 1<span *ngIf="mode != 1">*</span></label
           >
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item.category_1 }}
+            {{ item && item.category_1 }}
           </p>
           <select
             *ngIf="mode != 1"
@@ -172,7 +218,7 @@
         <div class="col">
           <label for="category_2">Category 2</label>
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item?.category_2 }}
+            {{ item && item?.category_2 }}
           </p>
           <select
             *ngIf="mode != 1"
@@ -195,7 +241,7 @@
         <div class="col">
           <label for="category_3">Category 3</label>
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item.category_3 }}
+            {{ item && item.category_3 }}
           </p>
           <select
             *ngIf="mode != 1"
@@ -302,8 +348,18 @@
     class="btn btn-secondary"
     data-dismiss="modal"
     (click)="resetForms()"
+    *ngIf="mode != 2"
   >
     Close
+  </button>
+  <button
+    type="button"
+    class="btn btn-secondary"
+    data-dismiss="modal"
+    (click)="setMode(1)"
+    *ngIf="mode == 2"
+  >
+    Cancel
   </button>
   <button
     type="submit"
@@ -314,14 +370,10 @@
   >
     Create Item
   </button>
-  <!-- <button
-    class="btn btn-primary"
-    (click)="setMode(2)"
-    *ngIf="mode == 1"
-  >
+  <button class="btn btn-primary" (click)="setMode(2)" *ngIf="mode == 1">
     Edit Item
-  </button> -->
-  <button class="btn btn-primary" (click)="setMode(1)" *ngIf="mode == 2">
+  </button>
+  <button class="btn btn-primary" (click)="validate(true)" *ngIf="mode == 2">
     Save
   </button>
 </div>

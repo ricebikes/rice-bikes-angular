@@ -1,4 +1,15 @@
+tbody tr:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
 .item-list {
   width: 40%;
   margin: 0 auto;
+}
+
+table {
+  overflow: scroll;
+  font-size: .9rem;
+  border: 1px solid #ddd;
 }

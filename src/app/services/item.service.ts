@@ -26,6 +26,10 @@ export class ItemService {
   }
 
   /**
+   * Gets an item by the item ID. Used for when an item has been updated to retrieve the new details.
+   */
+
+  /**
    * Gets an array of items from the backend. Do not use this to search for items, because it will also get the hidden items
    * from the backend that should not be added to tranasactions
    */
@@ -55,8 +59,9 @@ export class ItemService {
    * @param id:  id of document to update
    * @param item: Item to overwrite this document with
    */
-  updateItem(id: String, item: Item): Promise<any> {
+  updateItem(id: String, item: Item): Promise<Item> {
     delete item._id; // to prevent errors on backend
+    console.log("hi", item);
     return this.http
       .put(`${CONFIG.api_url}/items/${id}`, item, this.jwt())
       .toPromise()

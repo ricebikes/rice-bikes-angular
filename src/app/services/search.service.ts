@@ -201,7 +201,7 @@ export class SearchService {
         new RequestOptions({ headers: SearchService.jwt_headers() })
       )
       .toPromise()
-      .then((res) => Object.keys(res.json()))
+      .then((res) => (res ? Object.keys(res.json()) : []))
       .catch((err) => this.handleError(err));
   }
 
@@ -216,7 +216,9 @@ export class SearchService {
           new RequestOptions({ headers: SearchService.jwt_headers() })
         )
         .toPromise()
-        .then((res) => Object.keys(res.json()[cat1]))
+        .then((res) =>
+          Object.keys(res.json()[cat1]) ? Object.keys(res.json()[cat1]) : []
+        )
         .catch((err) => null);
     }
   }
@@ -231,7 +233,10 @@ export class SearchService {
         new RequestOptions({ headers: SearchService.jwt_headers() })
       )
       .toPromise()
-      .then((res) => Object.keys(res.json()[cat1][cat2]))
+      .then((res) => {
+        let cats = res.json()[cat1][cat2];
+        return res.json()[cat1][cat2] == null ? [] : Object.keys(cats);
+      })
       .catch((err) => this.handleError(err));
   }
 

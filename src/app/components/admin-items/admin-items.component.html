@@ -1,193 +1,132 @@
-<!--Edit Item Modal-->
-<!-- Hidden button controls for modals-->
-<button #editItemToggle hidden data-toggle="modal" data-target="#editItemModal">HIDDEN CONTROL</button>
-<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-xl" role="document">
+<button
+  #formTrigger
+  hidden
+  type="button"
+  class="btn btn-outline-primary"
+  data-toggle="modal"
+  data-target="#itemDetailsModal"
+>
+  FAKE BUTTON
+</button>
+
+<div class="container" id="item-search">
+  <div style="display: flex; justify-content: space-between">
+    <h5>Item Search</h5>
+    <button class="btn btn-primary" (click)="triggerCreateItem()">
+      Create Item
+    </button>
+  </div>
+  <app-item-search-modal
+    (results)="setItems($event)"
+    (checked)="toggleCheck($event)"
+  ></app-item-search-modal>
+</div>
+<div
+  class="modal fade"
+  id="itemDetailsModal"
+  #itemDetailsModal
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="itemDetailsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Item</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="editItemForm">
-          <div class="row">
-            <div class="col-4">
-              <label for="updateItemName">Item Name</label>
-              <input type="text" class="form-control" formControlName="name" id="updateItemName"
-                (keyup.enter)="submitItemUpdateForm()">
-            </div>
-            <div class="col-2">
-              <label for="updateItemPrice">Item Price</label>
-              <input id="updateItemPrice" type="number" class="form-control" formControlName="standard_price"
-                (keyup.enter)="submitItemUpdateForm()">
-            </div>
-            <div class="col-2">
-              <label for="updateWholesalePrice">Wholesale Price</label>
-              <input id="updateWholesalePrice" type="number" class="form-control" formControlName="wholesale_cost"
-                (keyup.enter)="submitItemUpdateForm()">
-            </div>
-            <div class="col-2">
-              <label for="updateConditionSelect">Item Condition</label>
-              <select id="updateConditionSelect" formControlName="condition" class="form-control"
-                (keyup.enter)="submitItemUpdateForm()">
-                <option>New</option>
-                <option>Used</option>
-              </select>
-            </div>
-            <div class="col-2">
-              <label for="updateBrandSelect">Brand</label>
-              <input id="updateBrandSelect" type="text" formControlName="brand" class="form-control" list="brands"
-                (keyup.enter)="submitItemUpdateForm()">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-2">
-              <label for="updateCategory">Category</label>
-              <input type="text" id="updateCategory" class="form-control" formControlName="category" list="categories"
-                (keyup.enter)="submitItemUpdateForm()">
-            </div>
-            <div class="col-2">
-              <label for="updateSize">Size</label>
-              <input type="text" id="updateSize" class="form-control" formControlName="size" list="updateSizes"
-                (keyup.enter)="submitItemUpdateForm()">
-              <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
-              <datalist id="updateSizes">
-                <option *ngFor="let size of (existingUpdateSizes | async)">{{size}}</option>
-              </datalist>
-            </div>
-            <div class="col-2">
-              <label for="updateStock">Current Stock</label>
-              <input id="updateStock" type="number" class="form-control" formControlName="stock"
-                (keyup.enter)="submitItemUpdateForm()">
-            </div>
-            <div class="col-3">
-              <!-- Nesting columns to get more granular control over the width of each column -->
-              <div class="row">
-                <div class="col-6">
-                  <label for="updateDesiredStock">Desired Stock</label>
-                  <input id="updateDesiredStock" type="number" class="form-control" formControlName="desired_stock"
-                    (keyup.enter)="submitItemUpdateForm()">
-                </div>
-                <div class="col-6">
-                  <label for="updateMinimumStock">Minimum Stock</label>
-                  <input id="updateMinimumStock" type="number" class="form-control" formControlName="minimum_stock"
-                    (keyup.enter)="submitItemUpdateForm()">
-                </div>
-              </div>
-            </div>
-            <div class="col-3">
-              <label for="updateUPC">UPC</label>
-              <input type="text" id="updateUPC" class="form-control" formControlName="upc"
-                (keyup.enter)="submitItemUpdateForm()">
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button (click)="refreshItem()" class="btn btn-success">Refresh</button>
-        <button data-dismiss="modal" type="submit" (click)="submitItemUpdateForm()" class="btn btn-primary"
-          [disabled]="editItemForm.invalid">Update Item</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <div class="scroll">
+        <app-item-details-form
+          #itemDetailsForm
+          id="itemModal"
+          [mode]="itemModalMode"
+          [item]="chosenItem"
+          (newItem)="addItem($event)"
+          (editItem)="refreshItem($event)"
+          (closeAll)="closeAndResetAll($event)"
+        ></app-item-details-form>
       </div>
     </div>
   </div>
 </div>
-
 <div class="container">
-  <div class="jumbotron">
-    <h4 class="display-4">Create Item</h4>
-    <hr class="my-4">
-    <form [formGroup]="newItemForm">
-      <div class="row">
-        <div class="col-4">
-          <label for="itemName">Item Name</label>
-          <input type="text" class="form-control" formControlName="name" id="itemName">
-        </div>
-        <div class="col-2">
-          <label for="itemPrice">Item Price</label>
-          <input id="itemPrice" type="number" class="form-control" formControlName="standard_price">
-        </div>
-        <div class="col-2">
-          <label for="wholesalePrice">Wholesale Price</label>
-          <input id="wholesalePrice" type="number" class="form-control" formControlName="wholesale_cost">
-        </div>
-        <div class="col-2">
-          <label for="newConditionSelect">Item Condition</label>
-          <select id="newConditionSelect" formControlName="condition" class="form-control">
-            <option>New</option>
-            <option>Used</option>
-          </select>
-        </div>
-        <div class="col-2">
-          <label for="newBrandSelect">Brand</label>
-          <input id="newBrandSelect" type="text" formControlName="brand" class="form-control" list="brands">
-          <datalist id="brands">
-            <option *ngFor="let brand of (existingBrands | async)">{{brand}}</option>
-          </datalist>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3">
-          <label for="newCategory">Category</label>
-          <input type="text" id="newCategory" class="form-control" formControlName="category" list="categories">
-          <datalist id="categories">
-            <option *ngFor="let category of (existingCategories | async)">{{category}}</option>
-          </datalist>
-        </div>
-        <div class="col-3">
-          <label for="newSize">Size</label>
-          <input type="text" id="newSize" class="form-control" formControlName="size" list="sizes">
-          <!--Datalist provides a rough typeahead option. Supported in most browsers, and really simple.-->
-          <datalist id="sizes">
-            <option *ngFor="let size of (existingSizes | async)">{{size}}</option>
-          </datalist>
-        </div>
-        <div class="col-2">
-          <label for="desiredStock">Desired Stock</label>
-          <input id="desiredStock" type="number" class="form-control" formControlName="desired_stock">
-        </div>
-        <div class="col-4">
-          <label for="newUPC">UPC</label>
-          <input type="text" id="newUPC" class="form-control" formControlName="upc">
-        </div>
-      </div>
-      <button type="submit" (click)="submitItemCreateForm()" [disabled]="newItemForm.invalid"
-        class="btn btn-primary my-3">Create Item</button>
-    </form>
-  </div>
   <table class="table">
     <thead>
       <tr>
         <th scope="col">Name</th>
-        <th scope="col">Category</th>
+        <th scope="col">Category 1</th>
+        <th scope="col">Category 2</th>
+        <th scope="col">Category 3</th>
         <th scope="col">Brand</th>
-        <th scope="col">Condition</th>
         <th scope="col">Sale Price</th>
-        <th scope="col">Wholesale Cost</th>
-        <th scope="col">Desired Stock</th>
-        <th scope="col">Minimum Stock</th>
-        <th scope="col">Current Stock</th>
+        <th scope="col">Wholesale</th>
+        <th *ngIf="showInStock" scope="col">In Stock</th>
         <th></th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of items">
-        <td>{{item.name}}</td>
-        <td>{{item.category}}</td>
-        <td>{{item.brand}}</td>
-        <td>{{item.condition}}</td>
-        <td>{{item.standard_price}}</td>
-        <td>{{item.wholesale_cost}}</td>
-        <td>{{item.desired_stock}}</td>
-        <td>{{item.minimum_stock}}</td>
-        <td>{{item.stock}}</td>
-        <td><button class="btn btn-outline-secondary" (click)="editItem(item)">Edit</button></td>
+      <tr [hidden]="showInStock" *ngFor="let item of items; let i = index">
+        <td (click)="editItem(item, i)">{{ item.name }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_1 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_2 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_3 }}</td>
+        <td (click)="editItem(item, i)">{{ item.brand }}</td>
+        <td (click)="editItem(item, i)">${{ item.standard_price }}</td>
+        <td (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
         <td>
-          <button class="btn btn-outline-danger" *ngIf="!item.disabled" (click)="toggleDisabled(item)">Disable</button>
-          <button class="btn btn-outline-primary" *ngIf="item.disabled" (click)="toggleDisabled(item)">Enable</button>
+          <div class="dropdown">
+            <button
+              class="btn"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              (click)="openItemMenu(item)"
+            >
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" (click)="disableItem()">Disable</a>
+              <a class="dropdown-item" (click)="print()"
+                >Print barcode</a
+              >
+            </div>
+          </div>
+        </td>
+      </tr>
+      <!-- TODO: merge these two tables -->
+      <tr
+        [hidden]="!showInStock"
+        *ngFor="let item of inStockItems; let i = index"
+      >
+        <td (click)="editItem(item, i)">{{ item.name }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_1 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_2 }}</td>
+        <td (click)="editItem(item, i)">{{ item.category_3 }}</td>
+        <td (click)="editItem(item, i)">{{ item.brand }}</td>
+        <td (click)="editItem(item, i)">${{ item.standard_price }}</td>
+        <td (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
+        <td (click)="editItem(item, i)">{{ item.in_stock }}</td>
+
+        <td>
+          <div class="dropdown">
+            <button
+              class="btn"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              (click)="openItemMenu()"
+            >
+              <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" (click)="disableItem()">Disable</a>
+              <a class="dropdown-item" (click)="print()"
+                >Print barcode</a
+              >
+            </div>
+          </div>
         </td>
       </tr>
     </tbody>

@@ -12,6 +12,7 @@ import { OrderRequestSelectorComponent } from '../../whiteboard/order-request-se
 import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
 import { AnalyticsService } from '../../../services/analytics.service';
+import { ItemService } from "../../../services/item.service";
 
 @Component({
   selector: 'app-transaction-detail',
@@ -46,6 +47,7 @@ export class TransactionDetailComponent implements OnInit {
     private transactionService: TransactionService,
     private orderRequestService: OrderRequestService,
     private analyticsService: AnalyticsService,
+    private itemService: ItemService,
     private route: ActivatedRoute,
     private router: Router,
   ) { }
@@ -118,18 +120,6 @@ export class TransactionDetailComponent implements OnInit {
   triggerScanModal() {
     this.addItemComponent.triggerScanModal();
   }
-
-  // triggerItemDetailsForm() {
-  //   this.itemDetailsForm.triggerItemDetailsForm();
-  // }
-
-  test(index: String) {
-    console.log('hey', index);
-    // open item details form
-    // this.itemDetailsForm.triggerItemDetailsForm();
-    // if admin, allow for editing
-
-  }
   
   addBike(): void {
     const bike = new Bike();
@@ -163,11 +153,22 @@ export class TransactionDetailComponent implements OnInit {
   // temp fix: if item is old (deprecated), item_id should be -1
   deleteItem(item_idx: string): void {
     this.transactionService.deleteItemFromTransaction(this.transaction._id, item_idx);
+    // increase stock
+    let item = this.transaction.items[item_idx].item;
+    if(item.in_stock != null) {
+      item.in_stock++;
+      console.log("item", item);
+      this.itemService.updateItem(item._id, item);
+    }
   }
 
   addItem(item: Item) {
-    console.log("transaction details add item called");
     this.transactionService.addItemToTransaction(this.transaction._id, item._id);
+    // decrease stock
+    if(item.in_stock != null) {
+      item.in_stock--;
+      this.itemService.updateItem(item._id, item);
+    }
   }
 
   addUsedItem() {
