@@ -86,14 +86,12 @@ export class AddItemComponent implements OnInit {
   ) {
     this.renderer.listen("window", "click", (e: Event) => {
       if (e.target == this.itemSearchModal.nativeElement) {
-        this.itemForm.reset();
         this.closeAndResetAll("clicked out of modal");
       }
     });
     this.renderer.listen("window", "click", (e: Event) => {
       if (e.target == this.scanModal.nativeElement) {
-        this.scanData.reset();
-        this.itemForm.reset();
+        this.scanData.reset({ emitEvent: false });
         this.createItemFromUPC = false;
         this.closeAndResetAll("clicked out of modal");
       }
@@ -110,12 +108,12 @@ export class AddItemComponent implements OnInit {
       .switchMap((formData) => {
         return formData
           ? this.searchService.itemSearch(
-              formData.name,
-              formData.category_1,
-              formData.category_2,
-              formData.category_3,
-              formData.brand
-            )
+            formData.name,
+            formData.category_1,
+            formData.category_2,
+            formData.category_3,
+            formData.brand
+          )
           : Observable.of<Item[]>([]);
       })
       .catch((err) => {
@@ -137,7 +135,7 @@ export class AddItemComponent implements OnInit {
   scanToCreateItem = function () {
     this.createItemFromUPC = true;
   };
-  
+
   addItem(item: Item) {
     console.log("add item component called");
     this.scanData.reset();
@@ -211,7 +209,7 @@ export class AddItemComponent implements OnInit {
     this.close = !this.close;
     this.setActive("search");
     this.createItemFromUPC = false;
-    this.itemForm.reset();
+    this.itemForm.reset({}, { emitEvent: false });
     this.categories2 = null;
     this.categories3 = null;
     this.searchButton.nativeElement.click();
