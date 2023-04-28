@@ -36,6 +36,8 @@ export class AdminItemsComponent implements OnInit {
   @ViewChild("formTrigger") formTrigger: ElementRef;
   @ViewChild("itemDetailsForm") itemDetailsForm: ItemDetailsFormComponent;
 
+  objectKeys = Object.keys
+
   itemModalMode = 1;
   chosenItem: Item;
   showInStock: boolean = false;
@@ -54,6 +56,36 @@ export class AdminItemsComponent implements OnInit {
   textMargin = 2;
   fontSize = 20;
   margin = 5;
+
+  fieldFilters = {
+    name: true,
+    "category 1": true,
+    "category 2": true,
+    "category 3": true,
+    brand: true,
+    "retail price": true,
+    "wholesale cost": true,
+    "in stock": false,
+    "min stock": false
+  };
+
+  showFilters = {
+    "in stock": true,
+    "out of stock": true,
+    "core stock": true,
+    disabled: false,
+  };
+
+  isGroupChecked(filtersGroup) {
+    const filters = Object.keys(filtersGroup)
+    const checked = filters.filter(filter => filtersGroup[filter])
+    return checked.length >0
+  }
+
+  toggleFilter(filtersObj, filter) {
+    filtersObj[filter] = !filtersObj[filter]
+    // this.filterTransactions()
+  }
 
   addItem(item: Item) {
     console.log("item created", item);

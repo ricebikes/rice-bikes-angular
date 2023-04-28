@@ -1,130 +1,120 @@
-<button
-  #formTrigger
-  hidden
-  type="button"
-  class="btn btn-outline-primary"
-  data-toggle="modal"
-  data-target="#itemDetailsModal"
->
+<button #formTrigger hidden type="button" class="btn btn-outline-primary" data-toggle="modal"
+  data-target="#itemDetailsModal">
   FAKE BUTTON
 </button>
 
-<div class="container" id="item-search">
-  <div style="display: flex; justify-content: space-between">
-    <h5>Item Search</h5>
-    <button class="btn btn-primary" (click)="triggerCreateItem()">
-      Create Item
-    </button>
-  </div>
-  <app-item-search-modal
-    (results)="setItems($event)"
-    (checked)="toggleCheck($event)"
-  ></app-item-search-modal>
-</div>
-<div
-  class="modal fade"
-  id="itemDetailsModal"
-  #itemDetailsModal
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="itemDetailsModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
+<!-- Past Actions Modal -->
+<div class="modal fade" id="pastActionsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <div class="scroll">
-        <app-item-details-form
-          #itemDetailsForm
-          id="itemModal"
-          [mode]="itemModalMode"
-          [item]="chosenItem"
-          (newItem)="addItem($event)"
-          (editItem)="refreshItem($event)"
-          (closeAll)="closeAndResetAll($event)"
-        ></app-item-details-form>
+      <div class="modal-header">
+        <h5 class="modal-title" id="pastActionsModalLabel">Past Actions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="transaction?.actions && transaction?.actions.length > 0">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let action of transaction?.actions">
+            {{ action.employee.firstname }} {{ action.employee.lastname }}:
+            {{ action.description }}
+            <span class="float-right">{{ action.time | timeAgo }}</span>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 </div>
-<div class="container">
-  <table class="table">
+
+<div class="container" id="item-search">
+  <div class="row">
+    <div class="col">
+      <h5>Item Search</h5>
+    </div>
+    <div class="col text-right">
+      <button class="btn btn-primary" (click)="triggerCreateItem()">
+        Create Item
+      </button>
+      <button style="margin-left: 5px" data-toggle="modal" data-target="#pastActionsModal"
+        class="btn btn-outline-secondary">
+        Past Actions
+      </button>
+    </div>
+  </div>
+  <!--Item Search Modal-->
+  <app-item-search-modal (results)="setItems($event)" (checked)="toggleCheck($event)"></app-item-search-modal>
+</div>
+
+<div class="modal fade" id="itemDetailsModal" #itemDetailsModal tabindex="-1" role="dialog"
+  aria-labelledby="itemDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="scroll">
+        <app-item-details-form #itemDetailsForm id="itemModal" [mode]="itemModalMode" [item]="chosenItem"
+          (newItem)="addItem($event)" (editItem)="refreshItem($event)"
+          (closeAll)="closeAndResetAll($event)"></app-item-details-form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="test">
+  <label class="form-check-label" for="fieldGroupCheck">
+    <h5>Fields</h5>
+  </label>
+  <div class="form-check filter" *ngFor="let f of objectKeys(fieldFilters)">
+    <input class="form-check-input" type="checkbox" [checked]="fieldFilters[f]" [id]="fieldCheck+f"
+      (change)="toggleFilter(fieldFilters, f)">
+    <label class="form-check-label" [for]="fieldCheck+f">{{f}}</label>
+  </div>
+  <label class="form-check-label" for="showGroupCheck">
+    <h5>Show</h5>
+  </label>
+  <div class="form-check filter" *ngFor="let s of objectKeys(showFilters)">
+    <input class="form-check-input" type="checkbox" [checked]="showFilters[s]" [id]="'showCheck'+s"
+      (change)="toggleFilter(showFilters, s)">
+    <label class="form-check-label" [for]="'showCheck'+s">{{s}}</label>
+  </div>
+</div>
+<div class="datatable container">
+  <table class="datatable-table table">
     <thead>
       <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Category 1</th>
-        <th scope="col">Category 2</th>
-        <th scope="col">Category 3</th>
-        <th scope="col">Brand</th>
-        <th scope="col">Sale Price</th>
-        <th scope="col">Wholesale</th>
-        <th *ngIf="showInStock" scope="col">In Stock</th>
-        <th></th>
-        <th></th>
+        <th *ngIf="fieldFilters.name" scope="col">Name</th>
+        <th *ngIf="fieldFilters['category 1']" scope="col">Category 1</th>
+        <th *ngIf="fieldFilters['category 2']" scope="col">Category 2</th>
+        <th *ngIf="fieldFilters['category 3']" scope="col">Category 3</th>
+        <th *ngIf="fieldFilters['brand']" scope="col">Brand</th>
+        <th *ngIf="fieldFilters['retail price']" scope="col">Sale Price</th>
+        <th *ngIf="fieldFilters['wholesale cost']" scope="col">Wholesale</th>
+        <th *ngIf="fieldFilters['in stock']" scope="col">In Stock</th>
+        <th *ngIf="fieldFilters['min stock']" scope="col">Min Stock</th>
       </tr>
     </thead>
     <tbody>
-      <tr [hidden]="showInStock" *ngFor="let item of items; let i = index">
-        <td (click)="editItem(item, i)">{{ item.name }}</td>
-        <td (click)="editItem(item, i)">{{ item.category_1 }}</td>
-        <td (click)="editItem(item, i)">{{ item.category_2 }}</td>
-        <td (click)="editItem(item, i)">{{ item.category_3 }}</td>
-        <td (click)="editItem(item, i)">{{ item.brand }}</td>
-        <td (click)="editItem(item, i)">${{ item.standard_price }}</td>
-        <td (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
-        <td>
-          <div class="dropdown">
-            <button
-              class="btn"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              (click)="openItemMenu(item)"
-            >
-              <i class="bi bi-three-dots-vertical"></i>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" (click)="disableItem()">Disable</a>
-              <a class="dropdown-item" (click)="print()"
-                >Print barcode</a
-              >
-            </div>
-          </div>
-        </td>
-      </tr>
-      <!-- TODO: merge these two tables -->
-      <tr
-        [hidden]="!showInStock"
-        *ngFor="let item of inStockItems; let i = index"
-      >
-        <td (click)="editItem(item, i)">{{ item.name }}</td>
-        <td (click)="editItem(item, i)">{{ item.category_1 }}</td>
-        <td (click)="editItem(item, i)">{{ item.category_2 }}</td>
-        <td (click)="editItem(item, i)">{{ item.category_3 }}</td>
-        <td (click)="editItem(item, i)">{{ item.brand }}</td>
-        <td (click)="editItem(item, i)">${{ item.standard_price }}</td>
-        <td (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
-        <td (click)="editItem(item, i)">{{ item.in_stock }}</td>
+      <tr *ngFor="let item of items; let i = index">
+        <td *ngIf="fieldFilters.name" (click)="editItem(item, i)">{{ item.name }}</td>
+        <td *ngIf="fieldFilters['category 1']" (click)="editItem(item, i)">{{ item.category_1 }}</td>
+        <td *ngIf="fieldFilters['category 2']" (click)="editItem(item, i)">{{ item.category_2 }}</td>
+        <td *ngIf="fieldFilters['category 3']" (click)="editItem(item, i)">{{ item.category_3 }}</td>
+        <td *ngIf="fieldFilters['brand']" (click)="editItem(item, i)">{{ item.brand }}</td>
+        <td *ngIf="fieldFilters['retail price']" (click)="editItem(item, i)">${{ item.standard_price }}</td>
+        <td *ngIf="fieldFilters['wholesale cost']" (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
+        <td *ngIf="fieldFilters['in stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
+        <td *ngIf="fieldFilters['min stock']" (click)="editItem(item, i)">{{item.min_stock}}</td>
 
         <td>
           <div class="dropdown">
-            <button
-              class="btn"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              (click)="openItemMenu()"
-            >
+            <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false" (click)="openItemMenu()">
               <i class="bi bi-three-dots-vertical"></i>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" (click)="print()">Print barcode</a>
+              <a class="dropdown-item">{{item && item.min_stock ? "Remove from core stock" : "Make core stock"}}</a>
               <a class="dropdown-item" (click)="disableItem()">Disable</a>
-              <a class="dropdown-item" (click)="print()"
-                >Print barcode</a
-              >
+              <a class="dropdown-item">Delete</a>
             </div>
           </div>
         </td>
@@ -132,3 +122,6 @@
     </tbody>
   </table>
 </div>
+
+
+

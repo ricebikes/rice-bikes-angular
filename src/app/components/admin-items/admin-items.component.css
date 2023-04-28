@@ -13,3 +13,7 @@ table {
   font-size: .9rem;
   border: 1px solid #ddd;
 }
+
+.test {
+  position: fixed;
+}

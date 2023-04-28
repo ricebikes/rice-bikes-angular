@@ -1,26 +1,13 @@
 <!--USED FOR BARCODE PRINTING OF THIS ITEM-->
 <div [hidden]="'true'" id="print-section">
   <div class="print" style="display: flex; align-items: center">
-    <img
-      style="z-index: 2; width: 75px; height: 75px"
-      src="../../assets/img/favicon-96x96.png"
-    />
-    <ngx-barcode
-      style="position: relative; right: 25px; z-index: 1"
-      [bc-element-type]="elementType"
-      [bc-value]="barcodeVal ? barcodeVal : item && item.upc"
-      [bc-format]="format"
-      [bc-width]="width"
-      [bc-height]="height"
-      [bc-display-value]="displayValue"
-      [bc-font]="font"
-      [bc-text-margin]="textMargin"
-      [bc-font-size]="fontSize"
-      [bc-margin]="margin"
-    ></ngx-barcode>
+    <img style="z-index: 2; width: 75px; height: 75px" src="../../assets/img/favicon-96x96.png" />
+    <ngx-barcode style="position: relative; right: 25px; z-index: 1" [bc-element-type]="elementType"
+      [bc-value]="barcodeVal ? barcodeVal : item && item.upc" [bc-format]="format" [bc-width]="width"
+      [bc-height]="height" [bc-display-value]="displayValue" [bc-font]="font" [bc-text-margin]="textMargin"
+      [bc-font-size]="fontSize" [bc-margin]="margin"></ngx-barcode>
   </div>
-  <div
-    style="
+  <div style="
       font-size: 10px;
       width: 280px;
       height: 12px;
@@ -28,9 +15,7 @@
       text-overflow: ellipsis;
       display: block;
       overflow: hidden;
-    "
-    class="print"
-  >
+    " class="print">
     <p style="margin: 0 5px">{{ item && item.name }}</p>
   </div>
 </div>
@@ -38,46 +23,28 @@
 <div class="modal-header">
   <h5 class="modal-title">Item Details</h5>
   <div>
-    <button
-      [hidden]="mode != 1"
-      (click)="print()"
-      class="btn btn-sm btn-outline-dark"
-    >
+    <button [hidden]="mode != 1" style="margin-left: 5px" data-toggle="modal" data-target="#pastActionsModal"
+      class="btn btn-sm btn-outline-secondary">
+      Past Actions
+    </button>
+    <button [hidden]="mode != 1" (click)="print()" class="btn btn-sm btn-outline-secondary">
       <i class="bi bi-printer"></i> Barcode
     </button>
-    <button
-      (click)="resetForms()"
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-    >
+    <button (click)="resetForms()" type="button" class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
 </div>
 <div id="create-item-body" class="modal-body item-details-form">
   <div>
-    <form
-      #itemDetailsForm
-      class="needs-validation"
-      [formGroup]="newItemForm"
-      autocomplete="off"
-    >
+    <form #itemDetailsForm class="needs-validation" [formGroup]="newItemForm" autocomplete="off">
       <div class="row">
         <div class="col col-6">
           <label for="name">Name<span *ngIf="mode != 1">*</span></label>
           <p *ngIf="mode == 1" class="form-control-static">
             {{ item && item.name }}
           </p>
-          <input
-            *ngIf="mode != 1"
-            type="text"
-            class="form-control"
-            formControlName="name"
-            id="name"
-            required
-          />
+          <input *ngIf="mode != 1" type="text" class="form-control" formControlName="name" id="name" required />
           <div class="invalid-feedback">required field</div>
         </div>
         <div class="col col-6">
@@ -86,56 +53,29 @@
             <p *ngIf="mode == 1" class="form-control-static">
               {{ item && item.brand }}
             </p>
-            <input
-              *ngIf="mode != 1"
-              type="text"
-              class="form-control"
-              formControlName="brand"
-              id="brand"
-              style="text-transform: uppercase"
-              required
-            />
+            <input *ngIf="mode != 1" type="text" class="form-control" formControlName="brand" id="brand"
+              style="text-transform: uppercase" required />
             <div class="invalid-feedback">required field</div>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col col-6">
-          <label for="retailPrice"
-            >Retail Price<span *ngIf="mode != 1">*</span></label
-          >
+          <label for="retailPrice">Retail Price<span *ngIf="mode != 1">*</span></label>
           <p *ngIf="mode == 1" class="form-control-static">
             ${{ item && item.standard_price }}
           </p>
-          <input
-            *ngIf="mode != 1"
-            id="retailPrice"
-            type="number"
-            step="any"
-            class="form-control"
-            placeholder="$"
-            formControlName="standard_price"
-            required
-          />
+          <input *ngIf="mode != 1" id="retailPrice" type="number" step="any" class="form-control" placeholder="$"
+            formControlName="standard_price" required />
           <div class="invalid-feedback">required field</div>
         </div>
         <div class="col col-6">
-          <label for="wholesalePrice"
-            >Wholesale Price<span *ngIf="mode != 1">*</span></label
-          >
+          <label for="wholesalePrice">Wholesale Price<span *ngIf="mode != 1">*</span></label>
           <p *ngIf="mode == 1" class="form-control-static">
             ${{ item && item.wholesale_cost }}
           </p>
-          <input
-            *ngIf="mode != 1"
-            id="wholesalePrice"
-            type="number"
-            step="any"
-            class="form-control"
-            placeholder="$"
-            formControlName="wholesale_cost"
-            required
-          />
+          <input *ngIf="mode != 1" id="wholesalePrice" type="number" step="any" class="form-control" placeholder="$"
+            formControlName="wholesale_cost" required />
           <div class="invalid-feedback">required field</div>
         </div>
       </div>
@@ -145,69 +85,57 @@
           <p *ngIf="mode == 1" class="form-control-static">
             {{ item && item.in_stock }}
           </p>
-          <input
-            *ngIf="mode != 1"
-            type="number"
-            class="form-control"
-            formControlName="in_stock"
-            id="in_stock"
-          />
+          <input *ngIf="mode != 1" type="number" class="form-control" formControlName="in_stock" id="in_stock" />
         </div>
+        <div #minStock class="col">
+          <label style="display: flex; justify-content: space-between;" for="in_stock">
+            Core/Min Stock*
+            <div *ngIf="mode != 1" class="custom-control custom-switch">
+              <input (change)="toggleCoreStock()" [checked]="item && item.min_stock > 0" type="checkbox"
+                class="custom-control-input" id="core_stock_switch" />
+              <label style="margin-top: 0" class="custom-control-label" for="core_stock_switch"></label>
+            </div>
+          </label>
+          <p *ngIf="mode == 1" class="form-control-static">
+            {{ item && item.min_stock ? "Yes/" : "No"}}{{item && item.min_stock}}
+          </p>
+          <input *ngIf="mode != 1 && is_core_stock" type="number" class="form-control" formControlName="min_stock"
+            id="min_stock" required />
+          <div class="invalid-feedback">required field</div>
+
+        </div>
+      </div>
+      <div class="row">
         <div #UPC class="col">
           <label for="upc">UPC #<span *ngIf="mode != 1">*</span></label>
           <p *ngIf="mode == 1" class="form-control-static">
             {{ item && item.upc }}
           </p>
           <div class="input-group">
-            <input
-              *ngIf="mode != 1"
-              type="text"
-              id="newUPC"
-              class="form-control"
-              formControlName="upc"
-              value="upc"
-              pattern="[0-9]+"
-              minlength="6"
-              maxlength="20"
-              required
-            />
+            <input *ngIf="mode != 1" type="text" id="newUPC" class="form-control" formControlName="upc" value="upc"
+              pattern="[0-9]+" minlength="6" maxlength="20" required />
             <div *ngIf="mode != 1" class="input-group-append">
-              <button
-                (click)="generateUPC()"
-                class="btn btn-outline-secondary generate"
-                type="button"
-              >
+              <button (click)="generateUPC()" class="btn btn-outline-secondary generate" type="button">
                 Generate
               </button>
             </div>
           </div>
-          <small *ngIf="mode != 1" class="form-text text-muted"
-            >only generate a UPC if the item doesn't have one</small
-          >
+          <small *ngIf="mode != 1" class="form-text text-muted">only generate a UPC if the item doesn't have
+            one</small>
           <div class="invalid-feedback">required field</div>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <label for="category_1"
-            >Category 1<span *ngIf="mode != 1">*</span></label
-          >
+          <label for="category_1">Category 1<span *ngIf="mode != 1">*</span></label>
           <p *ngIf="mode == 1" class="form-control-static">
             {{ item && item.category_1 }}
           </p>
-          <select
-            *ngIf="mode != 1"
-            required
-            class="form-control"
-            id="category1Select"
-            formControlName="category_1"
-            (change)="onCat1Change($event)"
-          >
+          <select *ngIf="mode != 1" required class="form-control" id="category1Select" formControlName="category_1"
+            (change)="onCat1Change($event)">
             <option value="">Any</option>
-            <option
-              *ngFor="let category of categories | async"
-              [selected]="category == newItemForm.controls.category_1.value"
-            >
+            <option *ngFor="let category of categories | async"
+              [selected]="category == newItemForm.controls.category_1.value">
               {{ category }}
             </option>
           </select>
@@ -220,18 +148,10 @@
           <p *ngIf="mode == 1" class="form-control-static">
             {{ item && item?.category_2 }}
           </p>
-          <select
-            *ngIf="mode != 1"
-            class="form-control"
-            id="category2Select"
-            formControlName="category_2"
-            (change)="onCat2Change($event)"
-          >
+          <select *ngIf="mode != 1" class="form-control" id="category2Select" formControlName="category_2"
+            (change)="onCat2Change($event)">
             <option selected="cat2empty" value="">Any</option>
-            <option
-              *ngFor="let category of categories2"
-              [selected]="category == newItemForm.controls.category_2.value"
-            >
+            <option *ngFor="let category of categories2" [selected]="category == newItemForm.controls.category_2.value">
               {{ category }}
             </option>
           </select>
@@ -243,17 +163,9 @@
           <p *ngIf="mode == 1" class="form-control-static">
             {{ item && item.category_3 }}
           </p>
-          <select
-            *ngIf="mode != 1"
-            class="form-control"
-            id="category3Select"
-            formControlName="category_3"
-          >
+          <select *ngIf="mode != 1" class="form-control" id="category3Select" formControlName="category_3">
             <option selected="cat3empty" value="">Any</option>
-            <option
-              *ngFor="let category of categories3"
-              [selected]="category == newItemForm.controls.category_3.value"
-            >
+            <option *ngFor="let category of categories3" [selected]="category == newItemForm.controls.category_3.value">
               {{ category }}
             </option>
           </select>
@@ -267,37 +179,14 @@
               <li>{{ entry[0] }}: {{ entry[1] }}</li>
             </div>
           </ul>
-          <div
-            [hidden]="mode == 1"
-            *ngFor="let entry of specifications.controls; let i = index"
-          >
+          <div [hidden]="mode == 1" *ngFor="let entry of specifications.controls; let i = index">
             <div class="key-value" [formGroup]="entry">
-              <input
-                required
-                class="form-control"
-                formControlName="key"
-                placeholder="e.g., Length"
-              />
-              <input
-                required
-                class="form-control"
-                formControlName="value"
-                placeholder="e.g., 35 mm"
-              />
-              <i
-                color="blue"
-                type="button"
-                (click)="removeSpec(i)"
-                class="bi bi-dash-circle text-primary"
-              ></i>
+              <input required class="form-control" formControlName="key" placeholder="e.g., Length" />
+              <input required class="form-control" formControlName="value" placeholder="e.g., 35 mm" />
+              <i color="blue" type="button" (click)="removeSpec(i)" class="bi bi-dash-circle text-primary"></i>
             </div>
           </div>
-          <button
-            *ngIf="mode != 1"
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            (click)="addSpec()"
-          >
+          <button *ngIf="mode != 1" type="button" class="btn btn-outline-primary btn-sm" (click)="addSpec()">
             add
           </button>
         </div>
@@ -310,31 +199,14 @@
               <li>{{ entry }}</li>
             </div>
           </ul>
-          <div
-            [hidden]="mode == 1"
-            *ngFor="let entry of features.controls; let i = index"
-          >
+          <div [hidden]="mode == 1" *ngFor="let entry of features.controls; let i = index">
             <div class="key-value" [formGroup]="entry">
-              <input
-                required
-                class="form-control"
-                formControlName="value"
-                placeholder="e.g., All purpose inner tube, an excellent choice for replacements"
-              />
-              <i
-                color="blue"
-                type="button"
-                (click)="removeFeature(i)"
-                class="bi bi-dash-circle text-primary"
-              ></i>
+              <input required class="form-control" formControlName="value"
+                placeholder="e.g., All purpose inner tube, an excellent choice for replacements" />
+              <i color="blue" type="button" (click)="removeFeature(i)" class="bi bi-dash-circle text-primary"></i>
             </div>
           </div>
-          <button
-            *ngIf="mode != 1"
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            (click)="addFeature()"
-          >
+          <button *ngIf="mode != 1" type="button" class="btn btn-outline-primary btn-sm" (click)="addFeature()">
             add
           </button>
         </div>
@@ -343,31 +215,13 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-secondary"
-    data-dismiss="modal"
-    (click)="resetForms()"
-    *ngIf="mode != 2"
-  >
+  <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetForms()" *ngIf="mode != 2">
     Close
   </button>
-  <button
-    type="button"
-    class="btn btn-secondary"
-    data-dismiss="modal"
-    (click)="setMode(1)"
-    *ngIf="mode == 2"
-  >
+  <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="setMode(1)" *ngIf="mode == 2">
     Cancel
   </button>
-  <button
-    type="submit"
-    class="btn btn-primary"
-    (click)="validate()"
-    data-dismiss="modal"
-    *ngIf="mode == 0"
-  >
+  <button type="submit" class="btn btn-primary" (click)="validate()" data-dismiss="modal" *ngIf="mode == 0">
     Create Item
   </button>
   <button class="btn btn-primary" (click)="setMode(2)" *ngIf="mode == 1">
