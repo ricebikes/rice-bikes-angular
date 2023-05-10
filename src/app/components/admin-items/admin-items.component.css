@@ -14,6 +14,6 @@ table {
   border: 1px solid #ddd;
 }
 
-.test {
-  position: fixed;
+.padded-container {
+  padding: 0% 10% 0% 10%
 }

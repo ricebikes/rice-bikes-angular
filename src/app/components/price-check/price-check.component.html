@@ -81,6 +81,26 @@
             [hidden]="!(scanData.invalid && scanData.errors.badUPC)"
           >
             <small>UPC not found.</small>
+            <small style="margin-right: 5px" *ngIf="isAdmin | async">
+              Would you like to create an item?
+              <div style="float: right">
+                <button
+                  style="font-size: 0.75rem; margin-right: 10px"
+                  class="btn btn-sm btn-outline-warning"
+                  (click)="scanToCreateItem()"
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  class="close btn-sm"
+                  data-dismiss="alert"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </small>
           </div>
         </div>
       </div>

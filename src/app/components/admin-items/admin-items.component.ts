@@ -47,6 +47,7 @@ export class AdminItemsComponent implements OnInit {
   categories = this.searchService.itemCategories1();
   brands = this.searchService.itemBrands();
 
+  // barcode printing specs
   elementType = "svg";
   format = "UPC";
   width = 2;
@@ -69,7 +70,7 @@ export class AdminItemsComponent implements OnInit {
     "min stock": false
   };
 
-  showFilters = {
+  stockFilters = {
     "in stock": true,
     "out of stock": true,
     "core stock": true,
