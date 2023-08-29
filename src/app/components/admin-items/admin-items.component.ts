@@ -77,28 +77,7 @@ export class AdminItemsComponent implements OnInit {
     disabled: false,
   };
 
-  isGroupChecked(filtersGroup) {
-    const filters = Object.keys(filtersGroup)
-    const checked = filters.filter(filter => filtersGroup[filter])
-    return checked.length >0
-  }
-
-  toggleFilter(filtersObj, filter) {
-    filtersObj[filter] = !filtersObj[filter]
-    // this.filterTransactions()
-  }
-
-  addItem(item: Item) {
-    console.log("item created", item);
-    this.items.splice(0, 0, item);
-    if (item.in_stock && item.in_stock > 0)
-      this.inStockItems.splice(0, 0, item);
-  }
-
-  closeAndResetAll(message: string) {
-    this.itemDetailsForm.resetForms();
-  }
-
+  // on page on, retrieves all items and sets items + in stock items
   ngOnInit() {
     this.itemService.getItems().then((res) => {
       this.items = this.sortItems(res);
@@ -106,6 +85,25 @@ export class AdminItemsComponent implements OnInit {
         (i) => i.in_stock && i.in_stock > 0
       );
     });
+  }
+
+  // used for checkbox filters
+  toggleFilter(filtersObj, filter) {
+    filtersObj[filter] = !filtersObj[filter]
+    // this.filterTransactions()
+  }
+
+  // updates the table with the new item once created from item modal
+  addItem(item: Item) {
+    console.log("item created", item);
+    this.items.splice(0, 0, item);
+    if (item.in_stock && item.in_stock > 0)
+      this.inStockItems.splice(0, 0, item);
+  }
+
+  // resets all the modals and local variables. wonder if there's a way to do this more gracefully?
+  closeAndResetAll(message: string) {
+    this.itemDetailsForm.resetForms();
   }
 
   setItems(items: Item[]) {
@@ -130,7 +128,7 @@ export class AdminItemsComponent implements OnInit {
     this.chosenItem = item;
     this.chosenIdx = idx;
     this.itemModalMode = 1;
-    this.triggerItemDetailsModal();
+    this.formTrigger.nativeElement.click();
   }
 
   refreshItem(item: Item) {
@@ -151,13 +149,13 @@ export class AdminItemsComponent implements OnInit {
 
   triggerCreateItem() {
     this.itemModalMode = 0;
-    this.triggerItemDetailsModal();
-  }
-
-  triggerItemDetailsModal() {
     this.formTrigger.nativeElement.click();
   }
 
+  triggerScanModal() {
+
+  }
+  
   openItemMenu(item?: Item) {
     console.log("clicked menu item");
     this.chosenItem = item;
