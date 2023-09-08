@@ -415,6 +415,9 @@
       >
     </h3>
     <p class="lead">
+      <i class="bi bi-envelope"></i> {{ transaction?.customer?.email}} | <i class="bi bi-telephone"></i> {{ transaction.customer.phone}}
+    </p>
+    <p class="lead">
       {{ transaction?.date_created | date : "medium" }}
       <button
         data-toggle="modal"
