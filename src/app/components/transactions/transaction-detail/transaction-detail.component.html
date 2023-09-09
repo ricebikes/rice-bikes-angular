@@ -415,7 +415,7 @@
       >
     </h3>
     <p class="lead">
-      <i class="bi bi-envelope fa-sm"></i> <a href="mailto:email@example.com">{{ transaction?.customer?.email}}</a>
+      <i class="bi bi-envelope fa-sm"></i> {{ transaction?.customer?.email}}
       <i class="bi bi-telephone fa-sm"></i> {{ transaction?.customer && addDashes(transaction?.customer?.phone)}}
     </p>
     <p class="lead">
