@@ -84,14 +84,10 @@ export class NewBikeTransactionComponent implements OnInit {
         }
 
         this.transactionService.createTransaction('retrospec', hm_customer)
-            .then(trans => this.transactionService.addNewBikeToTransaction(trans._id, bike))
-            .then((trans) => this.router.navigate(['/transactions', trans._id]));
+            .then(trans => {
+                this.transactionService.addNewBikeToTransaction(trans._id, bike);
+                return trans._id;
+            })
+            .then((trans_id) => this.router.navigate(['/transactions', trans_id]));
     }
 }
-
-
-
-
-
-
-

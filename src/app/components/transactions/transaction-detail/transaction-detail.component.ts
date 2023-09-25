@@ -83,8 +83,7 @@ export class TransactionDetailComponent implements OnInit {
   }
 
   addDashes(phone: string) {
-    console.log(phone);
-    return phone.replace(/\D/g, '').slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6, 15);
+    return phone ? phone.replace(/\D/g, '').slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6, 15) : '';
   }
 
   changeType(type: string): void {
