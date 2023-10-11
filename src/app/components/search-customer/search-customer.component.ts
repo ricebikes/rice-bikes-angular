@@ -25,7 +25,6 @@ export class SearchCustomerComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.customerForm = new FormGroup({
       email: new FormControl(this.customer.email, [
         Validators.required,
@@ -36,7 +35,11 @@ export class SearchCustomerComponent implements OnInit {
       ]),
       'last_name': new FormControl(this.customer.last_name, [
         Validators.required
-      ])
+      ]),
+      'phone': new FormControl(this.customer.phone, [
+        Validators.required,
+        Validators.pattern(/^\d{10}$/)
+      ]),
     });
 
     this.customerResults = this.searchTerms
@@ -61,7 +64,8 @@ export class SearchCustomerComponent implements OnInit {
       {
         email: this.customer.email,
         first_name: this.customer.first_name,
-        last_name: this.customer.last_name
+        last_name: this.customer.last_name,
+        phone: this.customer.phone || '',
       }
     );
     this.searchTerms.next('');
@@ -75,8 +79,10 @@ export class SearchCustomerComponent implements OnInit {
       this.customer.first_name = this.customerForm.value['first_name'];
       this.customer.last_name = this.customerForm.value['last_name'];
     }
+    this.customer.phone = this.customerForm.value['phone'];
+
     // send customer to embedding context
-    this.foundCustomer.emit(this.customer)
+    this.foundCustomer.emit(this.customer);
   }
 
 

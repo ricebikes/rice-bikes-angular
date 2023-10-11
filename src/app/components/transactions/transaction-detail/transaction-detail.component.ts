@@ -82,6 +82,10 @@ export class TransactionDetailComponent implements OnInit {
     });
   }
 
+  addDashes(phone: string) {
+    return phone ? phone.replace(/\D/g, '').slice(0, 3) + "-" + phone.slice(3, 6) + "-" + phone.slice(6, 15) : '';
+  }
+
   changeType(type: string): void {
     this.transaction.transaction_type = type;
     this.updateTransaction();
@@ -120,7 +124,7 @@ export class TransactionDetailComponent implements OnInit {
   triggerScanModal() {
     this.addItemComponent.triggerScanModal();
   }
-  
+
   addBike(): void {
     const bike = new Bike();
     bike.make = this.bikeForm.value['bike-make'];
@@ -155,7 +159,7 @@ export class TransactionDetailComponent implements OnInit {
     this.transactionService.deleteItemFromTransaction(this.transaction._id, item_idx);
     // increase stock
     let item = this.transaction.items[item_idx].item;
-    if(item.in_stock != null) {
+    if (item.in_stock != null) {
       item.in_stock++;
       console.log("item", item);
       this.itemService.updateItem(item._id, item);
@@ -165,7 +169,7 @@ export class TransactionDetailComponent implements OnInit {
   addItem(item: Item) {
     this.transactionService.addItemToTransaction(this.transaction._id, item._id);
     // decrease stock
-    if(item.in_stock != null) {
+    if (item.in_stock != null) {
       item.in_stock--;
       this.itemService.updateItem(item._id, item);
     }
@@ -187,7 +191,7 @@ export class TransactionDetailComponent implements OnInit {
     if (this.transaction.orderRequests.length > 0) {
       return false;
     }
-    if (this.transaction.transaction_type == 'retrospec' && this.transaction.status != 'for sale'){
+    if (this.transaction.transaction_type == 'retrospec' && this.transaction.status != 'for sale') {
       return false
     }
     for (const repair of this.transaction.repairs) {
@@ -251,7 +255,7 @@ export class TransactionDetailComponent implements OnInit {
     this.updateTransaction();
   }
   toggleBeerbike(): void {
-      this.transactionService.setBeerBike(this.transaction._id, !this.transaction.beerbike);
+    this.transactionService.setBeerBike(this.transaction._id, !this.transaction.beerbike);
   }
   toggleUrgent(): void {
     this.transaction.urgent = !this.transaction.urgent;
