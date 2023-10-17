@@ -4,8 +4,6 @@
 <app-order-request-selector #orderRequestSelectorComponent (chosenRequest)="addSelectedOrderReq($event)"
   [create_only]="true"></app-order-request-selector>
 
-
-
 <!-- Make this wider than default viewport with custom class -->
 <div class="container-fluid padded-container">
   <!-- Top row, just has the sync indicator.-->
@@ -31,16 +29,14 @@
       <!-- Column nesting hack to get the "#" column to be smaller-->
       <div class="row">
         <div class="col-2"><b>#</b></div> <!-- 2.7% of width-->
-        <div class="col-10"><b>Description</b></div> <!-- 13.8% of width -->
+        <div class="col-10"><b>Item</b></div> <!-- 13.8% of width -->
       </div>
     </div>
-    <div class="col-1"><b>Item #</b></div> <!-- 16.7% -->
+    <div class="col-2"><b>Item</b></div>
     <div class="col-1"><b>Quantity</b></div> <!-- 8.3% -->
     <div class="col-1"><b>Transactions</b></div>
-    <div class="col-2"><b>Item</b></div>
-    <div class="col-1"><b>Order</b></div>
-    <div class="col-1"><b>Status</b></div>
-    <div class="col-2"><b>Notes</b></div>
+    <!-- <div class="col-1"><b>Status</b></div> -->
+    <!-- <div class="col-2"><b>Notes</b></div> -->
     <div class="col-1"><b>Actions</b></div>
   </div>
   <hr />
@@ -64,11 +60,6 @@
               <input class="form-control" formControlName="request" />
             </div>
           </div>
-        </div>
-
-        <div class="col-1">
-          <!-- Part Number -->
-          <input class="form-control" formControlName="partNumber" />
         </div>
         <div class="col-1">
           <!-- Quantity -->
@@ -95,8 +86,7 @@
             </div>
           </div>
         </div>
-        <div class="col-1">
-          <!-- Order -->
+        <!-- <div class="col-1" ORDER>
           <button *ngIf="!obj.request.orderRef" class="btn" (click)="triggerOrderSelectModal(idx)"
             [disabled]="(obj.request.itemRef == null) || !(isAdmin | async)"
             [ngClass]="{'btn-outline-secondary': !obj.urgent, 'btn-secondary': obj.urgent}">Choose</button>
@@ -107,16 +97,16 @@
               [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-dark':obj.urgent}"
               (click)="removeOrderFromRequest(idx)"><i class="fas fa-times"></i></button>
           </div>
-        </div>
-        <div class="col-1">
-          <!-- Status -->
+        </div> -->
+        <!-- <div class="col-1">
+          Status
           <p class="form-control-plaintext">
             {{obj.request.status}}
           </p>
-        </div>
+        </div> -->
         <div class="col-2">
           <!-- Notes -->
-          <input class="form-control" formControlName="notes" />
+          <!-- <input class="form-control" formControlName="notes" /> -->
           <!-- PORT TO ANGULAR 5 and install ngx-autosize to use this: <textarea autosize class="form-control" formControlName="notes"></textarea> -->
         </div>
         <div class="col-1">
@@ -145,108 +135,7 @@
 <!-- Detailed Item View Modal -->
 <div class="modal fade" id="detailedItemViewModal" tabindex="-1" role="dialog" aria-labelledby="detailedItemViewModal"
   aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detailedItemViewTitle">Detailed Item View</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" *ngIf="selectedDetailItem">
-        <div class="container">
-          <div class="row">
-            <div class="col-4">
-              <b>Name:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.name}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>UPC:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.upc}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Price:</b>
-            </div>
-            <div class="col-8">
-              ${{selectedDetailItem.standard_price}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Wholesale Price:</b>
-            </div>
-            <div class="col-8">
-              ${{selectedDetailItem.wholesale_cost}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Current Stock</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.stock}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Desired Stock</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.desired_stock}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Minimum Stock</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.minimum_stock}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Condition:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.condition}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Brand:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.brand}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Size:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.size}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Category:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.category}}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- replace with other item details modal -->
 </div>
 
 <!--Delete Confirmation Modal -->
