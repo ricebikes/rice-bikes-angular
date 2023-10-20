@@ -69,7 +69,6 @@ export class OrderRequestService {
   createOrderReq(
     quantity: number,
     request: string,
-    partNum?: string,
     transactions?: number[],
     item?: Item
   ): Promise<OrderRequest> {
@@ -77,9 +76,6 @@ export class OrderRequestService {
       quantity: quantity,
       request: request,
     };
-    if (partNum) {
-      body["partNumber"] = partNum;
-    }
     if (transactions) {
       body["transactions"] = transactions;
     }
@@ -169,31 +165,6 @@ export class OrderRequestService {
   }
 
   /**
-   * Sets the part number string for an OrderRequest
-   * @param orderReq: request to update
-   * @param partNumber: new part number to set for Order Request
-   */
-  setPartNum(
-    orderReq: OrderRequest,
-    partNumber: string
-  ): Promise<OrderRequest> {
-    return this.authService.getUserCredentials().then((cred) => {
-      return this.http
-        .put(
-          `${this.backendURL}/${orderReq._id}/partnumber`,
-          { partNum: partNumber },
-          cred
-        )
-        .toPromise()
-        .then((res) => res.json() as OrderRequest)
-        .catch((err) => {
-          this.handleError(err);
-          return null;
-        });
-    });
-  }
-
-  /**
    * Sets the notes string for an OrderRequest
    * @param orderReq: request to update
    * @param partNumber: new notes string to set for Order Request
@@ -262,6 +233,24 @@ export class OrderRequestService {
     });
   }
 
+  /**
+   * Complete a request and add parts to transactions
+   */
+  completeRequest(orderReq: OrderRequest): Promise<void> {
+    return this.authService.getCredentials().then((cred) => {
+      return this.http.put(
+        `${this.backendURL}/${orderReq._id}/status`,
+        { id: orderReq._id, status: 'Completed'},
+        cred
+      )
+      .toPromise()
+      .then((res) => res.json())
+      .catch((err) => {
+        this.handleError(err);
+        return null;
+      });
+    });
+  }
 
   /**
    * Deletes an Order Request from the database

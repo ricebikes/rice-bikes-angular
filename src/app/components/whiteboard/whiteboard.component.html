@@ -24,20 +24,11 @@
   </div>
   <!-- Header Row, to label each column -->
   <div class="form-row">
-    <div class="col-2">
-      <!--16.7% of width of viewport-->
-      <!-- Column nesting hack to get the "#" column to be smaller-->
-      <div class="row">
-        <div class="col-2"><b>#</b></div> <!-- 2.7% of width-->
-        <div class="col-10"><b>Item</b></div> <!-- 13.8% of width -->
-      </div>
-    </div>
-    <div class="col-2"><b>Item</b></div>
-    <div class="col-1"><b>Quantity</b></div> <!-- 8.3% -->
-    <div class="col-1"><b>Transactions</b></div>
-    <!-- <div class="col-1"><b>Status</b></div> -->
-    <!-- <div class="col-2"><b>Notes</b></div> -->
-    <div class="col-1"><b>Actions</b></div>
+    <div class="col-2"><b>#</b></div>
+    <div class="col-4"><b>Item</b></div>
+    <div class="col-1"><b>Qty</b></div> <!-- 8.3% -->
+    <div class="col-4"><b>Notes</b></div>
+
   </div>
   <hr />
   <div *ngFor="let obj of orderRequestsWithForms; let idx=index">
@@ -45,78 +36,54 @@
       "form" is the editable form for the orderRequest, and "request"
       is the actual request object.-->
     <form [formGroup]="obj.form">
-      <div class="form-row py-2" [ngClass]="{'bg-light-red': obj.urgent}">
+      <div class="form-row py-2 table-row-hover">
         <div class="col-2">
-          <!-- Awful column nesting hack to get the "#" column to be smaller-->
-          <div class="row">
-            <div class="col-2">
-              <!--Request ID -->
-              <b class="form-control-plaintext">
-                {{ obj.request._id }}
-              </b>
+          <!--Request ID -->
+          <b class="form-control-plaintext">
+            {{obj.request._id}}
+            <!--Transactions/Core stock badge-->
+            <span style="cursor: pointer" class="badge badge-success" *ngFor="let transaction of obj.transactions"
+            [routerLink]="['/transactions/', transaction]">{{transaction}}</span>
+            <span *ngIf="obj.request.itemRef && obj.request.itemRef.min_stock " class="badge badge-primary">core</span>
+          </b>
+        </div>
+        <div class="col-4">
+          <!-- Editable Request Description (if no item attached) -->
+          <div class="input-group" *ngIf="!obj.request.itemRef">
+            <input class="form-control" formControlName="request" />
+            <!-- Select item button -->
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-outline-secondary"
+                (click)="triggerItemSelectModal(idx)" [disabled]="!(isAdmin | async)"><i class="fa fa-edit"></i></button>
             </div>
-            <div class="col-10">
-              <!--Request Description -->
-              <input class="form-control" formControlName="request" />
-            </div>
+          </div>
+          <!-- Item -->
+          <div style="cursor: pointer" (click)="test(idx)" *ngIf="obj.request.itemRef">
+            <!-- Categories -->
+            <small>{{obj.request.itemRef.category_1}} {{ obj.request.itemRef.category_2 ? " > " + obj.request.itemRef.category_2 : ''}} {{ obj.request.itemRef.category_3 ? " > " + obj.request.itemRef.category_3 : ''}}</small>
+            <div>{{obj.request.itemRef.name}}</div>
           </div>
         </div>
         <div class="col-1">
           <!-- Quantity -->
-          <input
-            [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number"
-            [min]="obj.request.transactions ? obj.request.transactions.length : 1" formControlName="quantity"/>
+          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number"
+            [min]="obj.request.transactions ? obj.request.transactions.length : 1" formControlName="quantity" />
         </div>
-        <div class="col-1">
-          <!-- Transactions -->
-          <p class="form-control-plaintext">{{obj.transaction_str}}</p>
-        </div>
-        <div class="col-2">
-          <!-- Item -->
-          <button *ngIf="!obj.request.itemRef" class="btn"
-            [ngClass]="{'btn-outline-secondary': !obj.urgent, 'btn-primary': obj.urgent}"
-            (click)="triggerItemSelectModal(idx)" [disabled]="!(isAdmin | async)">Select Item</button>
-          <div class="input-group" *ngIf="obj.request.itemRef">
-            <input type="text" readonly class="form-control" [value]="obj.request.itemRef.name" />
-            <div class="input-group-append">
-              <button class="btn btn-secondary" (click)="setItemForDetailedView(idx)" data-toggle="modal"
-                data-target="#detailedItemViewModal"><i class="fas fa-eye"></i></button>
-              <button *ngIf="(isAdmin | async) && obj.request.status != 'Completed'" class="btn btn-secondary"
-                (click)="triggerItemSelectModal(idx)"><i class="fas fa-edit"></i></button>
-            </div>
-          </div>
-        </div>
-        <!-- <div class="col-1" ORDER>
-          <button *ngIf="!obj.request.orderRef" class="btn" (click)="triggerOrderSelectModal(idx)"
-            [disabled]="(obj.request.itemRef == null) || !(isAdmin | async)"
-            [ngClass]="{'btn-outline-secondary': !obj.urgent, 'btn-secondary': obj.urgent}">Choose</button>
-          <div *ngIf="obj.request.orderRef" class="btn-group" role="group">
-            <a role="button" class="btn" [ngClass]="{'btn-outline-success': !obj.urgent, 'btn-secondary': obj.urgent}"
-              [routerLink]="['/orders', obj.request.orderRef]">{{obj.request.supplier}}</a>
-            <button *ngIf="(isAdmin | async) && obj.request.status != 'Completed'" type="button" class="btn"
-              [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-dark':obj.urgent}"
-              (click)="removeOrderFromRequest(idx)"><i class="fas fa-times"></i></button>
-          </div>
-        </div> -->
-        <!-- <div class="col-1">
-          Status
-          <p class="form-control-plaintext">
-            {{obj.request.status}}
-          </p>
-        </div> -->
-        <div class="col-2">
+        <div class="col-4">
           <!-- Notes -->
-          <!-- <input class="form-control" formControlName="notes" /> -->
-          <!-- PORT TO ANGULAR 5 and install ngx-autosize to use this: <textarea autosize class="form-control" formControlName="notes"></textarea> -->
+          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('notes').invalid}" type="text" formControlName="notes" />
         </div>
         <div class="col-1">
-          <!-- History and Delete-->
+          <!-- Complete, History and Delete-->
           <div class="btn-group" role="group">
-            <button class="btn" [ngClass]="{'btn-outline-primary': !obj.urgent, 'btn-secondary': obj.urgent}"
+            <button [disabled]="!obj.request.itemRef" (click)="this.currentSelectedRequestIdx=idx" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#completeConfirmationModal">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-primary"
               data-toggle="modal" data-target="#pastActionsModal" (click)="setOrderReqForActionsView(obj.request)"><i
                 class="fas fa-history"></i></button>
-            <button [disabled]="obj.request.status=='Completed' && !(isAdmin | async)" class="btn" [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-secondary': obj.urgent}"
-              data-toggle="modal" data-target="#deleteConfirmationModal" (click)="this.currentSelectedRequestIdx=idx"><i
+            <button [disabled]="obj.request.status=='Completed' && !(isAdmin | async)" class="btn btn-sm btn-outline-danger" data-toggle="modal"
+              data-target="#deleteConfirmationModal" (click)="this.currentSelectedRequestIdx=idx;"><i
                 class="fas fa-trash"></i></button>
           </div>
         </div>
@@ -129,9 +96,33 @@
       Load More
     </button>
   </div>
+
 </div>
 
 <!--Page specific Modals-->
+
+<!-- Complete Request Modal -->
+<div class="modal fade" id="completeConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="completeConfirmationModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="completeConfirmationModalLabel">Are you sure?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to complete this request? Item will be automatically be added to transactions waiting. Please update transaction notes. This cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button (click)="confirmCompleteOrderRequest()" data-dismiss="modal" type="button" class="btn btn-success">
+          Complete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Detailed Item View Modal -->
 <div class="modal fade" id="detailedItemViewModal" tabindex="-1" role="dialog" aria-labelledby="detailedItemViewModal"
   aria-hidden="true">

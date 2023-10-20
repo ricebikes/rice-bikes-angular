@@ -167,7 +167,6 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
     }
     this.orderRequestService.createOrderReq(quantity,
       this.stagedOrderRequestForm.get('request').value,
-      this.stagedOrderRequestForm.get('partNum').value,
       transactions,
       null).then(newOrderReq => {
         // Emit the new Order Request

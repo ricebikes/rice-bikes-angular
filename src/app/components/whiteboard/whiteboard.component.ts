@@ -5,6 +5,7 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  FormArray,
   Validators,
 } from "@angular/forms";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
@@ -24,8 +25,7 @@ import { TransactionService } from "../../services/transaction.service";
 class OrderRequestContainer {
   form: FormGroup;
   request: OrderRequest;
-  transaction_str: String;
-  urgent: boolean;
+  transactions: Number[];
 }
 
 @Component({
@@ -98,24 +98,12 @@ export class WhiteboardComponent implements OnInit {
     // Now, subscribe to item state changes for the values that are editable.
     this.setSubscriptions(group, request);
     // Make a human readable transaction string for the object we push
-    let transaction_str = "";
+    let transactions = new Set<Number>();
     for (let transaction of request.transactions) {
-      transaction_str += (transaction + ", ");
+      transactions.add(transaction);
     }
-    if (transaction_str == "") {
-      transaction_str = "None";
-    } else {
-      transaction_str = transaction_str.slice(0, -2); // Remove last comma
-    }
-    // Request is urgent if minimum stock is nonzero, and current stock is less than or equal to minimum.
-    // const urgent = (request.status != 'Completed')
-    //   && (request.itemRef != null)
-    //   && (request.itemRef.minimum_stock != null)
-    //   && (request.itemRef.minimum_stock > 0)
-    //   && (request.itemRef.stock <= request.itemRef.minimum_stock)
-    // Push an object to hold both the request and its form.
-    // return { form: group, request: request, transaction_str: transaction_str, urgent: urgent };
-    return { form: group, request: request, transaction_str: transaction_str, urgent: false };
+    console.log(request.itemRef, transactions, request);
+    return { form: group, request: request, transactions: Array.from(transactions)};
   }
 
   /**
@@ -146,7 +134,6 @@ export class WhiteboardComponent implements OnInit {
     for (let control of [
       "request",
       "quantity",
-      "partNumber",
       "notes"
     ]) {
       group.controls[control].valueChanges.subscribe(() =>
@@ -188,19 +175,6 @@ export class WhiteboardComponent implements OnInit {
             });
         }
       });
-    group.controls["partNumber"].valueChanges
-      .debounceTime(300)
-      .subscribe((partNum) => {
-        if (!partNum) {
-          // Set part number to empty string
-          partNum = '';
-        }
-        this.orderRequestService.setPartNum(request, partNum)
-          .then((newReq) => {
-            this.formSynced.next(true);
-            request.actions = newReq.actions;
-          });
-      });
     group.controls["notes"].valueChanges
       .debounceTime(300)
       .subscribe((notes) => {
@@ -236,8 +210,7 @@ export class WhiteboardComponent implements OnInit {
   orderReqToForm(req: OrderRequest): FormGroup {
     return this.fb.group({
       request: [req.request, Validators.required],
-      quantity: [{ value: req.quantity, disabled: req.status == 'Completed' }, Validators.compose([Validators.required, WhiteboardComponent.nonZero])],
-      partNumber: [req.partNumber],
+      quantity: [req.quantity, Validators.compose([Validators.required, WhiteboardComponent.nonZero])],
       notes: [req.notes],
     });
   }
@@ -325,7 +298,7 @@ export class WhiteboardComponent implements OnInit {
    * Remove Order Request at  index "idx" from it's Order
    * @param idx Index of order request to remove order for
    */
-  removeOrderFromRequest(idx) {
+  /*removeOrderFromRequest(idx) {
     // ID is the only required field here, and we have it stored in the order request, so make "dummy" object
     let order: Order = <Order>{
       _id: this.orderRequestsWithForms[idx].request.orderRef,
@@ -335,13 +308,32 @@ export class WhiteboardComponent implements OnInit {
         // Just need to clear the orderRef value in our local copy of the data, no need to pull from backend
         this.orderRequestsWithForms[idx].request.orderRef = null;
       })
-  }
+  }*/
 
   /**
    * Deletes the order request at "currentSelectedRequestIdx"
    */
   confirmDeleteOrderRequest() {
     const targetIdx = this.currentSelectedRequestIdx;
+    this.orderRequestService.deleteRequest(this.orderRequestsWithForms[targetIdx].request)
+      .then(() => {
+        this.orderRequestsWithForms.splice(targetIdx, 1);
+        this.numberRequested--;
+        this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
+      });
+  }
+
+  /**
+   * Completes the order request at "currentSelectedRequestIdx"
+   */
+  confirmCompleteOrderRequest() {
+    console.log('hi!');
+    const targetIdx = this.currentSelectedRequestIdx;
+
+    // add waiting parts to transactions
+    this.orderRequestService.completeRequest(this.orderRequestsWithForms[targetIdx].request)
+
+    // remove from database
     this.orderRequestService.deleteRequest(this.orderRequestsWithForms[targetIdx].request)
       .then(() => {
         this.orderRequestsWithForms.splice(targetIdx, 1);
@@ -367,5 +359,14 @@ export class WhiteboardComponent implements OnInit {
    */
   openOrderRequestCreationModal() {
     this.orderRequestSelectorComponent.launchOrderRequestCreator();
+  }
+
+  changeData(event) {
+    event.stopPropagation();
+ }
+
+  test(idx) {
+    console.log(idx);
+    this.triggerItemSelectModal(idx);
   }
 }

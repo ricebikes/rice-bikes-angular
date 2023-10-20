@@ -14,3 +14,7 @@ hr.thick {
 .bg-light-red {
     background-color: #f8d7daff
 }
+
+.table-row-hover:hover {
+    background-color: rgba(0,0,0,.075);
+}
