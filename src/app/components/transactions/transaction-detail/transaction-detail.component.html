@@ -141,7 +141,6 @@
             <th scope="col">#</th>
             <th scope="col">Description</th>
             <th scope="col">Item</th>
-            <th scope="col">Status</th>
             <th scope="col">Remove</th>
           </thead>
           <tbody>
@@ -150,7 +149,6 @@
               <td>{{ orderReq.request }}</td>
               <td *ngIf="orderReq.itemRef">{{ orderReq.itemRef.name }}</td>
               <td *ngIf="!orderReq.itemRef">None</td>
-              <td>{{ orderReq.status }}</td>
               <td>
                 <button
                   class="btn btn-outline-danger"
@@ -550,6 +548,7 @@
             #addItemComponent
             *ngIf="!transaction?.is_paid"
             (chosenItem)="addItem($event)"
+            (chosenWhiteboardItem)="addWhiteboardItem($event)"
             [employee]="transaction?.employee"
           ></app-add-item>
           <!-- Item search trigger -->
@@ -637,6 +636,7 @@
     <app-order-request-selector
       #orderRequestSelector
       [create_only]="false"
+      [addItemComponent]="addItemComponent"
       [preset_transaction]="transaction"
       (chosenRequest)="addOrderRequest($event)"
     ></app-order-request-selector>

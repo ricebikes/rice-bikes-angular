@@ -4,6 +4,7 @@ import { Action } from "./action";
 export class OrderRequest {
   _id: number;
   request: string;
+  categories: string[];
   quantity: number;
   transactions: number[]; // ID value of transactions, not auto populated
   notes: String;

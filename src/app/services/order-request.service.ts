@@ -69,18 +69,22 @@ export class OrderRequestService {
   createOrderReq(
     quantity: number,
     request: string,
+    category_1: string,
+    category_2: string,
+    category_3: string,
+    item: Item,
     transactions?: number[],
-    item?: Item
   ): Promise<OrderRequest> {
     const body = {
       quantity: quantity,
       request: request,
+      categories: [category_1, category_2, category_3],
     };
     if (transactions) {
       body["transactions"] = transactions;
     }
     if (item) {
-      body["item"] = item;
+      body["item_id"] = item._id;
     }
     return this.authService.getUserCredentials().then((cred) => {
       return this.http
@@ -140,12 +144,12 @@ export class OrderRequestService {
   ): Promise<OrderRequest> {
     return this.authService.getUserCredentials().then(credentials => {
       return this.http
-        .post(`${this.backendURL}/${orderReq._id}/transaction`, 
-        {transaction_id: transaction_id}, 
-        credentials
+        .post(`${this.backendURL}/${orderReq._id}/transaction`,
+          { transaction_id: transaction_id },
+          credentials
         ).toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => {this.handleError(err); return null;})
+        .catch(err => { this.handleError(err); return null; })
     })
   }
 
@@ -160,7 +164,7 @@ export class OrderRequestService {
           cred
         ).toPromise()
         .then(res => res.json() as OrderRequest)
-        .catch(err => {this.handleError(err); return null});
+        .catch(err => { this.handleError(err); return null });
     })
   }
 
@@ -217,6 +221,7 @@ export class OrderRequestService {
    * @param item: item to associate with it
    */
   setItem(orderReq: OrderRequest, item: Item): Promise<OrderRequest> {
+    console.log('set item', orderReq, item)
     return this.authService.getUserCredentials().then((cred) => {
       return this.http
         .put(
@@ -240,15 +245,15 @@ export class OrderRequestService {
     return this.authService.getCredentials().then((cred) => {
       return this.http.put(
         `${this.backendURL}/${orderReq._id}/status`,
-        { id: orderReq._id, status: 'Completed'},
+        { id: orderReq._id, status: 'Completed' },
         cred
       )
-      .toPromise()
-      .then((res) => res.json())
-      .catch((err) => {
-        this.handleError(err);
-        return null;
-      });
+        .toPromise()
+        .then((res) => res.json())
+        .catch((err) => {
+          this.handleError(err);
+          return null;
+        });
     });
   }
 

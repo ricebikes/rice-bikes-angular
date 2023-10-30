@@ -224,7 +224,7 @@
   <button type="submit" class="btn btn-primary" (click)="validate()" data-dismiss="modal" *ngIf="mode == 0">
     Create Item
   </button>
-  <button class="btn btn-primary" (click)="setMode(2)" *ngIf="mode == 1">
+  <button [hidden]="viewOnly" class="btn btn-primary" (click)="setMode(2)" *ngIf="mode == 1">
     Edit Item
   </button>
   <button class="btn btn-primary" (click)="validate(true)" *ngIf="mode == 2">

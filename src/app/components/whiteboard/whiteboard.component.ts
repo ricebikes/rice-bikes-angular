@@ -5,7 +5,6 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
-  FormArray,
   Validators,
 } from "@angular/forms";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
@@ -17,7 +16,6 @@ import { OrderSelectorComponent } from "../orders/order-selector/order-selector.
 import { OrderRequestSelectorComponent } from "../whiteboard/order-request-selector/order-request-selector.component";
 import { Order } from "../../models/order";
 import { TransactionService } from "../../services/transaction.service";
-
 
 /**
  * Simple internal Class, used to store Order Request objects with their form
@@ -37,6 +35,7 @@ export class WhiteboardComponent implements OnInit {
   @ViewChild('addItemComponent') addItemComponent: AddItemComponent;
   @ViewChild('orderSelectorComponent') OrderSelectorComponent: OrderSelectorComponent;
   @ViewChild('orderRequestSelectorComponent') orderRequestSelectorComponent: OrderRequestSelectorComponent;
+  @ViewChild("itemViewFormTrigger") itemViewFormTrigger: ElementRef;
 
   constructor(
     private orderRequestService: OrderRequestService,
@@ -72,6 +71,8 @@ export class WhiteboardComponent implements OnInit {
   orderRequests: BehaviorSubject<OrderRequest[]> = new BehaviorSubject<
     OrderRequest[]
   >(null);
+  itemModalMode = 1;
+  chosenItem: Item;
 
 
   ngOnInit() {
@@ -102,8 +103,7 @@ export class WhiteboardComponent implements OnInit {
     for (let transaction of request.transactions) {
       transactions.add(transaction);
     }
-    console.log(request.itemRef, transactions, request);
-    return { form: group, request: request, transactions: Array.from(transactions)};
+    return { form: group, request: request, transactions: Array.from(transactions) };
   }
 
   /**
@@ -225,7 +225,7 @@ export class WhiteboardComponent implements OnInit {
     this.orderRequestService.setItem(this.orderRequestsWithForms[currentRequestIdx].request, item)
       .then(newReq => {
         this.orderRequestsWithForms[currentRequestIdx] = this.orderRequestToContainer(newReq);
-      })
+      });
   }
 
   /**
@@ -233,7 +233,7 @@ export class WhiteboardComponent implements OnInit {
    * @param request_idx: Index of order request that item should be added to.
    */
   triggerItemSelectModal(request_idx: number) {
-    this.currentSelectedRequestIdx = request_idx;
+    this.currentSelectedRequestIdx = request_idx; // increment by 1 because the create request item is index 0
     // Now, trigger the item dialog. This is the only place we should trigger the dialog.
     this.addItemComponent.triggerItemSearch();
   }
@@ -273,6 +273,7 @@ export class WhiteboardComponent implements OnInit {
    */
   addSelectedOrder(order: Order) {
     // Save the selected request idx
+    console.log('add selected', this.orderRequestsWithForms)
     const currentIdx = this.currentSelectedRequestIdx;
     // Set the order.
     this.orderService.addOrderRequest(order, this.orderRequestsWithForms[currentIdx].request)
@@ -294,21 +295,10 @@ export class WhiteboardComponent implements OnInit {
     this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
   }
 
-  /**
-   * Remove Order Request at  index "idx" from it's Order
-   * @param idx Index of order request to remove order for
-   */
-  /*removeOrderFromRequest(idx) {
-    // ID is the only required field here, and we have it stored in the order request, so make "dummy" object
-    let order: Order = <Order>{
-      _id: this.orderRequestsWithForms[idx].request.orderRef,
-    };
-    this.orderService.disassociateOrderRequest(order, this.orderRequestsWithForms[idx].request)
-      .then(newOrder => {
-        // Just need to clear the orderRef value in our local copy of the data, no need to pull from backend
-        this.orderRequestsWithForms[idx].request.orderRef = null;
-      })
-  }*/
+  addItemToNewRequest(item: Item) {
+    console.log('adding item', item);
+    this.orderRequestSelectorComponent.addItemToOrderRequest(item);
+  }
 
   /**
    * Deletes the order request at "currentSelectedRequestIdx"
@@ -327,15 +317,11 @@ export class WhiteboardComponent implements OnInit {
    * Completes the order request at "currentSelectedRequestIdx"
    */
   confirmCompleteOrderRequest() {
-    console.log('hi!');
     const targetIdx = this.currentSelectedRequestIdx;
-
     // add waiting parts to transactions
-    this.orderRequestService.completeRequest(this.orderRequestsWithForms[targetIdx].request)
-
-    // remove from database
-    this.orderRequestService.deleteRequest(this.orderRequestsWithForms[targetIdx].request)
-      .then(() => {
+    const requestToComplete = this.orderRequestsWithForms[targetIdx].request;
+    this.orderRequestService.completeRequest(this.orderRequestsWithForms[targetIdx].request).then(() => {
+       this.orderRequestService.deleteRequest(requestToComplete);
         this.orderRequestsWithForms.splice(targetIdx, 1);
         this.numberRequested--;
         this.totalNumRequests = this.orderRequestService.getDistinctIDs().then(res => res.length);
@@ -363,10 +349,12 @@ export class WhiteboardComponent implements OnInit {
 
   changeData(event) {
     event.stopPropagation();
- }
+  }
 
-  test(idx) {
-    console.log(idx);
-    this.triggerItemSelectModal(idx);
+  triggerEditItemModal(item, idx) {
+    // enable item-details-form modal in edit mode and fill the values with chosenItem
+    this.chosenItem = item;
+    this.itemModalMode = 2;
+    this.itemViewFormTrigger.nativeElement.click();
   }
 }

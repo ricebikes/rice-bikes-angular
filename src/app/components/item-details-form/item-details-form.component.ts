@@ -40,6 +40,7 @@ export class ItemDetailsFormComponent implements OnInit {
   @Input("mode") mode: number;
   @Input("close") close: boolean;
   @Input("item") item: Item;
+  @Input("viewOnly") viewOnly: boolean = false;
 
   // Emit this to the listening component
   @Output() newItem = new EventEmitter<Item>();
@@ -91,7 +92,6 @@ export class ItemDetailsFormComponent implements OnInit {
     if (!this.is_core_stock) {
       this.newItemForm.controls["min_stock"].setValue(null);
     }
-    console.log(this.is_core_stock);
   }
   print(): void {
     let printContents, popupWin;
@@ -241,7 +241,6 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   validate(update?: boolean) {
-    console.log("validate?", this.newItemForm.controls.in_stock.value, this.newItemForm.controls.min_stock.value, this.newItemForm.controls.standard_price.value);
     var form = document.getElementsByClassName(
       "needs-validation"
     )[0] as HTMLFormElement;
@@ -290,7 +289,6 @@ export class ItemDetailsFormComponent implements OnInit {
   }
 
   updateItem() {
-    console.log("updateItem called");
     this.itemService
       .updateItem(this.item._id, {
         _id: "",

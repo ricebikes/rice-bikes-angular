@@ -1,8 +1,25 @@
 <!-- Add Item Component -->
-<app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" [employee]="true"></app-add-item>
+<app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" (chosenWhiteboardItem)="addItemToNewRequest($event)" [employee]="true"></app-add-item>
 <app-order-selector #orderSelectorComponent (chosenOrder)="addSelectedOrder($event)"></app-order-selector>
-<app-order-request-selector #orderRequestSelectorComponent (chosenRequest)="addSelectedOrderReq($event)"
+<app-order-request-selector #orderRequestSelectorComponent [addItemComponent]="addItemComponent" (chosenRequest)="addSelectedOrderReq($event)"
   [create_only]="true"></app-order-request-selector>
+
+<button #itemViewFormTrigger hidden type="button" class="btn btn-outline-primary" data-toggle="modal"
+  data-target="#viewOrderRequestItemModal">
+  FAKE BUTTON
+</button>
+<div class="modal fade" id="viewOrderRequestItemModal" #viewOrderRequestItemModal tabindex="-1" role="dialog"
+  aria-labelledby="viewOrderRequestItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="scroll">
+        <app-item-details-form #viewOrderRequestItemModal id="itemModal" [mode] = '2' [viewOnly]="true" [item]="chosenItem"
+          (newItem)="addItem($event)" (editItem)="refreshItem($event)"
+          (closeAll)="closeAndResetAll($event)"></app-item-details-form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Make this wider than default viewport with custom class -->
 <div class="container-fluid padded-container">
@@ -36,32 +53,29 @@
       "form" is the editable form for the orderRequest, and "request"
       is the actual request object.-->
     <form [formGroup]="obj.form">
-      <div class="form-row py-2 table-row-hover">
+      <div style="align-items: end" class="form-row py-2 table-row-hover">
         <div class="col-2">
           <!--Request ID -->
           <b class="form-control-plaintext">
             {{obj.request._id}}
             <!--Transactions/Core stock badge-->
             <span style="cursor: pointer" class="badge badge-success" *ngFor="let transaction of obj.transactions"
-            [routerLink]="['/transactions/', transaction]">{{transaction}}</span>
+              [routerLink]="['/transactions/', transaction]">{{transaction}}</span>
             <span *ngIf="obj.request.itemRef && obj.request.itemRef.min_stock " class="badge badge-primary">core</span>
           </b>
         </div>
         <div class="col-4">
-          <!-- Editable Request Description (if no item attached) -->
-          <div class="input-group" *ngIf="!obj.request.itemRef">
-            <input class="form-control" formControlName="request" />
-            <!-- Select item button -->
+          <small>{{obj.request.categories[0]}} {{ obj.request.categories[1] ? " > " + obj.request.categories[1] :
+            ''}} {{ obj.request.categories[2] ? " > " + obj.request.categories[2] : ''}}</small>
+          <!-- Editable Request Description Or Item -->
+          <div class="input-group">
+            <input *ngIf="!obj.request.itemRef" class="form-control" formControlName="request" />
+            <input *ngIf="obj.request.itemRef" (click)="triggerEditItemModal(obj.request.itemRef, idx)"
+              style="cursor: pointer;" readonly class="form-control" formControlName="request"
+              value={{obj.request.itemRef.name}} />
             <div class="input-group-append">
-              <button class="btn btn-sm btn-outline-secondary"
-                (click)="triggerItemSelectModal(idx)" [disabled]="!(isAdmin | async)"><i class="fa fa-edit"></i></button>
+              <button class="btn btn-sm btn-outline-secondary" (click)="triggerItemSelectModal(idx)"><i class="fa fa-edit"></i></button>
             </div>
-          </div>
-          <!-- Item -->
-          <div style="cursor: pointer" (click)="test(idx)" *ngIf="obj.request.itemRef">
-            <!-- Categories -->
-            <small>{{obj.request.itemRef.category_1}} {{ obj.request.itemRef.category_2 ? " > " + obj.request.itemRef.category_2 : ''}} {{ obj.request.itemRef.category_3 ? " > " + obj.request.itemRef.category_3 : ''}}</small>
-            <div>{{obj.request.itemRef.name}}</div>
           </div>
         </div>
         <div class="col-1">
@@ -71,20 +85,21 @@
         </div>
         <div class="col-4">
           <!-- Notes -->
-          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('notes').invalid}" type="text" formControlName="notes" />
+          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('notes').invalid}" type="text"
+            formControlName="notes" />
         </div>
         <div class="col-1">
           <!-- Complete, History and Delete-->
           <div class="btn-group" role="group">
-            <button [disabled]="!obj.request.itemRef" (click)="this.currentSelectedRequestIdx=idx" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#completeConfirmationModal">
+            <button [disabled]="!obj.request.itemRef" (click)="this.currentSelectedRequestIdx=idx"
+              class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#completeConfirmationModal">
               <i class="fas fa-check"></i>
             </button>
-            <button class="btn btn-sm btn-outline-primary"
-              data-toggle="modal" data-target="#pastActionsModal" (click)="setOrderReqForActionsView(obj.request)"><i
-                class="fas fa-history"></i></button>
-            <button [disabled]="obj.request.status=='Completed' && !(isAdmin | async)" class="btn btn-sm btn-outline-danger" data-toggle="modal"
-              data-target="#deleteConfirmationModal" (click)="this.currentSelectedRequestIdx=idx;"><i
-                class="fas fa-trash"></i></button>
+            <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal"
+              (click)="setOrderReqForActionsView(obj.request)"><i class="fas fa-history"></i></button>
+            <button [disabled]="obj.request.status=='Completed' && !(isAdmin | async)"
+              class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteConfirmationModal"
+              (click)="this.currentSelectedRequestIdx=idx;"><i class="fas fa-trash"></i></button>
           </div>
         </div>
       </div>
@@ -102,7 +117,8 @@
 <!--Page specific Modals-->
 
 <!-- Complete Request Modal -->
-<div class="modal fade" id="completeConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="completeConfirmationModal">
+<div class="modal fade" id="completeConfirmationModal" tabindex="-1" role="dialog"
+  aria-labelledby="completeConfirmationModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -112,7 +128,8 @@
         </button>
       </div>
       <div class="modal-body">
-        Are you sure you want to complete this request? Item will be automatically be added to transactions waiting. Please update transaction notes. This cannot be undone.
+        Are you sure you want to complete this request? Item will be automatically be added to transactions waiting.
+        Please update transaction notes. This cannot be undone.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

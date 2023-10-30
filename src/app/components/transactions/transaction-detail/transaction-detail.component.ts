@@ -282,4 +282,9 @@ export class TransactionDetailComponent implements OnInit {
     });
   }
 
+  addWhiteboardItem(item: Item) {
+    this.orderRequestSelectorComponent.addItemToOrderRequest(item);
+  }
+
+
 }
