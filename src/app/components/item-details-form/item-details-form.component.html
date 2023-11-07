@@ -89,18 +89,18 @@
         </div>
         <div #minStock class="col">
           <label style="display: flex; justify-content: space-between;" for="in_stock">
-            Core/Min Stock*
+            Core/Threshold Stock*
             <div *ngIf="mode != 1" class="custom-control custom-switch">
-              <input (change)="toggleCoreStock()" [checked]="item && item.min_stock > 0" type="checkbox"
+              <input (change)="toggleCoreStock()" [checked]="item && item.threshold_stock > 0" type="checkbox"
                 class="custom-control-input" id="core_stock_switch" />
               <label style="margin-top: 0" class="custom-control-label" for="core_stock_switch"></label>
             </div>
           </label>
           <p *ngIf="mode == 1" class="form-control-static">
-            {{ item && item.min_stock ? "Yes/" : "No"}}{{item && item.min_stock}}
+            {{ item && item.threshold_stock ? "Yes/" : "No"}}{{item && item.threshold_stock}}
           </p>
-          <input *ngIf="mode != 1 && is_core_stock" type="number" class="form-control" formControlName="min_stock"
-            id="min_stock" required />
+          <input *ngIf="mode != 1 && is_core_stock" type="number" class="form-control" formControlName="threshold_stock"
+            id="threshold_stock" required />
           <div class="invalid-feedback">required field</div>
 
         </div>

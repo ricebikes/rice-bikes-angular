@@ -67,7 +67,7 @@ export class AdminItemsComponent implements OnInit {
     "retail price": true,
     "wholesale cost": true,
     "in stock": false,
-    "min stock": false
+    "threshold stock": false
   };
 
   stockFilters = {
@@ -119,8 +119,12 @@ export class AdminItemsComponent implements OnInit {
     return items.reverse();
   }
 
-  disableItem() {
-    console.log("can't disable items yet");
+  disableItem(item) {
+    item.disabled = true;
+    // convert old items category to category_1
+    if(item.category) item.category_1 = item.category;
+    console.log('disabled item', item);
+    this.itemService.updateItem(item._id, item);
   }
 
   editItem(item, idx) {

@@ -11,5 +11,5 @@ export class Item {
   standard_price: number;
   wholesale_cost: number;
   in_stock: number;
-  min_stock: number;
+  threshold_stock: number;
 }

@@ -61,7 +61,7 @@ export class ItemDetailsFormComponent implements OnInit {
     category_3: "",
     wholesale_cost: ["", Validators.required],
     in_stock: "",
-    min_stock: ["", Validators.required],
+    threshold_stock: ["", Validators.required],
     specifications: this.formBuilder.array([]),
     features: this.formBuilder.array([]),
   });
@@ -90,7 +90,7 @@ export class ItemDetailsFormComponent implements OnInit {
   toggleCoreStock() {
     this.is_core_stock = !this.is_core_stock;
     if (!this.is_core_stock) {
-      this.newItemForm.controls["min_stock"].setValue(null);
+      this.newItemForm.controls["threshold_stock"].setValue(null);
     }
   }
   print(): void {
@@ -177,7 +177,7 @@ export class ItemDetailsFormComponent implements OnInit {
         );
       }
     }
-    this.is_core_stock = this.item && this.item.min_stock > 0;
+    this.is_core_stock = this.item && this.item.threshold_stock > 0;
     this.newItemForm.patchValue({
       upc: this.upc ? this.upc : this.item && this.item.upc,
       name: this.item && this.item.name,
@@ -185,7 +185,7 @@ export class ItemDetailsFormComponent implements OnInit {
       standard_price: this.item && this.item.standard_price,
       wholesale_cost: this.item && this.item.wholesale_cost,
       in_stock: this.item && this.item.in_stock,
-      min_stock: this.item && this.item.min_stock,
+      threshold_stock: this.item && this.item.threshold_stock,
       category_1: this.item && this.item.category_1,
       category_2: this.item && this.item.category_2,
       category_3: this.item && this.item.category_3,
@@ -280,7 +280,7 @@ export class ItemDetailsFormComponent implements OnInit {
           (obj) => obj.value
         ),
         in_stock: this.newItemForm.controls["in_stock"].value,
-        min_stock: this.newItemForm.controls["min_stock"].value
+        threshold_stock: this.newItemForm.controls["threshold_stock"].value
       })
       .then((res) => {
         this.resetForms();
@@ -310,7 +310,7 @@ export class ItemDetailsFormComponent implements OnInit {
           (obj) => obj.value
         ),
         in_stock: this.newItemForm.controls["in_stock"].value,
-        min_stock: this.newItemForm.controls["min_stock"].value
+        threshold_stock: this.newItemForm.controls["threshold_stock"].value
       })
       .then((res) => {
         this.item = res;

@@ -61,7 +61,7 @@
             <!--Transactions/Core stock badge-->
             <span style="cursor: pointer" class="badge badge-success" *ngFor="let transaction of obj.transactions"
               [routerLink]="['/transactions/', transaction]">{{transaction}}</span>
-            <span *ngIf="obj.request.itemRef && obj.request.itemRef.min_stock " class="badge badge-primary">core</span>
+            <span *ngIf="obj.request.itemRef && obj.request.itemRef.threshold_stock " class="badge badge-primary">core</span>
           </b>
         </div>
         <div class="col-4">

@@ -77,14 +77,14 @@
           (change)="toggleFilter(fieldFilters, f)">
         <label class="form-check-label" [for]="fieldCheck+f">{{f}}</label>
       </div>
-      <label class="form-check-label" for="showGroupCheck">
+      <!-- <label class="form-check-label" for="showGroupCheck">
         <h5>Filter By</h5>
       </label>
       <div class="form-check filter" *ngFor="let s of objectKeys(stockFilters)">
         <input class="form-check-input" type="checkbox" [checked]="stockFilters[s]" [id]="'showCheck'+s"
           (change)="toggleFilter(stockFilters, s)">
         <label class="form-check-label" [for]="'showCheck'+s">{{s}}</label>
-      </div>
+      </div> -->
     </div>
 
     <table class="table">
@@ -98,7 +98,7 @@
           <th *ngIf="fieldFilters['retail price']" scope="col">Sale Price</th>
           <th *ngIf="fieldFilters['wholesale cost']" scope="col">Wholesale</th>
           <th *ngIf="fieldFilters['in stock']" scope="col">In Stock</th>
-          <th *ngIf="fieldFilters['min stock']" scope="col">Min Stock</th>
+          <th *ngIf="fieldFilters['threshold stock']" scope="col">Threshold Stock</th>
         </tr>
       </thead>
       <tbody>
@@ -111,7 +111,7 @@
           <td *ngIf="fieldFilters['retail price']" (click)="editItem(item, i)">${{ item.standard_price }}</td>
           <td *ngIf="fieldFilters['wholesale cost']" (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
           <td *ngIf="fieldFilters['in stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
-          <td *ngIf="fieldFilters['min stock']" (click)="editItem(item, i)">{{item.min_stock}}</td>
+          <td *ngIf="fieldFilters['threshold stock']" (click)="editItem(item, i)">{{item.threshold_stock}}</td>
 
           <td>
             <div class="dropdown">
@@ -121,7 +121,7 @@
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" (click)="print()">Print barcode</a>
-                <a class="dropdown-item" (click)="disableItem()">Disable</a>
+                <a class="dropdown-item" (click)="disableItem(item)">Disable</a>
                 <a class="dropdown-item">Delete</a>
               </div>
             </div>
