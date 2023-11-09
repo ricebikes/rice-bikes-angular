@@ -37,7 +37,7 @@
         Create Item
       </button>
       <button class="btn btn-primary" data-toggle="modal" data-target="#priceCheckScanModal">
-        Scan Item from KHS 
+        Scan Item from KHS
       </button>
       <button style="margin-left: 5px" data-toggle="modal" data-target="#pastActionsModal"
         class="btn btn-outline-secondary">
@@ -54,7 +54,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="scroll">
-        
+
         <app-item-details-form #itemDetailsForm id="itemModal" [mode]="itemModalMode" [item]="chosenItem"
           (newItem)="addItem($event)" (editItem)="refreshItem($event)"
           (closeAll)="closeAndResetAll($event)"></app-item-details-form>
@@ -74,17 +74,17 @@
       </label>
       <div class="form-check filter" *ngFor="let f of objectKeys(fieldFilters)">
         <input class="form-check-input" type="checkbox" [checked]="fieldFilters[f]" [id]="fieldCheck+f"
-          (change)="toggleFilter(fieldFilters, f)">
+          (change)="fieldFilters[f] = !fieldFilters[f]">
         <label class="form-check-label" [for]="fieldCheck+f">{{f}}</label>
       </div>
-      <!-- <label class="form-check-label" for="showGroupCheck">
+      <label class="form-check-label" for="showGroupCheck">
         <h5>Filter By</h5>
       </label>
       <div class="form-check filter" *ngFor="let s of objectKeys(stockFilters)">
         <input class="form-check-input" type="checkbox" [checked]="stockFilters[s]" [id]="'showCheck'+s"
-          (change)="toggleFilter(stockFilters, s)">
+          (change)="toggleFilters(s)">
         <label class="form-check-label" [for]="'showCheck'+s">{{s}}</label>
-      </div> -->
+      </div>
     </div>
 
     <table class="table">
@@ -102,30 +102,30 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of items; let i = index">
-          <td *ngIf="fieldFilters.name" (click)="editItem(item, i)">{{ item.name }}</td>
-          <td *ngIf="fieldFilters['category 1']" (click)="editItem(item, i)">{{ item.category_1 }}</td>
-          <td *ngIf="fieldFilters['category 2']" (click)="editItem(item, i)">{{ item.category_2 }}</td>
-          <td *ngIf="fieldFilters['category 3']" (click)="editItem(item, i)">{{ item.category_3 }}</td>
-          <td *ngIf="fieldFilters['brand']" (click)="editItem(item, i)">{{ item.brand }}</td>
-          <td *ngIf="fieldFilters['retail price']" (click)="editItem(item, i)">${{ item.standard_price }}</td>
-          <td *ngIf="fieldFilters['wholesale cost']" (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
-          <td *ngIf="fieldFilters['in stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
-          <td *ngIf="fieldFilters['threshold stock']" (click)="editItem(item, i)">{{item.threshold_stock}}</td>
+        <tr *ngFor="let item of filterItems(); let i = index">
+            <td *ngIf="fieldFilters.name" (click)="editItem(item, i)">{{ item.name }}</td>
+            <td *ngIf="fieldFilters['category 1']" (click)="editItem(item, i)">{{ item.category_1 }}</td>
+            <td *ngIf="fieldFilters['category 2']" (click)="editItem(item, i)">{{ item.category_2 }}</td>
+            <td *ngIf="fieldFilters['category 3']" (click)="editItem(item, i)">{{ item.category_3 }}</td>
+            <td *ngIf="fieldFilters['brand']" (click)="editItem(item, i)">{{ item.brand }}</td>
+            <td *ngIf="fieldFilters['retail price']" (click)="editItem(item, i)">${{ item.standard_price }}</td>
+            <td *ngIf="fieldFilters['wholesale cost']" (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
+            <td *ngIf="fieldFilters['in stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
+            <td *ngIf="fieldFilters['threshold stock']" (click)="editItem(item, i)">{{item.threshold_stock}}</td>
 
-          <td>
-            <div class="dropdown">
-              <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false" (click)="openItemMenu()">
-                <i class="bi bi-three-dots-vertical"></i>
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" (click)="print()">Print barcode</a>
-                <a class="dropdown-item" (click)="disableItem(item)">Disable</a>
-                <a class="dropdown-item">Delete</a>
+            <td>
+              <div class="dropdown">
+                <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false" (click)="openItemMenu()">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" (click)="print()">Print barcode</a>
+                  <a class="dropdown-item" (click)="disableItem(item)">Disable</a>
+                  <a class="dropdown-item">Delete</a>
+                </div>
               </div>
-            </div>
-          </td>
+            </td>
         </tr>
       </tbody>
     </table>

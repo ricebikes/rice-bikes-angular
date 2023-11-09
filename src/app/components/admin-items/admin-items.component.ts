@@ -73,9 +73,11 @@ export class AdminItemsComponent implements OnInit {
   stockFilters = {
     "in stock": true,
     "out of stock": true,
-    "core stock": true,
+    "core stock": false,
     disabled: false,
   };
+
+  loaded = false;
 
   // on page on, retrieves all items and sets items + in stock items
   ngOnInit() {
@@ -84,13 +86,26 @@ export class AdminItemsComponent implements OnInit {
       this.inStockItems = this.items.filter(
         (i) => i.in_stock && i.in_stock > 0
       );
+      this.loaded = true;
     });
   }
 
-  // used for checkbox filters
-  toggleFilter(filtersObj, filter) {
-    filtersObj[filter] = !filtersObj[filter]
-    // this.filterTransactions()
+  // filters transactions using the filters in stockFilters
+  toggleFilters(filterName) {
+    this.stockFilters[filterName] = !this.stockFilters[filterName];
+  }
+
+  filterItems() {
+    if(!this.loaded) return;
+    let filtered = this.items;
+    if(!this.stockFilters["in stock"])
+      filtered = filtered.filter(item => !(item.in_stock > 0))
+    if(!this.stockFilters["out of stock"])
+      filtered = filtered.filter(item => item.in_stock > 0);
+    if(this.stockFilters["core stock"])
+      filtered = filtered.filter(item => item.threshold_stock > 0)
+
+    return filtered;
   }
 
   // updates the table with the new item once created from item modal
