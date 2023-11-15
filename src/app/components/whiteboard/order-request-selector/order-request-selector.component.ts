@@ -4,6 +4,9 @@ import { OrderRequest } from '../../../models/orderRequest';
 import { OrderRequestService } from '../../../services/order-request.service';
 import { TransactionService } from '../../../services/transaction.service';
 import { Transaction } from '../../../models/transaction';
+import { SearchService } from '../../../services/search.service';
+import { AddItemComponent } from '../../add-item/add-item.component';
+import { Item } from '../../../models/item';
 
 @Component({
   selector: 'app-order-request-selector',
@@ -13,6 +16,7 @@ import { Transaction } from '../../../models/transaction';
 export class OrderRequestSelectorComponent implements OnInit, OnChanges {
 
   @ViewChild('orderRequestModalButton') orderRequestModalButton: ElementRef;
+  @Input('addItemComponent') addItemComponent: AddItemComponent;
 
   // If set to true, the component will only permit order request creation
   @Input('create_only') create_only: boolean;
@@ -29,8 +33,13 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
 
   stagedOrderRequestForm = this.fb.group(
     {
-      request: [null, Validators.required],
-      partNum: [null],
+      // existing item
+      item: [null], // this should be required or request
+      // manual entry
+      request: ['', Validators.required], // description should always have a value. description is item name if item, else manually entered
+      category_1: [null, Validators.required],
+      category_2: [null],
+      category_3: [null],
       quantity: [null],
       transactionID: [null, Validators.compose([Validators.nullValidator, (fg: FormControl) => {
         if (this.preset_transaction) return null; // No need to validate
@@ -66,9 +75,15 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
   // Set to true when the user clicks button to create a new whiteboard entry
   createMode = false;
 
+  item: Item = null;
+  categories = this.searchService.itemCategories1();
+  categories2 = null;
+  categories3 = null;
+
   constructor(private orderRequestService: OrderRequestService,
     private fb: FormBuilder,
-    private transactionService: TransactionService) { }
+    private transactionService: TransactionService,
+    private searchService: SearchService) { }
 
   ngOnInit() {
     this.activeOrderRequests = this.orderRequestService.getActiveRequests();
@@ -80,6 +95,7 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
     } else {
       this.transactionService.getTransactionIDs().then(res => this.transactionIDs = res);
     }
+    this.stagedOrderRequestForm.get('description')
   }
 
   /**
@@ -95,6 +111,18 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
         this.stagedOrderRequestForm.get('transactionID').setValue(this.preset_transaction._id);
       }
     }
+  }
+
+  async onCat1Change(e) {
+    this.categories2 = await this.searchService.itemCategories2(e.target.value);
+    this.categories3 = null;
+  }
+
+  async onCat2Change(e) {
+    this.categories3 = await this.searchService.itemCategories3(
+      this.stagedOrderRequestForm.controls["category_1"].value,
+      e.target.value
+    );
   }
 
   /**
@@ -167,9 +195,10 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
     }
     this.orderRequestService.createOrderReq(quantity,
       this.stagedOrderRequestForm.get('request').value,
-      this.stagedOrderRequestForm.get('partNum').value,
-      transactions,
-      null).then(newOrderReq => {
+      this.stagedOrderRequestForm.get('category_1').value,
+      this.stagedOrderRequestForm.get('category_2').value,
+      this.stagedOrderRequestForm.get('category_3').value,
+      this.item, transactions).then(newOrderReq => {
         // Emit the new Order Request
         this.chosenRequest.emit(newOrderReq);
         // Close the modal
@@ -179,4 +208,38 @@ export class OrderRequestSelectorComponent implements OnInit, OnChanges {
         this.stagedOrderRequestForm.reset();
       });
   }
+
+  triggerItemSearch() {
+    this.addItemComponent.triggerItemSearch('whiteboard');
+  }
+
+  triggerScanModal() {
+    this.addItemComponent.triggerScanModal();
+  }
+
+  addItemToOrderRequest(item: Item) {
+    this.item = item;
+    this.stagedOrderRequestForm.controls['category_1'].setValue(item.category_1);
+    if (item.category_2) {
+      this.stagedOrderRequestForm.controls['category_2'].setValue(item.category_2);
+      if (item.category_3) {
+        this.stagedOrderRequestForm.controls['category_3'].setValue(item.category_3);
+      }
+    }
+    this.stagedOrderRequestForm.controls['request'].setValue(item.name);
+    this.stagedOrderRequestForm.controls['category_1'].disable();
+    this.stagedOrderRequestForm.controls['category_2'].disable();
+    this.stagedOrderRequestForm.controls['category_3'].disable();
+  }
+
+  removeItem() {
+    this.item = null;
+    this.stagedOrderRequestForm.controls['category_1'].reset();
+    this.stagedOrderRequestForm.controls['category_2'].reset();
+    this.stagedOrderRequestForm.controls['category_3'].reset();
+    this.stagedOrderRequestForm.controls['category_1'].enable();
+    this.stagedOrderRequestForm.controls['category_2'].enable();
+    this.stagedOrderRequestForm.controls['category_3'].enable();
+  }
+
 }

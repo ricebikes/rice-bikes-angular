@@ -7,8 +7,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" [hidden]="createMode" id="orderReqSelectorModalTitle">Select White Board Entry</h5>
-        <h5 class="modal-title" [hidden]="!createMode" id="orderReqSelectorModalTitleAlt">Create White Board Entry</h5>
+        <h5 class="modal-title" [hidden]="createMode" id="orderReqSelectorModalTitle">Select Whiteboard Entry</h5>
+        <h5 class="modal-title" [hidden]="!createMode" id="orderReqSelectorModalTitleAlt">Create Whiteboard Entry</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="disableCreateMode()">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -21,14 +21,12 @@
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Description</th>
-                <th scope="col">Part #</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let request of (activeOrderRequests | async)" (click)="selectOrderRequest(request)">
                 <td>{{request._id}}</td>
                 <td>{{request.request}}</td>
-                <td>{{request.partNumber}}</td>
               </tr>
             </tbody>
           </table>
@@ -37,22 +35,70 @@
             Entry</button>
         </div>
         <div [hidden]="!createMode">
+          <p>Select an item or enter a description of the part request</p>
           <!--New Order Request Form: Shown in Create Order Request Mode-->
           <form [formGroup]="stagedOrderRequestForm">
-            <div class="row">
+            <div class="form-group row">
+              <div class="col">
+                <div class="input-group">
+                  <input [value]="item && item.name" class="form-control" readonly />
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-secondary" (click)="triggerItemSearch()">
+                      <i class="fa fa-list"></i>
+                      Find Item
+                    </button>
+                    <button (click)="removeItem()" [disabled]="!item" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
               <div class="col-4">
-                <label for="requestInput">Description</label>
+                <label for="requestInput">Description*</label>
               </div>
               <div class="col">
                 <input class="form-control" id="requestInput" formControlName="request" />
               </div>
             </div>
-            <div class="row my-2">
+            <div class="form-group row">
               <div class="col-4">
-                <label for="partNumInput">Part Number</label>
+                <label for="category1Select">Category 1*</label>
               </div>
               <div class="col">
-                <input class="form-control" id="partNumInput" formControlName="partNum" />
+                <select class="form-control" id="category1Select" formControlName="category_1"
+                  (change)="onCat1Change($event)">
+                  <option value="">Any</option>
+                  <option *ngFor="let category of categories | async">
+                    {{ category }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-4">
+                <label for="category1Select">Category 2</label>
+              </div>
+              <div class="col">
+                <select class="form-control" id="category2Select" formControlName="category_2"
+                  (change)="onCat2Change($event)">
+                  <option value="">Any</option>
+                  <option *ngFor="let category of categories2">
+                    {{ category }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-4">
+                <label for="category1Select">Category 3</label>
+              </div>
+              <div class="col">
+                <select class="form-control" id="category3Select" formControlName="category_3">
+                  <option value="">Any</option>
+                  <option *ngFor="let category of categories3">
+                    {{ category }}
+                  </option>
+                </select>
               </div>
             </div>
             <div class="row my-2">
@@ -72,7 +118,7 @@
             </div>
             <div class="row">
               <div class="col-4">
-                <label for="quantityInput">Quantity</label>
+                <label for="quantityInput">Quantity*</label>
               </div>
               <div class="col">
                 <input class="form-control" type="number" min="1" formControlName="quantity" id="quantityInput" />
@@ -82,7 +128,8 @@
         </div>
       </div>
       <div class="modal-footer" [hidden]="!createMode">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="disableCreateMode()">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+          (click)="disableCreateMode()">Cancel</button>
         <button type="button" class="btn btn-primary" [disabled]="this.stagedOrderRequestForm.invalid"
           (click)="createOrderRequest()">Create Request</button>
       </div>

@@ -6,17 +6,11 @@ import {
   Output,
   EventEmitter,
   Input,
-  Pipe,
-  PipeTransform,
   Renderer2,
 } from "@angular/core";
 import {
   FormBuilder,
-  FormArray,
   FormControl,
-  FormGroup,
-  ValidatorFn,
-  ValidationErrors,
   Validators,
 } from "@angular/forms";
 import { SearchService } from "../../services/search.service";
@@ -35,6 +29,7 @@ export class AddItemComponent implements OnInit {
   @Input("employee") employee: boolean;
   // Emit this to the listening component
   @Output() chosenItem = new EventEmitter<Item>();
+  @Output() chosenWhiteboardItem = new EventEmitter<Item>();
 
   // References to HTML elements
   @ViewChild("itemSearchClose") itemSearchClose: ElementRef;
@@ -63,6 +58,7 @@ export class AddItemComponent implements OnInit {
 
   itemResults: Observable<Item[]>; // item results returned from backend
 
+  whiteboard = false;
   addDialog = false;
   createItemFromUPC = false;
 
@@ -99,7 +95,6 @@ export class AddItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("ngOnInit");
     // watch form for changes, and search when it does
     this.itemResults = this.itemForm.valueChanges
       .debounceTime(200) // wait 200ms between changes
@@ -137,10 +132,14 @@ export class AddItemComponent implements OnInit {
   };
 
   addItem(item: Item) {
-    console.log("add item component called");
     this.scanData.reset();
     this.createItemFromUPC = false;
-    this.chosenItem.emit(item);
+    if(this.whiteboard) {
+      this.chosenWhiteboardItem.emit(item);
+    }
+    else {
+      this.chosenItem.emit(item);
+    }
   }
 
   isSearching() {
@@ -150,7 +149,6 @@ export class AddItemComponent implements OnInit {
   async onCat1Change(e) {
     this.categories2 = await this.searchService.itemCategories2(e.target.value);
     this.categories3 = null;
-    console.log(this.categories2);
   }
 
   async onCat2Change(e) {
@@ -158,7 +156,6 @@ export class AddItemComponent implements OnInit {
       this.itemForm.controls["category_1"].value,
       e.target.value
     );
-    console.log(this.categories3);
   }
 
   /**
@@ -216,8 +213,14 @@ export class AddItemComponent implements OnInit {
     this.resetUPC();
   }
 
-  triggerItemSearch() {
-    console.log("opening item search");
+  triggerItemSearch(mode=null) {
+    console.log('mode', mode)
+
+    if(mode == 'whiteboard') {
+      this.whiteboard = true;
+    } else {
+      this.whiteboard = false;
+    }
     // simply opens the item search, waits for the modal to grab focus, then shifts it to the item name input
     this.hiddenSearchTrigger.nativeElement.click();
     setTimeout(() => this.nameInput.nativeElement.focus(), 500);
@@ -237,7 +240,14 @@ export class AddItemComponent implements OnInit {
    * @param item: Item to return
    */
   selectItem(item: Item) {
-    this.chosenItem.emit(item);
+    if(this.whiteboard) {
+      console.log('whiteboard', item)
+      this.chosenWhiteboardItem.emit(item);
+    }
+    else {
+      console.log('not whiteboard', item);
+      this.chosenItem.emit(item);
+    }
     this.itemSearchClose.nativeElement.click();
   }
 }

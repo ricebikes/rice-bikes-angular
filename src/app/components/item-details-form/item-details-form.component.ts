@@ -12,6 +12,7 @@ import {
   TemplateRef,
 } from "@angular/core";
 import {
+  AbstractControl,
   FormBuilder,
   FormArray,
   FormControl,
@@ -39,6 +40,7 @@ export class ItemDetailsFormComponent implements OnInit {
   @Input("mode") mode: number;
   @Input("close") close: boolean;
   @Input("item") item: Item;
+  @Input("viewOnly") viewOnly: boolean = false;
 
   // Emit this to the listening component
   @Output() newItem = new EventEmitter<Item>();
@@ -58,9 +60,10 @@ export class ItemDetailsFormComponent implements OnInit {
     category_2: "",
     category_3: "",
     wholesale_cost: ["", Validators.required],
+    in_stock: "",
+    threshold_stock: ["", Validators.required],
     specifications: this.formBuilder.array([]),
     features: this.formBuilder.array([]),
-    in_stock: ["", Validators.required],
   });
 
   categories = this.searchService.itemCategories1();
@@ -71,6 +74,7 @@ export class ItemDetailsFormComponent implements OnInit {
 
   brands = this.searchService.itemBrands();
 
+  is_core_stock = false;
   barcodeVal = null;
   elementType = "svg";
   format = "UPC";
@@ -82,6 +86,13 @@ export class ItemDetailsFormComponent implements OnInit {
   fontSize = 20;
   margin = 5;
 
+
+  toggleCoreStock() {
+    this.is_core_stock = !this.is_core_stock;
+    if (!this.is_core_stock) {
+      this.newItemForm.controls["threshold_stock"].setValue(null);
+    }
+  }
   print(): void {
     let printContents, popupWin;
     printContents = document.getElementById("print-section").innerHTML;
@@ -104,7 +115,7 @@ export class ItemDetailsFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private itemService: ItemService,
     private authenticationService: AuthenticationService
-  ) {}
+  ) { }
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
     if (this.mode != 0) this.fillValuesIfEdit();
@@ -143,7 +154,7 @@ export class ItemDetailsFormComponent implements OnInit {
     if (this.item) {
       let json = JSON.stringify(this.item.specifications);
       let specs;
-      if(json) specs = new Map(Object.entries(JSON.parse(json)));
+      if (json) specs = new Map(Object.entries(JSON.parse(json)));
       else specs = new Map();
       this.viewspecs = Array.from(specs);
       this.viewfeatures = this.item.features;
@@ -166,6 +177,7 @@ export class ItemDetailsFormComponent implements OnInit {
         );
       }
     }
+    this.is_core_stock = this.item && this.item.threshold_stock > 0;
     this.newItemForm.patchValue({
       upc: this.upc ? this.upc : this.item && this.item.upc,
       name: this.item && this.item.name,
@@ -173,6 +185,7 @@ export class ItemDetailsFormComponent implements OnInit {
       standard_price: this.item && this.item.standard_price,
       wholesale_cost: this.item && this.item.wholesale_cost,
       in_stock: this.item && this.item.in_stock,
+      threshold_stock: this.item && this.item.threshold_stock,
       category_1: this.item && this.item.category_1,
       category_2: this.item && this.item.category_2,
       category_3: this.item && this.item.category_3,
@@ -267,6 +280,7 @@ export class ItemDetailsFormComponent implements OnInit {
           (obj) => obj.value
         ),
         in_stock: this.newItemForm.controls["in_stock"].value,
+        threshold_stock: this.newItemForm.controls["threshold_stock"].value
       })
       .then((res) => {
         this.resetForms();
@@ -296,6 +310,7 @@ export class ItemDetailsFormComponent implements OnInit {
           (obj) => obj.value
         ),
         in_stock: this.newItemForm.controls["in_stock"].value,
+        threshold_stock: this.newItemForm.controls["threshold_stock"].value
       })
       .then((res) => {
         this.item = res;

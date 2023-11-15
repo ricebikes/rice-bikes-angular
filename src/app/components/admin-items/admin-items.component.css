@@ -13,3 +13,7 @@ table {
   font-size: .9rem;
   border: 1px solid #ddd;
 }
+
+.padded-container {
+  padding: 0% 10% 0% 10%
+}

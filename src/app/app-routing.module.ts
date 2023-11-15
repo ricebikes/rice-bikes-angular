@@ -13,9 +13,9 @@ import {AdminRepairsComponent} from './components/admin-repairs/admin-repairs.co
 import {AdminItemsComponent} from './components/admin-items/admin-items.component';
 import {OrdersComponent} from './components/orders/orders.component';
 import {NewOrderComponent} from './components/orders/new-order/new-order.component';
-// import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
+import {OrderDetailComponent} from './components/orders/order-detail/order-detail.component';
 import {AnalyticsComponent} from './components/analytics/analytics.component';
-// import {WhiteboardComponent} from './components/whiteboard/whiteboard.component';
+import {WhiteboardComponent} from './components/whiteboard/whiteboard.component';
 
 const routes: Routes = [
   {
@@ -115,13 +115,11 @@ const routes: Routes = [
       },
       {
         path: 'whiteboard',
-        // component: WhiteboardComponent
-        component: LoginComponent
+        component: WhiteboardComponent
       },
       {
         path: ':_id',
-        // component: OrderDetailComponent
-        component: LoginComponent
+        component: OrderDetailComponent
       }
     ]
   }

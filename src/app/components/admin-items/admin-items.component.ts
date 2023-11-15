@@ -36,6 +36,8 @@ export class AdminItemsComponent implements OnInit {
   @ViewChild("formTrigger") formTrigger: ElementRef;
   @ViewChild("itemDetailsForm") itemDetailsForm: ItemDetailsFormComponent;
 
+  objectKeys = Object.keys
+
   itemModalMode = 1;
   chosenItem: Item;
   showInStock: boolean = false;
@@ -45,6 +47,7 @@ export class AdminItemsComponent implements OnInit {
   categories = this.searchService.itemCategories1();
   brands = this.searchService.itemBrands();
 
+  // barcode printing specs
   elementType = "svg";
   format = "UPC";
   width = 2;
@@ -55,6 +58,57 @@ export class AdminItemsComponent implements OnInit {
   fontSize = 20;
   margin = 5;
 
+  fieldFilters = {
+    name: true,
+    "category 1": true,
+    "category 2": true,
+    "category 3": true,
+    brand: true,
+    "retail price": true,
+    "wholesale cost": true,
+    "in stock": false,
+    "threshold stock": false
+  };
+
+  stockFilters = {
+    "in stock": true,
+    "out of stock": true,
+    "core stock": false,
+    disabled: false,
+  };
+
+  loaded = false;
+
+  // on page on, retrieves all items and sets items + in stock items
+  ngOnInit() {
+    this.itemService.getItems().then((res) => {
+      this.items = this.sortItems(res);
+      this.inStockItems = this.items.filter(
+        (i) => i.in_stock && i.in_stock > 0
+      );
+      this.loaded = true;
+    });
+  }
+
+  // filters transactions using the filters in stockFilters
+  toggleFilters(filterName) {
+    this.stockFilters[filterName] = !this.stockFilters[filterName];
+  }
+
+  filterItems() {
+    if(!this.loaded) return;
+    let filtered = this.items;
+    if(!this.stockFilters["in stock"])
+      filtered = filtered.filter(item => !(item.in_stock > 0))
+    if(!this.stockFilters["out of stock"])
+      filtered = filtered.filter(item => item.in_stock > 0);
+    if(this.stockFilters["core stock"])
+      filtered = filtered.filter(item => item.threshold_stock > 0)
+
+    return filtered;
+  }
+
+  // updates the table with the new item once created from item modal
   addItem(item: Item) {
     console.log("item created", item);
     this.items.splice(0, 0, item);
@@ -62,17 +116,9 @@ export class AdminItemsComponent implements OnInit {
       this.inStockItems.splice(0, 0, item);
   }
 
+  // resets all the modals and local variables. wonder if there's a way to do this more gracefully?
   closeAndResetAll(message: string) {
     this.itemDetailsForm.resetForms();
-  }
-
-  ngOnInit() {
-    this.itemService.getItems().then((res) => {
-      this.items = this.sortItems(res);
-      this.inStockItems = this.items.filter(
-        (i) => i.in_stock && i.in_stock > 0
-      );
-    });
   }
 
   setItems(items: Item[]) {
@@ -88,8 +134,12 @@ export class AdminItemsComponent implements OnInit {
     return items.reverse();
   }
 
-  disableItem() {
-    console.log("can't disable items yet");
+  disableItem(item) {
+    item.disabled = true;
+    // convert old items category to category_1
+    if(item.category) item.category_1 = item.category;
+    console.log('disabled item', item);
+    this.itemService.updateItem(item._id, item);
   }
 
   editItem(item, idx) {
@@ -97,7 +147,7 @@ export class AdminItemsComponent implements OnInit {
     this.chosenItem = item;
     this.chosenIdx = idx;
     this.itemModalMode = 1;
-    this.triggerItemDetailsModal();
+    this.formTrigger.nativeElement.click();
   }
 
   refreshItem(item: Item) {
@@ -118,13 +168,13 @@ export class AdminItemsComponent implements OnInit {
 
   triggerCreateItem() {
     this.itemModalMode = 0;
-    this.triggerItemDetailsModal();
-  }
-
-  triggerItemDetailsModal() {
     this.formTrigger.nativeElement.click();
   }
 
+  triggerScanModal() {
+
+  }
+  
   openItemMenu(item?: Item) {
     console.log("clicked menu item");
     this.chosenItem = item;

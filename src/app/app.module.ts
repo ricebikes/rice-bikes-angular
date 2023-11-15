@@ -35,12 +35,12 @@ import { ItemService } from "./services/item.service";
 import { UserTrackerComponent } from "./components/user-tracker/user-tracker.component";
 import { UserIdleModule } from "angular-user-idle/user-idle.module";
 import { OrdersComponent } from "./components/orders/orders.component";
-// import { OrderDetailComponent } from './components/orders/order-detail/order-detail.component';
+import { OrderDetailComponent } from './components/orders/order-detail/order-detail.component';
 import { NewOrderComponent } from "./components/orders/new-order/new-order.component";
 import { OrderService } from "./services/order.service";
 import { AnalyticsComponent } from "./components/analytics/analytics.component";
 import { OrderRequestService } from "./services/order-request.service";
-// import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
+import { WhiteboardComponent } from './components/whiteboard/whiteboard.component';
 import { OrderSelectorComponent } from "./components/orders/order-selector/order-selector.component";
 import { OrderRequestSelectorComponent } from "./components/whiteboard/order-request-selector/order-request-selector.component";
 import { NewBikeTransactionComponent } from "./components/new-bike-transaction/new-bike-transaction.component";
@@ -74,9 +74,9 @@ import { NgxBarcodeModule } from "ngx-barcode";
     AdminItemsComponent,
     UserTrackerComponent,
     OrdersComponent,
-    // OrderDetailComponent,
+    OrderDetailComponent,
     NewOrderComponent,
-    // WhiteboardComponent,
+    WhiteboardComponent,
     OrderSelectorComponent,
     OrderRequestSelectorComponent,
     PriceCheckComponent,

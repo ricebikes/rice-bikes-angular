@@ -1,10 +1,25 @@
 <!-- Add Item Component -->
-<app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" [employee]="true"></app-add-item>
+<app-add-item #addItemComponent (chosenItem)="addSelectedItem($event)" (chosenWhiteboardItem)="addItemToNewRequest($event)" [employee]="true"></app-add-item>
 <app-order-selector #orderSelectorComponent (chosenOrder)="addSelectedOrder($event)"></app-order-selector>
-<app-order-request-selector #orderRequestSelectorComponent (chosenRequest)="addSelectedOrderReq($event)"
+<app-order-request-selector #orderRequestSelectorComponent [addItemComponent]="addItemComponent" (chosenRequest)="addSelectedOrderReq($event)"
   [create_only]="true"></app-order-request-selector>
 
-
+<button #itemViewFormTrigger hidden type="button" class="btn btn-outline-primary" data-toggle="modal"
+  data-target="#viewOrderRequestItemModal">
+  FAKE BUTTON
+</button>
+<div class="modal fade" id="viewOrderRequestItemModal" #viewOrderRequestItemModal tabindex="-1" role="dialog"
+  aria-labelledby="viewOrderRequestItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="scroll">
+        <app-item-details-form #viewOrderRequestItemModal id="itemModal" [mode] = '2' [viewOnly]="true" [item]="chosenItem"
+          (newItem)="addItem($event)" (editItem)="refreshItem($event)"
+          (closeAll)="closeAndResetAll($event)"></app-item-details-form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Make this wider than default viewport with custom class -->
 <div class="container-fluid padded-container">
@@ -26,22 +41,11 @@
   </div>
   <!-- Header Row, to label each column -->
   <div class="form-row">
-    <div class="col-2">
-      <!--16.7% of width of viewport-->
-      <!-- Column nesting hack to get the "#" column to be smaller-->
-      <div class="row">
-        <div class="col-2"><b>#</b></div> <!-- 2.7% of width-->
-        <div class="col-10"><b>Description</b></div> <!-- 13.8% of width -->
-      </div>
-    </div>
-    <div class="col-1"><b>Item #</b></div> <!-- 16.7% -->
-    <div class="col-1"><b>Quantity</b></div> <!-- 8.3% -->
-    <div class="col-1"><b>Transactions</b></div>
-    <div class="col-2"><b>Item</b></div>
-    <div class="col-1"><b>Order</b></div>
-    <div class="col-1"><b>Status</b></div>
-    <div class="col-2"><b>Notes</b></div>
-    <div class="col-1"><b>Actions</b></div>
+    <div class="col-2"><b>#</b></div>
+    <div class="col-4"><b>Item</b></div>
+    <div class="col-1"><b>Qty</b></div> <!-- 8.3% -->
+    <div class="col-4"><b>Notes</b></div>
+
   </div>
   <hr />
   <div *ngFor="let obj of orderRequestsWithForms; let idx=index">
@@ -49,85 +53,53 @@
       "form" is the editable form for the orderRequest, and "request"
       is the actual request object.-->
     <form [formGroup]="obj.form">
-      <div class="form-row py-2" [ngClass]="{'bg-light-red': obj.urgent}">
+      <div style="align-items: end" class="form-row py-2 table-row-hover">
         <div class="col-2">
-          <!-- Awful column nesting hack to get the "#" column to be smaller-->
-          <div class="row">
-            <div class="col-2">
-              <!--Request ID -->
-              <b class="form-control-plaintext">
-                {{ obj.request._id }}
-              </b>
-            </div>
-            <div class="col-10">
-              <!--Request Description -->
-              <input class="form-control" formControlName="request" />
+          <!--Request ID -->
+          <b class="form-control-plaintext">
+            {{obj.request._id}}
+            <!--Transactions/Core stock badge-->
+            <span style="cursor: pointer" class="badge badge-success" *ngFor="let transaction of obj.transactions"
+              [routerLink]="['/transactions/', transaction]">{{transaction}}</span>
+            <span *ngIf="obj.request.itemRef && obj.request.itemRef.threshold_stock " class="badge badge-primary">core</span>
+          </b>
+        </div>
+        <div class="col-4">
+          <small>{{obj.request.categories[0]}} {{ obj.request.categories[1] ? " > " + obj.request.categories[1] :
+            ''}} {{ obj.request.categories[2] ? " > " + obj.request.categories[2] : ''}}</small>
+          <!-- Editable Request Description Or Item -->
+          <div class="input-group">
+            <input *ngIf="!obj.request.itemRef" class="form-control" formControlName="request" />
+            <input *ngIf="obj.request.itemRef" (click)="triggerEditItemModal(obj.request.itemRef, idx)"
+              style="cursor: pointer;" readonly class="form-control" formControlName="request"
+              value={{obj.request.itemRef.name}} />
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-outline-secondary" (click)="triggerItemSelectModal(idx)"><i class="fa fa-edit"></i></button>
             </div>
           </div>
-        </div>
-
-        <div class="col-1">
-          <!-- Part Number -->
-          <input class="form-control" formControlName="partNumber" />
         </div>
         <div class="col-1">
           <!-- Quantity -->
-          <input
-            [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number"
-            [min]="obj.request.transactions ? obj.request.transactions.length : 1" formControlName="quantity"/>
+          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('quantity').invalid}" type="number"
+            [min]="obj.request.transactions ? obj.request.transactions.length : 1" formControlName="quantity" />
         </div>
-        <div class="col-1">
-          <!-- Transactions -->
-          <p class="form-control-plaintext">{{obj.transaction_str}}</p>
-        </div>
-        <div class="col-2">
-          <!-- Item -->
-          <button *ngIf="!obj.request.itemRef" class="btn"
-            [ngClass]="{'btn-outline-secondary': !obj.urgent, 'btn-primary': obj.urgent}"
-            (click)="triggerItemSelectModal(idx)" [disabled]="!(isAdmin | async)">Select Item</button>
-          <div class="input-group" *ngIf="obj.request.itemRef">
-            <input type="text" readonly class="form-control" [value]="obj.request.itemRef.name" />
-            <div class="input-group-append">
-              <button class="btn btn-secondary" (click)="setItemForDetailedView(idx)" data-toggle="modal"
-                data-target="#detailedItemViewModal"><i class="fas fa-eye"></i></button>
-              <button *ngIf="(isAdmin | async) && obj.request.status != 'Completed'" class="btn btn-secondary"
-                (click)="triggerItemSelectModal(idx)"><i class="fas fa-edit"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="col-1">
-          <!-- Order -->
-          <button *ngIf="!obj.request.orderRef" class="btn" (click)="triggerOrderSelectModal(idx)"
-            [disabled]="(obj.request.itemRef == null) || !(isAdmin | async)"
-            [ngClass]="{'btn-outline-secondary': !obj.urgent, 'btn-secondary': obj.urgent}">Choose</button>
-          <div *ngIf="obj.request.orderRef" class="btn-group" role="group">
-            <a role="button" class="btn" [ngClass]="{'btn-outline-success': !obj.urgent, 'btn-secondary': obj.urgent}"
-              [routerLink]="['/orders', obj.request.orderRef]">{{obj.request.supplier}}</a>
-            <button *ngIf="(isAdmin | async) && obj.request.status != 'Completed'" type="button" class="btn"
-              [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-dark':obj.urgent}"
-              (click)="removeOrderFromRequest(idx)"><i class="fas fa-times"></i></button>
-          </div>
-        </div>
-        <div class="col-1">
-          <!-- Status -->
-          <p class="form-control-plaintext">
-            {{obj.request.status}}
-          </p>
-        </div>
-        <div class="col-2">
+        <div class="col-4">
           <!-- Notes -->
-          <input class="form-control" formControlName="notes" />
-          <!-- PORT TO ANGULAR 5 and install ngx-autosize to use this: <textarea autosize class="form-control" formControlName="notes"></textarea> -->
+          <input [ngClass]="{'form-control': true, 'is-invalid': obj.form.get('notes').invalid}" type="text"
+            formControlName="notes" />
         </div>
         <div class="col-1">
-          <!-- History and Delete-->
+          <!-- Complete, History and Delete-->
           <div class="btn-group" role="group">
-            <button class="btn" [ngClass]="{'btn-outline-primary': !obj.urgent, 'btn-secondary': obj.urgent}"
-              data-toggle="modal" data-target="#pastActionsModal" (click)="setOrderReqForActionsView(obj.request)"><i
-                class="fas fa-history"></i></button>
-            <button [disabled]="obj.request.status=='Completed' && !(isAdmin | async)" class="btn" [ngClass]="{'btn-outline-danger': !obj.urgent, 'btn-secondary': obj.urgent}"
-              data-toggle="modal" data-target="#deleteConfirmationModal" (click)="this.currentSelectedRequestIdx=idx"><i
-                class="fas fa-trash"></i></button>
+            <button [disabled]="!obj.request.itemRef" (click)="this.currentSelectedRequestIdx=idx"
+              class="btn btn-sm btn-outline-success" data-toggle="modal" data-target="#completeConfirmationModal">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#pastActionsModal"
+              (click)="setOrderReqForActionsView(obj.request)"><i class="fas fa-history"></i></button>
+            <button [disabled]="obj.request.status=='Completed' && !(isAdmin | async)"
+              class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteConfirmationModal"
+              (click)="this.currentSelectedRequestIdx=idx;"><i class="fas fa-trash"></i></button>
           </div>
         </div>
       </div>
@@ -139,114 +111,39 @@
       Load More
     </button>
   </div>
+
 </div>
 
 <!--Page specific Modals-->
-<!-- Detailed Item View Modal -->
-<div class="modal fade" id="detailedItemViewModal" tabindex="-1" role="dialog" aria-labelledby="detailedItemViewModal"
-  aria-hidden="true">
+
+<!-- Complete Request Modal -->
+<div class="modal fade" id="completeConfirmationModal" tabindex="-1" role="dialog"
+  aria-labelledby="completeConfirmationModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="detailedItemViewTitle">Detailed Item View</h5>
+        <h5 class="modal-title" id="completeConfirmationModalLabel">Are you sure?</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" *ngIf="selectedDetailItem">
-        <div class="container">
-          <div class="row">
-            <div class="col-4">
-              <b>Name:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.name}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>UPC:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.upc}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Price:</b>
-            </div>
-            <div class="col-8">
-              ${{selectedDetailItem.standard_price}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Wholesale Price:</b>
-            </div>
-            <div class="col-8">
-              ${{selectedDetailItem.wholesale_cost}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Current Stock</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.stock}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Desired Stock</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.desired_stock}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Minimum Stock</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.minimum_stock}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Condition:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.condition}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Brand:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.brand}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Size:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.size}}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-4">
-              <b>Category:</b>
-            </div>
-            <div class="col-8">
-              {{selectedDetailItem.category}}
-            </div>
-          </div>
-        </div>
+      <div class="modal-body">
+        Are you sure you want to complete this request? Item will be automatically be added to transactions waiting.
+        Please update transaction notes. This cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button (click)="confirmCompleteOrderRequest()" data-dismiss="modal" type="button" class="btn btn-success">
+          Complete
+        </button>
       </div>
     </div>
   </div>
+</div>
+<!-- Detailed Item View Modal -->
+<div class="modal fade" id="detailedItemViewModal" tabindex="-1" role="dialog" aria-labelledby="detailedItemViewModal"
+  aria-hidden="true">
+  <!-- replace with other item details modal -->
 </div>
 
 <!--Delete Confirmation Modal -->
