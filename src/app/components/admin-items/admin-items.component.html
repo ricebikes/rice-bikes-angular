@@ -97,7 +97,7 @@
           <th *ngIf="fieldFilters['brand']" scope="col">Brand</th>
           <th *ngIf="fieldFilters['retail price']" scope="col">Sale Price</th>
           <th *ngIf="fieldFilters['wholesale cost']" scope="col">Wholesale</th>
-          <th *ngIf="fieldFilters['in stock']" scope="col">In Stock</th>
+          <th *ngIf="fieldFilters['current stock']" scope="col">Current Stock</th>
           <th *ngIf="fieldFilters['threshold stock']" scope="col">Threshold Stock</th>
         </tr>
       </thead>
@@ -110,7 +110,7 @@
             <td *ngIf="fieldFilters['brand']" (click)="editItem(item, i)">{{ item.brand }}</td>
             <td *ngIf="fieldFilters['retail price']" (click)="editItem(item, i)">${{ item.standard_price }}</td>
             <td *ngIf="fieldFilters['wholesale cost']" (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
-            <td *ngIf="fieldFilters['in stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
+            <td *ngIf="fieldFilters['current stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
             <td *ngIf="fieldFilters['threshold stock']" (click)="editItem(item, i)">{{item.threshold_stock}}</td>
 
             <td>

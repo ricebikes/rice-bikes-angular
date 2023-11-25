@@ -61,12 +61,12 @@ export class AdminItemsComponent implements OnInit {
   fieldFilters = {
     name: true,
     "category 1": true,
-    "category 2": true,
-    "category 3": true,
+    "category 2": false,
+    "category 3": false,
     brand: true,
     "retail price": true,
     "wholesale cost": true,
-    "in stock": false,
+    "current stock": false,
     "threshold stock": false
   };
 
