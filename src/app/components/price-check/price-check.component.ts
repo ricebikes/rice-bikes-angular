@@ -19,6 +19,7 @@ export class PriceCheckComponent {
     "",
     Validators.compose([Validators.required, Validators.pattern("[0-9]+")])
   );
+  itemModalMode = 1;
   searchingForUPC = false;
   viewItemFromUPC = false;
   constructor(
@@ -52,6 +53,9 @@ export class PriceCheckComponent {
     this.searchService.upcSearch(this.scanData.value).then((item) => {
       this.searchingForUPC = false;
       if (item) {
+        if (!item.category_1) { // first time scanning QBP, user must choose a category
+          this.itemModalMode = 0;
+        }
         this.viewItemFromUPC = true;
         this.priceCheckItem = item;
         this.scanData.reset();
@@ -60,6 +64,14 @@ export class PriceCheckComponent {
         return;
       }
     });
+  }
+
+  displayQBPForm(item: Item) {
+    this.triggerScanModal();
+    this.itemModalMode = 1;
+    this.viewItemFromUPC = true;
+    this.priceCheckItem = item;
+    this.scanData.reset();
   }
 
   closeAndResetAll(message: string) {

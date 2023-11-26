@@ -96,6 +96,7 @@
           id="itemModal"
           [mode]=0
           [upc]="lastUPC"
+          [item]="qbpItem"
           (newItem)="addItem($event)"
           (closeAll)="closeAndResetAll($event)"
         ></app-item-details-form>

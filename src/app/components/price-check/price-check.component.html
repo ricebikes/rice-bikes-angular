@@ -38,8 +38,9 @@
         #itemModal
         *ngIf="viewItemFromUPC"
         id="itemModal"
-        [mode]=1
+        [mode]="itemModalMode"
         [item]="priceCheckItem"
+        (newItem)="displayQBPForm($event)"
         (closeAll)="closeAndResetAll($event)"
       ></app-item-details-form>
       <div *ngIf="!viewItemFromUPC">

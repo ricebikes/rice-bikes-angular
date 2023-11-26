@@ -194,7 +194,7 @@ export class SearchService {
   /**
    * Gets distinct item categories
    */
-  itemCategories1(): Promise<string[]> {
+  itemCategories1(): Promise<string[] | void> {
     return this.http
       .get(
         `${this.itemUrl}/categories`,
@@ -226,7 +226,7 @@ export class SearchService {
   /**
    * Gets distinct item sub-sub-categories
    */
-  itemCategories3(cat1: string, cat2: string): Promise<string[]> {
+  itemCategories3(cat1: string, cat2: string): Promise<string[] | void> {
     return this.http
       .get(
         `${this.itemUrl}/categories`,

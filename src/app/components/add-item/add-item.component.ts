@@ -61,6 +61,7 @@ export class AddItemComponent implements OnInit {
   whiteboard = false;
   addDialog = false;
   createItemFromUPC = false;
+  qbpItem = null;
 
   categories = this.searchService.itemCategories1();
   categories2 = null;
@@ -134,7 +135,7 @@ export class AddItemComponent implements OnInit {
   addItem(item: Item) {
     this.scanData.reset();
     this.createItemFromUPC = false;
-    if(this.whiteboard) {
+    if (this.whiteboard) {
       this.chosenWhiteboardItem.emit(item);
     }
     else {
@@ -162,6 +163,8 @@ export class AddItemComponent implements OnInit {
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
   addByUPC() {
+    console.log("addbyupc")
+
     this.searchingForUPC = true;
     this.scanData.disable();
     if (this.scanData.invalid || this.scanData.value == "") {
@@ -171,14 +174,25 @@ export class AddItemComponent implements OnInit {
 
     this.searchService.upcSearch(this.scanData.value).then(
       (item) => {
+        console.log("item", item);
         this.searchingForUPC = false;
         this.scanData.enable();
         if (item) {
-          this.chosenItem.emit(item);
-          this.scanData.reset();
-          // dismiss scan modal
-          this.scanTrigger.nativeElement.click();
+          // if qbp generated with no categories, prompt to fill out
+          if (!item.category_1) {
+            console.log("open item create modal", item);
+            // fill out the item modal
+            this.qbpItem = item;
+            this.scanToCreateItem();
+          } else {
+            this.qbpItem = null
+            this.chosenItem.emit(item);
+            this.scanData.reset();
+            // dismiss scan modal
+            this.scanTrigger.nativeElement.click();
+          }
         } else {
+          this.qbpItem = null;
           this.lastUPC = this.scanData.value;
           this.resetUPC();
           this.scanData.reset();
@@ -187,6 +201,7 @@ export class AddItemComponent implements OnInit {
         }
       },
       (err) => {
+        console.log(this.scanData.value);
         this.lastUPC = this.scanData.value;
         this.searchingForUPC = false;
         this.resetUPC();
@@ -213,10 +228,10 @@ export class AddItemComponent implements OnInit {
     this.resetUPC();
   }
 
-  triggerItemSearch(mode=null) {
+  triggerItemSearch(mode = null) {
     console.log('mode', mode)
 
-    if(mode == 'whiteboard') {
+    if (mode == 'whiteboard') {
       this.whiteboard = true;
     } else {
       this.whiteboard = false;
@@ -240,7 +255,7 @@ export class AddItemComponent implements OnInit {
    * @param item: Item to return
    */
   selectItem(item: Item) {
-    if(this.whiteboard) {
+    if (this.whiteboard) {
       console.log('whiteboard', item)
       this.chosenWhiteboardItem.emit(item);
     }

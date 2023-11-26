@@ -195,7 +195,11 @@ export class ItemDetailsFormComponent implements OnInit {
   async ngOnInit() {
     this.fillValuesIfEdit();
     this.newItemForm.patchValue({
-      upc: this.upc ? this.upc : this.item && this.item.upc,
+      upc: this.item && this.item.upc ? this.item.upc : this.upc && this.upc,
+      name: this.item && this.item.name,
+      brand: this.item && this.item.brand,
+      standard_price: this.item && this.item.standard_price,
+      wholesale_cost: this.item && this.item.wholesale_cost
     });
   }
 
