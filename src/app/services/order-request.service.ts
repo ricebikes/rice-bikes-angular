@@ -242,7 +242,7 @@ export class OrderRequestService {
    * Complete a request and add parts to transactions
    */
   completeRequest(orderReq: OrderRequest): Promise<void> {
-    return this.authService.getCredentials().then((cred) => {
+    return this.authService.getUserCredentials().then((cred) => {
       return this.http.put(
         `${this.backendURL}/${orderReq._id}/status`,
         { id: orderReq._id, status: 'Completed' },
