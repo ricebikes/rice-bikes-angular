@@ -6,7 +6,6 @@ import { OrderRequest } from "../models/orderRequest";
 import { AuthenticationService } from "./authentication.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Item } from "../models/item";
-import { Transaction } from "../models/transaction";
 
 @Injectable()
 export class OrderRequestService {

@@ -121,7 +121,8 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a class="dropdown-item" (click)="print()">Print barcode</a>
-                  <a class="dropdown-item" (click)="disableItem(item)">Disable</a>
+                  <a *ngIf="!item.disabled" class="dropdown-item" (click)="disableItem(i)">Disable</a>
+                  <a *ngIf="item.disabled" class="dropdown-item" (click)="enableItem(i)">Enable</a>
                   <a class="dropdown-item">Delete</a>
                 </div>
               </div>

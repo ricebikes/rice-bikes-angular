@@ -8,10 +8,7 @@ import {
 import { ItemService } from "../../services/item.service";
 import { Item } from "../../models/item";
 import { ItemDetailsFormComponent } from "../item-details-form/item-details-form.component";
-import { FormBuilder, Validators } from "@angular/forms";
 import { SearchService } from "../../services/search.service";
-import { Observable } from "rxjs/Observable";
-import { AlertService } from "../../services/alert.service";
 
 @Component({
   selector: "app-admin-items",
@@ -21,7 +18,6 @@ import { AlertService } from "../../services/alert.service";
 export class AdminItemsComponent implements OnInit {
   constructor(
     private itemService: ItemService,
-    private formBuilder: FormBuilder,
     private searchService: SearchService,
     private renderer: Renderer2
   ) {
@@ -79,9 +75,10 @@ export class AdminItemsComponent implements OnInit {
 
   loaded = false;
 
-  // on page on, retrieves all items and sets items + in stock items
+  // on page init, retrieves all items and sets items + in stock items
   ngOnInit() {
     this.itemService.getItems().then((res) => {
+      console.log("items?", res)
       this.items = this.sortItems(res);
       this.inStockItems = this.items.filter(
         (i) => i.in_stock && i.in_stock > 0
@@ -91,7 +88,7 @@ export class AdminItemsComponent implements OnInit {
   }
 
   // filters transactions using the filters in stockFilters
-  toggleFilters(filterName) {
+  toggleFilters(filterName: string) {
     this.stockFilters[filterName] = !this.stockFilters[filterName];
   }
 
@@ -110,7 +107,6 @@ export class AdminItemsComponent implements OnInit {
 
   // updates the table with the new item once created from item modal
   addItem(item: Item) {
-    console.log("item created", item);
     this.items.splice(0, 0, item);
     if (item.in_stock && item.in_stock > 0)
       this.inStockItems.splice(0, 0, item);
@@ -118,10 +114,12 @@ export class AdminItemsComponent implements OnInit {
 
   // resets all the modals and local variables. wonder if there's a way to do this more gracefully?
   closeAndResetAll(message: string) {
+    console.log(message);
     this.itemDetailsForm.resetForms();
   }
 
   setItems(items: Item[]) {
+    console.log("setting items", items);
     this.items = this.sortItems(items);
     this.inStockItems = items.filter((i) => i.in_stock && i.in_stock > 0);
   }
@@ -131,18 +129,21 @@ export class AdminItemsComponent implements OnInit {
    * @param items: item list to sort
    */
   sortItems(items: Item[]) {
+    console.log("items", items);
     return items.reverse();
   }
 
-  disableItem(item) {
-    item.disabled = true;
-    // convert old items category to category_1
-    if(item.category) item.category_1 = item.category;
-    console.log('disabled item', item);
-    this.itemService.updateItem(item._id, item);
+  disableItem(idx: number) {
+    let item = this.filterItems()[idx];
+    this.itemService.toggleItem(0, item);
   }
 
-  editItem(item, idx) {
+  enableItem(idx: number) {
+    let item = this.filterItems()[idx];
+    this.itemService.toggleItem(1, item);
+  }
+
+  editItem(item: Item, idx: number) {
     // enable item-details-form modal in edit mode and fill the values with chosenItem
     this.chosenItem = item;
     this.chosenIdx = idx;
@@ -150,7 +151,7 @@ export class AdminItemsComponent implements OnInit {
     this.formTrigger.nativeElement.click();
   }
 
-  refreshItem(item: Item) {
+  refreshItem() {
     // refreshes the item list with the item that was just edited
     this.itemService.getItems().then((res) => {
       this.items = this.sortItems(res);
@@ -171,12 +172,7 @@ export class AdminItemsComponent implements OnInit {
     this.formTrigger.nativeElement.click();
   }
 
-  triggerScanModal() {
-
-  }
-  
   openItemMenu(item?: Item) {
-    console.log("clicked menu item");
     this.chosenItem = item;
   }
 
