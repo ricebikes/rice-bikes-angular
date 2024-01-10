@@ -220,7 +220,6 @@ export class OrderRequestService {
    * @param item: item to associate with it
    */
   setItem(orderReq: OrderRequest, item: Item): Promise<OrderRequest> {
-    console.log('set item', orderReq, item)
     return this.authService.getUserCredentials().then((cred) => {
       return this.http
         .put(

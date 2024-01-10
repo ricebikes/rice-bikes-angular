@@ -78,7 +78,6 @@ export class AdminItemsComponent implements OnInit {
   // on page init, retrieves all items and sets items + in stock items
   ngOnInit() {
     this.itemService.getItems().then((res) => {
-      console.log("items?", res)
       this.items = this.sortItems(res);
       this.inStockItems = this.items.filter(
         (i) => i.in_stock && i.in_stock > 0
@@ -116,12 +115,10 @@ export class AdminItemsComponent implements OnInit {
 
   // resets all the modals and local variables. wonder if there's a way to do this more gracefully?
   closeAndResetAll(message: string) {
-    console.log(message);
     this.itemDetailsForm.resetForms();
   }
 
   setItems(items: Item[]) {
-    console.log("setting items", items);
     this.items = this.sortItems(items);
     this.inStockItems = items.filter((i) => i.in_stock && i.in_stock > 0);
   }
@@ -131,7 +128,6 @@ export class AdminItemsComponent implements OnInit {
    * @param items: item list to sort
    */
   sortItems(items: Item[]) {
-    console.log("items", items);
     return items.reverse();
   }
 

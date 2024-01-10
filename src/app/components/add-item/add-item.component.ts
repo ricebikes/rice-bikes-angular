@@ -77,7 +77,6 @@ export class AddItemComponent implements OnInit {
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
-    private itemService: ItemService,
     private authenticationService: AuthenticationService,
     private renderer: Renderer2
   ) {
@@ -173,13 +172,11 @@ export class AddItemComponent implements OnInit {
 
     this.searchService.upcSearch(this.scanData.value).then(
       (item) => {
-        console.log("item", item);
         this.searchingForUPC = false;
         this.scanData.enable();
         if (item && !item.disabled) {
           // if qbp generated with no categories, prompt to fill out
           if (!item.category_1) {
-            console.log("open item create modal", item);
             // fill out the item modal
             this.qbpItem = item;
             this.scanToCreateItem();
@@ -200,7 +197,6 @@ export class AddItemComponent implements OnInit {
         }
       },
       (err) => {
-        console.log(this.scanData.value);
         this.lastUPC = this.scanData.value;
         this.searchingForUPC = false;
         this.resetUPC();
@@ -228,8 +224,6 @@ export class AddItemComponent implements OnInit {
   }
 
   triggerItemSearch(mode = null) {
-    console.log('mode', mode)
-
     if (mode == 'whiteboard') {
       this.whiteboard = true;
     } else {
@@ -255,11 +249,9 @@ export class AddItemComponent implements OnInit {
    */
   selectItem(item: Item) {
     if (this.whiteboard) {
-      console.log('whiteboard', item)
       this.chosenWhiteboardItem.emit(item);
     }
     else {
-      console.log('not whiteboard', item);
       this.chosenItem.emit(item);
     }
     this.itemSearchClose.nativeElement.click();

@@ -303,7 +303,6 @@ export class TransactionService {
         )
         .toPromise()
         .then((res) => {
-          console.log("r", res);
           this.transaction.next(res.json());
         })
         .catch((err) => this.handleError(err));

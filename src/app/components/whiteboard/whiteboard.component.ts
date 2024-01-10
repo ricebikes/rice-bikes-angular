@@ -273,7 +273,6 @@ export class WhiteboardComponent implements OnInit {
    */
   addSelectedOrder(order: Order) {
     // Save the selected request idx
-    console.log('add selected', this.orderRequestsWithForms)
     const currentIdx = this.currentSelectedRequestIdx;
     // Set the order.
     this.orderService.addOrderRequest(order, this.orderRequestsWithForms[currentIdx].request)
@@ -296,7 +295,6 @@ export class WhiteboardComponent implements OnInit {
   }
 
   addItemToNewRequest(item: Item) {
-    console.log('adding item', item);
     this.orderRequestSelectorComponent.addItemToOrderRequest(item);
   }
 
