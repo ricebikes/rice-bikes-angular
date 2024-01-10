@@ -1,4 +1,4 @@
-tbody tr:hover {
+.disabled, tbody tr:hover {
   background-color: #e9ecef;
   cursor: pointer;
 }

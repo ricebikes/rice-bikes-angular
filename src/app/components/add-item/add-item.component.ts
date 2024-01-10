@@ -108,7 +108,8 @@ export class AddItemComponent implements OnInit {
             formData.category_1,
             formData.category_2,
             formData.category_3,
-            formData.brand
+            formData.brand,
+            true
           )
           : Observable.of<Item[]>([]);
       })
@@ -163,8 +164,6 @@ export class AddItemComponent implements OnInit {
    * Triggered when the scan dialog gets a UPC, followed by the enter key
    */
   addByUPC() {
-    console.log("addbyupc")
-
     this.searchingForUPC = true;
     this.scanData.disable();
     if (this.scanData.invalid || this.scanData.value == "") {
@@ -177,7 +176,7 @@ export class AddItemComponent implements OnInit {
         console.log("item", item);
         this.searchingForUPC = false;
         this.scanData.enable();
-        if (item) {
+        if (item && !item.disabled) {
           // if qbp generated with no categories, prompt to fill out
           if (!item.category_1) {
             console.log("open item create modal", item);

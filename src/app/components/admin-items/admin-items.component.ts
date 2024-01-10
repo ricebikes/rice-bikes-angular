@@ -101,6 +101,8 @@ export class AdminItemsComponent implements OnInit {
       filtered = filtered.filter(item => item.in_stock > 0);
     if(this.stockFilters["core stock"])
       filtered = filtered.filter(item => item.threshold_stock > 0)
+    if(!this.stockFilters["disabled"])
+      filtered = filtered.filter(item => !item.disabled)
 
     return filtered;
   }
@@ -135,12 +137,12 @@ export class AdminItemsComponent implements OnInit {
 
   disableItem(idx: number) {
     let item = this.filterItems()[idx];
-    this.itemService.toggleItem(0, item);
+    this.itemService.toggleItem(0, item._id, item);
   }
 
   enableItem(idx: number) {
     let item = this.filterItems()[idx];
-    this.itemService.toggleItem(1, item);
+    this.itemService.toggleItem(1, item._id, item);
   }
 
   editItem(item: Item, idx: number) {

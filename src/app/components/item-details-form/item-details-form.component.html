@@ -124,6 +124,12 @@
             one</small>
           <div class="invalid-feedback">required field</div>
         </div>
+        <div #disabled class="col">
+          <label for="disabled">Status<span *ngIf="mode != 1"></span></label>
+          <p *ngIf="mode == 1" class="form-control-static">
+            {{ item && item.disabled ? "Disabled" : "Enabled" }}
+          </p>
+        </div>
       </div>
       <div class="row">
         <div class="col">

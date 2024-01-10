@@ -81,23 +81,21 @@ export class ItemService {
   /**
    * Disable/enable an item by UPC code
    * @param toggle: 0 for disable, 1 for enable
+   * @param id: item ID
    * @param item: item without the _id
    */
-  async toggleItem(toggle: number, item: Item): Promise<Item> {
-    delete item._id; // to prevent errors on backend
+  async toggleItem(toggle: number, id: String, item: Item): Promise<Item> {
     if(toggle) item.disabled = false;
     else item.disabled = true;
 
-    console.log("item", item);
     return this.authService.getUserCredentials().then((cred) => {
       return this.http
-        .put(`${CONFIG.api_url}/items/item/upc/${item.upc}`, item, cred)
+        .put(`${CONFIG.api_url}/items/${id}`, item, cred)
         .toPromise()
         .then((res) => res.json())
         .catch((err) => this.handleError(err))
     });
   }
-
 
   /**
    * Grab updated item attributes from supplier

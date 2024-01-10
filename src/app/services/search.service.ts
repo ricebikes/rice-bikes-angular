@@ -136,14 +136,15 @@ export class SearchService {
    * @param category_2: item category 2
    * @param category_3: item category 3
    * @param brand: item brand
-   * @param condition: item condition (New or Used)
+   * @param filterDisabled: if true, filter out disabled items
    */
   itemSearch(
     name?: string,
     category_1?: string,
     category_2?: string,
     category_3?: string,
-    brand?: string
+    brand?: string,
+    filterDisabled?: boolean
   ): Promise<Item[]> {
     const params = new URLSearchParams();
     const requestOptions = new RequestOptions();
@@ -162,6 +163,9 @@ export class SearchService {
     }
     if (brand) {
       params.set("brand", brand);
+    }
+    if (filterDisabled) {
+      params.set("filterDisabled", "1");
     }
     requestOptions.params = params;
     return this.http
