@@ -161,7 +161,6 @@ export class TransactionDetailComponent implements OnInit {
     let item = this.transaction.items[item_idx].item;
     if (item.in_stock != null) {
       item.in_stock++;
-      console.log("item", item);
       this.itemService.updateItem(item._id, item);
     }
   }

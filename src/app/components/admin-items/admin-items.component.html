@@ -37,7 +37,7 @@
         Create Item
       </button>
       <button class="btn btn-primary" data-toggle="modal" data-target="#priceCheckScanModal">
-        Scan Item from KHS
+        Scan Item
       </button>
       <button style="margin-left: 5px" data-toggle="modal" data-target="#pastActionsModal"
         class="btn btn-outline-secondary">
@@ -97,35 +97,36 @@
           <th *ngIf="fieldFilters['brand']" scope="col">Brand</th>
           <th *ngIf="fieldFilters['retail price']" scope="col">Sale Price</th>
           <th *ngIf="fieldFilters['wholesale cost']" scope="col">Wholesale</th>
-          <th *ngIf="fieldFilters['in stock']" scope="col">In Stock</th>
+          <th *ngIf="fieldFilters['current stock']" scope="col">Current Stock</th>
           <th *ngIf="fieldFilters['threshold stock']" scope="col">Threshold Stock</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of filterItems(); let i = index">
-            <td *ngIf="fieldFilters.name" (click)="editItem(item, i)">{{ item.name }}</td>
-            <td *ngIf="fieldFilters['category 1']" (click)="editItem(item, i)">{{ item.category_1 }}</td>
-            <td *ngIf="fieldFilters['category 2']" (click)="editItem(item, i)">{{ item.category_2 }}</td>
-            <td *ngIf="fieldFilters['category 3']" (click)="editItem(item, i)">{{ item.category_3 }}</td>
-            <td *ngIf="fieldFilters['brand']" (click)="editItem(item, i)">{{ item.brand }}</td>
-            <td *ngIf="fieldFilters['retail price']" (click)="editItem(item, i)">${{ item.standard_price }}</td>
-            <td *ngIf="fieldFilters['wholesale cost']" (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
-            <td *ngIf="fieldFilters['in stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
-            <td *ngIf="fieldFilters['threshold stock']" (click)="editItem(item, i)">{{item.threshold_stock}}</td>
+        <tr *ngFor="let item of filterItems(); let i = index" [class.disabled]="item.disabled">
+          <td *ngIf="fieldFilters.name" (click)="editItem(item, i)">{{ item.name }}</td>
+          <td *ngIf="fieldFilters['category 1']" (click)="editItem(item, i)">{{ item.category_1 }}</td>
+          <td *ngIf="fieldFilters['category 2']" (click)="editItem(item, i)">{{ item.category_2 }}</td>
+          <td *ngIf="fieldFilters['category 3']" (click)="editItem(item, i)">{{ item.category_3 }}</td>
+          <td *ngIf="fieldFilters['brand']" (click)="editItem(item, i)">{{ item.brand }}</td>
+          <td *ngIf="fieldFilters['retail price']" (click)="editItem(item, i)">${{ item.standard_price }}</td>
+          <td *ngIf="fieldFilters['wholesale cost']" (click)="editItem(item, i)">${{ item.wholesale_cost }}</td>
+          <td *ngIf="fieldFilters['current stock']" (click)="editItem(item, i)">{{ item.in_stock }}</td>
+          <td *ngIf="fieldFilters['threshold stock']" (click)="editItem(item, i)">{{item.threshold_stock}}</td>
 
-            <td>
-              <div class="dropdown">
-                <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false" (click)="openItemMenu()">
-                  <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" (click)="print()">Print barcode</a>
-                  <a class="dropdown-item" (click)="disableItem(item)">Disable</a>
-                  <a class="dropdown-item">Delete</a>
-                </div>
+          <td>
+            <div class="dropdown">
+              <button class="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" (click)="openItemMenu()">
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" (click)="print()">Print barcode</a>
+                <a *ngIf="!item.disabled" class="dropdown-item" (click)="disableItem(i)">Disable</a>
+                <a *ngIf="item.disabled" class="dropdown-item" (click)="enableItem(i)">Enable</a>
+                <a class="dropdown-item">Delete</a>
               </div>
-            </td>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>

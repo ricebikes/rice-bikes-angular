@@ -14,7 +14,7 @@
             formControlName="name"
           />
         </div>
-        <div class="form-group col-2">
+        <div class="form-group col-3">
           <label for="brandSelect">Brand</label>
           <select class="form-control" id="brandSelect" formControlName="brand">
             <option value="">Any</option>
@@ -63,21 +63,6 @@
               {{ category }}
             </option>
           </select>
-        </div>
-        <div class="form-group col-1">
-          <label for="inStock"></label>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-              (click)="toggleInStock()"
-            />
-            <label class="form-check-label" for="flexCheckDefault">
-              In Stock
-            </label>
-          </div>
         </div>
       </div>
     </form>

@@ -6,7 +6,6 @@ import { OrderRequest } from "../models/orderRequest";
 import { AuthenticationService } from "./authentication.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Item } from "../models/item";
-import { Transaction } from "../models/transaction";
 
 @Injectable()
 export class OrderRequestService {
@@ -221,7 +220,6 @@ export class OrderRequestService {
    * @param item: item to associate with it
    */
   setItem(orderReq: OrderRequest, item: Item): Promise<OrderRequest> {
-    console.log('set item', orderReq, item)
     return this.authService.getUserCredentials().then((cred) => {
       return this.http
         .put(
@@ -242,7 +240,7 @@ export class OrderRequestService {
    * Complete a request and add parts to transactions
    */
   completeRequest(orderReq: OrderRequest): Promise<void> {
-    return this.authService.getCredentials().then((cred) => {
+    return this.authService.getUserCredentials().then((cred) => {
       return this.http.put(
         `${this.backendURL}/${orderReq._id}/status`,
         { id: orderReq._id, status: 'Completed' },

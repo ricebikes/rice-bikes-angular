@@ -5,6 +5,7 @@ export class Item {
   category_1: string;
   category_2: string;
   category_3: string;
+  disabled: boolean;
   brand: string;
   specifications: { [key: string]: string };
   features: string[];

@@ -77,8 +77,6 @@ export class AdminRepairsComponent implements OnInit {
   }
 
   updateRepair() {
-    // console.log(this.repairs[this.editIDX]);
-    console.log(this.editable_repair);
     this.repairservice
       .putRepair(
         this.repairs[this.editIDX]._id,
@@ -96,7 +94,6 @@ export class AdminRepairsComponent implements OnInit {
   }
 
   setEditMode(idx: number, enabled: boolean) {
-    console.log("editing", idx, enabled);
     this.editMode = enabled;
     if (!enabled) {
       // Disable edit mode
@@ -117,6 +114,5 @@ export class AdminRepairsComponent implements OnInit {
       price: this.editingRepair.price,
       description: this.editingRepair.description,
     };
-    console.log(this.editable_repair);
   }
 }

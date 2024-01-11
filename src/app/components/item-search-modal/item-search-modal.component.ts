@@ -6,26 +6,13 @@ import {
   Output,
   EventEmitter,
   Input,
-  Pipe,
-  PipeTransform,
-  Renderer2,
-  SimpleChanges,
-  TemplateRef,
 } from "@angular/core";
 import {
   FormBuilder,
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-  ValidationErrors,
-  Validators,
 } from "@angular/forms";
 import { SearchService } from "../../services/search.service";
 import { Item } from "../../models/item";
 import { Observable } from "rxjs/Observable";
-import { ItemService } from "../../services/item.service";
-import { AuthenticationService } from "../../services/authentication.service";
 
 @Component({
   selector: "app-item-search-modal",
@@ -62,14 +49,10 @@ export class ItemSearchModalComponent implements OnInit {
 
   constructor(
     private searchService: SearchService,
-    private formBuilder: FormBuilder,
-    private itemService: ItemService,
-    private authenticationService: AuthenticationService,
-    private renderer: Renderer2
-  ) {}
+    private formBuilder: FormBuilder
+  ) { }
 
   ngOnInit() {
-    console.log("ngOnInit");
     // watch form for changes, and search when it does
     this.itemResults = this.itemForm.valueChanges
       .debounceTime(200) // wait 200ms between changes
@@ -78,12 +61,12 @@ export class ItemSearchModalComponent implements OnInit {
       .switchMap((formData) => {
         return formData
           ? this.searchService.itemSearch(
-              formData.name,
-              formData.category_1,
-              formData.category_2,
-              formData.category_3,
-              formData.brand
-            )
+            formData.name,
+            formData.category_1,
+            formData.category_2,
+            formData.category_3,
+            formData.brand
+          )
           : Observable.of<Item[]>([]);
       })
       .catch((err) => {
@@ -95,6 +78,7 @@ export class ItemSearchModalComponent implements OnInit {
     });
   }
 
+  // listens for changes to the item search filter and emits results to parent
   onChange() {
     this.itemResults.subscribe((res) => {
       this.results.emit(res);
@@ -102,22 +86,21 @@ export class ItemSearchModalComponent implements OnInit {
   }
 
   toggleInStock() {
-    console.log("in stock");
     this.inStock = !this.inStock;
     this.checked.emit(this.inStock);
   }
 
+  // load category 2 options when category 1 is selected/changed
   async onCat1Change(e) {
     this.categories2 = await this.searchService.itemCategories2(e.target.value);
     this.categories3 = null;
-    console.log(this.categories2);
   }
 
+  // load category 3 options when category 2 is selected/changed
   async onCat2Change(e) {
     this.categories3 = await this.searchService.itemCategories3(
       this.itemForm.controls["category_1"].value,
       e.target.value
     );
-    console.log(this.categories3);
   }
 }

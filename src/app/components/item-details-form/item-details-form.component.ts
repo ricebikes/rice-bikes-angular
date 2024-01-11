@@ -6,24 +6,15 @@ import {
   Output,
   EventEmitter,
   Input,
-  Pipe,
-  PipeTransform,
   SimpleChange,
-  TemplateRef,
 } from "@angular/core";
 import {
-  AbstractControl,
   FormBuilder,
   FormArray,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-  ValidationErrors,
   Validators,
 } from "@angular/forms";
 import { SearchService } from "../../services/search.service";
 import { Item } from "../../models/item";
-import { Observable } from "rxjs/Observable";
 import { ItemService } from "../../services/item.service";
 import { AuthenticationService } from "../../services/authentication.service";
 
@@ -94,8 +85,7 @@ export class ItemDetailsFormComponent implements OnInit {
     }
   }
   print(): void {
-    let printContents, popupWin;
-    printContents = document.getElementById("print-section").innerHTML;
+    let printContents = document.getElementById("print-section").innerHTML;
     var mywindow = window.open("", "PRINT");
 
     mywindow.document.write("<html><body style='margin: 0'>");
@@ -119,8 +109,6 @@ export class ItemDetailsFormComponent implements OnInit {
 
   ngOnChanges(changes: { [property: string]: SimpleChange }) {
     if (this.mode != 0) this.fillValuesIfEdit();
-    // Extract changes to the input property by its name
-    let change: SimpleChange = changes["close"];
 
     this.newItemForm.reset();
     this.newItemForm.controls.specifications = this.formBuilder.array([]);
@@ -195,7 +183,11 @@ export class ItemDetailsFormComponent implements OnInit {
   async ngOnInit() {
     this.fillValuesIfEdit();
     this.newItemForm.patchValue({
-      upc: this.upc ? this.upc : this.item && this.item.upc,
+      upc: this.item && this.item.upc ? this.item.upc : this.upc && this.upc,
+      name: this.item && this.item.name,
+      brand: this.item && this.item.brand,
+      standard_price: this.item && this.item.standard_price,
+      wholesale_cost: this.item && this.item.wholesale_cost
     });
   }
 
@@ -276,6 +268,7 @@ export class ItemDetailsFormComponent implements OnInit {
           map[obj.key] = obj.value;
           return map;
         }, {}),
+        disabled: false,
         features: this.newItemForm.controls["features"].value.map(
           (obj) => obj.value
         ),
@@ -306,6 +299,7 @@ export class ItemDetailsFormComponent implements OnInit {
           map[obj.key] = obj.value;
           return map;
         }, {}),
+        disabled: false,
         features: this.newItemForm.controls["features"].value.map(
           (obj) => obj.value
         ),

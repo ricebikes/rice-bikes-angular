@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Customer } from '../../models/customer';
 import { SearchService } from '../../services/search.service';
 import { Subject } from 'rxjs/Subject';
@@ -11,7 +11,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./search-customer.component.css', '../../app.component.css']
 })
 export class SearchCustomerComponent implements OnInit {
-
+  @Input("type") type: string;
+  
   @Output() foundCustomer = new EventEmitter<Customer>();
 
   customerResults: Observable<Customer[]>;

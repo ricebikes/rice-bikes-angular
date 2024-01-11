@@ -61,6 +61,7 @@ export class AddItemComponent implements OnInit {
   whiteboard = false;
   addDialog = false;
   createItemFromUPC = false;
+  qbpItem = null;
 
   categories = this.searchService.itemCategories1();
   categories2 = null;
@@ -76,7 +77,6 @@ export class AddItemComponent implements OnInit {
   constructor(
     private searchService: SearchService,
     private formBuilder: FormBuilder,
-    private itemService: ItemService,
     private authenticationService: AuthenticationService,
     private renderer: Renderer2
   ) {
@@ -107,7 +107,8 @@ export class AddItemComponent implements OnInit {
             formData.category_1,
             formData.category_2,
             formData.category_3,
-            formData.brand
+            formData.brand,
+            true
           )
           : Observable.of<Item[]>([]);
       })
@@ -134,7 +135,7 @@ export class AddItemComponent implements OnInit {
   addItem(item: Item) {
     this.scanData.reset();
     this.createItemFromUPC = false;
-    if(this.whiteboard) {
+    if (this.whiteboard) {
       this.chosenWhiteboardItem.emit(item);
     }
     else {
@@ -173,12 +174,21 @@ export class AddItemComponent implements OnInit {
       (item) => {
         this.searchingForUPC = false;
         this.scanData.enable();
-        if (item) {
-          this.chosenItem.emit(item);
-          this.scanData.reset();
-          // dismiss scan modal
-          this.scanTrigger.nativeElement.click();
+        if (item && !item.disabled) {
+          // if qbp generated with no categories, prompt to fill out
+          if (!item.category_1) {
+            // fill out the item modal
+            this.qbpItem = item;
+            this.scanToCreateItem();
+          } else {
+            this.qbpItem = null
+            this.chosenItem.emit(item);
+            this.scanData.reset();
+            // dismiss scan modal
+            this.scanTrigger.nativeElement.click();
+          }
         } else {
+          this.qbpItem = null;
           this.lastUPC = this.scanData.value;
           this.resetUPC();
           this.scanData.reset();
@@ -213,10 +223,8 @@ export class AddItemComponent implements OnInit {
     this.resetUPC();
   }
 
-  triggerItemSearch(mode=null) {
-    console.log('mode', mode)
-
-    if(mode == 'whiteboard') {
+  triggerItemSearch(mode = null) {
+    if (mode == 'whiteboard') {
       this.whiteboard = true;
     } else {
       this.whiteboard = false;
@@ -240,12 +248,10 @@ export class AddItemComponent implements OnInit {
    * @param item: Item to return
    */
   selectItem(item: Item) {
-    if(this.whiteboard) {
-      console.log('whiteboard', item)
+    if (this.whiteboard) {
       this.chosenWhiteboardItem.emit(item);
     }
     else {
-      console.log('not whiteboard', item);
       this.chosenItem.emit(item);
     }
     this.itemSearchClose.nativeElement.click();
