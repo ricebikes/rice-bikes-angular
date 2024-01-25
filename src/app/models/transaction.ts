@@ -14,6 +14,7 @@ export class Transaction {
   reserved: boolean;
   is_paid: boolean;
   urgent: boolean;
+  nuclear: boolean;
   waiting_email: boolean;
   employee: boolean;
   total_cost: number;
