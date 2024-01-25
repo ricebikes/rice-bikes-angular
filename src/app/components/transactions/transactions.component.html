@@ -136,7 +136,7 @@
                   class="fa fa-wrench"></i></span>
               <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
               <span *ngIf="transaction?.urgent" class="badge badge-danger"><i class="fas fa-exclamation"></i></span>
-              <span *ngIf="transaction?.nuclear" class="badge badge-danger"><i class="fa-solid fa-radiation"></i></span>
+              <span *ngIf="transaction?.nuclear" class="badge badge-danger"><i class="fa-sharp fa-solid fa-radiation"></i></span>
     
             </th>
             <td *ngIf="!(currentTab === 'retrospec' && !transaction.reserved)">{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
