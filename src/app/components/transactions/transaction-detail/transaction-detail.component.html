@@ -205,7 +205,8 @@
           >
             {{ action.employee.firstname }} {{ action.employee.lastname }}:
             {{ action.description }}
-            <span class="float-right">{{ action.time | timeAgo }}</span>
+            <!--removed "| timeAgo"-->
+            <span class="float-right">{{ action.time}}</span>
           </li>
         </ul>
       </div>
