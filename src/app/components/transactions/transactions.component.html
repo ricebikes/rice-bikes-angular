@@ -143,8 +143,8 @@
             <td *ngIf="(currentTab === 'retrospec' && !transaction.reserved)"> - </td>
             <td>{{getBikeList(transaction)}}</td>
             <!--removed "| timeAgo" in following two lines-->
-            <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | date: 'short'}}</td>
-            <td *ngIf="!['pickup', 'retrospec'].includes(currentTab)">{{transaction.date_created | date: 'short'}}</td>
+            <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | date: 'mediumDate'}}</td>
+            <td *ngIf="!['pickup', 'retrospec'].includes(currentTab)">{{transaction.date_created | date: 'mediumDate'}}</td>
             <td *ngIf="currentTab === 'retrospec'"><span class="fa" [ngClass]="{
               'fa-cart-arrow-down': transaction.status == 'ordered',
               'fa-truck': transaction.status == 'arrived',
