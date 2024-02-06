@@ -183,7 +183,7 @@
         <ul class="list-group list-group-flush">
           <!--removed "| timeAgo"-->
           <li class="list-group-item" *ngFor="let action of actionsViewOrderReq?.actions">{{action.employee.firstname}}
-            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time}}</span></li>
+            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time | date: 'dd MMM yyyy'}}</span></li>
         </ul>
       </div>
     </div>
