@@ -325,7 +325,8 @@
           [ngClass]="{
             'badge-success': transaction?.transaction_type == 'inpatient',
             'badge-primary': transaction?.transaction_type == 'outpatient',
-            'badge-secondary': transaction?.transaction_type == 'merch'
+            'badge-secondary': transaction?.transaction_type == 'merch',
+            'badge-beerbike': transaction?.beerbike == true
           }"
         >
           <h5>{{ transaction?.transaction_type }}</h5>
