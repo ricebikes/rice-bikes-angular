@@ -131,7 +131,7 @@
                                             'badge-primary':   transaction?.transaction_type == 'outpatient',
                                             'badge-secondary': transaction?.transaction_type == 'merch',
                                             'badge-retrospec':   transaction?.transaction_type == 'retrospec',
-                                            'badge-beerbike': transaction?.beerbike == true}">
+                                            'badge-beerbike': transaction?.beerbike}">
                 {{transaction?.transaction_type}}</span>
               <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i
                   class="fa fa-wrench"></i></span>
