@@ -130,8 +130,7 @@
               <span class="badge" [ngClass]="{'badge-success': transaction?.transaction_type == 'inpatient',
                                             'badge-primary':   transaction?.transaction_type == 'outpatient',
                                             'badge-secondary': transaction?.transaction_type == 'merch',
-                                            'badge-retrospec':   transaction?.transaction_type == 'retrospec',
-                                            'badge-beerbike': transaction?.beerbike}">
+                                            'badge-retrospec':   transaction?.transaction_type == 'retrospec'}">
                 {{transaction?.transaction_type}}</span>
               <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i
                   class="fa fa-wrench"></i></span>
