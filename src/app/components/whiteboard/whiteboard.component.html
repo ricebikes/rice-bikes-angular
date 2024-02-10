@@ -181,9 +181,9 @@
       </div>
       <div class="modal-body" *ngIf="actionsViewOrderReq?.actions && actionsViewOrderReq?.actions.length > 0">
         <ul class="list-group list-group-flush">
+          <!--removed "| timeAgo"-->
           <li class="list-group-item" *ngFor="let action of actionsViewOrderReq?.actions">{{action.employee.firstname}}
-            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time |
-              timeAgo}}</span></li>
+            {{action.employee.lastname}}: {{action.description}} <span class="float-right">{{action.time | date: 'medium'}}</span></li>
         </ul>
       </div>
     </div>

@@ -13,7 +13,7 @@
         class="nav-link">Active</a>
     </li>
     <li class="nav-item">
-      <a (click)="setTab('pickup', { complete: true , is_paid: false, refurb: false})"
+      <a (click)="setTab('pickup', { complete: true , is_paid: false, refurb: false, beerbike: false})"
         [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
@@ -37,7 +37,7 @@
         class="nav-link">Refurbs</a>
     </li>
     <li class="nav-item">
-      <a (click)="setTab('beerbike',{complete:false, beerbike: true})" [ngClass]="{'active': currentTab === 'beerbike'}"
+      <a (click)="setTab('beerbike',{beerbike: true})" [ngClass]="{'active': currentTab === 'beerbike'}"
         class="nav-link">Beer Bikes</a>
     </li>
     <li class="nav-item">
@@ -142,8 +142,9 @@
             <td *ngIf="!(currentTab === 'retrospec' && !transaction.reserved)">{{transaction.customer.first_name}} {{transaction.customer.last_name}}</td>
             <td *ngIf="(currentTab === 'retrospec' && !transaction.reserved)"> - </td>
             <td>{{getBikeList(transaction)}}</td>
-            <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo }}</td>
-            <td *ngIf="!['pickup', 'retrospec'].includes(currentTab)">{{transaction.date_created | timeAgo }}</td>
+            <!--removed "| timeAgo" in following two lines-->
+            <td *ngIf="currentTab === 'pickup'">{{transaction.date_completed | timeAgo}}</td>
+            <td *ngIf="!['pickup', 'retrospec'].includes(currentTab)">{{transaction.date_created | timeAgo}}</td>
             <td *ngIf="currentTab === 'retrospec'"><span class="fa" [ngClass]="{
               'fa-cart-arrow-down': transaction.status == 'ordered',
               'fa-truck': transaction.status == 'arrived',

@@ -19,7 +19,8 @@
           <li class="list-group-item" *ngFor="let action of transaction?.actions">
             {{ action.employee.firstname }} {{ action.employee.lastname }}:
             {{ action.description }}
-            <span class="float-right">{{ action.time | timeAgo }}</span>
+            <!--removed "| time-ago"-->
+            <span class="float-right">{{ action.time | date: 'medium' }}</span>
           </li>
         </ul>
       </div>
