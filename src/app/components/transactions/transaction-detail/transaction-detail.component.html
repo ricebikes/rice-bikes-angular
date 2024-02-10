@@ -751,6 +751,21 @@
       </div>
 
       <button
+        *ngIf="!transaction?.nuclear && !transaction?.complete"
+        (click)="toggleNuclear()"
+        class="btn btn-outline-warning btn-lg"
+      >
+        <i class="fas fa-radiation"></i>
+      </button>
+      <button
+        *ngIf="transaction?.nuclear && !transaction?.complete"
+        (click)="toggleNuclear()"
+        class="btn btn-danger btn-lg"
+      >
+        <i class="fas fa-radiation"></i>
+      </button>
+
+      <button
         *ngIf="!transaction?.urgent && !transaction?.complete"
         (click)="toggleUrgent()"
         class="btn btn-outline-warning btn-lg"

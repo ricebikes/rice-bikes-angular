@@ -260,6 +260,10 @@ export class TransactionDetailComponent implements OnInit {
     this.transaction.urgent = !this.transaction.urgent;
     this.updateTransaction();
   }
+  toggleNuclear(): void {
+    this.transaction.nuclear = !this.transaction.nuclear;
+    this.updateTransaction();
+  }
 
   /**
    * Sets order request transaction will be waiting on to arrive
