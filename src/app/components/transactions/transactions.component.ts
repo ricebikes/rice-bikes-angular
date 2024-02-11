@@ -48,6 +48,7 @@ export class TransactionsComponent implements OnInit {
   }
 
 
+
   // decription = "${size} / ${color}""
   parseRetrospec(bike) {
     const [size, color] = bike.description.split(" / ")
