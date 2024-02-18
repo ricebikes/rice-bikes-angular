@@ -132,6 +132,7 @@
                                             'badge-secondary': transaction?.transaction_type == 'merch',
                                             'badge-retrospec':   transaction?.transaction_type == 'retrospec'}">
                 {{transaction?.transaction_type}}</span>
+              <span *ngIf="transaction?.beerbike" class="badge badge-info">Beer Bike</span>
               <span *ngIf="transaction?.orderRequests?.length > 0" class="badge badge-danger"><i
                   class="fa fa-wrench"></i></span>
               <span *ngIf="transaction?.waiting_email" class="badge badge-danger"><i class="fa fa-envelope"></i> </span>
