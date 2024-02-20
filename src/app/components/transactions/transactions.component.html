@@ -13,7 +13,7 @@
         class="nav-link">Active</a>
     </li>
     <li class="nav-item">
-      <a (click)="setTab('pickup', { complete: true , is_paid: false, refurb: false, beerbike: false})"
+      <a (click)="setTab('pickup', { complete: true , is_paid: false, refurb: false})"
         [ngClass]="{'active': currentTab === 'pickup'}" class="nav-link">Waiting on pickup</a>
     </li>
     <li class="nav-item">
