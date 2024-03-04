@@ -28,7 +28,7 @@
         <input class="form-control form-control-lg" type="text" formControlName="last_name" id="last_name">
       </div>
     </div>
-    <div *ngIf="type == 'inpatient' || type == 'retrospec'" class="form-group row">
+    <div *ngIf="type == 'inpatient' || type == 'retrospec' || type == 'outpatient'" class="form-group row">
       <label for="phone" class="col-2 col-form-label">phone #</label>
       <div class="col-10">
         <input class="form-control form-control-lg" type="text" formControlName="phone" id="phone">
