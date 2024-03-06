@@ -38,6 +38,7 @@ export class SearchCustomerComponent implements OnInit {
         Validators.required
       ]),
       'phone': new FormControl(this.customer.phone, [
+        Validators.required,
         Validators.pattern(/^\d{10}$/)
       ]),
     });
