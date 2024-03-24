@@ -22,9 +22,13 @@ export class AdminItemsComponent implements OnInit {
     private renderer: Renderer2
   ) {
     this.renderer.listen("window", "click", (e: Event) => {
-      if (e.target == this.itemDetailsModal.nativeElement) {
+      /**
+       * Removed this because form clears when you highlight text
+       * and take cursor past the edge of the item detail form box.
+       */
+      /*if (e.target == this.itemDetailsModal.nativeElement) {
         this.closeAndResetAll("clicked out of modal");
-      }
+      }*/
     });
   }
 

@@ -82,14 +82,14 @@ export class AddItemComponent implements OnInit {
   ) {
     this.renderer.listen("window", "click", (e: Event) => {
       if (e.target == this.itemSearchModal.nativeElement) {
-        this.closeAndResetAll("clicked out of modal");
+        //this.closeAndResetAll("clicked out of modal");
       }
     });
     this.renderer.listen("window", "click", (e: Event) => {
       if (e.target == this.scanModal.nativeElement) {
-        this.scanData.reset({ emitEvent: false });
-        this.createItemFromUPC = false;
-        this.closeAndResetAll("clicked out of modal");
+        //this.scanData.reset({ emitEvent: false });
+        //this.createItemFromUPC = false;
+        //this.closeAndResetAll("clicked out of modal");
       }
     });
   }
