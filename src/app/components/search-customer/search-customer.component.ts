@@ -4,6 +4,8 @@ import { SearchService } from '../../services/search.service';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { TransactionService } from "../../services/transaction.service";
+import { Transaction } from '../../models/transaction';
 
 @Component({
   selector: 'app-search-customer',
@@ -17,12 +19,14 @@ export class SearchCustomerComponent implements OnInit {
 
   customerResults: Observable<Customer[]>;
   private searchTerms = new Subject<string>();
+  transaction: Transaction;
 
   customer: Customer = new Customer();
   customerForm: FormGroup;
 
   constructor(
-    private searchService: SearchService
+    private searchService: SearchService,
+    private transactionService: TransactionService
   ) { }
 
   ngOnInit() {
@@ -38,6 +42,7 @@ export class SearchCustomerComponent implements OnInit {
         Validators.required
       ]),
       'phone': new FormControl(this.customer.phone, [
+        this.transaction.transaction_type == 'inpatient' ? Validators.required : Validators.nullValidator,
         Validators.pattern(/^\d{10}$/)
       ]),
     });
