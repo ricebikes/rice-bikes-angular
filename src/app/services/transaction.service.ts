@@ -95,10 +95,11 @@ export class TransactionService {
 
   updateDescription(id: string, description: string): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
+      const descriptionWithSpace = description + ' ';
       return this.http
         .put(
           `${this.backendUrl}/${id}/description`,
-          { description: description },
+          { description: descriptionWithSpace },
           credentials
         )
         .toPromise()
