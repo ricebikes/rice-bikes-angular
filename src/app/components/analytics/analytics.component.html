@@ -23,37 +23,4 @@
       </button>
     </form>
   </div>
-
-  <div class="jumbotron">
-    <h3 class="display-4">Export Employee Metrics</h3>
-    <p class="lead">Download a tally of the repairs and transactions that all employees marked as complete over
-    a time range</p>
-    <form [formGroup]="dateFormEmployees">
-      <div class="form-group">
-        <label for="employeeStartDate">Start Date</label>
-        <input type="date" class="form-control" id="employeeStartDate" formControlName="startDate"
-               placeholder="YYYY-MM-DD">
-        <p class="text-danger" *ngIf="!employeeDatesValid">Start date cannot be after end date</p>
-        <label for="employeeEndDate">End Date</label>
-        <input type="date" class="form-control" id="employeeEndDate" formControlName="endDate"
-               placeholder="YYYY-MM-DD">
-      </div>
-      <button type="submit" [disabled]="!dateFormEmployees.valid" class="btn btn-primary"
-              (click)="employeeFormSubmit()">
-        <span *ngIf="!employeeProcessing"><i class="fas fa-download"></i> Download</span>
-        <span *ngIf="employeeProcessing">
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          Processing...
-        </span>
-      </button>
-    </form>
-  </div>
-</div>
-<!-- If the platform isn't supported, tell the user to come back on a PC-->
-<div class="container" *ngIf="!platformSupported">
-  <div class="jumbotron">
-    <h2 class="display-4">Unsupported Platform</h2>
-    <p class="lead">Unfortunately, your platform does not support viewing this page. This may be because you are
-    using a mobile device. Please try using this feature on a PC</p>
-  </div>
 </div>

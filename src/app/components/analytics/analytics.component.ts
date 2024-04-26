@@ -20,10 +20,10 @@ export class AnalyticsComponent implements OnInit {
     endDate: ['', Validators.required]
   });
 
-  dateFormEmployees = this.formBuilder.group({
+  /*dateFormEmployees = this.formBuilder.group({
     startDate: ['', Validators.required],
     endDate: ['', Validators.required]
-  });
+  });*/
   constructor(private analyticsService: AnalyticsService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
@@ -44,7 +44,7 @@ export class AnalyticsComponent implements OnInit {
         }
     });
 
-    this.dateFormEmployees.valueChanges.subscribe(formData => {
+    /*this.dateFormEmployees.valueChanges.subscribe(formData => {
       if (this.parseDate(formData.startDate) > this.parseDate(formData.endDate)) {
         this.employeeDatesValid = false;
         // this invalidates the form
@@ -54,7 +54,7 @@ export class AnalyticsComponent implements OnInit {
         // restores form to normal validation
         this.dateFormEmployees.controls['startDate'].setErrors(null);
       }
-    });
+    });*/
   }
 
   /**
@@ -70,7 +70,7 @@ export class AnalyticsComponent implements OnInit {
     return new Date(parseInt(matches[1], 10), parseInt(matches[2], 10) - 1, parseInt(matches[3], 10));
   }
 
-  employeeFormSubmit() {
+  /*employeeFormSubmit() {
     const start = this.parseDate(this.dateFormEmployees.get('startDate').value);
     console.log(this.dateFormEmployees.get('startDate').value);
     const end = this.parseDate(this.dateFormEmployees.get('endDate').value);
@@ -79,7 +79,7 @@ export class AnalyticsComponent implements OnInit {
       this.dateFormEmployees.reset();
       this.employeeProcessing = false;
     });
-  }
+  }*/
 
   transactionFormSubmit() {
     const start = this.parseDate(this.dateFormTransaction.get('startDate').value);
