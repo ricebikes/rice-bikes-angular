@@ -23,6 +23,7 @@ import { ItemService } from "../../../services/item.service";
 export class TransactionDetailComponent implements OnInit {
 
   @ViewChild('updateCustomerModal') updateCustomerModal: ElementRef;
+  @ViewChild('clearReservationModal') clearReservationModal: ElementRef;
   @ViewChild('deleteTransactionModal') deleteTransactionModal: ElementRef;
   @ViewChild('customPriceModalTrigger') customPriceModalButtonTrigger: ElementRef;
   @ViewChild('completeDropdown') completeDropdownButton: ElementRef;
@@ -111,6 +112,11 @@ export class TransactionDetailComponent implements OnInit {
     await this.transactionService.updateCustomer(this.transaction._id, customer)
     this.transaction.customer = customer
     this.updateCustomerModal.nativeElement.click()
+  }
+
+  clearReservation(): void {
+    this.transactionService.clearReservation(this.transaction._id)
+    this.clearReservationModal.nativeElement.click()
   }
 
   updateTransaction(): void {

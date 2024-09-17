@@ -118,6 +118,16 @@ export class TransactionService {
     });
   }
 
+  clearReservation(id: string): Promise<any> {
+    return this.authService.getUserCredentials().then((credentials) => {
+      return this.http
+        .put(`${this.backendUrl}/${id}/customer`, { }, credentials)
+        .toPromise()
+        .then((res) => this.transaction.next(res.json() as Transaction))
+        .catch((err) => this.handleError(err));
+    });
+  }
+
   updateStatus(id: String, status: String): Promise<any> {
     return this.authService.getUserCredentials().then((credentials) => {
       return this.http
