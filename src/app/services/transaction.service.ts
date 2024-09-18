@@ -11,6 +11,7 @@ import { AuthenticationService } from "./authentication.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Http } from "@angular/http";
 import { OrderRequest } from "../models/orderRequest";
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class TransactionService {
@@ -118,14 +119,8 @@ export class TransactionService {
     });
   }
 
-  clearReservation(id: string): Promise<any> {
-    return this.authService.getUserCredentials().then((credentials) => {
-      return this.http
-        .put(`${this.backendUrl}/${id}/customer`, { }, credentials)
-        .toPromise()
-        .then((res) => this.transaction.next(res.json() as Transaction))
-        .catch((err) => this.handleError(err));
-    });
+  clearReservation(id: string): Observable<any> {
+    return this.http.post(`${this.backendUrl}/clear-reservation`, { id });
   }
 
   updateStatus(id: String, status: String): Promise<any> {
