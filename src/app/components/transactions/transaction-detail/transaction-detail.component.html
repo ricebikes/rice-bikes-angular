@@ -281,7 +281,7 @@
         ></app-search-customer>
 
         <button 
-          *ngIf="transaction?.transaction_type == 'retrospec'" 
+          *ngIf="transaction?.transaction_type == 'retrospec' && transaction?.reserved" 
           class="btn btn-warning mt-3"
           (click)="clearReservation()">
           Clear Reservation

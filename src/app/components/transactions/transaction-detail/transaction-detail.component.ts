@@ -114,25 +114,10 @@ export class TransactionDetailComponent implements OnInit {
     this.updateCustomerModal.nativeElement.click()
   }
 
-  clearReservation(): void {
-    if (this.transaction && this.transaction._id) {
-      this.transactionService.clearReservation(this.transaction._id).subscribe({
-        next: (response) => {
-          // Handle success response
-          console.log('Reservation cleared successfully');
-          // Close the modal programmatically
-          if (this.clearReservationModal) {
-            this.clearReservationModal.nativeElement.click();
-          }
-        },
-        error: (error) => {
-          // Handle error response
-          console.error('Error clearing reservation', error);
-        }
-      });
-    } else {
-      console.error('No transaction ID provided');
-    }
+  async clearReservation() {
+    await this.transactionService.clearReservation(this.transaction._id)
+    this.transaction.customer = null
+    this.clearReservationModal.nativeElement.click();
   }
 
   updateTransaction(): void {

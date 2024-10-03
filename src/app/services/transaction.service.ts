@@ -119,8 +119,8 @@ export class TransactionService {
     });
   }
 
-  clearReservation(id: string): Observable<any> {
-    return this.http.post(`${this.backendUrl}/clear-reservation`, { id });
+  clearReservation(id: string): Promise<any> {
+    return this.updateCustomer(id, null)
   }
 
   updateStatus(id: String, status: String): Promise<any> {
