@@ -39,13 +39,17 @@ export class CheckoutComponent implements OnInit {
      * This displays a loading wheel while we email receipt, and blocks 
      * user clicking again
      */
-    this.emailingReceipt = true;
-    this.transactionService.setPaid(this.transaction._id, this.transaction.is_paid)
-      .then(() => {
-        this.emailingReceipt = true;
-        this.finishModal.nativeElement.click();
-        this.router.navigate(['/transactions']);
-        this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
-      });
+    setTimeout(() => {
+      alert("NOTE: Emails are not auto-sending correctly, so the customer will not get an email receipt. Tell them this if they do not take the printed copy.");
+      this.emailingReceipt = true;
+      this.transactionService.setPaid(this.transaction._id, this.transaction.is_paid)
+        .then(() => {
+          this.emailingReceipt = true;
+          this.finishModal.nativeElement.click();
+          this.router.navigate(['/transactions']);
+          this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
+        });
+    },300)
+    
   }
 }
