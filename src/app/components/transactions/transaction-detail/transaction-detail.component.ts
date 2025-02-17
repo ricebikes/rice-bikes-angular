@@ -204,11 +204,7 @@ export class TransactionDetailComponent implements OnInit {
   completeTransaction(): void {
     this.emailLoading = true;
     this.completeDropdownButton.nativeElement.click(); // To close dropdown
-
-    setTimeout(() => {
-      alert("NOTE: Emails are not auto-sending correctly - see Mechanic Resources Drive for template and send the pickup email manually.");
-    
-      this.transactionService.notifyCustomerEmail(this.transaction._id)
+    this.transactionService.notifyCustomerEmail(this.transaction._id)
       .then(() => {
         const date = Date.now().toString();
         this.emailLoading = false;
@@ -218,9 +214,6 @@ export class TransactionDetailComponent implements OnInit {
           this.analyticsService.notifyTransactionStatusChange(this.transaction._id);
         });
       });
-    
-    }, 300);
-    
   }
 
   completeWithoutEmail(): void {
